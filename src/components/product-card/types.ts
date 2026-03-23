@@ -6,5 +6,6 @@ export type ProductCardProps = {
   locale: Locale;
   addToCart: string;
   wishlistAriaLabel: string;
+  detailsHref: string;
   onAddToCart: (productId: string) => void;
 };

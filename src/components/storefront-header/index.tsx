@@ -13,7 +13,6 @@ import {
   Stack,
   Toolbar,
 } from "@mui/material";
-import Link from "next/link";
 
 import { Logo } from "../logo";
 import { localeLabels } from "../utils";
@@ -96,7 +95,6 @@ export const StorefrontHeader = ({
                 ).map((targetLocale) => (
                   <Button
                     key={targetLocale}
-                    component={Link}
                     href={buildLocalizedPath(targetLocale)}
                     variant="text"
                     color="inherit"

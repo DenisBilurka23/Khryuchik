@@ -70,18 +70,21 @@ const dictionary: Dictionary = {
       buyButton: "Купить",
       items: [
         {
+          slug: "book-winter",
           title: "Хрючик зимой",
           lang: "RU / EN",
           desc: "Тёплая история о зимних приключениях Хрючика.",
           emoji: "📘",
         },
         {
+          slug: "book-country-house",
           title: "Хрючик на даче",
           lang: "RU / EN",
           desc: "Весёлая сказка, вдохновлённая семейными воспоминаниями.",
           emoji: "📚",
         },
         {
+          slug: "book-friends",
           title: "Хрючик и друзья",
           lang: "RU / EN",
           desc: "Добрая история о дружбе, заботе и маленьких открытиях.",
@@ -185,6 +188,42 @@ const dictionary: Dictionary = {
         noteFallback: "нет",
       },
       emailSubject: "Заказ мерча Хрючика",
+    },
+    productPage: {
+      breadcrumbs: {
+        home: "Главная",
+        shop: "Магазин",
+      },
+      selectors: {
+        language: "Язык",
+        format: "Формат",
+        size: "Размер",
+        color: "Цвет",
+        quantity: "Количество",
+      },
+      actions: {
+        addToCart: "В корзину",
+        buyNow: "Купить сейчас",
+        viewBook: "Смотреть книгу",
+      },
+      details: {
+        sku: "Артикул",
+        securePayment: "Безопасная онлайн-оплата",
+        shipping: "Доставка по Беларуси и международная доставка",
+        languageSupport: "Поддержка RU / EN версий для книг",
+      },
+      tabs: {
+        description: "Описание",
+        specs: "Характеристики",
+        delivery: "Доставка и оплата",
+        reviews: "Отзывы",
+      },
+      relatedTitle: "Соберите свой набор Хрючика",
+      storyConnection: {
+        title: "Этот товар создан по мотивам сказки «{title}»",
+        description:
+          "Добавьте к покупке книгу и соберите уютный подарочный набор с Хрючиком.",
+      },
     },
     newsletter: {
       eyebrow: "Подписка",

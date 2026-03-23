@@ -2,10 +2,11 @@ import { Box, Container, Grid } from "@mui/material";
 
 import { BookCard } from "../book-card";
 import { SectionHeading } from "../section-heading";
+import { getLocalizedProductPath } from "../utils";
 import styles from "./books-section.module.css";
 import type { BooksSectionProps } from "./types";
 
-export const BookSection = ({ dictionary }: BooksSectionProps) => {
+export const BookSection = ({ locale, dictionary }: BooksSectionProps) => {
   return (
     <Box component="section" id="books" className={styles.section}>
       <Container maxWidth="lg">
@@ -20,6 +21,7 @@ export const BookSection = ({ dictionary }: BooksSectionProps) => {
             <Grid key={book.title} size={{ xs: 12, md: 4 }}>
               <BookCard
                 book={book}
+                detailsHref={getLocalizedProductPath(locale, book.slug)}
                 detailsButton={dictionary.booksSection.detailsButton}
                 buyButton={dictionary.booksSection.buyButton}
               />

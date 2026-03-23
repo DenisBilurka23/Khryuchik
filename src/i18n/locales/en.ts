@@ -71,18 +71,21 @@ const dictionary: Dictionary = {
       buyButton: "Buy",
       items: [
         {
+          slug: "book-winter",
           title: "Khryuchik in Winter",
           lang: "RU / EN",
           desc: "A warm story about Khryuchik's winter adventures.",
           emoji: "📘",
         },
         {
+          slug: "book-country-house",
           title: "Khryuchik at the Country House",
           lang: "RU / EN",
           desc: "A cheerful tale inspired by real family memories.",
           emoji: "📚",
         },
         {
+          slug: "book-friends",
           title: "Khryuchik and Friends",
           lang: "RU / EN",
           desc: "A kind story about friendship, care, and small discoveries.",
@@ -186,6 +189,42 @@ const dictionary: Dictionary = {
         noteFallback: "none",
       },
       emailSubject: "Khryuchik merch order",
+    },
+    productPage: {
+      breadcrumbs: {
+        home: "Home",
+        shop: "Shop",
+      },
+      selectors: {
+        language: "Language",
+        format: "Format",
+        size: "Size",
+        color: "Color",
+        quantity: "Quantity",
+      },
+      actions: {
+        addToCart: "Add to cart",
+        buyNow: "Buy now",
+        viewBook: "View the book",
+      },
+      details: {
+        sku: "SKU",
+        securePayment: "Secure online payment",
+        shipping: "Shipping across Belarus and internationally",
+        languageSupport: "RU / EN versions available for books",
+      },
+      tabs: {
+        description: "Description",
+        specs: "Specifications",
+        delivery: "Delivery and payment",
+        reviews: "Reviews",
+      },
+      relatedTitle: "Build your own Khryuchik bundle",
+      storyConnection: {
+        title: "This product was inspired by the story '{title}'",
+        description:
+          "Add the book to your purchase and create a cozy Khryuchik gift set.",
+      },
     },
     newsletter: {
       eyebrow: "Newsletter",

@@ -8,6 +8,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 
 import { formatCurrency } from "../utils";
 import styles from "./product-card.module.css";
@@ -18,14 +19,34 @@ export const ProductCard = ({
   locale,
   addToCart,
   wishlistAriaLabel,
+  detailsHref,
   onAddToCart,
 }: ProductCardProps) => {
   return (
     <Card className={styles.card}>
       <CardContent sx={{ p: 2.5 }}>
-        <Box className={styles.preview}>{product.emoji}</Box>
+        <Box
+          component={Link}
+          href={detailsHref}
+          className={styles.preview}
+          sx={{ textDecoration: "none", color: "inherit", display: "flex" }}
+        >
+          {product.emoji}
+        </Box>
 
-        <Typography variant="h6" sx={{ mt: 3, fontSize: 18, fontWeight: 700 }}>
+        <Typography
+          component={Link}
+          href={detailsHref}
+          variant="h6"
+          sx={{
+            mt: 3,
+            fontSize: 18,
+            fontWeight: 700,
+            textDecoration: "none",
+            color: "inherit",
+            display: "block",
+          }}
+        >
           {product.title}
         </Typography>
 

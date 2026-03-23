@@ -1,4 +1,5 @@
 export type StorefrontBook = {
+  slug: string;
   title: string;
   lang: string;
   desc: string;
@@ -11,6 +12,42 @@ export type StorefrontProduct = {
   price: number;
   emoji: string;
   category: string;
+};
+
+export type ProductPageLabels = {
+  breadcrumbs: {
+    home: string;
+    shop: string;
+  };
+  selectors: {
+    language: string;
+    format: string;
+    size: string;
+    color: string;
+    quantity: string;
+  };
+  actions: {
+    addToCart: string;
+    buyNow: string;
+    viewBook: string;
+  };
+  details: {
+    sku: string;
+    securePayment: string;
+    shipping: string;
+    languageSupport: string;
+  };
+  tabs: {
+    description: string;
+    specs: string;
+    delivery: string;
+    reviews: string;
+  };
+  relatedTitle: string;
+  storyConnection: {
+    title: string;
+    description: string;
+  };
 };
 
 export type StorefrontFooterSection = {
@@ -129,6 +166,7 @@ export type StorefrontDictionary = {
     };
     emailSubject: string;
   };
+  productPage: ProductPageLabels;
   newsletter: {
     eyebrow: string;
     title: string;

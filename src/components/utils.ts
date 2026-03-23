@@ -13,3 +13,6 @@ export const formatCurrency = (value: number, locale: Locale) =>
     currency: "BYN",
     maximumFractionDigits: 0,
   }).format(value);
+
+export const getLocalizedProductPath = (locale: Locale, slug: string) =>
+  locale === "en" ? `/products/${slug}` : `/${locale}/products/${slug}`;

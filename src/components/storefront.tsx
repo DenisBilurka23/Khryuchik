@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { Box } from "@mui/material";
 import { usePathname } from "next/navigation";
 import { useMemo, useState } from "react";
 
@@ -13,8 +13,8 @@ import { NewsletterSection } from "./newsletter-section";
 import { OrderSection } from "./order-section";
 import { ShopSection } from "./shop-section";
 import { StorefrontHeader } from "./storefront-header";
+import { StorefrontThemeProvider } from "./storefront-theme-provider";
 import { StorySection } from "./story-section";
-import { storefrontTheme } from "./theme";
 import styles from "./storefront.module.css";
 import type { StorefrontProps } from "./types";
 import { formatCurrency } from "./utils";
@@ -147,9 +147,7 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
   };
 
   return (
-    <ThemeProvider theme={storefrontTheme}>
-      <CssBaseline />
-
+    <StorefrontThemeProvider>
       <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
         <Box className={styles.pageContent}>
           <StorefrontHeader
@@ -159,7 +157,7 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
             buildLocalizedPath={buildLocalizedPath}
           />
           <HeroSection locale={locale} dictionary={dictionary} />
-          <BookSection dictionary={dictionary} />
+          <BookSection locale={locale} dictionary={dictionary} />
           <ShopSection
             locale={locale}
             selectedFilter={selectedFilter}
@@ -189,6 +187,6 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
           <FooterSection dictionary={dictionary} />
         </Box>
       </Box>
-    </ThemeProvider>
+    </StorefrontThemeProvider>
   );
 };

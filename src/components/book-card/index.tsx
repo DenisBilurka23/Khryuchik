@@ -6,15 +6,28 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 
 import styles from "./book-card.module.css";
 import type { BookCardProps } from "./types";
 
-export const BookCard = ({ book, detailsButton, buyButton }: BookCardProps) => {
+export const BookCard = ({
+  book,
+  detailsHref,
+  detailsButton,
+  buyButton,
+}: BookCardProps) => {
   return (
     <Card className={styles.card}>
       <CardContent sx={{ p: 3 }}>
-        <Box className={styles.cover}>{book.emoji}</Box>
+        <Box
+          component={Link}
+          href={detailsHref}
+          className={styles.cover}
+          sx={{ textDecoration: "none", color: "inherit" }}
+        >
+          {book.emoji}
+        </Box>
 
         <Typography
           variant="body2"
@@ -24,7 +37,18 @@ export const BookCard = ({ book, detailsButton, buyButton }: BookCardProps) => {
           {book.lang}
         </Typography>
 
-        <Typography variant="h6" sx={{ mt: 1, fontWeight: 700 }}>
+        <Typography
+          component={Link}
+          href={detailsHref}
+          variant="h6"
+          sx={{
+            mt: 1,
+            fontWeight: 700,
+            textDecoration: "none",
+            color: "inherit",
+            display: "block",
+          }}
+        >
           {book.title}
         </Typography>
 
@@ -37,10 +61,17 @@ export const BookCard = ({ book, detailsButton, buyButton }: BookCardProps) => {
         </Typography>
 
         <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
-          <Button variant="contained" className={styles.detailsButton}>
+          <Button
+            component={Link}
+            href={detailsHref}
+            variant="contained"
+            className={styles.detailsButton}
+          >
             {detailsButton}
           </Button>
           <Button
+            component={Link}
+            href={detailsHref}
             variant="outlined"
             color="inherit"
             className={styles.buyButton}

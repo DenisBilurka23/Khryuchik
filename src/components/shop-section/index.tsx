@@ -2,6 +2,7 @@ import { Box, Button, Container, Grid, Stack } from "@mui/material";
 
 import { ProductCard } from "../product-card";
 import { SectionHeading } from "../section-heading";
+import { getLocalizedProductPath } from "../utils";
 import styles from "./shop-section.module.css";
 import type { ShopSectionProps } from "./types";
 
@@ -53,6 +54,7 @@ export const ShopSection = ({
                 locale={locale}
                 addToCart={dictionary.shopSection.addToCart}
                 wishlistAriaLabel={dictionary.shopSection.wishlistAriaLabel}
+                detailsHref={getLocalizedProductPath(locale, product.id)}
                 onAddToCart={addToCart}
               />
             </Grid>
