@@ -24,26 +24,27 @@ export const StorefrontHeader = ({
   totalCount,
   dictionary,
   buildLocalizedPath,
+  navigationPaths,
 }: StorefrontHeaderProps) => {
   const navItems = [
     {
       label: dictionary.nav.books,
-      href: "#books",
+      href: navigationPaths?.books ?? "#books",
       icon: <MenuBookOutlinedIcon fontSize="small" />,
     },
     {
       label: dictionary.nav.shop,
-      href: "#shop",
+      href: navigationPaths?.shop ?? "#shop",
       icon: <StorefrontOutlinedIcon fontSize="small" />,
     },
     {
       label: dictionary.nav.story,
-      href: "#story",
+      href: navigationPaths?.story ?? "#story",
       icon: <AutoStoriesOutlinedIcon fontSize="small" />,
     },
     {
       label: dictionary.nav.faq,
-      href: "#faq",
+      href: navigationPaths?.faq ?? "#faq",
       icon: <LocalShippingOutlinedIcon fontSize="small" />,
     },
   ];
@@ -119,7 +120,7 @@ export const StorefrontHeader = ({
 
             <Button
               variant="contained"
-              href="#order"
+              href={navigationPaths?.order ?? "#order"}
               startIcon={
                 <Badge badgeContent={totalCount} color="primary">
                   <ShoppingBagOutlinedIcon />

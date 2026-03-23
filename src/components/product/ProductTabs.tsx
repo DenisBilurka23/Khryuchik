@@ -13,13 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import type { ProductPageLabels } from "@/i18n/types";
-import type { ProductDetails } from "@/types/product-details";
-
-type ProductTabsProps = {
-  labels: ProductPageLabels;
-  product: ProductDetails;
-};
+import type { ProductTabsProps } from "./types";
 
 export const ProductTabs = ({ labels, product }: ProductTabsProps) => {
   const [tab, setTab] = useState(0);

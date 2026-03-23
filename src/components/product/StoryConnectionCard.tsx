@@ -1,14 +1,7 @@
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 
-import type { ProductPageLabels } from "@/i18n/types";
-
-type StoryConnectionCardProps = {
-  storyTitle?: string;
-  description: string;
-  buttonHref: string;
-  labels: ProductPageLabels;
-};
+import type { StoryConnectionCardProps } from "./types";
 
 export const StoryConnectionCard = ({
   storyTitle = "Khryuchik in Winter",

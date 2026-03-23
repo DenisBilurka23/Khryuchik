@@ -13,17 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 
-import type { ProductPageLabels } from "@/i18n/types";
-import type { Locale } from "@/i18n/config";
-import type { ProductDetails } from "@/types/product-details";
-
 import { formatCurrency } from "../utils";
-
-type ProductInfoProps = {
-  locale: Locale;
-  labels: ProductPageLabels;
-  product: ProductDetails;
-};
+import type { ProductInfoProps } from "./types";
 
 export const ProductInfo = ({ locale, labels, product }: ProductInfoProps) => {
   const [quantity, setQuantity] = useState(1);

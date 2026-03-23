@@ -1,17 +1,8 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import Link from "next/link";
 
-import type { Locale } from "@/i18n/config";
-import type { ProductPageLabels, StorefrontDictionary } from "@/i18n/types";
-
 import { formatCurrency } from "../utils";
-
-type RelatedProductsProps = {
-  dictionary: StorefrontDictionary;
-  labels: ProductPageLabels;
-  locale: Locale;
-  relatedIds: string[];
-};
+import type { RelatedProductsProps } from "./types";
 
 export const RelatedProducts = ({
   dictionary,

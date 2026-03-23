@@ -50,6 +50,27 @@ export type ProductPageLabels = {
   };
 };
 
+export type ShopPageLabels = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  filters: {
+    all: string;
+    books: string;
+    clothes: string;
+    gifts: string;
+  };
+  searchPlaceholder: string;
+  resultsLabel: string;
+  emptyTitle: string;
+  emptyText: string;
+  resetFilters: string;
+  breadcrumbs: {
+    home: string;
+    current: string;
+  };
+};
+
 export type StorefrontFooterSection = {
   title: string;
   items: string[];
@@ -167,6 +188,7 @@ export type StorefrontDictionary = {
     emailSubject: string;
   };
   productPage: ProductPageLabels;
+  shopPage: ShopPageLabels;
   newsletter: {
     eyebrow: string;
     title: string;

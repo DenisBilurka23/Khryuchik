@@ -14,5 +14,8 @@ export const formatCurrency = (value: number, locale: Locale) =>
     maximumFractionDigits: 0,
   }).format(value);
 
+export const getLocalizedPath = (locale: Locale, path: string) =>
+  locale === "en" ? path : `/${locale}${path}`;
+
 export const getLocalizedProductPath = (locale: Locale, slug: string) =>
-  locale === "en" ? `/products/${slug}` : `/${locale}/products/${slug}`;
+  getLocalizedPath(locale, `/products/${slug}`);

@@ -6,4 +6,11 @@ export type StorefrontHeaderProps = {
   totalCount: number;
   dictionary: StorefrontDictionary;
   buildLocalizedPath: (targetLocale: Locale) => string;
+  navigationPaths?: {
+    books: string;
+    shop: string;
+    story: string;
+    faq: string;
+    order: string;
+  };
 };

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 
 import { InfoChip } from "../info-chip";
-import { formatCurrency, promoBackgrounds } from "../utils";
+import { formatCurrency, getLocalizedPath, promoBackgrounds } from "../utils";
 import styles from "./hero-section.module.css";
 import type { HeroSectionProps } from "./types";
 
@@ -55,7 +55,7 @@ export const HeroSection = ({ locale, dictionary }: HeroSectionProps) => {
                 variant="outlined"
                 color="inherit"
                 size="large"
-                href="#shop"
+                href={getLocalizedPath(locale, "/shop")}
                 className={styles.secondaryButton}
               >
                 {dictionary.hero.secondaryAction}

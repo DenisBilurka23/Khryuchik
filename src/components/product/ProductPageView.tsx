@@ -7,39 +7,27 @@ import {
   Typography,
 } from "@mui/material";
 
-import type { Locale } from "@/i18n/config";
-import type { StorefrontDictionary } from "@/i18n/types";
-import type { ProductDetails } from "@/types/product-details";
-
 import { FooterSection } from "../footer-section";
 import { NewsletterSection } from "../newsletter-section";
 import { StorefrontHeader } from "../storefront-header";
 import { StorefrontThemeProvider } from "../storefront-theme-provider";
 import styles from "../storefront.module.css";
+import { getLocalizedPath } from "../utils";
 import { ProductGallery } from "./ProductGallery";
 import { ProductInfo } from "./ProductInfo";
 import { ProductTabs } from "./ProductTabs";
 import { RelatedProducts } from "./RelatedProducts";
 import { StoryConnectionCard } from "./StoryConnectionCard";
-
-type ProductPageViewProps = {
-  locale: Locale;
-  dictionary: StorefrontDictionary;
-  product: ProductDetails;
-};
-
-const buildLocalizedPath = (locale: Locale, path: string) => {
-  return locale === "en" ? path : `/${locale}${path}`;
-};
+import type { ProductPageViewProps } from "./types";
 
 export const ProductPageView = ({
   locale,
   dictionary,
   product,
 }: ProductPageViewProps) => {
-  const homeHref = buildLocalizedPath(locale, "/");
-  const shopHref = `${homeHref === "/" ? "" : homeHref}#shop` || "/#shop";
-  const bookHref = buildLocalizedPath(locale, "/products/book-winter");
+  const homeHref = getLocalizedPath(locale, "/");
+  const shopHref = getLocalizedPath(locale, "/shop");
+  const bookHref = getLocalizedPath(locale, "/products/book-winter");
 
   return (
     <StorefrontThemeProvider>
@@ -54,6 +42,13 @@ export const ProductPageView = ({
                 ? `/products/${product.slug}`
                 : `/${targetLocale}/products/${product.slug}`
             }
+            navigationPaths={{
+              books: getLocalizedPath(locale, "/shop?category=books"),
+              shop: shopHref,
+              story: `${homeHref}#story`,
+              faq: `${homeHref}#faq`,
+              order: `${homeHref}#order`,
+            }}
           />
 
           <Box sx={{ py: { xs: 4, md: 6 } }}>

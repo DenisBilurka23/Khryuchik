@@ -2,7 +2,7 @@ import { Box, Container, Grid } from "@mui/material";
 
 import { BookCard } from "../book-card";
 import { SectionHeading } from "../section-heading";
-import { getLocalizedProductPath } from "../utils";
+import { getLocalizedPath, getLocalizedProductPath } from "../utils";
 import styles from "./books-section.module.css";
 import type { BooksSectionProps } from "./types";
 
@@ -14,6 +14,7 @@ export const BookSection = ({ locale, dictionary }: BooksSectionProps) => {
           eyebrow={dictionary.booksSection.eyebrow}
           title={dictionary.booksSection.title}
           actionLabel={dictionary.booksSection.actionLabel}
+          actionHref={getLocalizedPath(locale, "/shop?category=books")}
         />
 
         <Grid container spacing={3}>

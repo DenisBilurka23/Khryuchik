@@ -27,7 +27,13 @@ const getPreferredLocale = (request: NextRequest) => {
 export const proxy = (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
-  if (pathname === "/") {
+  const allowDefaultLocalePath =
+    pathname === "/" ||
+    pathname === "/shop" ||
+    pathname === "/products" ||
+    pathname.startsWith("/products/");
+
+  if (allowDefaultLocalePath) {
     return NextResponse.next();
   }
 

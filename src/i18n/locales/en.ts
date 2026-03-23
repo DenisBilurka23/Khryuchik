@@ -226,6 +226,26 @@ const dictionary: Dictionary = {
           "Add the book to your purchase and create a cozy Khryuchik gift set.",
       },
     },
+    shopPage: {
+      eyebrow: "Catalog",
+      title: "Khryuchik shop — books, gifts, and cozy merch",
+      lead: "Browse bilingual books, mugs, T-shirts, stickers, and gift-ready items inspired by Khryuchik's gentle stories.",
+      filters: {
+        all: "All",
+        books: "Books",
+        clothes: "Apparel",
+        gifts: "Gifts",
+      },
+      searchPlaceholder: "Search products",
+      resultsLabel: "Products found",
+      emptyTitle: "Nothing found",
+      emptyText: "Try changing your search or choosing another category.",
+      resetFilters: "Reset filters",
+      breadcrumbs: {
+        home: "Home",
+        current: "Shop",
+      },
+    },
     newsletter: {
       eyebrow: "Newsletter",
       title: "Get updates on new books and Khryuchik collections",

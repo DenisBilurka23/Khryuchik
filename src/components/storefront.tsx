@@ -17,7 +17,7 @@ import { StorefrontThemeProvider } from "./storefront-theme-provider";
 import { StorySection } from "./story-section";
 import styles from "./storefront.module.css";
 import type { StorefrontProps } from "./types";
-import { formatCurrency } from "./utils";
+import { formatCurrency, getLocalizedPath } from "./utils";
 
 export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
   const pathname = usePathname();
@@ -155,6 +155,13 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
             totalCount={totalCount}
             dictionary={dictionary}
             buildLocalizedPath={buildLocalizedPath}
+            navigationPaths={{
+              books: getLocalizedPath(locale, "/shop?category=books"),
+              shop: getLocalizedPath(locale, "/shop"),
+              story: "#story",
+              faq: "#faq",
+              order: "#order",
+            }}
           />
           <HeroSection locale={locale} dictionary={dictionary} />
           <BookSection locale={locale} dictionary={dictionary} />

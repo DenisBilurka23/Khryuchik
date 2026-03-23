@@ -1,7 +1,7 @@
 .appBar {
   backdrop-filter: blur(14px);
-  background: rgba(255, 248, 240, 0.9);
-  border-bottom: 1px solid #f0dfc8;
+  background: rgba(255, 253, 249, 0.94);
+  border-bottom: 1px solid #eadbc8;
 }
 
 .localeSwitcher {

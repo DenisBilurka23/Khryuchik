@@ -3,11 +3,7 @@
 import { useState } from "react";
 import { Box, Grid, Paper } from "@mui/material";
 
-import type { ProductImage } from "@/types/product-details";
-
-type ProductGalleryProps = {
-  images: ProductImage[];
-};
+import type { ProductGalleryProps } from "./types";
 
 export const ProductGallery = ({ images }: ProductGalleryProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
