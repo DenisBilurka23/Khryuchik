@@ -113,7 +113,6 @@ export const ShopPageView = ({
   initialCategory,
   initialQuery,
 }: ShopPageViewProps) => {
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const router = useRouter();
   const pathname = usePathname();
 
@@ -231,18 +230,6 @@ export const ShopPageView = ({
     });
   }, [catalogItems, search, selectedFilter]);
 
-  const totalCount = useMemo(
-    () => Object.values(quantities).reduce((sum, value) => sum + value, 0),
-    [quantities],
-  );
-
-  const addToCart = (productId: string) => {
-    setQuantities((current) => ({
-      ...current,
-      [productId]: (current[productId] ?? 0) + 1,
-    }));
-  };
-
   const resetFilters = () => {
     router.replace(pathname, { scroll: false });
   };
@@ -253,7 +240,6 @@ export const ShopPageView = ({
         <Box className={styles.pageContent}>
           <StorefrontHeader
             locale={locale}
-            totalCount={totalCount}
             dictionary={dictionary}
             buildLocalizedPath={(targetLocale) =>
               getLocalizedPath(targetLocale, "/shop")
@@ -263,7 +249,7 @@ export const ShopPageView = ({
               shop: shopHref,
               story: `${homeHref}#story`,
               faq: `${homeHref}#faq`,
-              order: `${homeHref}#order`,
+              cart: getLocalizedPath(locale, "/cart"),
             }}
           />
 
@@ -376,7 +362,6 @@ export const ShopPageView = ({
                         dictionary.shopSection.wishlistAriaLabel
                       }
                       detailsHref={getLocalizedProductPath(locale, product.id)}
-                      onAddToCart={addToCart}
                     />
                   </Grid>
                 ))}

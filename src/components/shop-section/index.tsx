@@ -12,7 +12,6 @@ export const ShopSection = ({
   visibleProducts,
   dictionary,
   setSelectedFilter,
-  addToCart,
 }: ShopSectionProps) => {
   return (
     <Box component="section" id="shop" className={styles.section}>
@@ -55,7 +54,6 @@ export const ShopSection = ({
                 addToCart={dictionary.shopSection.addToCart}
                 wishlistAriaLabel={dictionary.shopSection.wishlistAriaLabel}
                 detailsHref={getLocalizedProductPath(locale, product.id)}
-                onAddToCart={addToCart}
               />
             </Grid>
           ))}

@@ -10,6 +10,9 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
+import { getProductDetails } from "@/data/product-details";
+
+import { useCart } from "../cart/store";
 import { formatCurrency } from "../utils";
 import styles from "./product-card.module.css";
 import type { ProductCardProps } from "./types";
@@ -20,8 +23,21 @@ export const ProductCard = ({
   addToCart,
   wishlistAriaLabel,
   detailsHref,
-  onAddToCart,
 }: ProductCardProps) => {
+  const { addItem } = useCart();
+
+  const handleAddToCart = () => {
+    const details = getProductDetails(locale, product.id);
+
+    addItem({
+      slug: product.id,
+      title: product.title,
+      price: product.price,
+      emoji: product.emoji,
+      bgColor: details?.images[0]?.bgColor ?? "#FFF8F0",
+    });
+  };
+
   return (
     <Card className={styles.card}>
       <CardContent sx={{ p: 2.5 }}>
@@ -59,7 +75,7 @@ export const ProductCard = ({
             fullWidth
             variant="contained"
             className={styles.addButton}
-            onClick={() => onAddToCart(product.id)}
+            onClick={handleAddToCart}
           >
             {addToCart}
           </Button>

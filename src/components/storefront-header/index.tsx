@@ -1,3 +1,5 @@
+"use client";
+
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
@@ -14,6 +16,7 @@ import {
   Toolbar,
 } from "@mui/material";
 
+import { useCart } from "../cart/store";
 import { Logo } from "../logo";
 import { localeLabels } from "../utils";
 import styles from "./storefront-header.module.css";
@@ -21,11 +24,12 @@ import type { StorefrontHeaderProps } from "./types";
 
 export const StorefrontHeader = ({
   locale,
-  totalCount,
   dictionary,
   buildLocalizedPath,
   navigationPaths,
 }: StorefrontHeaderProps) => {
+  const { totalCount } = useCart();
+
   const navItems = [
     {
       label: dictionary.nav.books,
@@ -120,7 +124,7 @@ export const StorefrontHeader = ({
 
             <Button
               variant="contained"
-              href={navigationPaths?.order ?? "#order"}
+              href={navigationPaths?.cart ?? "/cart"}
               startIcon={
                 <Badge badgeContent={totalCount} color="primary">
                   <ShoppingBagOutlinedIcon />

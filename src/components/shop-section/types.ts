@@ -7,5 +7,4 @@ export type ShopSectionProps = {
   visibleProducts: StorefrontDictionary["shopSection"]["items"];
   dictionary: StorefrontDictionary;
   setSelectedFilter: (filterLabel: string) => void;
-  addToCart: (productId: string) => void;
 };

@@ -29,6 +29,7 @@ export const proxy = (request: NextRequest) => {
 
   const allowDefaultLocalePath =
     pathname === "/" ||
+    pathname === "/cart" ||
     pathname === "/shop" ||
     pathname === "/products" ||
     pathname.startsWith("/products/");

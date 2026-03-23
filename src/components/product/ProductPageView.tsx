@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Box,
   Breadcrumbs,
@@ -35,7 +37,6 @@ export const ProductPageView = ({
         <Box className={styles.pageContent}>
           <StorefrontHeader
             locale={locale}
-            totalCount={0}
             dictionary={dictionary}
             buildLocalizedPath={(targetLocale) =>
               targetLocale === "en"
@@ -47,7 +48,7 @@ export const ProductPageView = ({
               shop: shopHref,
               story: `${homeHref}#story`,
               faq: `${homeHref}#faq`,
-              order: `${homeHref}#order`,
+              cart: getLocalizedPath(locale, "/cart"),
             }}
           />
 

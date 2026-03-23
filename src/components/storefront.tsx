@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 
 import { defaultLocale, isLocale, type Locale } from "@/i18n/config";
 
+import { useCart } from "./cart/store";
 import { BookSection } from "./books-section";
 import { FooterSection } from "./footer-section";
 import { HeroSection } from "./hero-section";
@@ -21,7 +22,6 @@ import { formatCurrency, getLocalizedPath } from "./utils";
 
 export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
   const pathname = usePathname();
-  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [note, setNote] = useState("");
@@ -29,6 +29,7 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
   const [selectedFilter, setSelectedFilter] = useState(
     dictionary.shopSection.filters[0] ?? "",
   );
+  const { items: cartItems, subtotal: total, clearCart } = useCart();
 
   const buildLocalizedPath = (targetLocale: Locale) => {
     if (pathname === "/") {
@@ -73,35 +74,13 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
     selectedFilter,
   ]);
 
-  const cartItems = useMemo(
-    () =>
-      dictionary.shopSection.items
-        .filter((product) => (quantities[product.id] ?? 0) > 0)
-        .map((product) => ({
-          ...product,
-          quantity: quantities[product.id] ?? 0,
-          subtotal: product.price * (quantities[product.id] ?? 0),
-        })),
-    [dictionary.shopSection.items, quantities],
-  );
-
-  const totalCount = useMemo(
-    () => cartItems.reduce((sum, item) => sum + item.quantity, 0),
-    [cartItems],
-  );
-
-  const total = useMemo(
-    () => cartItems.reduce((sum, item) => sum + item.subtotal, 0),
-    [cartItems],
-  );
-
   const orderSummary = useMemo(() => {
     const itemText =
       cartItems.length > 0
         ? cartItems
             .map(
               (item) =>
-                `• ${item.title} x${item.quantity} — ${formatCurrency(item.subtotal, locale)}`,
+                `• ${item.title} x${item.quantity} — ${formatCurrency(item.price * item.quantity, locale)}`,
             )
             .join("\n")
         : dictionary.orderSection.summary.emptyItem;
@@ -124,15 +103,8 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
     dictionary.orderSection.emailSubject,
   )}&body=${encodeURIComponent(orderSummary)}`;
 
-  const addToCart = (productId: string) => {
-    setQuantities((current) => ({
-      ...current,
-      [productId]: (current[productId] ?? 0) + 1,
-    }));
-  };
-
-  const clearCart = () => {
-    setQuantities({});
+  const handleClearCart = () => {
+    clearCart();
     setStatus(dictionary.orderSection.status.cleared);
   };
 
@@ -152,7 +124,6 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
         <Box className={styles.pageContent}>
           <StorefrontHeader
             locale={locale}
-            totalCount={totalCount}
             dictionary={dictionary}
             buildLocalizedPath={buildLocalizedPath}
             navigationPaths={{
@@ -160,7 +131,7 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
               shop: getLocalizedPath(locale, "/shop"),
               story: "#story",
               faq: "#faq",
-              order: "#order",
+              cart: getLocalizedPath(locale, "/cart"),
             }}
           />
           <HeroSection locale={locale} dictionary={dictionary} />
@@ -171,7 +142,6 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
             visibleProducts={visibleProducts}
             dictionary={dictionary}
             setSelectedFilter={setSelectedFilter}
-            addToCart={addToCart}
           />
           <StorySection dictionary={dictionary} />
           <OrderSection
@@ -188,7 +158,7 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
             setContact={setContact}
             setNote={setNote}
             copyOrder={copyOrder}
-            clearCart={clearCart}
+            clearCart={handleClearCart}
           />
           <NewsletterSection dictionary={dictionary} />
           <FooterSection dictionary={dictionary} />

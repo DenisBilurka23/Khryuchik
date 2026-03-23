@@ -71,6 +71,40 @@ export type ShopPageLabels = {
   };
 };
 
+export type CartPageLabels = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  breadcrumbs: {
+    home: string;
+    shop: string;
+    current: string;
+  };
+  emptyState: {
+    title: string;
+    text: string;
+    action: string;
+  };
+  itemCard: {
+    variantLabel: string;
+    removeLabel: string;
+  };
+  summary: {
+    title: string;
+    promoPlaceholder: string;
+    promoButton: string;
+    itemsLabel: string;
+    shippingLabel: string;
+    freeShipping: string;
+    discountLabel: string;
+    totalLabel: string;
+    checkoutButton: string;
+    continueShopping: string;
+    infoTitle: string;
+    infoText: string;
+  };
+};
+
 export type StorefrontFooterSection = {
   title: string;
   items: string[];
@@ -189,6 +223,7 @@ export type StorefrontDictionary = {
   };
   productPage: ProductPageLabels;
   shopPage: ShopPageLabels;
+  cartPage: CartPageLabels;
   newsletter: {
     eyebrow: string;
     title: string;

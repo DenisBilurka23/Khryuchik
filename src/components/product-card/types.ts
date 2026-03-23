@@ -7,5 +7,4 @@ export type ProductCardProps = {
   addToCart: string;
   wishlistAriaLabel: string;
   detailsHref: string;
-  onAddToCart: (productId: string) => void;
 };

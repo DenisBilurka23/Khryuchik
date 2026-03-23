@@ -13,15 +13,38 @@ import {
   Typography,
 } from "@mui/material";
 
+import { useCart } from "../cart/store";
 import { formatCurrency } from "../utils";
 import type { ProductInfoProps } from "./types";
 
 export const ProductInfo = ({ locale, labels, product }: ProductInfoProps) => {
+  const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [language, setLanguage] = useState(product.languages?.[0]?.value || "");
   const [format, setFormat] = useState(product.formats?.[0]?.value || "");
   const [size, setSize] = useState(product.sizes?.[0]?.value || "");
   const [color, setColor] = useState(product.colors?.[0]?.value || "");
+
+  const handleAddToCart = () => {
+    const variant = [
+      product.languages?.find((option) => option.value === language)?.label,
+      product.formats?.find((option) => option.value === format)?.label,
+      product.sizes?.find((option) => option.value === size)?.label,
+      product.colors?.find((option) => option.value === color)?.label,
+    ]
+      .filter(Boolean)
+      .join(" / ");
+
+    addItem({
+      slug: product.slug,
+      title: product.title,
+      price: product.price,
+      emoji: product.images[0]?.emoji ?? "📦",
+      bgColor: product.images[0]?.bgColor ?? "#FFF8F0",
+      quantity,
+      variant: variant || undefined,
+    });
+  };
 
   return (
     <Box>
@@ -166,6 +189,7 @@ export const ProductInfo = ({ locale, labels, product }: ProductInfoProps) => {
           size="large"
           startIcon={<ShoppingBagOutlinedIcon />}
           sx={{ flex: 1 }}
+          onClick={handleAddToCart}
         >
           {labels.actions.addToCart}
         </Button>

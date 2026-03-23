@@ -3,7 +3,6 @@ import type { StorefrontDictionary } from "@/i18n/types";
 
 export type StorefrontHeaderProps = {
   locale: Locale;
-  totalCount: number;
   dictionary: StorefrontDictionary;
   buildLocalizedPath: (targetLocale: Locale) => string;
   navigationPaths?: {
@@ -11,6 +10,6 @@ export type StorefrontHeaderProps = {
     shop: string;
     story: string;
     faq: string;
-    order: string;
+    cart: string;
   };
 };

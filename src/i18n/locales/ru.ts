@@ -245,6 +245,40 @@ const dictionary: Dictionary = {
         current: "Магазин",
       },
     },
+    cartPage: {
+      eyebrow: "Корзина",
+      title: "Ваш уютный заказ Хрючика",
+      lead: "Проверьте выбранные книги и мерч, измените количество и переходите к следующему этапу оформления.",
+      breadcrumbs: {
+        home: "Главная",
+        shop: "Магазин",
+        current: "Корзина",
+      },
+      emptyState: {
+        title: "Корзина пока пуста",
+        text: "Добавьте книги, кружки, футболки и другие тёплые товары из мира Хрючика, чтобы собрать свой уютный набор.",
+        action: "Перейти в магазин",
+      },
+      itemCard: {
+        variantLabel: "Вариант",
+        removeLabel: "Удалить товар",
+      },
+      summary: {
+        title: "Ваш заказ",
+        promoPlaceholder: "Промокод",
+        promoButton: "Применить",
+        itemsLabel: "Товары",
+        shippingLabel: "Доставка",
+        freeShipping: "Бесплатно",
+        discountLabel: "Скидка",
+        totalLabel: "Итого",
+        checkoutButton: "Перейти к оформлению",
+        continueShopping: "Продолжить покупки",
+        infoTitle: "Уютная доставка",
+        infoText:
+          "PDF-книги отправляются после оплаты, а физические товары доставляются по Беларуси и в другие страны.",
+      },
+    },
     newsletter: {
       eyebrow: "Подписка",
       title: "Получайте новости о новых книгах и коллекциях Хрючика",

@@ -246,6 +246,40 @@ const dictionary: Dictionary = {
         current: "Shop",
       },
     },
+    cartPage: {
+      eyebrow: "Cart",
+      title: "Your cozy Khryuchik order",
+      lead: "Review the selected books and merch, adjust quantities, and continue to the next checkout step.",
+      breadcrumbs: {
+        home: "Home",
+        shop: "Shop",
+        current: "Cart",
+      },
+      emptyState: {
+        title: "Your cart is still empty",
+        text: "Add books, mugs, T-shirts, and other warm Khryuchik items to build your cozy bundle.",
+        action: "Go to the shop",
+      },
+      itemCard: {
+        variantLabel: "Variant",
+        removeLabel: "Remove item",
+      },
+      summary: {
+        title: "Your order",
+        promoPlaceholder: "Promo code",
+        promoButton: "Apply",
+        itemsLabel: "Items",
+        shippingLabel: "Shipping",
+        freeShipping: "Free",
+        discountLabel: "Discount",
+        totalLabel: "Total",
+        checkoutButton: "Continue to checkout",
+        continueShopping: "Continue shopping",
+        infoTitle: "Cozy delivery",
+        infoText:
+          "PDF books are delivered after payment, while physical products can be shipped across Belarus and internationally.",
+      },
+    },
     newsletter: {
       eyebrow: "Newsletter",
       title: "Get updates on new books and Khryuchik collections",

@@ -123,7 +123,7 @@ export const OrderSection = ({
                           </Typography>
                         </Box>
                         <Typography sx={{ fontWeight: 700 }}>
-                          {formatCurrency(item.subtotal, locale)}
+                          {formatCurrency(item.price * item.quantity, locale)}
                         </Typography>
                       </Stack>
                     </Paper>
