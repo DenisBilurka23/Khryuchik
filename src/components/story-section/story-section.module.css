@@ -1,0 +1,32 @@
+.section {
+  padding: 80px 0;
+}
+
+.storyCard {
+  border-radius: 32px;
+  background: #fce5ea;
+  height: 100%;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 13px;
+  font-weight: 700;
+  color: #b75068;
+}
+
+.actionButton {
+  margin-top: 32px;
+  background: #fff;
+  color: #18181b;
+}
+
+.actionButton:hover {
+  background: #fff;
+}
+
+.featureCard {
+  border-radius: 32px;
+  background: #fff;
+}

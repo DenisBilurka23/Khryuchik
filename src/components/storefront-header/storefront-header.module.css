@@ -1,0 +1,32 @@
+.appBar {
+  backdrop-filter: blur(14px);
+  background: rgba(255, 248, 240, 0.9);
+  border-bottom: 1px solid #f0dfc8;
+}
+
+.localeSwitcher {
+  padding: 4px;
+  border: 1px solid #e8d6bf;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(54, 33, 18, 0.04);
+}
+
+.localeButton {
+  min-width: 82px;
+  min-height: 46px;
+  padding: 0 16px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cartButton {
+  background: #18181b;
+  color: #fff;
+}
+
+.cartButton:hover {
+  background: #09090b;
+}

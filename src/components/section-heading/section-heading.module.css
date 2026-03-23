@@ -1,0 +1,12 @@
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mui-palette-primary-main, #d96c82);
+}
+
+.actionButton {
+  border-color: #e8d6bf;
+  background: #fff;
+}

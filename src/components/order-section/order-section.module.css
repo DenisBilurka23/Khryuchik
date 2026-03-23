@@ -1,0 +1,47 @@
+.section {
+  padding: 80px 0;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.contentCard {
+  border-radius: 32px;
+  background: #fff;
+  height: 100%;
+}
+
+.summaryCard {
+  border-radius: 32px;
+  background: #18181b;
+  color: #fff;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mui-palette-primary-main, #d96c82);
+}
+
+.nextStep {
+  border-radius: 24px;
+  background: #fff8f0;
+}
+
+.cartCard {
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.outlinedField :global(.MuiOutlinedInput-root) {
+  background: #fff;
+}
+
+.emailButton {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.status {
+  margin-top: 16px;
+  color: #f7c9d1;
+}

@@ -1,0 +1,10 @@
+.pageShell {
+  min-height: 100vh;
+  color: inherit;
+  background: #fff8f0;
+}
+
+.pageContent {
+  position: relative;
+  z-index: 1;
+}

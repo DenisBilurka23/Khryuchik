@@ -1,0 +1,27 @@
+.card {
+  height: 100%;
+  border: 1px solid #f0dfc8;
+}
+
+.cover {
+  margin-bottom: 24px;
+  height: 192px;
+  border-radius: 20px;
+  background: #fce5ea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+}
+
+.detailsButton {
+  background: #18181b;
+}
+
+.detailsButton:hover {
+  background: #09090b;
+}
+
+.buyButton {
+  border-color: #e8d6bf;
+}

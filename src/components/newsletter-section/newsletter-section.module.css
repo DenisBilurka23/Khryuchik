@@ -1,0 +1,22 @@
+.section {
+  padding-bottom: 80px;
+}
+
+.panel {
+  border-radius: 36px;
+  background: #18181b;
+  color: #fff;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 13px;
+  font-weight: 700;
+  color: #f7c9d1;
+}
+
+.formCard {
+  border-radius: 28px;
+  background: #fff;
+}
