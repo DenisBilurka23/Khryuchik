@@ -14,52 +14,88 @@ import {
   Typography,
 } from "@mui/material";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
+import { CategoryTabs } from "@/components/category-tabs";
 import type { Locale } from "@/i18n/config";
-import type { StorefrontDictionary } from "@/i18n/types";
-
-import { getProductDetails } from "@/data/product-details";
+import { locales } from "@/i18n/config";
+import type { LocalizedCategory } from "@/types/catalog";
 
 import { FooterSection } from "./footer-section";
 import { NewsletterSection } from "./newsletter-section";
 import { ProductCard } from "./product-card";
+import type {
+  CreateShopPageViewModelParams,
+  ShopFilterValue,
+  ShopPageViewProps,
+  ShopSearchFieldProps,
+} from "./shop-page-view.types";
 import { StorefrontHeader } from "./storefront-header";
 import { StorefrontThemeProvider } from "./storefront-theme-provider";
 import styles from "./storefront.module.css";
 import { getLocalizedPath, getLocalizedProductPath } from "./utils";
 
-type ShopPageViewProps = {
-  locale: Locale;
-  dictionary: StorefrontDictionary;
-  initialCategory?: string;
-  initialQuery?: string;
+const isShopFilterValue = (
+  value: string | null,
+  categories: LocalizedCategory[],
+): value is ShopFilterValue =>
+  value === "all" || categories.some((category) => category.key === value);
+
+const createShopPageViewModel = ({
+  locale,
+  dictionary,
+  categories,
+  products,
+  selectedFilter,
+  search,
+}: CreateShopPageViewModelParams) => {
+  const homeHref = getLocalizedPath(locale, "/");
+  const shopHref = getLocalizedPath(locale, "/shop");
+  const cartHref = getLocalizedPath(locale, "/cart");
+
+  const localizedPaths = Object.fromEntries(
+    locales.map((targetLocale) => [
+      targetLocale,
+      getLocalizedPath(targetLocale, "/shop"),
+    ]),
+  ) as Record<Locale, string>;
+
+  const filters = [
+    {
+      value: "all",
+      label: dictionary.shopPage.filters.all,
+    },
+    ...categories.map((category) => ({
+      value: category.key,
+      label: category.label,
+    })),
+  ];
+
+  const booksHref = categories.some((category) => category.key === "books")
+    ? `${shopHref}?category=books`
+    : shopHref;
+
+  const normalizedSearch = search.trim().toLowerCase();
+  const filteredProducts = products.filter((product) => {
+    const matchesCategory =
+      selectedFilter === "all" || product.category === selectedFilter;
+    const matchesSearch =
+      normalizedSearch.length === 0 ||
+      product.title.toLowerCase().includes(normalizedSearch);
+
+    return matchesCategory && matchesSearch;
+  });
+
+  return {
+    homeHref,
+    shopHref,
+    cartHref,
+    booksHref,
+    localizedPaths,
+    filters,
+    filteredProducts,
+  };
 };
-
-type ShopFilterValue = "books" | "all" | "clothes" | "gifts";
-type ShopCatalogItem = {
-  id: string;
-  title: string;
-  price: number;
-  emoji: string;
-  category: ShopFilterValue;
-};
-
-type ShopSearchFieldProps = {
-  initialValue: string;
-  placeholder: string;
-  onSearchChange: (value: string) => void;
-};
-
-const isShopFilterValue = (value: string | null): value is ShopFilterValue =>
-  value === "books" ||
-  value === "all" ||
-  value === "clothes" ||
-  value === "gifts";
-
-const isShopCatalogItem = (
-  item: ShopCatalogItem | null,
-): item is ShopCatalogItem => item !== null;
 
 const ShopSearchField = ({
   initialValue,
@@ -110,6 +146,8 @@ const ShopSearchField = ({
 export const ShopPageView = ({
   locale,
   dictionary,
+  categories,
+  products,
   initialCategory,
   initialQuery,
 }: ShopPageViewProps) => {
@@ -117,66 +155,25 @@ export const ShopPageView = ({
   const pathname = usePathname();
 
   const homeHref = getLocalizedPath(locale, "/");
-  const shopHref = getLocalizedPath(locale, "/shop");
-
-  const filters = useMemo(
-    () => [
-      { value: "all" as const, label: dictionary.shopPage.filters.all },
-      { value: "books" as const, label: dictionary.shopPage.filters.books },
-      {
-        value: "clothes" as const,
-        label: dictionary.shopPage.filters.clothes,
-      },
-      { value: "gifts" as const, label: dictionary.shopPage.filters.gifts },
-    ],
-    [dictionary.shopPage.filters],
-  );
 
   const initialCategoryParam = initialCategory ?? null;
 
   const selectedFilter: ShopFilterValue = isShopFilterValue(
     initialCategoryParam,
+    categories,
   )
     ? initialCategoryParam
     : "all";
   const search = initialQuery ?? "";
-
-  const catalogItems = useMemo(() => {
-    const bookItems = dictionary.booksSection.items
-      .map<ShopCatalogItem | null>((book) => {
-        const details = getProductDetails(locale, book.slug);
-
-        if (!details) {
-          return null;
-        }
-
-        return {
-          id: book.slug,
-          title: details.title,
-          price: details.price,
-          emoji: book.emoji,
-          category: "books",
-        };
-      })
-      .filter(isShopCatalogItem);
-
-    const merchItems = dictionary.shopSection.items.map<ShopCatalogItem>(
-      (product) => ({
-        ...product,
-        category:
-          product.id === "tshirt"
-            ? "clothes"
-            : product.id === "mug" || product.id === "stickers"
-              ? "gifts"
-              : "all",
-      }),
-    );
-
-    return [...bookItems, ...merchItems].filter(
-      (item, index, items) =>
-        items.findIndex((entry) => entry.id === item.id) === index,
-    );
-  }, [dictionary.booksSection.items, dictionary.shopSection.items, locale]);
+  const { booksHref, cartHref, shopHref, localizedPaths, filters, filteredProducts } =
+    createShopPageViewModel({
+      locale,
+      dictionary,
+      categories,
+      products,
+      selectedFilter,
+      search,
+    });
 
   const updateQuery = (nextValues: {
     category?: ShopFilterValue;
@@ -216,20 +213,6 @@ export const ShopPageView = ({
     });
   };
 
-  const filteredProducts = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase();
-
-    return catalogItems.filter((product) => {
-      const matchesCategory =
-        selectedFilter === "all" || product.category === selectedFilter;
-      const matchesSearch =
-        normalizedSearch.length === 0 ||
-        product.title.toLowerCase().includes(normalizedSearch);
-
-      return matchesCategory && matchesSearch;
-    });
-  }, [catalogItems, search, selectedFilter]);
-
   const resetFilters = () => {
     router.replace(pathname, { scroll: false });
   };
@@ -241,15 +224,13 @@ export const ShopPageView = ({
           <StorefrontHeader
             locale={locale}
             dictionary={dictionary}
-            buildLocalizedPath={(targetLocale) =>
-              getLocalizedPath(targetLocale, "/shop")
-            }
+            localizedPaths={localizedPaths}
             navigationPaths={{
-              books: getLocalizedPath(locale, "/shop?category=books"),
+              books: booksHref,
               shop: shopHref,
               story: `${homeHref}#story`,
               faq: `${homeHref}#faq`,
-              cart: getLocalizedPath(locale, "/cart"),
+              cart: cartHref,
             }}
           />
 
@@ -312,32 +293,12 @@ export const ShopPageView = ({
                 spacing={3}
                 sx={{ mt: 5, mb: 4 }}
               >
-                <Stack direction="row" spacing={1.5} useFlexGap flexWrap="wrap">
-                  {filters.map((filter) => (
-                    <Button
-                      key={filter.value}
-                      variant={
-                        selectedFilter === filter.value
-                          ? "contained"
-                          : "outlined"
-                      }
-                      color={
-                        selectedFilter === filter.value ? "primary" : "inherit"
-                      }
-                      onClick={() => updateQuery({ category: filter.value })}
-                      sx={
-                        selectedFilter === filter.value
-                          ? undefined
-                          : {
-                              borderColor: "#E8D6BF",
-                              bgcolor: "#fff",
-                            }
-                      }
-                    >
-                      {filter.label}
-                    </Button>
-                  ))}
-                </Stack>
+                <CategoryTabs
+                  selectedValue={selectedFilter}
+                  options={filters}
+                  preserveQueryParams={["q"]}
+                  sx={{ flexWrap: "wrap", rowGap: 1.5 }}
+                />
 
                 <ShopSearchField
                   key={search}
@@ -361,7 +322,7 @@ export const ShopPageView = ({
                       wishlistAriaLabel={
                         dictionary.shopSection.wishlistAriaLabel
                       }
-                      detailsHref={getLocalizedProductPath(locale, product.id)}
+                      detailsHref={getLocalizedProductPath(locale, product.slug)}
                     />
                   </Grid>
                 ))}

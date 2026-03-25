@@ -6,20 +6,8 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { Box, Card, CardContent, IconButton, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
-import type { Locale } from "@/i18n/config";
-import type { CartItem } from "@/types/cart";
-
+import type { CartItemCardProps } from "./types";
 import { formatCurrency, getLocalizedProductPath } from "../utils";
-
-type CartItemCardProps = {
-  item: CartItem;
-  locale: Locale;
-  variantLabel: string;
-  removeLabel: string;
-  onDecrease: (id: string) => void;
-  onIncrease: (id: string) => void;
-  onRemove: (id: string) => void;
-};
 
 export const CartItemCard = ({
   item,

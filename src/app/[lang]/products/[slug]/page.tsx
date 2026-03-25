@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ProductPageView } from "@/components/product/ProductPageView";
-import { getProductDetails, getProductSlugs } from "@/data/product-details";
+import {
+  getProductDetails,
+  getProductSlugs,
+  getProductSummariesByIds,
+} from "@/data/products";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
@@ -11,7 +15,12 @@ type LocalizedProductPageProps = {
 };
 
 export const generateStaticParams = () =>
-  locales.flatMap((lang) => getProductSlugs().map((slug) => ({ lang, slug })));
+  Promise.all(locales.map(async (lang) => [lang, await getProductSlugs(lang)] as const)).then(
+    (localizedSlugs) =>
+      localizedSlugs.flatMap(([lang, slugs]) =>
+        slugs.map((slug) => ({ lang, slug })),
+      ),
+  );
 
 export const generateMetadata = async ({
   params,
@@ -22,7 +31,7 @@ export const generateMetadata = async ({
     notFound();
   }
 
-  const product = getProductDetails(lang, slug);
+  const product = await getProductDetails(lang, slug);
 
   if (!product) {
     notFound();
@@ -64,19 +73,23 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
     notFound();
   }
 
-  const product = getProductDetails(lang, slug);
+  const product = await getProductDetails(lang, slug);
 
   if (!product) {
     notFound();
   }
 
-  const dictionary = await getDictionary(lang);
+  const [dictionary, relatedProducts] = await Promise.all([
+    getDictionary(lang),
+    getProductSummariesByIds(lang, product.relatedIds),
+  ]);
 
   return (
     <ProductPageView
       locale={lang}
       dictionary={dictionary.storefront}
       product={product}
+      relatedProducts={relatedProducts}
     />
   );
 };

@@ -163,7 +163,7 @@
 .title {
   margin-top: 22px;
   max-width: 11ch;
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display, var(--font-display-fallback)), serif;
   font-size: clamp(3.5rem, 8vw, 6.4rem);
   line-height: 0.95;
   font-weight: 700;
@@ -242,7 +242,7 @@
 
 .statValue {
   display: block;
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display, var(--font-display-fallback)), serif;
   font-size: 2rem;
   font-weight: 700;
 }
@@ -331,7 +331,7 @@
 }
 
 .posterTitle {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display, var(--font-display-fallback)), serif;
   font-size: 2.2rem;
   line-height: 1;
 }
@@ -389,7 +389,7 @@
 
 .sectionTitle {
   margin-top: 14px;
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display, var(--font-display-fallback)), serif;
   font-size: clamp(2.4rem, 5vw, 3.4rem);
   line-height: 0.98;
 }
@@ -451,7 +451,7 @@
 }
 
 .insightValue {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display, var(--font-display-fallback)), serif;
   font-size: 2rem;
   font-weight: 700;
 }
@@ -720,7 +720,7 @@
 }
 
 .footerTitle {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display, var(--font-display-fallback)), serif;
   font-size: 2rem;
 }
 

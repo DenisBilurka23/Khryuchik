@@ -1,7 +1,7 @@
-import type { StorefrontDictionary } from "@/i18n/types";
+import type { LocalizedProductSummary } from "@/types/catalog";
 
 export type BookCardProps = {
-  book: StorefrontDictionary["booksSection"]["items"][number];
+  book: LocalizedProductSummary;
   detailsHref: string;
   detailsButton: string;
   buyButton: string;

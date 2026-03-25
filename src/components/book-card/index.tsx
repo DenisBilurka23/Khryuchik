@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Card,
   CardContent,
@@ -20,14 +19,13 @@ export const BookCard = ({
   return (
     <Card className={styles.card}>
       <CardContent sx={{ p: 3 }}>
-        <Box
-          component={Link}
+        <Link
           href={detailsHref}
           className={styles.cover}
-          sx={{ textDecoration: "none", color: "inherit" }}
+          style={{ textDecoration: "none", color: "inherit" }}
         >
           {book.emoji}
-        </Box>
+        </Link>
 
         <Typography
           variant="body2"
@@ -37,32 +35,31 @@ export const BookCard = ({
           {book.lang}
         </Typography>
 
-        <Typography
-          component={Link}
+        <Link
           href={detailsHref}
-          variant="h6"
-          sx={{
-            mt: 1,
-            fontWeight: 700,
-            textDecoration: "none",
-            color: "inherit",
-            display: "block",
-          }}
+          style={{ textDecoration: "none", color: "inherit", display: "block" }}
         >
-          {book.title}
-        </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              mt: 1,
+              fontWeight: 700,
+            }}
+          >
+            {book.shortTitle ?? book.title}
+          </Typography>
+        </Link>
 
         <Typography
           variant="body2"
           color="text.secondary"
           sx={{ mt: 1.5, lineHeight: 1.7 }}
         >
-          {book.desc}
+          {book.shortDescription}
         </Typography>
 
         <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
           <Button
-            component={Link}
             href={detailsHref}
             variant="contained"
             className={styles.detailsButton}
@@ -70,7 +67,6 @@ export const BookCard = ({
             {detailsButton}
           </Button>
           <Button
-            component={Link}
             href={detailsHref}
             variant="outlined"
             color="inherit"

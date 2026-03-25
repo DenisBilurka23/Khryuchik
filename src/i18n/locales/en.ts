@@ -1,6 +1,6 @@
-import type { Dictionary } from "@/i18n/types";
+import type { SeedDictionary } from "@/i18n/types";
 
-const dictionary: Dictionary = {
+const dictionary: SeedDictionary = {
   metadata: {
     title: "Khryuchik | Stories, books, and merch for the whole family",
     description:
@@ -96,7 +96,7 @@ const dictionary: Dictionary = {
     shopSection: {
       eyebrow: "Shop",
       title: "Favorite Khryuchik merch",
-      filters: ["All", "Apparel", "Gifts"],
+      actionLabel: "All merch",
       addToCart: "Add to cart",
       wishlistAriaLabel: "Add to favorites",
       items: [
@@ -150,14 +150,14 @@ const dictionary: Dictionary = {
     },
     orderSection: {
       eyebrow: "Order",
-      title: "Build a cart and send an inquiry any way you like",
-      lead: "No heavy checkout yet: add products, leave your contact details, and confirm shipping or personalization manually over email, Telegram, or social media.",
-      nextTitle: "What can be added next",
+      title: "Build the bundle on the homepage, then review everything in the cart",
+      lead: "The homepage now focuses on discovery. Once you know what you want, move to the dedicated cart page where the selected items and the next checkout step live.",
+      nextTitle: "How the order flow works now",
       nextText:
-        "Online payments, stock control, an account area, real product photos, and CRM or Telegram bot integration.",
-      cartTitle: "Your order",
-      emptyTitle: "Your cart is empty",
-      emptyText: "Add products from the shop above.",
+        "Add products from the catalog, open the cart from the header, and review the bundle, totals, and next actions there.",
+      cartTitle: "Next step",
+      emptyTitle: "The cart now has its own page",
+      emptyText: "There is no duplicate mini-cart on the homepage anymore. Pick products above, then open the full cart page when you are ready.",
       quantityLabel: "Quantity",
       totalLabel: "Estimated total",
       form: {
@@ -177,6 +177,14 @@ const dictionary: Dictionary = {
         copied:
           "The inquiry has been copied. You can now send it via Telegram, Instagram, or email.",
         cleared: "The cart has been cleared.",
+      },
+      cartSummary: {
+        helperText:
+          "A quick summary of what is already in your cart before you move to checkout.",
+        itemCount: {
+          one: "item in cart",
+          other: "items in cart",
+        },
       },
       summary: {
         title: "Khryuchik merch inquiry",
@@ -232,9 +240,6 @@ const dictionary: Dictionary = {
       lead: "Browse bilingual books, mugs, T-shirts, stickers, and gift-ready items inspired by Khryuchik's gentle stories.",
       filters: {
         all: "All",
-        books: "Books",
-        clothes: "Apparel",
-        gifts: "Gifts",
       },
       searchPlaceholder: "Search products",
       resultsLabel: "Products found",

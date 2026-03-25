@@ -3,19 +3,8 @@
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
 
-import type { Locale } from "@/i18n/config";
-import type { CartPageLabels } from "@/i18n/types";
-
+import type { OrderSummaryCardProps } from "./types";
 import { formatCurrency } from "../utils";
-
-type OrderSummaryCardProps = {
-  locale: Locale;
-  labels: CartPageLabels["summary"];
-  subtotal: number;
-  shipping: number;
-  discount: number;
-  continueShoppingHref: string;
-};
 
 export const OrderSummaryCard = ({
   locale,

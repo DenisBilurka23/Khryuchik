@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
 
 import { Storefront } from "@/components/storefront";
+import {
+  getHomeTabCategories,
+  getProductsForPlacement,
+  getShopProducts,
+} from "@/data/products";
 import { defaultLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+
+type HomePageProps = {
+  searchParams: Promise<{ category?: string }>;
+};
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const dictionary = await getDictionary(defaultLocale);
@@ -27,11 +36,34 @@ export const generateMetadata = async (): Promise<Metadata> => {
   };
 };
 
-const HomePage = async () => {
-  const dictionary = await getDictionary(defaultLocale);
+const HomePage = async ({ searchParams }: HomePageProps) => {
+  const { category } = await searchParams;
+  const [dictionary, books, shopCategories] = await Promise.all([
+    getDictionary(defaultLocale),
+    getProductsForPlacement(defaultLocale, "home-books"),
+    getHomeTabCategories(defaultLocale),
+  ]);
+
+  const defaultShopCategory = shopCategories[0]?.key ?? "all";
+
+  const selectedShopCategory =
+    category && shopCategories.some((item) => item.key === category)
+      ? category
+      : defaultShopCategory;
+  const shopProducts = await getShopProducts(defaultLocale, {
+    category: selectedShopCategory === "all" ? undefined : selectedShopCategory,
+    limit: 4,
+  });
 
   return (
-    <Storefront locale={defaultLocale} dictionary={dictionary.storefront} />
+    <Storefront
+      locale={defaultLocale}
+      dictionary={dictionary.storefront}
+      shopCategories={shopCategories}
+      books={books}
+      shopProducts={shopProducts}
+      selectedShopCategory={selectedShopCategory}
+    />
   );
 };
 

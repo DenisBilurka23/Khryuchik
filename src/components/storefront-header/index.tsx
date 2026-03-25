@@ -1,13 +1,9 @@
-"use client";
-
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
-import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import {
   AppBar,
-  Badge,
   Box,
   Button,
   Container,
@@ -16,20 +12,18 @@ import {
   Toolbar,
 } from "@mui/material";
 
-import { useCart } from "../cart/store";
 import { Logo } from "../logo";
 import { localeLabels } from "../utils";
+import { CartButton } from "./CartButton";
 import styles from "./storefront-header.module.css";
 import type { StorefrontHeaderProps } from "./types";
 
 export const StorefrontHeader = ({
   locale,
   dictionary,
-  buildLocalizedPath,
+  localizedPaths,
   navigationPaths,
 }: StorefrontHeaderProps) => {
-  const { totalCount } = useCart();
-
   const navItems = [
     {
       label: dictionary.nav.books,
@@ -100,7 +94,7 @@ export const StorefrontHeader = ({
                 ).map((targetLocale) => (
                   <Button
                     key={targetLocale}
-                    href={buildLocalizedPath(targetLocale)}
+                    href={localizedPaths[targetLocale]}
                     variant="text"
                     color="inherit"
                     className={styles.localeButton}
@@ -122,18 +116,11 @@ export const StorefrontHeader = ({
               </Stack>
             </Paper>
 
-            <Button
-              variant="contained"
+            <CartButton
               href={navigationPaths?.cart ?? "/cart"}
-              startIcon={
-                <Badge badgeContent={totalCount} color="primary">
-                  <ShoppingBagOutlinedIcon />
-                </Badge>
-              }
+              label={dictionary.cartLabel}
               className={styles.cartButton}
-            >
-              {dictionary.cartLabel}
-            </Button>
+            />
           </Box>
         </Toolbar>
       </Container>

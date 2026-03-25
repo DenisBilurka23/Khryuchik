@@ -1,10 +1,20 @@
 import type { Locale } from "@/i18n/config";
-import type { StorefrontDictionary } from "@/i18n/types";
+import type { LocalizedProductSummary } from "@/types/catalog";
 
 export type ProductCardProps = {
-  product: StorefrontDictionary["shopSection"]["items"][number];
+  product: LocalizedProductSummary;
   locale: Locale;
   addToCart: string;
   wishlistAriaLabel: string;
   detailsHref: string;
+};
+
+export type AddToCartButtonProps = {
+  slug: string;
+  title: string;
+  price: number;
+  emoji: string;
+  bgColor?: string;
+  label: string;
+  className?: string;
 };

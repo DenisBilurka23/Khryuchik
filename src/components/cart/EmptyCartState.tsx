@@ -1,12 +1,7 @@
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Box, Button, Paper, Typography } from "@mui/material";
 
-type EmptyCartStateProps = {
-  title: string;
-  text: string;
-  actionLabel: string;
-  actionHref: string;
-};
+import type { EmptyCartStateProps } from "./types";
 
 export const EmptyCartState = ({
   title,

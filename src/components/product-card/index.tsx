@@ -1,7 +1,6 @@
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   IconButton,
@@ -10,10 +9,8 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
-import { getProductDetails } from "@/data/product-details";
-
-import { useCart } from "../cart/store";
 import { formatCurrency } from "../utils";
+import { AddToCartButton } from "./AddToCartButton";
 import styles from "./product-card.module.css";
 import type { ProductCardProps } from "./types";
 
@@ -24,61 +21,56 @@ export const ProductCard = ({
   wishlistAriaLabel,
   detailsHref,
 }: ProductCardProps) => {
-  const { addItem } = useCart();
-
-  const handleAddToCart = () => {
-    const details = getProductDetails(locale, product.id);
-
-    addItem({
-      slug: product.id,
-      title: product.title,
-      price: product.price,
-      emoji: product.emoji,
-      bgColor: details?.images[0]?.bgColor ?? "#FFF8F0",
-    });
-  };
-
   return (
     <Card className={styles.card}>
       <CardContent sx={{ p: 2.5 }}>
-        <Box
-          component={Link}
+        <Link
           href={detailsHref}
-          className={styles.preview}
-          sx={{ textDecoration: "none", color: "inherit", display: "flex" }}
+          style={{ textDecoration: "none", color: "inherit", display: "block" }}
         >
-          {product.emoji}
-        </Box>
+          <Box
+            className={styles.preview}
+            sx={{
+              color: "inherit",
+              display: "flex",
+              bgcolor: product.bgColor ?? undefined,
+            }}
+          >
+            {product.emoji}
+          </Box>
+        </Link>
 
-        <Typography
-          component={Link}
+        <Link
           href={detailsHref}
-          variant="h6"
-          sx={{
-            mt: 3,
-            fontSize: 18,
-            fontWeight: 700,
-            textDecoration: "none",
-            color: "inherit",
-            display: "block",
-          }}
+          style={{ textDecoration: "none", color: "inherit", display: "block" }}
         >
-          {product.title}
-        </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              mt: 3,
+              fontSize: 18,
+              fontWeight: 700,
+              color: "inherit",
+            }}
+          >
+            {product.title}
+          </Typography>
+        </Link>
 
         <Typography sx={{ mt: 1, color: "primary.main", fontWeight: 700 }}>
           {formatCurrency(product.price, locale)}
         </Typography>
 
         <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
-          <Button
-            fullWidth
-            variant="contained"
+          <AddToCartButton
+            slug={product.slug}
+            title={product.title}
+            price={product.price}
+            emoji={product.emoji}
+            bgColor={product.bgColor}
+            label={addToCart}
             className={styles.addButton}
-            onClick={handleAddToCart}
-          >
-            {addToCart}
-          </Button>
+          />
 
           <IconButton
             aria-label={`${wishlistAriaLabel}: ${product.title}`}

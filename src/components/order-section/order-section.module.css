@@ -11,8 +11,28 @@
 
 .summaryCard {
   border-radius: 32px;
-  background: #18181b;
-  color: #fff;
+  background: #fff;
+  color: #18181b;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.summaryBody {
+  flex: 1;
+}
+
+.summaryHelperText {
+  margin-top: 20px;
+  max-width: 520px;
+  color: rgba(82, 82, 91, 0.82);
+  line-height: 1.8;
+  font-size: 16px;
+}
+
+.summaryMetaTitle {
+  font-size: 20px;
+  font-weight: 700;
 }
 
 .eyebrow {
@@ -20,17 +40,83 @@
   letter-spacing: 0.2em;
   font-size: 13px;
   font-weight: 700;
-  color: var(--mui-palette-primary-main, #d96c82);
-}
-
-.nextStep {
-  border-radius: 24px;
-  background: #fff8f0;
+  color: var(--color-primary-main);
 }
 
 .cartCard {
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.06);
+  background: #fff8f0;
+  border: 1px solid #f0dfc8;
+}
+
+.thumbnailRow {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.thumbnailRowFull {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  width: 100%;
+}
+
+.thumbnail {
+  width: 68px;
+  min-width: 68px;
+  height: 68px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  border: 1px solid #f0dfc8;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42);
+}
+
+.thumbnailFull {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+
+.thumbnailMore {
+  width: 68px;
+  min-width: 68px;
+  height: 68px;
+  padding: 0;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #18181b;
+  background: #fff3d8;
+  border: 1px solid #f0dfc8;
+}
+
+.thumbnailMore.thumbnailFull {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+
+.summaryTotal {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.summaryActions {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.emptyText {
+  margin-top: 8px;
+  color: rgba(82, 82, 91, 0.82);
+  line-height: 1.8;
 }
 
 .outlinedField :global(.MuiOutlinedInput-root) {
@@ -38,7 +124,7 @@
 }
 
 .emailButton {
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: #e8d6bf;
 }
 
 .status {

@@ -1,5 +1,4 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
-import Link from "next/link";
 
 import styles from "./section-heading.module.css";
 import type { SectionHeadingProps } from "./types";
@@ -27,7 +26,6 @@ export const SectionHeading = ({
 
       {actionLabel ? (
         <Button
-          component={actionHref ? Link : "button"}
           href={actionHref}
           variant="outlined"
           color="inherit"

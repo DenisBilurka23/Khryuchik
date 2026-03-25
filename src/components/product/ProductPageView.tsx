@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Box,
   Breadcrumbs,
@@ -9,12 +7,15 @@ import {
   Typography,
 } from "@mui/material";
 
+import type { Locale } from "@/i18n/config";
+import { locales } from "@/i18n/config";
+
 import { FooterSection } from "../footer-section";
 import { NewsletterSection } from "../newsletter-section";
 import { StorefrontHeader } from "../storefront-header";
 import { StorefrontThemeProvider } from "../storefront-theme-provider";
 import styles from "../storefront.module.css";
-import { getLocalizedPath } from "../utils";
+import { formatCurrency, getLocalizedPath, getLocalizedProductPath } from "../utils";
 import { ProductGallery } from "./ProductGallery";
 import { ProductInfo } from "./ProductInfo";
 import { ProductTabs } from "./ProductTabs";
@@ -22,14 +23,48 @@ import { RelatedProducts } from "./RelatedProducts";
 import { StoryConnectionCard } from "./StoryConnectionCard";
 import type { ProductPageViewProps } from "./types";
 
+const createProductPageViewModel = ({
+  locale,
+  product,
+  relatedProducts,
+}: {
+  locale: Locale;
+  product: ProductPageViewProps["product"];
+  relatedProducts: ProductPageViewProps["relatedProducts"];
+}) => ({
+  homeHref: getLocalizedPath(locale, "/"),
+  shopHref: getLocalizedPath(locale, "/shop"),
+  bookHref: getLocalizedPath(locale, "/products/book-winter"),
+  localizedPaths: Object.fromEntries(
+    locales.map((targetLocale) => [
+      targetLocale,
+      targetLocale === "en"
+        ? `/products/${product.slug}`
+        : `/${targetLocale}/products/${product.slug}`,
+    ]),
+  ) as Record<Locale, string>,
+  relatedProductCards: relatedProducts.map((relatedProduct) => ({
+    id: relatedProduct.id,
+    href: getLocalizedProductPath(locale, relatedProduct.slug),
+    title: relatedProduct.title,
+    emoji: relatedProduct.emoji,
+    bgColor: relatedProduct.bgColor ?? "#FFF8F0",
+    formattedPrice: formatCurrency(relatedProduct.price, locale),
+  })),
+});
+
 export const ProductPageView = ({
   locale,
   dictionary,
   product,
+  relatedProducts,
 }: ProductPageViewProps) => {
-  const homeHref = getLocalizedPath(locale, "/");
-  const shopHref = getLocalizedPath(locale, "/shop");
-  const bookHref = getLocalizedPath(locale, "/products/book-winter");
+  const { homeHref, shopHref, bookHref, localizedPaths, relatedProductCards } =
+    createProductPageViewModel({
+      locale,
+      product,
+      relatedProducts,
+    });
 
   return (
     <StorefrontThemeProvider>
@@ -38,11 +73,7 @@ export const ProductPageView = ({
           <StorefrontHeader
             locale={locale}
             dictionary={dictionary}
-            buildLocalizedPath={(targetLocale) =>
-              targetLocale === "en"
-                ? `/products/${product.slug}`
-                : `/${targetLocale}/products/${product.slug}`
-            }
+            localizedPaths={localizedPaths}
             navigationPaths={{
               books: getLocalizedPath(locale, "/shop?category=books"),
               shop: shopHref,
@@ -86,10 +117,8 @@ export const ProductPageView = ({
               />
               <ProductTabs labels={dictionary.productPage} product={product} />
               <RelatedProducts
-                dictionary={dictionary}
                 labels={dictionary.productPage}
-                locale={locale}
-                relatedIds={product.relatedIds}
+                relatedProducts={relatedProductCards}
               />
             </Container>
           </Box>

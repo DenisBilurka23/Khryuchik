@@ -4,7 +4,7 @@ import type { StorefrontDictionary } from "@/i18n/types";
 export type StorefrontHeaderProps = {
   locale: Locale;
   dictionary: StorefrontDictionary;
-  buildLocalizedPath: (targetLocale: Locale) => string;
+  localizedPaths: Record<Locale, string>;
   navigationPaths?: {
     books: string;
     shop: string;
@@ -12,4 +12,10 @@ export type StorefrontHeaderProps = {
     faq: string;
     cart: string;
   };
+};
+
+export type CartButtonProps = {
+  href: string;
+  label: string;
+  className?: string;
 };

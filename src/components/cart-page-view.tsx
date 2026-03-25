@@ -2,13 +2,13 @@
 
 import { Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "@mui/material";
 
-import type { Locale } from "@/i18n/config";
-import type { StorefrontDictionary } from "@/i18n/types";
+import { locales, type Locale } from "@/i18n/config";
 
 import { CartItemCard } from "./cart/CartItemCard";
 import { useCart } from "./cart/store";
 import { EmptyCartState } from "./cart/EmptyCartState";
 import { OrderSummaryCard } from "./cart/OrderSummaryCard";
+import type { CartPageViewProps } from "./cart-page-view.types";
 import { FooterSection } from "./footer-section";
 import { NewsletterSection } from "./newsletter-section";
 import { StorefrontHeader } from "./storefront-header";
@@ -16,17 +16,18 @@ import { StorefrontThemeProvider } from "./storefront-theme-provider";
 import styles from "./storefront.module.css";
 import { getLocalizedPath } from "./utils";
 
-type CartPageViewProps = {
-  locale: Locale;
-  dictionary: StorefrontDictionary;
-};
-
 export const CartPageView = ({ locale, dictionary }: CartPageViewProps) => {
   const { items, subtotal, updateQuantity, removeItem } = useCart();
 
   const homeHref = getLocalizedPath(locale, "/");
   const shopHref = getLocalizedPath(locale, "/shop");
   const cartHref = getLocalizedPath(locale, "/cart");
+  const localizedPaths = Object.fromEntries(
+    locales.map((targetLocale) => [
+      targetLocale,
+      getLocalizedPath(targetLocale, "/cart"),
+    ]),
+  ) as Record<Locale, string>;
 
   const handleIncrease = (id: string) => {
     const item = items.find((entry) => entry.id === id);
@@ -62,9 +63,7 @@ export const CartPageView = ({ locale, dictionary }: CartPageViewProps) => {
           <StorefrontHeader
             locale={locale}
             dictionary={dictionary}
-            buildLocalizedPath={(targetLocale) =>
-              getLocalizedPath(targetLocale, "/cart")
-            }
+            localizedPaths={localizedPaths}
             navigationPaths={{
               books: getLocalizedPath(locale, "/shop?category=books"),
               shop: shopHref,

@@ -3,20 +3,7 @@
 import { useSyncExternalStore } from "react";
 
 import type { CartItem } from "@/types/cart";
-
-type CartState = {
-  items: CartItem[];
-};
-
-type CartSnapshot = {
-  items: CartItem[];
-  totalCount: number;
-  subtotal: number;
-};
-
-type CartItemInput = Omit<CartItem, "id" | "quantity"> & {
-  quantity?: number;
-};
+import type { CartItemInput, CartSnapshot, CartState } from "./types";
 
 const STORAGE_KEY = "khryuchik-cart-v1";
 const emptyState: CartState = { items: [] };

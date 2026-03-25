@@ -1,19 +1,9 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import Link from "next/link";
 
-import { formatCurrency } from "../utils";
 import type { RelatedProductsProps } from "./types";
 
-export const RelatedProducts = ({
-  dictionary,
-  labels,
-  locale,
-  relatedIds,
-}: RelatedProductsProps) => {
-  const relatedProducts = dictionary.shopSection.items.filter((product) =>
-    relatedIds.includes(product.id),
-  );
-
+export const RelatedProducts = ({ labels, relatedProducts }: RelatedProductsProps) => {
   return (
     <Box sx={{ mt: 8 }}>
       <Typography variant="h2" sx={{ fontSize: { xs: 30, md: 42 }, mb: 4 }}>
@@ -22,15 +12,10 @@ export const RelatedProducts = ({
 
       <Grid container spacing={3}>
         {relatedProducts.map((product) => {
-          const href =
-            locale === "en"
-              ? `/products/${product.id}`
-              : `/${locale}/products/${product.id}`;
-
           return (
             <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
               <Link
-                href={href}
+                href={product.href}
                 style={{
                   display: "block",
                   textDecoration: "none",
@@ -43,7 +28,7 @@ export const RelatedProducts = ({
                       sx={{
                         minHeight: 180,
                         borderRadius: "24px",
-                        bgcolor: "#FFF8F0",
+                        bgcolor: product.bgColor ?? "#FFF8F0",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -63,7 +48,7 @@ export const RelatedProducts = ({
                     <Typography
                       sx={{ mt: 1, color: "primary.main", fontWeight: 700 }}
                     >
-                      {formatCurrency(product.price, locale)}
+                      {product.formattedPrice}
                     </Typography>
                   </CardContent>
                 </Card>

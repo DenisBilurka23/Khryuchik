@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ProductPageView } from "@/components/product/ProductPageView";
-import { getProductDetails, getProductSlugs } from "@/data/product-details";
+import {
+  getProductDetails,
+  getProductSlugs,
+  getProductSummariesByIds,
+} from "@/data/products";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 
@@ -11,13 +15,15 @@ type ProductPageProps = {
 };
 
 export const generateStaticParams = () =>
-  getProductSlugs().map((slug) => ({ slug }));
+  getProductSlugs(defaultLocale).then((slugs) =>
+    slugs.map((slug) => ({ slug })),
+  );
 
 export const generateMetadata = async ({
   params,
 }: ProductPageProps): Promise<Metadata> => {
   const { slug } = await params;
-  const product = getProductDetails(defaultLocale, slug);
+  const product = await getProductDetails(defaultLocale, slug);
 
   if (!product) {
     notFound();
@@ -51,19 +57,23 @@ export const generateMetadata = async ({
 
 const DefaultProductPage = async ({ params }: ProductPageProps) => {
   const { slug } = await params;
-  const product = getProductDetails(defaultLocale, slug);
+  const product = await getProductDetails(defaultLocale, slug);
 
   if (!product) {
     notFound();
   }
 
-  const dictionary = await getDictionary(defaultLocale);
+  const [dictionary, relatedProducts] = await Promise.all([
+    getDictionary(defaultLocale),
+    getProductSummariesByIds(defaultLocale, product.relatedIds),
+  ]);
 
   return (
     <ProductPageView
       locale={defaultLocale}
       dictionary={dictionary.storefront}
       product={product}
+      relatedProducts={relatedProducts}
     />
   );
 };

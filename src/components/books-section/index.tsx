@@ -6,7 +6,11 @@ import { getLocalizedPath, getLocalizedProductPath } from "../utils";
 import styles from "./books-section.module.css";
 import type { BooksSectionProps } from "./types";
 
-export const BookSection = ({ locale, dictionary }: BooksSectionProps) => {
+export const BookSection = ({
+  locale,
+  dictionary,
+  books,
+}: BooksSectionProps) => {
   return (
     <Box component="section" id="books" className={styles.section}>
       <Container maxWidth="lg">
@@ -18,8 +22,8 @@ export const BookSection = ({ locale, dictionary }: BooksSectionProps) => {
         />
 
         <Grid container spacing={3}>
-          {dictionary.booksSection.items.map((book) => (
-            <Grid key={book.title} size={{ xs: 12, md: 4 }}>
+          {books.map((book) => (
+            <Grid key={book.id} size={{ xs: 12, md: 4 }}>
               <BookCard
                 book={book}
                 detailsHref={getLocalizedProductPath(locale, book.slug)}

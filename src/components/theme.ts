@@ -22,19 +22,19 @@ export const storefrontTheme = createTheme({
     borderRadius: 20,
   },
   typography: {
-    fontFamily: "var(--font-body), sans-serif",
+    fontFamily: "var(--font-body, var(--font-body-fallback)), sans-serif",
     h1: {
-      fontFamily: "var(--font-display), serif",
+      fontFamily: "var(--font-display, var(--font-display-fallback)), serif",
       fontWeight: 800,
       lineHeight: 1.1,
     },
     h2: {
-      fontFamily: "var(--font-display), serif",
+      fontFamily: "var(--font-display, var(--font-display-fallback)), serif",
       fontWeight: 800,
       lineHeight: 1.15,
     },
     h3: {
-      fontFamily: "var(--font-display), serif",
+      fontFamily: "var(--font-display, var(--font-display-fallback)), serif",
       fontWeight: 700,
     },
     button: {

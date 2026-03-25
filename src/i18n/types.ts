@@ -1,4 +1,4 @@
-export type StorefrontBook = {
+export type SeedStorefrontBook = {
   slug: string;
   title: string;
   lang: string;
@@ -6,7 +6,7 @@ export type StorefrontBook = {
   emoji: string;
 };
 
-export type StorefrontProduct = {
+export type SeedStorefrontProduct = {
   id: string;
   title: string;
   price: number;
@@ -56,9 +56,6 @@ export type ShopPageLabels = {
   lead: string;
   filters: {
     all: string;
-    books: string;
-    clothes: string;
-    gifts: string;
   };
   searchPlaceholder: string;
   resultsLabel: string;
@@ -161,15 +158,13 @@ export type StorefrontDictionary = {
     actionLabel: string;
     detailsButton: string;
     buyButton: string;
-    items: StorefrontBook[];
   };
   shopSection: {
     eyebrow: string;
     title: string;
-    filters: string[];
+    actionLabel: string;
     addToCart: string;
     wishlistAriaLabel: string;
-    items: StorefrontProduct[];
   };
   storySection: {
     eyebrow: string;
@@ -209,6 +204,15 @@ export type StorefrontDictionary = {
       copied: string;
       cleared: string;
     };
+    cartSummary: {
+      helperText: string;
+      itemCount: {
+        one: string;
+        few?: string;
+        many?: string;
+        other: string;
+      };
+    };
     summary: {
       title: string;
       nameFallback: string;
@@ -237,10 +241,30 @@ export type StorefrontDictionary = {
   };
 };
 
+export type SeedStorefrontDictionary = Omit<
+  StorefrontDictionary,
+  "booksSection" | "shopSection"
+> & {
+  booksSection: StorefrontDictionary["booksSection"] & {
+    items: SeedStorefrontBook[];
+  };
+  shopSection: StorefrontDictionary["shopSection"] & {
+    items: SeedStorefrontProduct[];
+  };
+};
+
 export type Dictionary = {
   metadata: {
     title: string;
     description: string;
   };
   storefront: StorefrontDictionary;
+};
+
+export type SeedDictionary = {
+  metadata: {
+    title: string;
+    description: string;
+  };
+  storefront: SeedStorefrontDictionary;
 };

@@ -1,12 +1,8 @@
-"use client";
-
 import { Box } from "@mui/material";
-import { usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
 
-import { defaultLocale, isLocale, type Locale } from "@/i18n/config";
+import type { Locale } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
 
-import { useCart } from "./cart/store";
 import { BookSection } from "./books-section";
 import { FooterSection } from "./footer-section";
 import { HeroSection } from "./hero-section";
@@ -18,105 +14,34 @@ import { StorefrontThemeProvider } from "./storefront-theme-provider";
 import { StorySection } from "./story-section";
 import styles from "./storefront.module.css";
 import type { StorefrontProps } from "./types";
-import { formatCurrency, getLocalizedPath } from "./utils";
+import { getLocalizedPath } from "./utils";
 
-export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
-  const pathname = usePathname();
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
-  const [note, setNote] = useState("");
-  const [status, setStatus] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState(
-    dictionary.shopSection.filters[0] ?? "",
-  );
-  const { items: cartItems, subtotal: total, clearCart } = useCart();
+const createStorefrontHeaderViewModel = (locale: Locale) => ({
+  localizedPaths: Object.fromEntries(
+    locales.map((targetLocale) => [
+      targetLocale,
+      targetLocale === defaultLocale ? "/" : `/${targetLocale}`,
+    ]),
+  ) as Record<Locale, string>,
+  navigationPaths: {
+    books: getLocalizedPath(locale, "/shop?category=books"),
+    shop: getLocalizedPath(locale, "/shop"),
+    story: "#story",
+    faq: "#faq",
+    cart: getLocalizedPath(locale, "/cart"),
+  },
+});
 
-  const buildLocalizedPath = (targetLocale: Locale) => {
-    if (pathname === "/") {
-      return targetLocale === defaultLocale ? "/" : `/${targetLocale}`;
-    }
-
-    const segments = pathname.split("/");
-
-    if (isLocale(segments[1] ?? "")) {
-      if (targetLocale === defaultLocale) {
-        segments.splice(1, 1);
-      } else {
-        segments[1] = targetLocale;
-      }
-    } else if (targetLocale !== defaultLocale) {
-      segments.splice(1, 0, targetLocale);
-    }
-
-    const normalizedPath = segments.join("/").replace(/\/+/g, "/");
-    if (!normalizedPath) {
-      return "/";
-    }
-
-    return normalizedPath.length > 1 && normalizedPath.endsWith("/")
-      ? normalizedPath.slice(0, -1)
-      : normalizedPath;
-  };
-
-  const visibleProducts = useMemo(() => {
-    const defaultFilter = dictionary.shopSection.filters[0];
-
-    if (selectedFilter === defaultFilter) {
-      return dictionary.shopSection.items;
-    }
-
-    return dictionary.shopSection.items.filter(
-      (product) => product.category === selectedFilter,
-    );
-  }, [
-    dictionary.shopSection.filters,
-    dictionary.shopSection.items,
-    selectedFilter,
-  ]);
-
-  const orderSummary = useMemo(() => {
-    const itemText =
-      cartItems.length > 0
-        ? cartItems
-            .map(
-              (item) =>
-                `• ${item.title} x${item.quantity} — ${formatCurrency(item.price * item.quantity, locale)}`,
-            )
-            .join("\n")
-        : dictionary.orderSection.summary.emptyItem;
-
-    return [
-      dictionary.orderSection.summary.title,
-      "",
-      `${dictionary.orderSection.form.nameLabel}: ${name || dictionary.orderSection.summary.nameFallback}`,
-      `${dictionary.orderSection.form.contactLabel}: ${contact || dictionary.orderSection.summary.contactFallback}`,
-      "",
-      dictionary.orderSection.summary.itemsTitle,
-      itemText,
-      "",
-      `${dictionary.orderSection.summary.totalLabel}: ${formatCurrency(total, locale)}`,
-      `${dictionary.orderSection.summary.noteLabel}: ${note || dictionary.orderSection.summary.noteFallback}`,
-    ].join("\n");
-  }, [cartItems, contact, dictionary, locale, name, note, total]);
-
-  const mailtoHref = `mailto:hello@khryuchik.store?subject=${encodeURIComponent(
-    dictionary.orderSection.emailSubject,
-  )}&body=${encodeURIComponent(orderSummary)}`;
-
-  const handleClearCart = () => {
-    clearCart();
-    setStatus(dictionary.orderSection.status.cleared);
-  };
-
-  const copyOrder = async () => {
-    if (cartItems.length === 0) {
-      setStatus(dictionary.orderSection.status.emptyCart);
-      return;
-    }
-
-    await navigator.clipboard.writeText(orderSummary);
-    setStatus(dictionary.orderSection.status.copied);
-  };
+export const Storefront = ({
+  locale,
+  dictionary,
+  shopCategories,
+  books,
+  shopProducts,
+  selectedShopCategory,
+}: StorefrontProps) => {
+  const { localizedPaths, navigationPaths } = createStorefrontHeaderViewModel(locale);
+  const { shop: shopHref, cart: cartHref } = navigationPaths;
 
   return (
     <StorefrontThemeProvider>
@@ -125,40 +50,24 @@ export const Storefront = ({ locale, dictionary }: StorefrontProps) => {
           <StorefrontHeader
             locale={locale}
             dictionary={dictionary}
-            buildLocalizedPath={buildLocalizedPath}
-            navigationPaths={{
-              books: getLocalizedPath(locale, "/shop?category=books"),
-              shop: getLocalizedPath(locale, "/shop"),
-              story: "#story",
-              faq: "#faq",
-              cart: getLocalizedPath(locale, "/cart"),
-            }}
+            localizedPaths={localizedPaths}
+            navigationPaths={navigationPaths}
           />
           <HeroSection locale={locale} dictionary={dictionary} />
-          <BookSection locale={locale} dictionary={dictionary} />
+          <BookSection locale={locale} dictionary={dictionary} books={books} />
           <ShopSection
             locale={locale}
-            selectedFilter={selectedFilter}
-            visibleProducts={visibleProducts}
             dictionary={dictionary}
-            setSelectedFilter={setSelectedFilter}
+            categories={shopCategories}
+            products={shopProducts}
+            selectedFilter={selectedShopCategory}
           />
           <StorySection dictionary={dictionary} />
           <OrderSection
             locale={locale}
-            total={total}
-            name={name}
-            contact={contact}
-            note={note}
-            status={status}
-            mailtoHref={mailtoHref}
-            cartItems={cartItems}
             dictionary={dictionary}
-            setName={setName}
-            setContact={setContact}
-            setNote={setNote}
-            copyOrder={copyOrder}
-            clearCart={handleClearCart}
+            shopHref={shopHref}
+            cartHref={cartHref}
           />
           <NewsletterSection dictionary={dictionary} />
           <FooterSection dictionary={dictionary} />
