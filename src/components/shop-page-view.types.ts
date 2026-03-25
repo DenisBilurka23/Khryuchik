@@ -13,12 +13,6 @@ export type ShopPageViewProps = {
   initialQuery?: string;
 };
 
-export type ShopSearchFieldProps = {
-  initialValue: string;
-  placeholder: string;
-  onSearchChange: (value: string) => void;
-};
-
 export type CreateShopPageViewModelParams = {
   locale: Locale;
   dictionary: StorefrontDictionary;

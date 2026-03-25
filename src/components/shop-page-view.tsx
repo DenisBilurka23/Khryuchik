@@ -1,21 +1,14 @@
-"use client";
-
-import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Breadcrumbs,
   Button,
   Container,
   Grid,
-  InputAdornment,
   Link as MuiLink,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
 import { CategoryTabs } from "@/components/category-tabs";
 import type { Locale } from "@/i18n/config";
@@ -25,11 +18,11 @@ import type { LocalizedCategory } from "@/types/catalog";
 import { FooterSection } from "./footer-section";
 import { NewsletterSection } from "./newsletter-section";
 import { ProductCard } from "./product-card";
+import { ShopSearchField } from "./shop-search-field";
 import type {
   CreateShopPageViewModelParams,
   ShopFilterValue,
   ShopPageViewProps,
-  ShopSearchFieldProps,
 } from "./shop-page-view.types";
 import { StorefrontHeader } from "./storefront-header";
 import { StorefrontThemeProvider } from "./storefront-theme-provider";
@@ -82,7 +75,7 @@ const createShopPageViewModel = ({
       selectedFilter === "all" || product.category === selectedFilter;
     const matchesSearch =
       normalizedSearch.length === 0 ||
-      product.title.toLowerCase().includes(normalizedSearch);
+      product.searchIndex.includes(normalizedSearch);
 
     return matchesCategory && matchesSearch;
   });
@@ -98,52 +91,6 @@ const createShopPageViewModel = ({
   };
 };
 
-const ShopSearchField = ({
-  initialValue,
-  placeholder,
-  onSearchChange,
-}: ShopSearchFieldProps) => {
-  const [value, setValue] = useState(initialValue);
-
-  useEffect(() => {
-    const timeoutId = window.setTimeout(() => {
-      if (value !== initialValue) {
-        onSearchChange(value);
-      }
-    }, 350);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [initialValue, onSearchChange, value]);
-
-  return (
-    <TextField
-      value={value}
-      onChange={(event) => setValue(event.target.value)}
-      placeholder={placeholder}
-      sx={{
-        minWidth: { xs: "100%", md: 320 },
-        bgcolor: "#fff",
-        borderRadius: "999px",
-        "& .MuiOutlinedInput-root": {
-          borderRadius: "999px",
-        },
-        "& .MuiOutlinedInput-notchedOutline": {
-          borderRadius: "999px",
-        },
-      }}
-      slotProps={{
-        input: {
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        },
-      }}
-    />
-  );
-};
-
 export const ShopPageView = ({
   locale,
   dictionary,
@@ -152,9 +99,6 @@ export const ShopPageView = ({
   initialCategory,
   initialQuery,
 }: ShopPageViewProps) => {
-  const router = useRouter();
-  const pathname = usePathname();
-
   const homeHref = getLocalizedPath(locale, "/");
 
   const initialCategoryParam = initialCategory ?? null;
@@ -175,48 +119,6 @@ export const ShopPageView = ({
       selectedFilter,
       search,
     });
-
-  const updateQuery = (nextValues: {
-    category?: ShopFilterValue;
-    q?: string;
-  }) => {
-    const params = new URLSearchParams();
-
-    if (selectedFilter !== "all") {
-      params.set("category", selectedFilter);
-    }
-
-    if (search.trim()) {
-      params.set("q", search);
-    }
-
-    if (nextValues.category) {
-      if (nextValues.category === "all") {
-        params.delete("category");
-      } else {
-        params.set("category", nextValues.category);
-      }
-    }
-
-    if (typeof nextValues.q === "string") {
-      const trimmed = nextValues.q.trim();
-
-      if (trimmed) {
-        params.set("q", nextValues.q);
-      } else {
-        params.delete("q");
-      }
-    }
-
-    const queryString = params.toString();
-    router.replace(queryString ? `${pathname}?${queryString}` : pathname, {
-      scroll: false,
-    });
-  };
-
-  const resetFilters = () => {
-    router.replace(pathname, { scroll: false });
-  };
 
   return (
     <StorefrontThemeProvider>
@@ -239,9 +141,11 @@ export const ShopPageView = ({
           <Box sx={{ py: { xs: 4, md: 6 } }}>
             <Container maxWidth="lg">
               <Breadcrumbs sx={{ mb: 4 }}>
-                <MuiLink component={Link} underline="hover" color="inherit" href={homeHref}>
-                  {dictionary.shopPage.breadcrumbs.home}
-                </MuiLink>
+                <Link href={homeHref}>
+                  <MuiLink component="span" underline="hover" color="inherit">
+                    {dictionary.shopPage.breadcrumbs.home}
+                  </MuiLink>
+                </Link>
                 <Typography color="text.primary">
                   {dictionary.shopPage.breadcrumbs.current}
                 </Typography>
@@ -303,10 +207,8 @@ export const ShopPageView = ({
                 />
 
                 <ShopSearchField
-                  key={search}
                   initialValue={search}
                   placeholder={dictionary.shopPage.searchPlaceholder}
-                  onSearchChange={(value) => updateQuery({ q: value })}
                 />
               </Stack>
 
@@ -347,13 +249,11 @@ export const ShopPageView = ({
                   <Typography color="text.secondary" sx={{ mt: 1.5 }}>
                     {dictionary.shopPage.emptyText}
                   </Typography>
-                  <Button
-                    variant="contained"
-                    sx={{ mt: 3 }}
-                    onClick={resetFilters}
-                  >
-                    {dictionary.shopPage.resetFilters}
-                  </Button>
+                  <Link href={shopHref}>
+                    <Button variant="contained" component="span" sx={{ mt: 3 }}>
+                      {dictionary.shopPage.resetFilters}
+                    </Button>
+                  </Link>
                 </Box>
               ) : null}
             </Container>

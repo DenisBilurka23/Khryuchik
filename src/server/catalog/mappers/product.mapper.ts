@@ -18,10 +18,22 @@ export const localizeProductSummary = (
     return null;
   }
 
+  const searchIndex = Object.values(product.translations)
+    .flatMap((localizedTranslation) => [
+      localizedTranslation.title,
+      localizedTranslation.shortTitle,
+      localizedTranslation.shortDescription,
+      localizedTranslation.slug,
+    ])
+    .filter((value): value is string => Boolean(value))
+    .join(" ")
+    .toLowerCase();
+
   return {
     id: product.productId,
     type: product.classification.type,
     category: product.classification.category,
+    searchIndex,
     isActive: product.status.isActive,
     featured: product.merchandising.featured,
     sortOrder: product.merchandising.sortOrder,

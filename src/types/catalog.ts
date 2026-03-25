@@ -92,6 +92,7 @@ export type LocalizedProductSummary = ProductTranslation & {
   id: string;
   type: ProductType;
   category: ProductCategory;
+  searchIndex: string;
   isActive: boolean;
   featured: boolean;
   sortOrder: number;

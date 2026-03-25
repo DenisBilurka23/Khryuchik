@@ -47,14 +47,31 @@ export const CategoryTabs = ({
       {options.map((option) => (
         <Button
           key={option.value}
-          variant="outlined"
-          color="inherit"
+          variant={selectedValue === option.value ? "contained" : "outlined"}
+          color={selectedValue === option.value ? "primary" : "inherit"}
           onClick={() => updateValue(option.value)}
           className={className}
-          sx={{
-            borderColor: selectedValue === option.value ? "primary.main" : undefined,
-            color: selectedValue === option.value ? "primary.main" : "inherit",
-          }}
+          sx={
+            selectedValue === option.value
+              ? {
+                  color: "#fff",
+                  borderColor: "primary.main",
+                  bgcolor: "primary.main",
+                  "&:hover": {
+                    borderColor: "primary.main",
+                    bgcolor: "primary.main",
+                  },
+                }
+              : {
+                  borderColor: "#E8D6BF",
+                  color: "text.primary",
+                  bgcolor: "transparent",
+                  "&:hover": {
+                    borderColor: "#D4B894",
+                    bgcolor: "rgba(255, 255, 255, 0.5)",
+                  },
+                }
+          }
         >
           {option.label}
         </Button>
