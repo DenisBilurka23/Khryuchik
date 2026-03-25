@@ -11,6 +11,7 @@ import {
   Stack,
   Toolbar,
 } from "@mui/material";
+import Link from "next/link";
 
 import { Logo } from "../logo";
 import { localeLabels } from "../utils";
@@ -21,6 +22,7 @@ import type { StorefrontHeaderProps } from "./types";
 export const StorefrontHeader = ({
   locale,
   dictionary,
+  homeHref,
   localizedPaths,
   navigationPaths,
 }: StorefrontHeaderProps) => {
@@ -59,10 +61,15 @@ export const StorefrontHeader = ({
           disableGutters
           sx={{ py: 1.5, justifyContent: "space-between", gap: 2 }}
         >
-          <Logo
-            title={dictionary.brand.title}
-            subtitle={dictionary.brand.subtitle}
-          />
+          <Link
+            href={homeHref}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <Logo
+              title={dictionary.brand.title}
+              subtitle={dictionary.brand.subtitle}
+            />
+          </Link>
 
           <Stack
             direction="row"
@@ -70,14 +77,15 @@ export const StorefrontHeader = ({
             sx={{ display: { xs: "none", md: "flex" } }}
           >
             {navItems.map((item) => (
-              <Button
+              <Link
                 key={item.label}
                 href={item.href}
-                color="inherit"
-                startIcon={item.icon}
+                style={{ textDecoration: "none", color: "inherit" }}
               >
-                {item.label}
-              </Button>
+                <Button color="inherit" startIcon={item.icon} component="span">
+                  {item.label}
+                </Button>
+              </Link>
             ))}
           </Stack>
 
@@ -92,26 +100,31 @@ export const StorefrontHeader = ({
                 {(
                   Object.keys(localeLabels) as (keyof typeof localeLabels)[]
                 ).map((targetLocale) => (
-                  <Button
+                  <Link
                     key={targetLocale}
                     href={localizedPaths[targetLocale]}
-                    variant="text"
-                    color="inherit"
-                    className={styles.localeButton}
-                    sx={{
-                      backgroundColor:
-                        targetLocale === locale ? "#D96C82" : "transparent",
-                      color: targetLocale === locale ? "#fff" : "#27272A",
-                      "&:hover": {
-                        backgroundColor:
-                          targetLocale === locale
-                            ? "#D96C82"
-                            : "rgba(217, 108, 130, 0.06)",
-                      },
-                    }}
+                    style={{ textDecoration: "none", color: "inherit" }}
                   >
-                    {localeLabels[targetLocale]}
-                  </Button>
+                    <Button
+                      variant="text"
+                      color="inherit"
+                      component="span"
+                      className={styles.localeButton}
+                      sx={{
+                        backgroundColor:
+                          targetLocale === locale ? "#D96C82" : "transparent",
+                        color: targetLocale === locale ? "#fff" : "#27272A",
+                        "&:hover": {
+                          backgroundColor:
+                            targetLocale === locale
+                              ? "#D96C82"
+                              : "rgba(217, 108, 130, 0.06)",
+                        },
+                      }}
+                    >
+                      {localeLabels[targetLocale]}
+                    </Button>
+                  </Link>
                 ))}
               </Stack>
             </Paper>

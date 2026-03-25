@@ -1,4 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
+import Link from "next/link";
 
 import styles from "./section-heading.module.css";
 import type { SectionHeadingProps } from "./types";
@@ -24,16 +25,21 @@ export const SectionHeading = ({
         </Typography>
       </Box>
 
-      {actionLabel ? (
-        <Button
+      {actionLabel && actionHref ? (
+        <Link
           href={actionHref}
-          variant="outlined"
-          color="inherit"
-          className={styles.actionButton}
-          sx={{ display: { xs: "none", md: "inline-flex" } }}
+          style={{ textDecoration: "none", color: "inherit" }}
         >
-          {actionLabel}
-        </Button>
+          <Button
+            component="span"
+            variant="outlined"
+            color="inherit"
+            className={styles.actionButton}
+            sx={{ display: { xs: "none", md: "inline-flex" } }}
+          >
+            {actionLabel}
+          </Button>
+        </Link>
       ) : null}
     </Stack>
   );

@@ -13,6 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -224,6 +225,7 @@ export const ShopPageView = ({
           <StorefrontHeader
             locale={locale}
             dictionary={dictionary}
+            homeHref={homeHref}
             localizedPaths={localizedPaths}
             navigationPaths={{
               books: booksHref,
@@ -237,7 +239,7 @@ export const ShopPageView = ({
           <Box sx={{ py: { xs: 4, md: 6 } }}>
             <Container maxWidth="lg">
               <Breadcrumbs sx={{ mb: 4 }}>
-                <MuiLink underline="hover" color="inherit" href={homeHref}>
+                <MuiLink component={Link} underline="hover" color="inherit" href={homeHref}>
                   {dictionary.shopPage.breadcrumbs.home}
                 </MuiLink>
                 <Typography color="text.primary">

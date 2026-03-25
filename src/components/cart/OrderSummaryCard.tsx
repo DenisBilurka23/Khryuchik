@@ -1,7 +1,6 @@
-"use client";
-
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
+import Link from "next/link";
 
 import type { OrderSummaryCardProps } from "./types";
 import { formatCurrency } from "../utils";
@@ -76,16 +75,21 @@ export const OrderSummaryCard = ({
           {labels.checkoutButton}
         </Button>
 
-        <Button
-          fullWidth
-          variant="outlined"
-          color="inherit"
-          size="large"
-          sx={{ mt: 2, borderColor: "#E8D6BF", bgcolor: "#fff" }}
+        <Link
           href={continueShoppingHref}
+          style={{ textDecoration: "none", color: "inherit" }}
         >
-          {labels.continueShopping}
-        </Button>
+          <Button
+            component="span"
+            fullWidth
+            variant="outlined"
+            color="inherit"
+            size="large"
+            sx={{ mt: 2, borderColor: "#E8D6BF", bgcolor: "#fff" }}
+          >
+            {labels.continueShopping}
+          </Button>
+        </Link>
 
         <Box
           sx={{

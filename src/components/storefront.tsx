@@ -50,6 +50,7 @@ export const Storefront = ({
           <StorefrontHeader
             locale={locale}
             dictionary={dictionary}
+            homeHref={getLocalizedPath(locale, "/")}
             localizedPaths={localizedPaths}
             navigationPaths={navigationPaths}
           />

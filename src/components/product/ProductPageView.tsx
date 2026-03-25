@@ -6,6 +6,7 @@ import {
   Link as MuiLink,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 
 import type { Locale } from "@/i18n/config";
 import { locales } from "@/i18n/config";
@@ -73,6 +74,7 @@ export const ProductPageView = ({
           <StorefrontHeader
             locale={locale}
             dictionary={dictionary}
+            homeHref={homeHref}
             localizedPaths={localizedPaths}
             navigationPaths={{
               books: getLocalizedPath(locale, "/shop?category=books"),
@@ -86,12 +88,22 @@ export const ProductPageView = ({
           <Box sx={{ py: { xs: 4, md: 6 } }}>
             <Container maxWidth="lg">
               <Breadcrumbs sx={{ mb: 4 }}>
-                <MuiLink underline="hover" color="inherit" href={homeHref}>
-                  {dictionary.productPage.breadcrumbs.home}
-                </MuiLink>
-                <MuiLink underline="hover" color="inherit" href={shopHref}>
-                  {dictionary.productPage.breadcrumbs.shop}
-                </MuiLink>
+                <Link
+                  href={homeHref}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <MuiLink underline="hover" color="inherit" component="span">
+                    {dictionary.productPage.breadcrumbs.home}
+                  </MuiLink>
+                </Link>
+                <Link
+                  href={shopHref}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <MuiLink underline="hover" color="inherit" component="span">
+                    {dictionary.productPage.breadcrumbs.shop}
+                  </MuiLink>
+                </Link>
                 <Typography color="text.primary">{product.title}</Typography>
               </Breadcrumbs>
 

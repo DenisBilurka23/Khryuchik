@@ -59,21 +59,31 @@ export const BookCard = ({
         </Typography>
 
         <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
-          <Button
+          <Link
             href={detailsHref}
-            variant="contained"
-            className={styles.detailsButton}
+            style={{ textDecoration: "none", color: "inherit" }}
           >
-            {detailsButton}
-          </Button>
-          <Button
+            <Button
+              component="span"
+              variant="contained"
+              className={styles.detailsButton}
+            >
+              {detailsButton}
+            </Button>
+          </Link>
+          <Link
             href={detailsHref}
-            variant="outlined"
-            color="inherit"
-            className={styles.buyButton}
+            style={{ textDecoration: "none", color: "inherit" }}
           >
-            {buyButton}
-          </Button>
+            <Button
+              component="span"
+              variant="outlined"
+              color="inherit"
+              className={styles.buyButton}
+            >
+              {buyButton}
+            </Button>
+          </Link>
         </Stack>
       </CardContent>
     </Card>

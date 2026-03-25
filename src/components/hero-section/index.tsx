@@ -7,6 +7,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 
 import { InfoChip } from "../info-chip";
 import { formatCurrency, getLocalizedPath, promoBackgrounds } from "../utils";
@@ -48,18 +49,25 @@ export const HeroSection = ({ locale, dictionary }: HeroSectionProps) => {
               spacing={2}
               sx={{ mt: 4 }}
             >
-              <Button variant="contained" size="large" href="#books">
-                {dictionary.hero.primaryAction}
-              </Button>
-              <Button
-                variant="outlined"
-                color="inherit"
-                size="large"
+              <Link href="#books" style={{ textDecoration: "none", color: "inherit" }}>
+                <Button component="span" variant="contained" size="large">
+                  {dictionary.hero.primaryAction}
+                </Button>
+              </Link>
+              <Link
                 href={getLocalizedPath(locale, "/shop")}
-                className={styles.secondaryButton}
+                style={{ textDecoration: "none", color: "inherit" }}
               >
-                {dictionary.hero.secondaryAction}
-              </Button>
+                <Button
+                  component="span"
+                  variant="outlined"
+                  color="inherit"
+                  size="large"
+                  className={styles.secondaryButton}
+                >
+                  {dictionary.hero.secondaryAction}
+                </Button>
+              </Link>
             </Stack>
 
             <Stack

@@ -1,5 +1,6 @@
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import Link from "next/link";
 
 import type { StoryConnectionCardProps } from "./types";
 
@@ -48,9 +49,11 @@ export const StoryConnectionCard = ({
           </Typography>
         </Box>
 
-        <Button href={buttonHref} variant="contained">
-          {labels.actions.viewBook}
-        </Button>
+        <Link href={buttonHref} style={{ textDecoration: "none", color: "inherit" }}>
+          <Button component="span" variant="contained">
+            {labels.actions.viewBook}
+          </Button>
+        </Link>
       </Stack>
     </Paper>
   );

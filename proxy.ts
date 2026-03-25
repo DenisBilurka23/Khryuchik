@@ -3,6 +3,8 @@ import type { NextRequest } from "next/server";
 
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 
+const LOCALE_HEADER = "x-khryuchik-locale";
+
 const getPreferredLocale = (request: NextRequest) => {
   const acceptLanguage = request.headers.get("accept-language");
 
@@ -24,6 +26,25 @@ const getPreferredLocale = (request: NextRequest) => {
   return matchedLocale ?? defaultLocale;
 };
 
+const withLocaleHeader = (request: NextRequest, locale: string) => {
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set(LOCALE_HEADER, locale);
+
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+};
+
+const getLocaleFromPathname = (pathname: string) => {
+  const matchedLocale = locales.find(
+    (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
+  );
+
+  return matchedLocale ?? defaultLocale;
+};
+
 export const proxy = (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
@@ -35,7 +56,7 @@ export const proxy = (request: NextRequest) => {
     pathname.startsWith("/products/");
 
   if (allowDefaultLocalePath) {
-    return NextResponse.next();
+    return withLocaleHeader(request, defaultLocale);
   }
 
   const pathnameHasLocale = locales.some(
@@ -43,7 +64,7 @@ export const proxy = (request: NextRequest) => {
   );
 
   if (pathnameHasLocale) {
-    return NextResponse.next();
+    return withLocaleHeader(request, getLocaleFromPathname(pathname));
   }
 
   const locale = getPreferredLocale(request);

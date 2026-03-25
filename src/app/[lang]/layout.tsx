@@ -1,9 +1,6 @@
 import type { ReactNode } from "react";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 import { notFound } from "next/navigation";
 
-import { bodyFont, displayFont } from "../fonts";
-import "../globals.css";
 import { isLocale, locales } from "@/i18n/config";
 
 export const dynamicParams = false;
@@ -23,16 +20,7 @@ const LocaleLayout = async ({
     notFound();
   }
 
-  return (
-    <html
-      lang={lang}
-      className={`${displayFont.variable} ${bodyFont.variable}`}
-    >
-      <body>
-        <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
-      </body>
-    </html>
-  );
+  return children;
 };
 
 export default LocaleLayout;

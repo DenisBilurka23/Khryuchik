@@ -4,6 +4,7 @@ import type { StorefrontDictionary } from "@/i18n/types";
 export type StorefrontHeaderProps = {
   locale: Locale;
   dictionary: StorefrontDictionary;
+  homeHref: string;
   localizedPaths: Record<Locale, string>;
   navigationPaths?: {
     books: string;

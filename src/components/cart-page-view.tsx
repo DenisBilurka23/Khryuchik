@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "@mui/material";
+import Link from "next/link";
 
 import { locales, type Locale } from "@/i18n/config";
 
@@ -63,6 +64,7 @@ export const CartPageView = ({ locale, dictionary }: CartPageViewProps) => {
           <StorefrontHeader
             locale={locale}
             dictionary={dictionary}
+            homeHref={homeHref}
             localizedPaths={localizedPaths}
             navigationPaths={{
               books: getLocalizedPath(locale, "/shop?category=books"),
@@ -76,10 +78,10 @@ export const CartPageView = ({ locale, dictionary }: CartPageViewProps) => {
           <Box sx={{ py: { xs: 4, md: 6 } }}>
             <Container maxWidth="lg">
               <Breadcrumbs sx={{ mb: 4 }}>
-                <MuiLink underline="hover" color="inherit" href={homeHref}>
+                <MuiLink component={Link} underline="hover" color="inherit" href={homeHref}>
                   {dictionary.cartPage.breadcrumbs.home}
                 </MuiLink>
-                <MuiLink underline="hover" color="inherit" href={shopHref}>
+                <MuiLink component={Link} underline="hover" color="inherit" href={shopHref}>
                   {dictionary.cartPage.breadcrumbs.shop}
                 </MuiLink>
                 <Typography color="text.primary">
