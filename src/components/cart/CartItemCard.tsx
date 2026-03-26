@@ -64,7 +64,7 @@ export const CartItemCard = ({
             ) : null}
 
             <Typography color="text.secondary" sx={{ mt: 0.5 }}>
-              {formatCurrency(item.price, locale)}
+              {formatCurrency(item.price, locale, item.currency)}
             </Typography>
 
             <Stack
@@ -114,7 +114,11 @@ export const CartItemCard = ({
                 }}
               >
                 <Typography sx={{ fontSize: 22, fontWeight: 800, color: "primary.main" }}>
-                  {formatCurrency(item.price * item.quantity, locale)}
+                  {formatCurrency(
+                    item.price * item.quantity,
+                    locale,
+                    item.currency,
+                  )}
                 </Typography>
 
                 <IconButton aria-label={removeLabel} onClick={() => onRemove(item.id)}>

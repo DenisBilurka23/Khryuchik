@@ -2,14 +2,13 @@
 
 import { useSyncExternalStore } from "react";
 
-import type { CartItem } from "@/types/cart";
+import type { StoredCartItem } from "@/types/cart";
 import type { CartItemInput, CartSnapshot, CartState } from "./types";
 
-const STORAGE_KEY = "khryuchik-cart-v1";
+const STORAGE_KEY = "khryuchik-cart";
 const emptyState: CartState = { items: [] };
 const emptySnapshot: CartSnapshot = {
   items: [],
-  subtotal: 0,
   totalCount: 0,
 };
 
@@ -20,7 +19,17 @@ let snapshot: CartSnapshot = emptySnapshot;
 
 const listeners = new Set<() => void>();
 
-const isCartItem = (value: unknown): value is CartItem => {
+const isCartSelections = (value: unknown) => {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  return Object.values(value as Record<string, unknown>).every(
+    (entry) => typeof entry === "string" || typeof entry === "undefined",
+  );
+};
+
+const isStoredCartItem = (value: unknown): value is StoredCartItem => {
   if (!value || typeof value !== "object") {
     return false;
   }
@@ -29,13 +38,9 @@ const isCartItem = (value: unknown): value is CartItem => {
 
   return (
     typeof item.id === "string" &&
-    typeof item.slug === "string" &&
-    typeof item.title === "string" &&
-    typeof item.price === "number" &&
-    typeof item.emoji === "string" &&
+    typeof item.productId === "string" &&
     typeof item.quantity === "number" &&
-    (typeof item.bgColor === "undefined" || typeof item.bgColor === "string") &&
-    (typeof item.variant === "undefined" || typeof item.variant === "string")
+    (typeof item.selections === "undefined" || isCartSelections(item.selections))
   );
 };
 
@@ -45,10 +50,6 @@ const emitChange = () => {
 
 const buildSnapshot = (currentState: CartState): CartSnapshot => ({
   items: currentState.items,
-  subtotal: currentState.items.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  ),
   totalCount: currentState.items.reduce((sum, item) => sum + item.quantity, 0),
 });
 
@@ -56,27 +57,34 @@ const refreshSnapshot = () => {
   snapshot = buildSnapshot(state);
 };
 
+const parseJson = <T,>(rawValue: string): T | null => {
+  try {
+    return JSON.parse(rawValue) as T;
+  } catch {
+    return null;
+  }
+};
+
 const readStateFromStorage = (): CartState => {
   if (typeof window === "undefined") {
     return emptyState;
   }
 
-  try {
-    const rawValue = window.localStorage.getItem(STORAGE_KEY);
+  const rawValue = window.localStorage.getItem(STORAGE_KEY);
 
-    if (!rawValue) {
-      return emptyState;
-    }
-
-    const parsedValue = JSON.parse(rawValue);
-    const items = Array.isArray(parsedValue)
-      ? parsedValue.filter(isCartItem)
-      : [];
-
-    return { items };
-  } catch {
+  if (!rawValue) {
     return emptyState;
   }
+
+  const parsedValue = parseJson<unknown>(rawValue);
+
+  if (!Array.isArray(parsedValue)) {
+    return emptyState;
+  }
+
+  const items = parsedValue.filter(isStoredCartItem);
+
+  return { items };
 };
 
 const persistState = () => {
@@ -101,13 +109,28 @@ const ensureStateLoaded = () => {
   return state;
 };
 
-const buildCartItemId = (slug: string, variant?: string) =>
-  variant ? `${slug}::${variant}` : slug;
+const buildCartItemId = (
+  productId: string,
+  selections?: CartItemInput["selections"],
+) => {
+  const selectionEntries = Object.entries(selections ?? {})
+    .filter(([, value]) => Boolean(value))
+    .sort(([left], [right]) => left.localeCompare(right));
 
-const createCartItem = ({ quantity = 1, ...item }: CartItemInput): CartItem => ({
-  ...item,
-  id: buildCartItemId(item.slug, item.variant),
+  if (selectionEntries.length === 0) {
+    return productId;
+  }
+
+  return `${productId}::${selectionEntries
+    .map(([key, value]) => `${key}:${value}`)
+    .join("|")}`;
+};
+
+const createCartItem = ({ quantity = 1, productId, selections }: CartItemInput): StoredCartItem => ({
+  id: buildCartItemId(productId, selections),
+  productId,
   quantity,
+  selections,
 });
 
 const setCartState = (nextState: CartState) => {

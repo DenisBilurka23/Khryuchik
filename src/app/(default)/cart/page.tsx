@@ -3,9 +3,11 @@ import type { Metadata } from "next";
 import { CartPageView } from "@/components/cart-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { getRequestCountry } from "@/lib/request-country";
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const dictionary = await getDictionary(defaultLocale);
+  const country = await getRequestCountry();
+  const dictionary = await getDictionary(defaultLocale, country);
 
   return {
     title: `${dictionary.storefront.cartPage.breadcrumbs.current} | ${dictionary.storefront.brand.title}`,
@@ -30,11 +32,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const DefaultCartPage = async () => {
-  const dictionary = await getDictionary(defaultLocale);
+  const country = await getRequestCountry();
+  const dictionary = await getDictionary(defaultLocale, country);
 
   return (
     <CartPageView
       locale={defaultLocale}
+      country={country}
       dictionary={dictionary.storefront}
     />
   );

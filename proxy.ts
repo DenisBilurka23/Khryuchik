@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import {
+  COUNTRY_COOKIE_NAME,
+  COUNTRY_HEADER,
+  defaultCountry,
+  getCountryFromGeoHeaders,
+  isCountryCode,
+} from "@/lib/countries";
 
 const LOCALE_HEADER = "x-khryuchik-locale";
 
@@ -26,9 +33,24 @@ const getPreferredLocale = (request: NextRequest) => {
   return matchedLocale ?? defaultLocale;
 };
 
-const withLocaleHeader = (request: NextRequest, locale: string) => {
+const getPreferredCountry = (request: NextRequest) => {
+  const cookieCountry = request.cookies.get(COUNTRY_COOKIE_NAME)?.value;
+
+  if (isCountryCode(cookieCountry)) {
+    return cookieCountry;
+  }
+
+  return getCountryFromGeoHeaders(request.headers) ?? defaultCountry;
+};
+
+const withRequestContextHeaders = (
+  request: NextRequest,
+  locale: string,
+  country: string,
+) => {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(LOCALE_HEADER, locale);
+  requestHeaders.set(COUNTRY_HEADER, country);
 
   return NextResponse.next({
     request: {
@@ -47,6 +69,7 @@ const getLocaleFromPathname = (pathname: string) => {
 
 export const proxy = (request: NextRequest) => {
   const { pathname } = request.nextUrl;
+  const country = getPreferredCountry(request);
 
   const allowDefaultLocalePath =
     pathname === "/" ||
@@ -56,7 +79,7 @@ export const proxy = (request: NextRequest) => {
     pathname.startsWith("/products/");
 
   if (allowDefaultLocalePath) {
-    return withLocaleHeader(request, defaultLocale);
+    return withRequestContextHeaders(request, defaultLocale, country);
   }
 
   const pathnameHasLocale = locales.some(
@@ -64,7 +87,11 @@ export const proxy = (request: NextRequest) => {
   );
 
   if (pathnameHasLocale) {
-    return withLocaleHeader(request, getLocaleFromPathname(pathname));
+    return withRequestContextHeaders(
+      request,
+      getLocaleFromPathname(pathname),
+      country,
+    );
   }
 
   const locale = getPreferredLocale(request);

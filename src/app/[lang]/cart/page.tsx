@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CartPageView } from "@/components/cart-page-view";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { getRequestCountry } from "@/lib/request-country";
 
 type LocalizedCartPageProps = {
   params: Promise<{ lang: string }>;
@@ -20,7 +21,8 @@ export const generateMetadata = async ({
     notFound();
   }
 
-  const dictionary = await getDictionary(lang);
+  const country = await getRequestCountry();
+  const dictionary = await getDictionary(lang, country);
 
   return {
     title: `${dictionary.storefront.cartPage.breadcrumbs.current} | ${dictionary.storefront.brand.title}`,
@@ -51,9 +53,16 @@ const LocalizedCartPage = async ({ params }: LocalizedCartPageProps) => {
     notFound();
   }
 
-  const dictionary = await getDictionary(lang);
+  const country = await getRequestCountry();
+  const dictionary = await getDictionary(lang, country);
 
-  return <CartPageView locale={lang} dictionary={dictionary.storefront} />;
+  return (
+    <CartPageView
+      locale={lang}
+      country={country}
+      dictionary={dictionary.storefront}
+    />
+  );
 };
 
 export default LocalizedCartPage;

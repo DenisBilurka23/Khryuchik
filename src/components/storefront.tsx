@@ -16,24 +16,29 @@ import styles from "./storefront.module.css";
 import type { StorefrontProps } from "./types";
 import { getLocalizedPath } from "./utils";
 
-const createStorefrontHeaderViewModel = (locale: Locale) => ({
-  localizedPaths: Object.fromEntries(
-    locales.map((targetLocale) => [
-      targetLocale,
-      targetLocale === defaultLocale ? "/" : `/${targetLocale}`,
-    ]),
-  ) as Record<Locale, string>,
-  navigationPaths: {
-    books: getLocalizedPath(locale, "/shop?category=books"),
-    shop: getLocalizedPath(locale, "/shop"),
-    story: "#story",
-    faq: "#faq",
-    cart: getLocalizedPath(locale, "/cart"),
-  },
-});
+const createStorefrontHeaderViewModel = (locale: Locale) => {
+  const homeHref = getLocalizedPath(locale, "/");
+
+  return {
+    localizedPaths: Object.fromEntries(
+      locales.map((targetLocale) => [
+        targetLocale,
+        targetLocale === defaultLocale ? "/" : `/${targetLocale}`,
+      ]),
+    ) as Record<Locale, string>,
+    navigationPaths: {
+      books: getLocalizedPath(locale, "/shop?category=books"),
+      shop: getLocalizedPath(locale, "/shop"),
+      story: `${homeHref}#story`,
+      faq: `${homeHref}#faq`,
+      cart: getLocalizedPath(locale, "/cart"),
+    },
+  };
+};
 
 export const Storefront = ({
   locale,
+  country,
   dictionary,
   shopCategories,
   books,
@@ -49,12 +54,13 @@ export const Storefront = ({
         <Box className={styles.pageContent}>
           <StorefrontHeader
             locale={locale}
+            country={country}
             dictionary={dictionary}
             homeHref={getLocalizedPath(locale, "/")}
             localizedPaths={localizedPaths}
             navigationPaths={navigationPaths}
           />
-          <HeroSection locale={locale} dictionary={dictionary} />
+          <HeroSection locale={locale} country={country} dictionary={dictionary} />
           <BookSection locale={locale} dictionary={dictionary} books={books} />
           <ShopSection
             locale={locale}
@@ -66,6 +72,7 @@ export const Storefront = ({
           <StorySection dictionary={dictionary} />
           <OrderSection
             locale={locale}
+            country={country}
             dictionary={dictionary}
             shopHref={shopHref}
             cartHref={cartHref}

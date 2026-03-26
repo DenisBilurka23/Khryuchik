@@ -12,6 +12,7 @@ import type { OrderSectionProps } from "./types";
 
 export const OrderSection = ({
   locale,
+  country,
   dictionary,
   shopHref,
   cartHref,
@@ -47,6 +48,7 @@ export const OrderSection = ({
           <Grid size={{ xs: 12, md: 6 }}>
             <HomeCartSummary
               locale={locale}
+              country={country}
               cartTitle={dictionary.orderSection.cartTitle}
               emptyTitle={dictionary.orderSection.emptyTitle}
               emptyText={dictionary.orderSection.emptyText}

@@ -1,4 +1,5 @@
 import type { Locale } from "@/i18n/config";
+import type { CountryCode, CurrencyCode } from "@/lib/countries";
 
 import type {
   ProductImage,
@@ -73,10 +74,16 @@ export type ProductTranslation = {
   shortTitle?: string;
   shortDescription: string;
   price: number;
-  currency: "BYN";
+  currency: CurrencyCode;
   emoji: string;
   bgColor?: string;
   lang?: string;
+};
+
+export type ProductCountryPricing = {
+  price: number;
+  currency: CurrencyCode;
+  oldPrice?: number;
 };
 
 export type ProductDocument = {
@@ -85,6 +92,7 @@ export type ProductDocument = {
   status: ProductStatus;
   merchandising: ProductMerchandising;
   inventory: ProductInventory;
+  pricing: Partial<Record<CountryCode, ProductCountryPricing>>;
   translations: Record<Locale, ProductTranslation>;
 };
 
@@ -93,6 +101,7 @@ export type LocalizedProductSummary = ProductTranslation & {
   type: ProductType;
   category: ProductCategory;
   searchIndex: string;
+  oldPrice?: number;
   isActive: boolean;
   featured: boolean;
   sortOrder: number;

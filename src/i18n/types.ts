@@ -114,6 +114,7 @@ export type StorefrontDictionary = {
     shortLabel: string;
   };
   localeSwitcherLabel: string;
+  countrySwitcherLabel: string;
   cartLabel: string;
   nav: {
     books: string;
@@ -245,12 +246,8 @@ export type SeedStorefrontDictionary = Omit<
   StorefrontDictionary,
   "booksSection" | "shopSection"
 > & {
-  booksSection: StorefrontDictionary["booksSection"] & {
-    items: SeedStorefrontBook[];
-  };
-  shopSection: StorefrontDictionary["shopSection"] & {
-    items: SeedStorefrontProduct[];
-  };
+  booksSection: StorefrontDictionary["booksSection"];
+  shopSection: StorefrontDictionary["shopSection"];
 };
 
 export type Dictionary = {

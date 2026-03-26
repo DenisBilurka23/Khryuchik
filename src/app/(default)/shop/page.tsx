@@ -4,13 +4,15 @@ import { ShopPageView } from "@/components/shop-page-view";
 import { getShopCategories, getShopProducts } from "@/data/products";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { getRequestCountry } from "@/lib/request-country";
 
 type DefaultShopPageProps = {
   searchParams: Promise<{ category?: string; q?: string }>;
 };
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const dictionary = await getDictionary(defaultLocale);
+  const country = await getRequestCountry();
+  const dictionary = await getDictionary(defaultLocale, country);
 
   return {
     title: `${dictionary.storefront.nav.shop} | ${dictionary.storefront.brand.title}`,
@@ -36,15 +38,17 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 const DefaultShopPage = async ({ searchParams }: DefaultShopPageProps) => {
   const { category, q } = await searchParams;
+  const country = await getRequestCountry();
   const [dictionary, categories, products] = await Promise.all([
-    getDictionary(defaultLocale),
+    getDictionary(defaultLocale, country),
     getShopCategories(defaultLocale),
-    getShopProducts(defaultLocale),
+    getShopProducts(defaultLocale, country),
   ]);
 
   return (
     <ShopPageView
       locale={defaultLocale}
+      country={country}
       dictionary={dictionary.storefront}
       categories={categories}
       products={products}

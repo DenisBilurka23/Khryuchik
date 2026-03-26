@@ -50,12 +50,17 @@ const createProductPageViewModel = ({
     title: relatedProduct.title,
     emoji: relatedProduct.emoji,
     bgColor: relatedProduct.bgColor ?? "#FFF8F0",
-    formattedPrice: formatCurrency(relatedProduct.price, locale),
+    formattedPrice: formatCurrency(
+      relatedProduct.price,
+      locale,
+      relatedProduct.currency,
+    ),
   })),
 });
 
 export const ProductPageView = ({
   locale,
+  country,
   dictionary,
   product,
   relatedProducts,
@@ -73,6 +78,7 @@ export const ProductPageView = ({
         <Box className={styles.pageContent}>
           <StorefrontHeader
             locale={locale}
+            country={country}
             dictionary={dictionary}
             homeHref={homeHref}
             localizedPaths={localizedPaths}

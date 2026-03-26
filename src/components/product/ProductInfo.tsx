@@ -26,23 +26,15 @@ export const ProductInfo = ({ locale, labels, product }: ProductInfoProps) => {
   const [color, setColor] = useState(product.colors?.[0]?.value || "");
 
   const handleAddToCart = () => {
-    const variant = [
-      product.languages?.find((option) => option.value === language)?.label,
-      product.formats?.find((option) => option.value === format)?.label,
-      product.sizes?.find((option) => option.value === size)?.label,
-      product.colors?.find((option) => option.value === color)?.label,
-    ]
-      .filter(Boolean)
-      .join(" / ");
-
     addItem({
-      slug: product.slug,
-      title: product.title,
-      price: product.price,
-      emoji: product.images[0]?.emoji ?? "📦",
-      bgColor: product.images[0]?.bgColor ?? "#FFF8F0",
+      productId: product.productId,
       quantity,
-      variant: variant || undefined,
+      selections: {
+        language: language || undefined,
+        format: format || undefined,
+        size: size || undefined,
+        color: color || undefined,
+      },
     });
   };
 
@@ -83,7 +75,7 @@ export const ProductInfo = ({ locale, labels, product }: ProductInfoProps) => {
         <Typography
           sx={{ fontSize: 32, fontWeight: 800, color: "primary.main" }}
         >
-          {formatCurrency(product.price, locale)}
+          {formatCurrency(product.price, locale, product.currency)}
         </Typography>
         {product.oldPrice ? (
           <Typography
@@ -93,7 +85,7 @@ export const ProductInfo = ({ locale, labels, product }: ProductInfoProps) => {
               textDecoration: "line-through",
             }}
           >
-            {formatCurrency(product.oldPrice, locale)}
+            {formatCurrency(product.oldPrice, locale, product.currency)}
           </Typography>
         ) : null}
       </Stack>

@@ -2,7 +2,9 @@
 
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 
-import { useCart } from "../cart/store";
+import { getCountryCurrency } from "@/lib/countries";
+
+import { useResolvedCart } from "../cart/useResolvedCart";
 import { formatCurrency } from "../utils";
 import type {
   HomeCartSummaryItemCountParams,
@@ -36,6 +38,7 @@ const getItemCountLabel = ({
 
 const createHomeCartSummaryViewModel = ({
   locale,
+  country,
   items,
   totalCount,
   subtotal,
@@ -55,12 +58,17 @@ const createHomeCartSummaryViewModel = ({
     previewItems,
     hiddenItemsCount,
     shouldStretchRow: previewItems.length === 4 && hiddenItemsCount > 0,
-    formattedSubtotal: formatCurrency(subtotal, locale),
+    formattedSubtotal: formatCurrency(
+      subtotal,
+      locale,
+      getCountryCurrency(country),
+    ),
   };
 };
 
 export const HomeCartSummary = ({
   locale,
+  country,
   cartTitle,
   emptyTitle,
   emptyText,
@@ -71,9 +79,11 @@ export const HomeCartSummary = ({
   shopHref,
   cartHref,
 }: HomeCartSummaryProps) => {
-  const { items, totalCount, subtotal } = useCart();
+  const { items, totalCount, subtotal, hasStoredItems } = useResolvedCart(
+    locale,
+    country,
+  );
   const {
-    hasItems,
     helperText,
     itemCountLabel,
     previewItems,
@@ -82,11 +92,13 @@ export const HomeCartSummary = ({
     formattedSubtotal,
   } = createHomeCartSummaryViewModel({
     locale,
+    country,
     items,
     totalCount,
     subtotal,
     labels: summaryLabels,
   });
+  const shouldShowItems = hasStoredItems && items.length > 0;
 
   return (
     <Paper
@@ -105,7 +117,7 @@ export const HomeCartSummary = ({
           {helperText}
         </Typography>
 
-        {hasItems ? (
+        {shouldShowItems ? (
           <Box sx={{ mt: 3 }}>
             <Typography className={styles.summaryMetaTitle}>
               {itemCountLabel}

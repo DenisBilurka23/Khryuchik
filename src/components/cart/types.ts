@@ -1,23 +1,26 @@
 import type { Locale } from "@/i18n/config";
 import type { CartPageLabels } from "@/i18n/types";
-import type { CartItem } from "@/types/cart";
+import type { CountryCode } from "@/lib/countries";
+import type { CartItem, CartSelections, StoredCartItem } from "@/types/cart";
 
 export type CartState = {
-  items: CartItem[];
+  items: StoredCartItem[];
 };
 
 export type CartSnapshot = {
-  items: CartItem[];
+  items: StoredCartItem[];
   totalCount: number;
-  subtotal: number;
 };
 
-export type CartItemInput = Omit<CartItem, "id" | "quantity"> & {
+export type CartItemInput = {
+  productId: string;
   quantity?: number;
+  selections?: CartSelections;
 };
 
 export type OrderSummaryCardProps = {
   locale: Locale;
+  country: CountryCode;
   labels: CartPageLabels["summary"];
   subtotal: number;
   shipping: number;

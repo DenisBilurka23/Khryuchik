@@ -9,6 +9,7 @@ import {
 } from "@/data/products";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { getRequestCountry } from "@/lib/request-country";
 
 type LocalizedProductPageProps = {
   params: Promise<{ lang: string; slug: string }>;
@@ -31,13 +32,14 @@ export const generateMetadata = async ({
     notFound();
   }
 
-  const product = await getProductDetails(lang, slug);
+  const country = await getRequestCountry();
+  const product = await getProductDetails(lang, country, slug);
 
   if (!product) {
     notFound();
   }
 
-  const dictionary = await getDictionary(lang);
+  const dictionary = await getDictionary(lang, country);
 
   return {
     title: `${product.title} | ${dictionary.storefront.brand.title}`,
@@ -73,20 +75,22 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
     notFound();
   }
 
-  const product = await getProductDetails(lang, slug);
+  const country = await getRequestCountry();
+  const product = await getProductDetails(lang, country, slug);
 
   if (!product) {
     notFound();
   }
 
   const [dictionary, relatedProducts] = await Promise.all([
-    getDictionary(lang),
-    getProductSummariesByIds(lang, product.relatedIds),
+    getDictionary(lang, country),
+    getProductSummariesByIds(lang, country, product.relatedIds),
   ]);
 
   return (
     <ProductPageView
       locale={lang}
+      country={country}
       dictionary={dictionary.storefront}
       product={product}
       relatedProducts={relatedProducts}

@@ -1,3 +1,5 @@
+import type { CurrencyCode } from "@/lib/countries";
+
 export type ProductImage = {
   id: string;
   emoji: string;
@@ -18,10 +20,12 @@ export type ProductReview = {
 };
 
 export type ProductDetails = {
+  productId: string;
   slug: string;
   title: string;
   subtitle: string;
   price: number;
+  currency: CurrencyCode;
   oldPrice?: number;
   badge?: string;
   storyLabel?: string;

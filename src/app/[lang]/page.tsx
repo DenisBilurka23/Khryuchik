@@ -9,6 +9,7 @@ import {
 } from "@/data/products";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { getRequestCountry } from "@/lib/request-country";
 
 type LocalizedPageProps = {
   params: Promise<{ lang: string }>;
@@ -24,7 +25,8 @@ export const generateMetadata = async ({
     notFound();
   }
 
-  const dictionary = await getDictionary(lang);
+  const country = await getRequestCountry();
+  const dictionary = await getDictionary(lang, country);
 
   return {
     title: dictionary.metadata.title,
@@ -56,9 +58,10 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
     notFound();
   }
 
+  const country = await getRequestCountry();
   const [dictionary, books, shopCategories] = await Promise.all([
-    getDictionary(lang),
-    getProductsForPlacement(lang, "home-books"),
+    getDictionary(lang, country),
+    getProductsForPlacement(lang, country, "home-books"),
     getHomeTabCategories(lang),
   ]);
 
@@ -68,7 +71,7 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
     category && shopCategories.some((item) => item.key === category)
       ? category
       : defaultShopCategory;
-  const shopProducts = await getShopProducts(lang, {
+  const shopProducts = await getShopProducts(lang, country, {
     category: selectedShopCategory === "all" ? undefined : selectedShopCategory,
     limit: 4,
   });
@@ -76,6 +79,7 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
   return (
     <Storefront
       locale={lang}
+      country={country}
       dictionary={dictionary.storefront}
       shopCategories={shopCategories}
       books={books}

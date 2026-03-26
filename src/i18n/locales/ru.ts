@@ -13,6 +13,7 @@ const dictionary: SeedDictionary = {
       shortLabel: "Хрючик",
     },
     localeSwitcherLabel: "Выбор языка",
+    countrySwitcherLabel: "Выбор страны",
     cartLabel: "Корзина",
     nav: {
       books: "Книги",
@@ -68,29 +69,6 @@ const dictionary: SeedDictionary = {
       actionLabel: "Все книги",
       detailsButton: "Подробнее",
       buyButton: "Купить",
-      items: [
-        {
-          slug: "book-winter",
-          title: "Хрючик зимой",
-          lang: "RU / EN",
-          desc: "Тёплая история о зимних приключениях Хрючика.",
-          emoji: "📘",
-        },
-        {
-          slug: "book-country-house",
-          title: "Хрючик на даче",
-          lang: "RU / EN",
-          desc: "Весёлая сказка, вдохновлённая семейными воспоминаниями.",
-          emoji: "📚",
-        },
-        {
-          slug: "book-friends",
-          title: "Хрючик и друзья",
-          lang: "RU / EN",
-          desc: "Добрая история о дружбе, заботе и маленьких открытиях.",
-          emoji: "📚",
-        },
-      ],
     },
     shopSection: {
       eyebrow: "Магазин",
@@ -98,36 +76,6 @@ const dictionary: SeedDictionary = {
       actionLabel: "Весь мерч",
       addToCart: "В корзину",
       wishlistAriaLabel: "Добавить в избранное",
-      items: [
-        {
-          id: "book-winter",
-          title: "Книга «Хрючик зимой»",
-          price: 29,
-          emoji: "📘",
-          category: "Все",
-        },
-        {
-          id: "mug",
-          title: "Кружка Хрючик",
-          price: 24,
-          emoji: "☕",
-          category: "Подарки",
-        },
-        {
-          id: "tshirt",
-          title: "Футболка Хрючик",
-          price: 49,
-          emoji: "👕",
-          category: "Одежда",
-        },
-        {
-          id: "stickers",
-          title: "Наклейки Хрючик",
-          price: 12,
-          emoji: "✨",
-          category: "Подарки",
-        },
-      ],
     },
     storySection: {
       eyebrow: "История бренда",

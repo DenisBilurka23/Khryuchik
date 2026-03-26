@@ -2,11 +2,14 @@ import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 
+import { getCountryCurrency } from "@/lib/countries";
+
 import type { OrderSummaryCardProps } from "./types";
 import { formatCurrency } from "../utils";
 
 export const OrderSummaryCard = ({
   locale,
+  country,
   labels,
   subtotal,
   shipping,
@@ -42,20 +45,26 @@ export const OrderSummaryCard = ({
         <Stack spacing={2} sx={{ mt: 3 }}>
           <Stack direction="row" justifyContent="space-between">
             <Typography color="text.secondary">{labels.itemsLabel}</Typography>
-            <Typography>{formatCurrency(subtotal, locale)}</Typography>
+            <Typography>
+              {formatCurrency(subtotal, locale, getCountryCurrency(country))}
+            </Typography>
           </Stack>
 
           <Stack direction="row" justifyContent="space-between">
             <Typography color="text.secondary">{labels.shippingLabel}</Typography>
             <Typography>
-              {shipping === 0 ? labels.freeShipping : formatCurrency(shipping, locale)}
+              {shipping === 0
+                ? labels.freeShipping
+                : formatCurrency(shipping, locale, getCountryCurrency(country))}
             </Typography>
           </Stack>
 
           <Stack direction="row" justifyContent="space-between">
             <Typography color="text.secondary">{labels.discountLabel}</Typography>
             <Typography>
-              {discount > 0 ? `-${formatCurrency(discount, locale)}` : formatCurrency(0, locale)}
+              {discount > 0
+                ? `-${formatCurrency(discount, locale, getCountryCurrency(country))}`
+                : formatCurrency(0, locale, getCountryCurrency(country))}
             </Typography>
           </Stack>
         </Stack>
@@ -67,7 +76,7 @@ export const OrderSummaryCard = ({
             {labels.totalLabel}
           </Typography>
           <Typography sx={{ fontSize: 28, fontWeight: 800, color: "primary.main" }}>
-            {formatCurrency(total, locale)}
+            {formatCurrency(total, locale, getCountryCurrency(country))}
           </Typography>
         </Stack>
 

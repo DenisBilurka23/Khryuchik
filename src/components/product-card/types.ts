@@ -10,11 +10,7 @@ export type ProductCardProps = {
 };
 
 export type AddToCartButtonProps = {
-  slug: string;
-  title: string;
-  price: number;
-  emoji: string;
-  bgColor?: string;
+  productId: string;
   label: string;
   className?: string;
 };

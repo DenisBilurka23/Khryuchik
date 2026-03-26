@@ -6,11 +6,7 @@ import type { AddToCartButtonProps } from "./types";
 import { useCart } from "../cart/store";
 
 export const AddToCartButton = ({
-  slug,
-  title,
-  price,
-  emoji,
-  bgColor,
+  productId,
   label,
   className,
 }: AddToCartButtonProps) => {
@@ -18,11 +14,7 @@ export const AddToCartButton = ({
 
   const handleAddToCart = () => {
     addItem({
-      slug,
-      title,
-      price,
-      emoji,
-      bgColor: bgColor ?? "#FFF8F0",
+      productId,
     });
   };
 

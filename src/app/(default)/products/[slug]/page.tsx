@@ -9,6 +9,7 @@ import {
 } from "@/data/products";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
+import { getRequestCountry } from "@/lib/request-country";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -23,13 +24,14 @@ export const generateMetadata = async ({
   params,
 }: ProductPageProps): Promise<Metadata> => {
   const { slug } = await params;
-  const product = await getProductDetails(defaultLocale, slug);
+  const country = await getRequestCountry();
+  const product = await getProductDetails(defaultLocale, country, slug);
 
   if (!product) {
     notFound();
   }
 
-  const dictionary = await getDictionary(defaultLocale);
+  const dictionary = await getDictionary(defaultLocale, country);
 
   return {
     title: `${product.title} | ${dictionary.storefront.brand.title}`,
@@ -57,20 +59,22 @@ export const generateMetadata = async ({
 
 const DefaultProductPage = async ({ params }: ProductPageProps) => {
   const { slug } = await params;
-  const product = await getProductDetails(defaultLocale, slug);
+  const country = await getRequestCountry();
+  const product = await getProductDetails(defaultLocale, country, slug);
 
   if (!product) {
     notFound();
   }
 
   const [dictionary, relatedProducts] = await Promise.all([
-    getDictionary(defaultLocale),
-    getProductSummariesByIds(defaultLocale, product.relatedIds),
+    getDictionary(defaultLocale, country),
+    getProductSummariesByIds(defaultLocale, country, product.relatedIds),
   ]);
 
   return (
     <ProductPageView
       locale={defaultLocale}
+      country={country}
       dictionary={dictionary.storefront}
       product={product}
       relatedProducts={relatedProducts}

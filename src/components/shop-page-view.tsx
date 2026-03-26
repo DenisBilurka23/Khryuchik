@@ -37,12 +37,14 @@ const isShopFilterValue = (
 
 const createShopPageViewModel = ({
   locale,
+  country,
   dictionary,
   categories,
   products,
   selectedFilter,
   search,
 }: CreateShopPageViewModelParams) => {
+  void country;
   const homeHref = getLocalizedPath(locale, "/");
   const shopHref = getLocalizedPath(locale, "/shop");
   const cartHref = getLocalizedPath(locale, "/cart");
@@ -93,6 +95,7 @@ const createShopPageViewModel = ({
 
 export const ShopPageView = ({
   locale,
+  country,
   dictionary,
   categories,
   products,
@@ -113,6 +116,7 @@ export const ShopPageView = ({
   const { booksHref, cartHref, shopHref, localizedPaths, filters, filteredProducts } =
     createShopPageViewModel({
       locale,
+      country,
       dictionary,
       categories,
       products,
@@ -126,6 +130,7 @@ export const ShopPageView = ({
         <Box className={styles.pageContent}>
           <StorefrontHeader
             locale={locale}
+            country={country}
             dictionary={dictionary}
             homeHref={homeHref}
             localizedPaths={localizedPaths}

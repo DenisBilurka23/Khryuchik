@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
@@ -7,42 +8,48 @@ import {
   Box,
   Button,
   Container,
-  Paper,
   Stack,
   Toolbar,
 } from "@mui/material";
 import Link from "next/link";
 
 import { Logo } from "../logo";
-import { localeLabels } from "../utils";
 import { CartButton } from "./CartButton";
+import { CountrySwitcher } from "./CountrySwitcher";
+import { LocaleSwitcher } from "./LocaleSwitcher";
+import { MobileMenu } from "./MobileMenu";
 import styles from "./storefront-header.module.css";
-import type { StorefrontHeaderProps } from "./types";
+import type { StorefrontHeaderProps, StorefrontNavItem } from "./types";
 
 export const StorefrontHeader = ({
   locale,
+  country,
   dictionary,
   homeHref,
   localizedPaths,
   navigationPaths,
 }: StorefrontHeaderProps) => {
-  const navItems = [
+  const navItems: Array<StorefrontNavItem & { icon: ReactNode }> = [
     {
+      key: "books",
       label: dictionary.nav.books,
       href: navigationPaths?.books ?? "#books",
       icon: <MenuBookOutlinedIcon fontSize="small" />,
     },
     {
+      key: "shop",
       label: dictionary.nav.shop,
       href: navigationPaths?.shop ?? "#shop",
       icon: <StorefrontOutlinedIcon fontSize="small" />,
     },
     {
+      key: "story",
       label: dictionary.nav.story,
       href: navigationPaths?.story ?? "#story",
       icon: <AutoStoriesOutlinedIcon fontSize="small" />,
     },
     {
+      key: "faq",
       label: dictionary.nav.faq,
       href: navigationPaths?.faq ?? "#faq",
       icon: <LocalShippingOutlinedIcon fontSize="small" />,
@@ -90,44 +97,42 @@ export const StorefrontHeader = ({
           </Stack>
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-            <Paper
-              aria-label={dictionary.localeSwitcherLabel}
-              elevation={0}
-              className={styles.localeSwitcher}
-              sx={{ borderRadius: "999px" }}
+            <Stack
+              direction="row"
+              spacing={1}
+              sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
             >
-              <Stack direction="row" spacing={0}>
-                {(
-                  Object.keys(localeLabels) as (keyof typeof localeLabels)[]
-                ).map((targetLocale) => (
-                  <Link
-                    key={targetLocale}
-                    href={localizedPaths[targetLocale]}
-                    style={{ textDecoration: "none", color: "inherit" }}
-                  >
-                    <Button
-                      variant="text"
-                      color="inherit"
-                      component="span"
-                      className={styles.localeButton}
-                      sx={{
-                        backgroundColor:
-                          targetLocale === locale ? "#D96C82" : "transparent",
-                        color: targetLocale === locale ? "#fff" : "#27272A",
-                        "&:hover": {
-                          backgroundColor:
-                            targetLocale === locale
-                              ? "#D96C82"
-                              : "rgba(217, 108, 130, 0.06)",
-                        },
-                      }}
-                    >
-                      {localeLabels[targetLocale]}
-                    </Button>
-                  </Link>
-                ))}
-              </Stack>
-            </Paper>
+              <CountrySwitcher
+                country={country}
+                locale={locale}
+                label={dictionary.countrySwitcherLabel}
+                sx={{ minWidth: 112 }}
+              />
+
+              <LocaleSwitcher
+                locale={locale}
+                label={dictionary.localeSwitcherLabel}
+                localizedPaths={localizedPaths}
+                sx={{ minWidth: 92 }}
+              />
+            </Stack>
+
+            <MobileMenu
+              brand={dictionary.brand}
+              locale={locale}
+              country={country}
+              localizedPaths={localizedPaths}
+              navItems={navItems.map(({ key, label, href }) => ({
+                key,
+                label,
+                href,
+              }))}
+              cartHref={navigationPaths?.cart ?? "/cart"}
+              cartLabel={dictionary.cartLabel}
+              localeSwitcherLabel={dictionary.localeSwitcherLabel}
+              countrySwitcherLabel={dictionary.countrySwitcherLabel}
+              homeHref={homeHref}
+            />
 
             <CartButton
               href={navigationPaths?.cart ?? "/cart"}

@@ -58,16 +58,12 @@ export const ProductCard = ({
         </Link>
 
         <Typography sx={{ mt: 1, color: "primary.main", fontWeight: 700 }}>
-          {formatCurrency(product.price, locale)}
+          {formatCurrency(product.price, locale, product.currency)}
         </Typography>
 
         <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
           <AddToCartButton
-            slug={product.slug}
-            title={product.title}
-            price={product.price}
-            emoji={product.emoji}
-            bgColor={product.bgColor}
+            productId={product.id}
             label={addToCart}
             className={styles.addButton}
           />

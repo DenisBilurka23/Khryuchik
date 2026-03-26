@@ -4,11 +4,12 @@ import { Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "
 import Link from "next/link";
 
 import { locales, type Locale } from "@/i18n/config";
+import { countryShippingConfig } from "@/lib/countries";
 
 import { CartItemCard } from "./cart/CartItemCard";
-import { useCart } from "./cart/store";
 import { EmptyCartState } from "./cart/EmptyCartState";
 import { OrderSummaryCard } from "./cart/OrderSummaryCard";
+import { useResolvedCart } from "./cart/useResolvedCart";
 import type { CartPageViewProps } from "./cart-page-view.types";
 import { FooterSection } from "./footer-section";
 import { NewsletterSection } from "./newsletter-section";
@@ -17,8 +18,9 @@ import { StorefrontThemeProvider } from "./storefront-theme-provider";
 import styles from "./storefront.module.css";
 import { getLocalizedPath } from "./utils";
 
-export const CartPageView = ({ locale, dictionary }: CartPageViewProps) => {
-  const { items, subtotal, updateQuantity, removeItem } = useCart();
+export const CartPageView = ({ locale, country, dictionary }: CartPageViewProps) => {
+  const { items, subtotal, updateQuantity, removeItem, isLoading, hasStoredItems } =
+    useResolvedCart(locale, country);
 
   const homeHref = getLocalizedPath(locale, "/");
   const shopHref = getLocalizedPath(locale, "/shop");
@@ -54,7 +56,11 @@ export const CartPageView = ({ locale, dictionary }: CartPageViewProps) => {
     removeItem(id);
   };
 
-  const shipping = subtotal >= 80 || subtotal === 0 ? 0 : 8;
+  const shippingConfig = countryShippingConfig[country];
+  const shipping =
+    subtotal >= shippingConfig.freeShippingThreshold || subtotal === 0
+      ? 0
+      : shippingConfig.shippingPrice;
   const discount = 0;
 
   return (
@@ -63,6 +69,7 @@ export const CartPageView = ({ locale, dictionary }: CartPageViewProps) => {
         <Box className={styles.pageContent}>
           <StorefrontHeader
             locale={locale}
+            country={country}
             dictionary={dictionary}
             homeHref={homeHref}
             localizedPaths={localizedPaths}
@@ -123,13 +130,26 @@ export const CartPageView = ({ locale, dictionary }: CartPageViewProps) => {
                 </Typography>
               </Box>
 
-              {items.length === 0 ? (
+              {!hasStoredItems && !isLoading ? (
                 <EmptyCartState
                   title={dictionary.cartPage.emptyState.title}
                   text={dictionary.cartPage.emptyState.text}
                   actionLabel={dictionary.cartPage.emptyState.action}
                   actionHref={shopHref}
                 />
+              ) : isLoading ? (
+                <Box
+                  sx={{
+                    borderRadius: "24px",
+                    border: "1px solid #F0DFC8",
+                    bgcolor: "#fff",
+                    p: 4,
+                  }}
+                >
+                  <Typography color="text.secondary">
+                    Loading cart...
+                  </Typography>
+                </Box>
               ) : (
                 <Grid container spacing={4} alignItems="flex-start">
                   <Grid size={{ xs: 12, md: 7, lg: 8 }}>
@@ -152,6 +172,7 @@ export const CartPageView = ({ locale, dictionary }: CartPageViewProps) => {
                   <Grid size={{ xs: 12, md: 5, lg: 4 }}>
                     <OrderSummaryCard
                       locale={locale}
+                      country={country}
                       labels={dictionary.cartPage.summary}
                       subtotal={subtotal}
                       shipping={shipping}

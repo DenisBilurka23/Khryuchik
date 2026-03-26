@@ -1,7 +1,9 @@
 import type { Locale } from "@/i18n/config";
 import type { ProductDetails } from "@/types/product-details";
 
-const productDetailsMap: Record<Locale, Record<string, ProductDetails>> = {
+type SeedProductDetails = Omit<ProductDetails, "currency" | "productId">;
+
+const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
   ru: {
     mug: {
       slug: "mug",

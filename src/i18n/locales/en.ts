@@ -13,6 +13,7 @@ const dictionary: SeedDictionary = {
       shortLabel: "Khryuchik",
     },
     localeSwitcherLabel: "Language switcher",
+    countrySwitcherLabel: "Country switcher",
     cartLabel: "Cart",
     nav: {
       books: "Books",
@@ -69,29 +70,6 @@ const dictionary: SeedDictionary = {
       actionLabel: "All books",
       detailsButton: "Details",
       buyButton: "Buy",
-      items: [
-        {
-          slug: "book-winter",
-          title: "Khryuchik in Winter",
-          lang: "RU / EN",
-          desc: "A warm story about Khryuchik's winter adventures.",
-          emoji: "📘",
-        },
-        {
-          slug: "book-country-house",
-          title: "Khryuchik at the Country House",
-          lang: "RU / EN",
-          desc: "A cheerful tale inspired by real family memories.",
-          emoji: "📚",
-        },
-        {
-          slug: "book-friends",
-          title: "Khryuchik and Friends",
-          lang: "RU / EN",
-          desc: "A kind story about friendship, care, and small discoveries.",
-          emoji: "📚",
-        },
-      ],
     },
     shopSection: {
       eyebrow: "Shop",
@@ -99,36 +77,6 @@ const dictionary: SeedDictionary = {
       actionLabel: "All merch",
       addToCart: "Add to cart",
       wishlistAriaLabel: "Add to favorites",
-      items: [
-        {
-          id: "book-winter",
-          title: "Book 'Khryuchik in Winter'",
-          price: 29,
-          emoji: "📘",
-          category: "All",
-        },
-        {
-          id: "mug",
-          title: "Khryuchik mug",
-          price: 24,
-          emoji: "☕",
-          category: "Gifts",
-        },
-        {
-          id: "tshirt",
-          title: "Khryuchik T-shirt",
-          price: 49,
-          emoji: "👕",
-          category: "Apparel",
-        },
-        {
-          id: "stickers",
-          title: "Khryuchik stickers",
-          price: 12,
-          emoji: "✨",
-          category: "Gifts",
-        },
-      ],
     },
     storySection: {
       eyebrow: "Brand story",

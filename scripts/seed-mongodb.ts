@@ -4,14 +4,19 @@ import {
   getProductDetails,
   getProductSlugs,
 } from "@/server/catalog/seed-data/product-details.seed";
+import {
+  getStorefrontBookSeedItems,
+  getStorefrontProductSeedItems,
+} from "@/server/catalog/seed-data/storefront.seed";
 import { categorySeedDocuments } from "@/server/catalog/seed-data/categories.seed";
 import { type Locale, locales } from "@/i18n/config";
-import { dictionariesByLocale } from "@/i18n/runtime-dictionaries";
+import type { CountryCode } from "@/lib/countries";
 import type {
   CategoryDocument,
   ProductCategory,
   ProductDetailDocument,
   ProductDocument,
+  ProductCountryPricing,
   ProductPlacement,
   ProductType,
 } from "@/types/catalog";
@@ -45,6 +50,36 @@ const productCategoryById: Record<string, ProductCategory> = {
   stickers: "gifts",
 };
 
+const productPricingByCountry: Record<
+  string,
+  Record<CountryCode, ProductCountryPricing>
+> = {
+  "book-winter": {
+    BY: { price: 29, currency: "BYN" },
+    US: { price: 12, currency: "USD" },
+  },
+  "book-country-house": {
+    BY: { price: 27, currency: "BYN" },
+    US: { price: 11, currency: "USD" },
+  },
+  "book-friends": {
+    BY: { price: 27, currency: "BYN" },
+    US: { price: 11, currency: "USD" },
+  },
+  mug: {
+    BY: { price: 24, currency: "BYN", oldPrice: 29 },
+    US: { price: 9, currency: "USD", oldPrice: 11 },
+  },
+  tshirt: {
+    BY: { price: 49, currency: "BYN" },
+    US: { price: 18, currency: "USD" },
+  },
+  stickers: {
+    BY: { price: 12, currency: "BYN" },
+    US: { price: 5, currency: "USD" },
+  },
+};
+
 const getProductType = (productId: string): ProductType =>
   productCategoryById[productId] === "books" ? "book" : "merch";
 
@@ -70,15 +105,14 @@ const buildProductPlacements = (productId: string): ProductPlacement[] => {
   const placements = new Set<ProductPlacement>(["shop"]);
 
   for (const locale of locales) {
-    const dictionary = dictionariesByLocale[locale].storefront;
+    const bookItems = getStorefrontBookSeedItems(locale);
+    const shopItems = getStorefrontProductSeedItems(locale);
 
-    if (dictionary.booksSection.items.some((book) => book.slug === productId)) {
+    if (bookItems.some((book) => book.slug === productId)) {
       placements.add("home-books");
     }
 
-    if (
-      dictionary.shopSection.items.some((product) => product.id === productId)
-    ) {
+    if (shopItems.some((product) => product.id === productId)) {
       placements.add("home-shop");
     }
   }
@@ -117,10 +151,10 @@ const buildProductDocument = (productId: string): ProductDocument => ({
     allowBackorder: getProductType(productId) === "book",
     availability: "in_stock",
   },
+  pricing: productPricingByCountry[productId],
   translations: Object.fromEntries(
     locales.map((locale) => {
-      const dictionary = dictionariesByLocale[locale].storefront;
-      const bookItem = dictionary.booksSection.items.find(
+      const bookItem = getStorefrontBookSeedItems(locale).find(
         (book) => book.slug === productId,
       );
       const details = getRequiredProductDetails(locale, productId);

@@ -9,12 +9,16 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
+import { getCountryCurrency } from "@/lib/countries";
+
 import { InfoChip } from "../info-chip";
 import { formatCurrency, getLocalizedPath, promoBackgrounds } from "../utils";
 import styles from "./hero-section.module.css";
 import type { HeroSectionProps } from "./types";
 
-export const HeroSection = ({ locale, dictionary }: HeroSectionProps) => {
+export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) => {
+  const homeHref = getLocalizedPath(locale, "/");
+
   return (
     <Box component="section" className={styles.section}>
       <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 } }}>
@@ -49,7 +53,10 @@ export const HeroSection = ({ locale, dictionary }: HeroSectionProps) => {
               spacing={2}
               sx={{ mt: 4 }}
             >
-              <Link href="#books" style={{ textDecoration: "none", color: "inherit" }}>
+              <Link
+                href={`${homeHref}#books`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
                 <Button component="span" variant="contained" size="large">
                   {dictionary.hero.primaryAction}
                 </Button>
@@ -97,7 +104,11 @@ export const HeroSection = ({ locale, dictionary }: HeroSectionProps) => {
                   {dictionary.hero.featuredHit.title}
                 </Typography>
                 <Typography variant="body2" sx={{ color: "primary.main" }}>
-                  {formatCurrency(dictionary.hero.featuredHit.price, locale)}
+                  {formatCurrency(
+                    dictionary.hero.featuredHit.price,
+                    locale,
+                    getCountryCurrency(country),
+                  )}
                 </Typography>
               </Paper>
 

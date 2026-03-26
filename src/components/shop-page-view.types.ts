@@ -1,11 +1,13 @@
 import type { Locale } from "@/i18n/config";
 import type { StorefrontDictionary } from "@/i18n/types";
+import type { CountryCode } from "@/lib/countries";
 import type { LocalizedCategory, LocalizedProductSummary } from "@/types/catalog";
 
 export type ShopFilterValue = "all" | string;
 
 export type ShopPageViewProps = {
   locale: Locale;
+  country: CountryCode;
   dictionary: StorefrontDictionary;
   categories: LocalizedCategory[];
   products: LocalizedProductSummary[];
@@ -15,6 +17,7 @@ export type ShopPageViewProps = {
 
 export type CreateShopPageViewModelParams = {
   locale: Locale;
+  country: CountryCode;
   dictionary: StorefrontDictionary;
   categories: LocalizedCategory[];
   products: LocalizedProductSummary[];
