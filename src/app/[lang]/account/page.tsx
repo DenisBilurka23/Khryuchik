@@ -9,6 +9,7 @@ import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { getAccountUserByEmail, getAccountUserById } from "@/server/users/services/users.service";
 import type { LocalizedAccountPageProps } from "@/types/auth-pages";
 
 const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
@@ -27,6 +28,11 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
   const country = await getRequestCountry();
   const dictionary = await getDictionary(lang, country);
   const { localizedPaths, navigationPaths } = createStorefrontHeaderViewModel(lang);
+  const user = session.user.id
+    ? await getAccountUserById(session.user.id)
+    : session.user.email
+      ? await getAccountUserByEmail(session.user.email)
+      : null;
 
   return (
     <StorefrontThemeProvider>
@@ -39,7 +45,7 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
         navigationPaths={navigationPaths}
       />
       <Container maxWidth="lg">
-        <AccountPageView locale={lang} dictionary={dictionary.accountPage} homeHref={lang === "en" ? "/" : `/${lang}`} user={session.user ?? {}} />
+        <AccountPageView locale={lang} dictionary={dictionary.accountPage} homeHref={lang === "en" ? "/" : `/${lang}`} user={user ?? session.user ?? {}} />
       </Container>
     </StorefrontThemeProvider>
   );

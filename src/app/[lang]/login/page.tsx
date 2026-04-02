@@ -1,15 +1,13 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { Container } from "@mui/material";
 
 import { AuthPageView } from "@/components/auth-page-view";
 import { StorefrontHeader } from "@/components/storefront-header";
-import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
 import { StorefrontThemeProvider } from "@/components/storefront-theme-provider";
 import { getLocalizedPath } from "@/components/utils";
 import { isLocale } from "@/i18n/config";
-import { getDictionary } from "@/i18n/dictionaries";
-import { getServerAuthSession, isGoogleAuthEnabled } from "@/server/auth/config";
-import { getRequestCountry } from "@/server/country/request-country";
+import { isGoogleAuthEnabled } from "@/server/auth/config";
+import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import type { LocalizedLoginPageProps } from "@/types/auth-pages";
 
 const LocalizedLoginPage = async ({ params, searchParams }: LocalizedLoginPageProps) => {
@@ -19,16 +17,9 @@ const LocalizedLoginPage = async ({ params, searchParams }: LocalizedLoginPagePr
     notFound();
   }
 
-  const session = await getServerAuthSession();
-
-  if (session) {
-    redirect(`/${lang}/account`);
-  }
-
   const { callbackUrl } = await searchParams;
-  const country = await getRequestCountry();
-  const dictionary = await getDictionary(lang, country);
-  const { localizedPaths, navigationPaths } = createStorefrontHeaderViewModel(lang);
+  const { country, dictionary, localizedPaths, navigationPaths, homeHref } =
+    await getGuestAuthPageContext(lang);
 
   return (
     <StorefrontThemeProvider>
@@ -36,7 +27,7 @@ const LocalizedLoginPage = async ({ params, searchParams }: LocalizedLoginPagePr
         locale={lang}
         country={country}
         dictionary={dictionary.storefront}
-        homeHref={lang === "en" ? "/" : `/${lang}`}
+        homeHref={homeHref}
         localizedPaths={localizedPaths}
         navigationPaths={navigationPaths}
       />

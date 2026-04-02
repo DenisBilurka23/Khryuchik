@@ -4,15 +4,18 @@ import { ObjectId } from "mongodb";
 
 import { createPasswordResetToken, hashPasswordResetToken } from "@/server/auth/reset-password";
 import { hashPassword, verifyPassword } from "@/server/auth/password";
-import type { RegisterUserInput } from "@/types/users";
+import type { RegisterUserInput, SafeAuthUser, UpdateUserProfileInput } from "@/types/users";
 
 import {
+  addGoogleToExistingUser,
   addCredentialsToExistingUser,
+  createGoogleUser,
   createCredentialsUser,
   findUserByEmail,
   findUserById,
   setUserPasswordHash,
   toCredentialsAuthUser,
+  updateUserProfile,
 } from "../repositories/users.repository";
 import {
   findActivePasswordResetToken,
@@ -106,4 +109,94 @@ export const resetPasswordWithToken = async (
   await markPasswordResetTokenUsed(resetToken._id as ObjectId);
 
   return { ok: true as const };
+};
+
+export const syncGoogleUser = async (input: {
+  email: string;
+  name?: string | null;
+  image?: string | null;
+}) => {
+  const existingUser = await findUserByEmail(input.email);
+
+  if (existingUser?._id) {
+    return addGoogleToExistingUser(existingUser._id as ObjectId, input);
+  }
+
+  return createGoogleUser(input);
+};
+
+export const getAccountUserByEmail = async (email: string) => {
+  const user = await findUserByEmail(email);
+
+  if (!user) {
+    return null;
+  }
+
+  return {
+    id: (user._id as ObjectId).toString(),
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    image: user.image ?? null,
+    authProviders: user.authProviders,
+  } satisfies SafeAuthUser;
+};
+
+export const getAccountUserById = async (userId: string) => {
+  if (!ObjectId.isValid(userId)) {
+    return null;
+  }
+
+  const user = await findUserById(new ObjectId(userId));
+
+  if (!user?._id) {
+    return null;
+  }
+
+  return {
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    image: user.image ?? null,
+    authProviders: user.authProviders,
+  } satisfies SafeAuthUser;
+};
+
+export const updateAccountUserProfile = async (
+  userId: string,
+  input: UpdateUserProfileInput,
+) => {
+  if (!ObjectId.isValid(userId)) {
+    return { ok: false as const, reason: "not_found" as const };
+  }
+
+  const existingUser = await findUserById(new ObjectId(userId));
+
+  if (!existingUser?._id) {
+    return { ok: false as const, reason: "not_found" as const };
+  }
+
+  const nextEmail = input.email.trim().toLowerCase();
+  const currentEmail = existingUser.email.trim().toLowerCase();
+  const hasGoogleProvider = existingUser.authProviders.includes("google");
+
+  if (hasGoogleProvider && nextEmail !== currentEmail) {
+    return { ok: false as const, reason: "email_managed_by_google" as const };
+  }
+
+  if (nextEmail !== currentEmail) {
+    const userWithSameEmail = await findUserByEmail(nextEmail);
+
+    if (userWithSameEmail?._id && userWithSameEmail._id.toString() !== userId) {
+      return { ok: false as const, reason: "email_taken" as const };
+    }
+  }
+
+  const user = await updateUserProfile(new ObjectId(userId), {
+    ...input,
+    email: nextEmail,
+  });
+
+  return { ok: true as const, user };
 };

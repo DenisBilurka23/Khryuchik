@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type SyntheticEvent } from "react";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -33,8 +33,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 
+import { updateAccountProfileClient } from "@/client-api/account";
 import { getAccountPageMockData } from "@/data/account-page-mock";
 
 import type {
@@ -44,6 +46,41 @@ import type {
   SectionKey,
   SidebarItemProps,
 } from "./account-page-view.types";
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const splitName = (value: string | null | undefined) => {
+  const normalizedName = value?.trim() ?? "";
+
+  if (!normalizedName) {
+    return { firstName: "", lastName: "" };
+  }
+
+  const [firstName = "", ...lastNameParts] = normalizedName.split(/\s+/);
+
+  return {
+    firstName,
+    lastName: lastNameParts.join(" "),
+  };
+};
+
+const getProfileErrorMessage = (
+  errorCode: string,
+  dictionary: AccountPageViewProps["dictionary"],
+) => {
+  switch (errorCode) {
+    case "invalid_email":
+      return dictionary.invalidEmail;
+    case "email_taken":
+      return dictionary.emailTaken;
+    case "missing_fields":
+      return dictionary.missingFields;
+    case "email_managed_by_google":
+      return dictionary.emailManagedByGoogle;
+    default:
+      return dictionary.unexpectedError;
+  }
+};
 
 const tabSections: Array<Exclude<SectionKey, "favorites" | "logout">> = [
   "overview",
@@ -109,16 +146,91 @@ export const AccountPageView = ({
   homeHref,
   user,
 }: AccountPageViewProps) => {
+  const { update } = useSession();
   const copy = dictionary;
   const [tab, setTab] = useState(0);
   const [activeSection, setActiveSection] = useState<SectionKey>("overview");
-  const userName = user.name || (locale === "ru" ? "Пользователь" : "User");
-  const userEmail = user.email || "email@example.com";
+  const [profileUser, setProfileUser] = useState(user);
+  const { firstName: initialFirstName, lastName: initialLastName } = splitName(user.name);
+  const [firstName, setFirstName] = useState(initialFirstName);
+  const [lastName, setLastName] = useState(initialLastName);
+  const [email, setEmail] = useState(user.email ?? "");
+  const [phone, setPhone] = useState(user.phone ?? "");
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
+  const [profileSuccess, setProfileSuccess] = useState<string | null>(null);
+  const userName = profileUser.name || (locale === "ru" ? "Пользователь" : "User");
+  const userEmail = profileUser.email || "email@example.com";
   const userInitial = userName.charAt(0).toUpperCase();
+  const isEmailEditable = !(profileUser.authProviders ?? []).includes("google");
   const { orders, downloads, addresses, favorites } = getAccountPageMockData(
     locale,
     copy,
   );
+
+  const beginProfileEditing = () => {
+    setIsEditingProfile(true);
+    setProfileError(null);
+    setProfileSuccess(null);
+  };
+
+  const handleProfileSave = async (event?: SyntheticEvent) => {
+    event?.preventDefault();
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedName = `${firstName.trim()} ${lastName.trim()}`.trim();
+
+    if (!normalizedName || !normalizedEmail) {
+      setProfileError(copy.missingFields);
+      setProfileSuccess(null);
+      return;
+    }
+
+    if (!EMAIL_PATTERN.test(normalizedEmail)) {
+      setProfileError(copy.invalidEmail);
+      setProfileSuccess(null);
+      return;
+    }
+
+    setIsSavingProfile(true);
+    setProfileError(null);
+    setProfileSuccess(null);
+
+    const response = await updateAccountProfileClient({
+      name: normalizedName,
+      email: normalizedEmail,
+      phone,
+    });
+
+    setIsSavingProfile(false);
+
+    if (!response.ok || !response.data?.user) {
+      setProfileError(
+        getProfileErrorMessage(response.data?.error ?? "unexpected_error", copy),
+      );
+      return;
+    }
+
+    setProfileUser(response.data.user);
+    setFirstName(splitName(response.data.user.name).firstName);
+    setLastName(splitName(response.data.user.name).lastName);
+    setEmail(response.data.user.email);
+    setPhone(response.data.user.phone);
+    setIsEditingProfile(false);
+    setProfileSuccess(copy.saved);
+
+    await update({
+      user: {
+        id: response.data.user.id,
+        name: response.data.user.name,
+        email: response.data.user.email,
+        phone: response.data.user.phone,
+        authProviders: response.data.user.authProviders,
+        image: response.data.user.image ?? null,
+      },
+    });
+  };
 
   const sidebarItems: AccountSidebarItem[] = [
     { key: "overview", label: copy.profile, icon: <PersonOutlineIcon /> },
@@ -155,41 +267,65 @@ export const AccountPageView = ({
         title={copy.personalData}
         action={
           <Button
-            variant="outlined"
+            variant={isEditingProfile ? "contained" : "outlined"}
             color="inherit"
-            startIcon={<EditOutlinedIcon />}
+            startIcon={isEditingProfile ? <SaveOutlinedIcon /> : <EditOutlinedIcon />}
             sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
+            onClick={isEditingProfile ? () => void handleProfileSave() : beginProfileEditing}
+            loading={isSavingProfile}
           >
-            {copy.editProfile}
+            {isEditingProfile ? copy.save : copy.editProfile}
           </Button>
         }
       >
-        <Grid container spacing={2}>
+        <Box component="form" onSubmit={handleProfileSave}>
+          <Stack spacing={2} sx={{ mb: 2.5 }}>
+            {profileError ? <Chip color="error" label={profileError} /> : null}
+            {profileSuccess ? <Chip color="success" label={profileSuccess} /> : null}
+            {!isEmailEditable ? (
+              <Typography color="text.secondary">{copy.emailManagedByGoogle}</Typography>
+            ) : null}
+          </Stack>
+
+          <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={locale === "ru" ? "Имя" : "First name"}
-              defaultValue={userName.split(" ")[0]}
+              label={copy.firstNameLabel}
+              value={firstName}
+              onChange={(event) => setFirstName(event.target.value)}
+              disabled={!isEditingProfile}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={locale === "ru" ? "Фамилия" : "Last name"}
-              defaultValue={userName.split(" ").slice(1).join(" ")}
+              label={copy.lastNameLabel}
+              value={lastName}
+              onChange={(event) => setLastName(event.target.value)}
+              disabled={!isEditingProfile}
             />
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField fullWidth label="Email" defaultValue={userEmail} />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={locale === "ru" ? "Телефон" : "Phone"}
-              defaultValue="+1 647 000 00 00"
+              label={copy.emailLabel}
+              value={email}
+              onChange={(event) => setEmail(event.target.value.toLowerCase())}
+              disabled={!isEditingProfile || !isEmailEditable}
             />
           </Grid>
-        </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TextField
+              fullWidth
+              label={copy.phoneLabel}
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
+              disabled={!isEditingProfile}
+            />
+          </Grid>
+          </Grid>
+        </Box>
       </SectionCard>
 
       <SectionCard
@@ -720,6 +856,7 @@ export const AccountPageView = ({
                   color="inherit"
                   startIcon={<EditOutlinedIcon />}
                   sx={{ mt: 2.5, borderColor: "#E8D6BF", bgcolor: "#fff" }}
+                  onClick={beginProfileEditing}
                 >
                   {copy.editProfile}
                 </Button>

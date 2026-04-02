@@ -343,6 +343,16 @@ export type AccountPageDictionary = {
   inDelivery: string;
   editProfile: string;
   save: string;
+  saved: string;
+  firstNameLabel: string;
+  lastNameLabel: string;
+  emailLabel: string;
+  phoneLabel: string;
+  invalidEmail: string;
+  emailTaken: string;
+  missingFields: string;
+  emailManagedByGoogle: string;
+  unexpectedError: string;
   addAddress: string;
   allOrders: string;
   showAll: string;

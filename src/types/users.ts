@@ -5,7 +5,6 @@ export type AuthProvider = "google" | "credentials";
 export type UserDocument = {
   _id?: ObjectId;
   email: string;
-  emailNormalized: string;
   name: string;
   phone: string;
   image?: string | null;
@@ -20,6 +19,7 @@ export type SafeAuthUser = {
   email: string;
   name: string;
   phone: string;
+  authProviders: AuthProvider[];
   image?: string | null;
 };
 
@@ -28,6 +28,12 @@ export type RegisterUserInput = {
   name: string;
   phone: string;
   password: string;
+};
+
+export type UpdateUserProfileInput = {
+  email: string;
+  name: string;
+  phone: string;
 };
 
 export type PasswordResetTokenDocument = {

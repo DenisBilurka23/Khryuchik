@@ -9,6 +9,7 @@ import { defaultLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { getAccountUserByEmail, getAccountUserById } from "@/server/users/services/users.service";
 
 const AccountPage = async () => {
   const session = await getServerAuthSession();
@@ -20,6 +21,11 @@ const AccountPage = async () => {
   const country = await getRequestCountry();
   const dictionary = await getDictionary(defaultLocale, country);
   const { localizedPaths, navigationPaths } = createStorefrontHeaderViewModel(defaultLocale);
+  const user = session.user.id
+    ? await getAccountUserById(session.user.id)
+    : session.user.email
+      ? await getAccountUserByEmail(session.user.email)
+      : null;
 
   return (
     <StorefrontThemeProvider>
@@ -32,7 +38,7 @@ const AccountPage = async () => {
         navigationPaths={navigationPaths}
       />
       <Container maxWidth="lg">
-        <AccountPageView locale={defaultLocale} dictionary={dictionary.accountPage} homeHref="/" user={session.user ?? {}} />
+        <AccountPageView locale={defaultLocale} dictionary={dictionary.accountPage} homeHref="/" user={user ?? session.user ?? {}} />
       </Container>
     </StorefrontThemeProvider>
   );

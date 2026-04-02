@@ -3,9 +3,16 @@ import "server-only";
 import { ObjectId } from "mongodb";
 
 import { getMongoDb } from "@/server/db/mongodb";
-import type { AuthProvider, RegisterUserInput, SafeAuthUser, UserDocument } from "@/types/users";
+import type {
+  AuthProvider,
+  RegisterUserInput,
+  SafeAuthUser,
+  UpdateUserProfileInput,
+  UserDocument,
+} from "@/types/users";
 
 const USERS_COLLECTION_NAME = "users";
+const EMAIL_INDEX_NAME = "email_unique";
 
 let usersIndexesPromise: Promise<void> | null = null;
 
@@ -17,7 +24,7 @@ const getUsersCollection = async () => {
 
   if (!usersIndexesPromise) {
     usersIndexesPromise = collection
-      .createIndex({ emailNormalized: 1 }, { unique: true, name: "emailNormalized_unique" })
+      .createIndex({ email: 1 }, { unique: true, name: EMAIL_INDEX_NAME })
       .then(() => undefined);
   }
 
@@ -28,16 +35,17 @@ const getUsersCollection = async () => {
 
 const toSafeAuthUser = (user: UserDocument): SafeAuthUser => ({
   id: (user._id ?? new ObjectId()).toString(),
-  email: user.email,
+  email: normalizeEmail(user.email),
   name: user.name,
   phone: user.phone,
+  authProviders: user.authProviders,
   image: user.image ?? null,
 });
 
 export const findUserByEmail = async (email: string) => {
   const collection = await getUsersCollection();
 
-  return collection.findOne({ emailNormalized: normalizeEmail(email) });
+  return collection.findOne({ email: normalizeEmail(email) });
 };
 
 export const findUserById = async (userId: ObjectId) => {
@@ -51,10 +59,8 @@ export const createCredentialsUser = async (
 ) => {
   const collection = await getUsersCollection();
   const now = new Date();
-  const emailNormalized = normalizeEmail(input.email);
   const document: UserDocument = {
-    email: input.email.trim(),
-    emailNormalized,
+    email: normalizeEmail(input.email),
     name: input.name.trim(),
     phone: input.phone.trim(),
     passwordHash: input.passwordHash,
@@ -79,6 +85,7 @@ export const addCredentialsToExistingUser = async (
     { _id: userId },
     {
       $set: {
+        email: normalizeEmail(input.email),
         name: input.name.trim(),
         phone: input.phone.trim(),
         passwordHash: input.passwordHash,
@@ -102,7 +109,7 @@ export const addCredentialsToExistingUser = async (
 export const toCredentialsAuthUser = (user: UserDocument) => ({
   id: (user._id ?? new ObjectId()).toString(),
   name: user.name,
-  email: user.email,
+  email: normalizeEmail(user.email),
   image: user.image ?? null,
 });
 
@@ -124,4 +131,95 @@ export const setUserPasswordHash = async (
       },
     },
   );
+};
+
+export const createGoogleUser = async (input: {
+  email: string;
+  name?: string | null;
+  image?: string | null;
+}) => {
+  const collection = await getUsersCollection();
+  const now = new Date();
+  const document: UserDocument = {
+    email: normalizeEmail(input.email),
+    name: input.name?.trim() || "",
+    phone: "",
+    image: input.image ?? null,
+    passwordHash: null,
+    authProviders: ["google"],
+    createdAt: now,
+    updatedAt: now,
+  };
+  const result = await collection.insertOne(document);
+
+  return toSafeAuthUser({ ...document, _id: result.insertedId });
+};
+
+export const addGoogleToExistingUser = async (
+  userId: ObjectId,
+  input: {
+    email: string;
+    name?: string | null;
+    image?: string | null;
+  },
+) => {
+  const collection = await getUsersCollection();
+  const existingUser = await collection.findOne({ _id: userId });
+
+  if (!existingUser) {
+    throw new Error("Failed to load existing user");
+  }
+
+  const nextName = existingUser.name || input.name?.trim() || "";
+  const nextImage = existingUser.image ?? input.image ?? null;
+
+  await collection.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        email: normalizeEmail(input.email),
+        name: nextName,
+        image: nextImage,
+        updatedAt: new Date(),
+      },
+      $addToSet: {
+        authProviders: "google" satisfies AuthProvider,
+      },
+    },
+  );
+
+  const updatedUser = await collection.findOne({ _id: userId });
+
+  if (!updatedUser) {
+    throw new Error("Failed to load updated user");
+  }
+
+  return toSafeAuthUser(updatedUser);
+};
+
+export const updateUserProfile = async (
+  userId: ObjectId,
+  input: UpdateUserProfileInput,
+) => {
+  const collection = await getUsersCollection();
+
+  await collection.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        email: normalizeEmail(input.email),
+        name: input.name.trim(),
+        phone: input.phone.trim(),
+        updatedAt: new Date(),
+      },
+    },
+  );
+
+  const updatedUser = await collection.findOne({ _id: userId });
+
+  if (!updatedUser) {
+    throw new Error("Failed to load updated user");
+  }
+
+  return toSafeAuthUser(updatedUser);
 };
