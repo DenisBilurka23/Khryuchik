@@ -11,10 +11,6 @@ import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import { locales } from "@/i18n/config";
 
-import { FooterSection } from "../footer-section";
-import { NewsletterSection } from "../newsletter-section";
-import { StorefrontHeader } from "../storefront-header";
-import { StorefrontThemeProvider } from "../storefront-theme-provider";
 import styles from "../storefront.module.css";
 import { formatCurrency, getLocalizedPath, getLocalizedProductPath } from "../utils";
 import { ProductGallery } from "./ProductGallery";
@@ -65,7 +61,9 @@ export const ProductPageView = ({
   product,
   relatedProducts,
 }: ProductPageViewProps) => {
-  const { homeHref, shopHref, bookHref, localizedPaths, relatedProductCards } =
+  void country;
+
+  const { homeHref, shopHref, bookHref, relatedProductCards } =
     createProductPageViewModel({
       locale,
       product,
@@ -73,26 +71,10 @@ export const ProductPageView = ({
     });
 
   return (
-    <StorefrontThemeProvider>
-      <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
-        <Box className={styles.pageContent}>
-          <StorefrontHeader
-            locale={locale}
-            country={country}
-            dictionary={dictionary}
-            homeHref={homeHref}
-            localizedPaths={localizedPaths}
-            navigationPaths={{
-              books: getLocalizedPath(locale, "/shop?category=books"),
-              shop: shopHref,
-              story: `${homeHref}#story`,
-              faq: `${homeHref}#faq`,
-              cart: getLocalizedPath(locale, "/cart"),
-            }}
-          />
-
-          <Box sx={{ py: { xs: 4, md: 6 } }}>
-            <Container maxWidth="lg">
+    <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
+      <Box className={styles.pageContent}>
+        <Box sx={{ py: { xs: 4, md: 6 } }}>
+          <Container maxWidth="lg">
               <Breadcrumbs sx={{ mb: 4 }}>
                 <Link
                   href={homeHref}
@@ -138,13 +120,9 @@ export const ProductPageView = ({
                 labels={dictionary.productPage}
                 relatedProducts={relatedProductCards}
               />
-            </Container>
-          </Box>
-
-          <NewsletterSection dictionary={dictionary} />
-          <FooterSection dictionary={dictionary} />
+          </Container>
         </Box>
       </Box>
-    </StorefrontThemeProvider>
+    </Box>
   );
 };

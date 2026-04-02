@@ -2,9 +2,6 @@ import { notFound, redirect } from "next/navigation";
 import { Container } from "@mui/material";
 
 import { AccountPageView } from "@/components/account-page-view";
-import { StorefrontHeader } from "@/components/storefront-header";
-import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
-import { StorefrontThemeProvider } from "@/components/storefront-theme-provider";
 import { isLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getServerAuthSession } from "@/server/auth/config";
@@ -27,7 +24,6 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
 
   const country = await getRequestCountry();
   const dictionary = await getDictionary(lang, country);
-  const { localizedPaths, navigationPaths } = createStorefrontHeaderViewModel(lang);
   const user = session.user.id
     ? await getAccountUserById(session.user.id)
     : session.user.email
@@ -35,19 +31,9 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
       : null;
 
   return (
-    <StorefrontThemeProvider>
-      <StorefrontHeader
-        locale={lang}
-        country={country}
-        dictionary={dictionary.storefront}
-        homeHref={lang === "en" ? "/" : `/${lang}`}
-        localizedPaths={localizedPaths}
-        navigationPaths={navigationPaths}
-      />
-      <Container maxWidth="lg">
-        <AccountPageView locale={lang} dictionary={dictionary.accountPage} homeHref={lang === "en" ? "/" : `/${lang}`} user={user ?? session.user ?? {}} />
-      </Container>
-    </StorefrontThemeProvider>
+    <Container maxWidth="lg">
+      <AccountPageView locale={lang} dictionary={dictionary.accountPage} homeHref={lang === "en" ? "/" : `/${lang}`} user={user ?? session.user ?? {}} />
+    </Container>
   );
 };
 

@@ -1,18 +1,14 @@
 import { Box } from "@mui/material";
 
 import { BookSection } from "./books-section";
-import { FooterSection } from "./footer-section";
 import { HeroSection } from "./hero-section";
 import { NewsletterSection } from "./newsletter-section";
 import { OrderSection } from "./order-section";
 import { ShopSection } from "./shop-section";
-import { StorefrontHeader } from "./storefront-header";
 import { createStorefrontHeaderViewModel } from "./storefront-header/navigation";
-import { StorefrontThemeProvider } from "./storefront-theme-provider";
 import { StorySection } from "./story-section";
 import styles from "./storefront.module.css";
 import type { StorefrontProps } from "./types";
-import { getLocalizedPath } from "./utils";
 
 export const Storefront = ({
   locale,
@@ -23,42 +19,31 @@ export const Storefront = ({
   shopProducts,
   selectedShopCategory,
 }: StorefrontProps) => {
-  const { localizedPaths, navigationPaths } = createStorefrontHeaderViewModel(locale);
+  const { navigationPaths } = createStorefrontHeaderViewModel(locale);
   const { shop: shopHref, cart: cartHref } = navigationPaths;
 
   return (
-    <StorefrontThemeProvider>
-      <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
-        <Box className={styles.pageContent}>
-          <StorefrontHeader
-            locale={locale}
-            country={country}
-            dictionary={dictionary}
-            homeHref={getLocalizedPath(locale, "/")}
-            localizedPaths={localizedPaths}
-            navigationPaths={navigationPaths}
-          />
-          <HeroSection locale={locale} country={country} dictionary={dictionary} />
-          <BookSection locale={locale} dictionary={dictionary} books={books} />
-          <ShopSection
-            locale={locale}
-            dictionary={dictionary}
-            categories={shopCategories}
-            products={shopProducts}
-            selectedFilter={selectedShopCategory}
-          />
-          <StorySection dictionary={dictionary} />
-          <OrderSection
-            locale={locale}
-            country={country}
-            dictionary={dictionary}
-            shopHref={shopHref}
-            cartHref={cartHref}
-          />
-          <NewsletterSection dictionary={dictionary} />
-          <FooterSection dictionary={dictionary} />
-        </Box>
+    <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
+      <Box className={styles.pageContent}>
+        <HeroSection locale={locale} country={country} dictionary={dictionary} />
+        <BookSection locale={locale} dictionary={dictionary} books={books} />
+        <ShopSection
+          locale={locale}
+          dictionary={dictionary}
+          categories={shopCategories}
+          products={shopProducts}
+          selectedFilter={selectedShopCategory}
+        />
+        <StorySection dictionary={dictionary} />
+        <OrderSection
+          locale={locale}
+          country={country}
+          dictionary={dictionary}
+          shopHref={shopHref}
+          cartHref={cartHref}
+        />
+        <NewsletterSection dictionary={dictionary} />
       </Box>
-    </StorefrontThemeProvider>
+    </Box>
   );
 };

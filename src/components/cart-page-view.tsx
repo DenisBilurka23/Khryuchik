@@ -3,7 +3,6 @@
 import { Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "@mui/material";
 import Link from "next/link";
 
-import { locales, type Locale } from "@/i18n/config";
 import { countryShippingConfig } from "@/shared/countries";
 
 import { CartItemCard } from "./cart/CartItemCard";
@@ -11,10 +10,6 @@ import { EmptyCartState } from "./cart/EmptyCartState";
 import { OrderSummaryCard } from "./cart/OrderSummaryCard";
 import { useResolvedCart } from "./cart/useResolvedCart";
 import type { CartPageViewProps } from "./cart-page-view.types";
-import { FooterSection } from "./footer-section";
-import { NewsletterSection } from "./newsletter-section";
-import { StorefrontHeader } from "./storefront-header";
-import { StorefrontThemeProvider } from "./storefront-theme-provider";
 import styles from "./storefront.module.css";
 import { getLocalizedPath } from "./utils";
 
@@ -24,13 +19,6 @@ export const CartPageView = ({ locale, country, dictionary }: CartPageViewProps)
 
   const homeHref = getLocalizedPath(locale, "/");
   const shopHref = getLocalizedPath(locale, "/shop");
-  const cartHref = getLocalizedPath(locale, "/cart");
-  const localizedPaths = Object.fromEntries(
-    locales.map((targetLocale) => [
-      targetLocale,
-      getLocalizedPath(targetLocale, "/cart"),
-    ]),
-  ) as Record<Locale, string>;
 
   const handleIncrease = (id: string) => {
     const item = items.find((entry) => entry.id === id);
@@ -64,26 +52,10 @@ export const CartPageView = ({ locale, country, dictionary }: CartPageViewProps)
   const discount = 0;
 
   return (
-    <StorefrontThemeProvider>
-      <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
-        <Box className={styles.pageContent}>
-          <StorefrontHeader
-            locale={locale}
-            country={country}
-            dictionary={dictionary}
-            homeHref={homeHref}
-            localizedPaths={localizedPaths}
-            navigationPaths={{
-              books: getLocalizedPath(locale, "/shop?category=books"),
-              shop: shopHref,
-              story: `${homeHref}#story`,
-              faq: `${homeHref}#faq`,
-              cart: cartHref,
-            }}
-          />
-
-          <Box sx={{ py: { xs: 4, md: 6 } }}>
-            <Container maxWidth="lg">
+    <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
+      <Box className={styles.pageContent}>
+        <Box sx={{ py: { xs: 4, md: 6 } }}>
+          <Container maxWidth="lg">
               <Breadcrumbs sx={{ mb: 4 }}>
                 <MuiLink component={Link} underline="hover" color="inherit" href={homeHref}>
                   {dictionary.cartPage.breadcrumbs.home}
@@ -182,13 +154,9 @@ export const CartPageView = ({ locale, country, dictionary }: CartPageViewProps)
                   </Grid>
                 </Grid>
               )}
-            </Container>
-          </Box>
-
-          <NewsletterSection dictionary={dictionary} />
-          <FooterSection dictionary={dictionary} />
+          </Container>
         </Box>
       </Box>
-    </StorefrontThemeProvider>
+    </Box>
   );
 };
