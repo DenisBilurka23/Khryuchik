@@ -20,6 +20,7 @@ import { LocaleSwitcher } from "./LocaleSwitcher";
 import { MobileMenu } from "./MobileMenu";
 import styles from "./storefront-header.module.css";
 import type { StorefrontHeaderProps, StorefrontNavItem } from "./types";
+import { UserButton } from "./UserButton";
 
 export const StorefrontHeader = ({
   locale,
@@ -132,6 +133,12 @@ export const StorefrontHeader = ({
               localeSwitcherLabel={dictionary.localeSwitcherLabel}
               countrySwitcherLabel={dictionary.countrySwitcherLabel}
               homeHref={homeHref}
+            />
+
+            <UserButton
+              locale={locale}
+              accountLabel={dictionary.userMenu.account}
+              signInLabel={dictionary.userMenu.signIn}
             />
 
             <CartButton

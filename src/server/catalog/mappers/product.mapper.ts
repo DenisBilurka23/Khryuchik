@@ -1,8 +1,8 @@
 import "server-only";
 
 import type { Locale } from "@/i18n/config";
-import { defaultCountry } from "@/lib/countries";
-import type { CountryCode } from "@/lib/countries";
+import { defaultCountry } from "@/shared/countries";
+import type { CountryCode } from "@/shared/countries";
 import type {
   LocalizedProductSummary,
   ProductDetailDocument,

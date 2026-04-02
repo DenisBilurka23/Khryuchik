@@ -1,6 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import type { CartPageLabels } from "@/i18n/types";
-import type { CountryCode } from "@/lib/countries";
+import type { CountryCode } from "@/shared/countries";
 import type { CartItem, CartSelections, StoredCartItem } from "@/types/cart";
 
 export type CartState = {

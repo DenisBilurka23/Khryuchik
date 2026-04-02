@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { Locale } from "@/i18n/config";
-import { getMongoDb } from "@/lib/mongodb";
+import { getMongoDb } from "@/server/db/mongodb";
 import type { ProductDocument, ProductPlacement } from "@/types/catalog";
 
 export type ProductPlacementQueryOptions = {

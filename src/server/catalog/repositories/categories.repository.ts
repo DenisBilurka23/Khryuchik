@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getMongoDb } from "@/lib/mongodb";
+import { getMongoDb } from "@/server/db/mongodb";
 import type { CategoryDocument } from "@/types/catalog";
 
 export const findShopVisibleCategories = async () => {

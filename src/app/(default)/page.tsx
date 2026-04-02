@@ -8,7 +8,7 @@ import {
 } from "@/data/products";
 import { defaultLocale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
-import { getRequestCountry } from "@/lib/request-country";
+import { getRequestCountry } from "@/server/country/request-country";
 
 type HomePageProps = {
   searchParams: Promise<{ category?: string }>;

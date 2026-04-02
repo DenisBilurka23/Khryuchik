@@ -3,7 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/lib/countries";
+import type { CountryCode } from "@/shared/countries";
 
 import { buildRuntimeDictionary, dictionariesByLocale } from "./runtime-dictionaries";
 

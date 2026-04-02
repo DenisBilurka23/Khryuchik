@@ -1,0 +1,41 @@
+import { redirect } from "next/navigation";
+import { Container } from "@mui/material";
+
+import { AccountPageView } from "@/components/account-page-view";
+import { StorefrontHeader } from "@/components/storefront-header";
+import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
+import { StorefrontThemeProvider } from "@/components/storefront-theme-provider";
+import { defaultLocale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
+import { getServerAuthSession } from "@/server/auth/config";
+import { getRequestCountry } from "@/server/country/request-country";
+
+const AccountPage = async () => {
+  const session = await getServerAuthSession();
+
+  if (!session) {
+    redirect("/login?callbackUrl=%2Faccount");
+  }
+
+  const country = await getRequestCountry();
+  const dictionary = await getDictionary(defaultLocale, country);
+  const { localizedPaths, navigationPaths } = createStorefrontHeaderViewModel(defaultLocale);
+
+  return (
+    <StorefrontThemeProvider>
+      <StorefrontHeader
+        locale={defaultLocale}
+        country={country}
+        dictionary={dictionary.storefront}
+        homeHref="/"
+        localizedPaths={localizedPaths}
+        navigationPaths={navigationPaths}
+      />
+      <Container maxWidth="lg">
+        <AccountPageView locale={defaultLocale} dictionary={dictionary.accountPage} homeHref="/" user={session.user ?? {}} />
+      </Container>
+    </StorefrontThemeProvider>
+  );
+};
+
+export default AccountPage;

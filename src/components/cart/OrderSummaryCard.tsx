@@ -2,7 +2,7 @@ import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
 
-import { getCountryCurrency } from "@/lib/countries";
+import { getCountryCurrency } from "@/shared/countries";
 
 import type { OrderSummaryCardProps } from "./types";
 import { formatCurrency } from "../utils";

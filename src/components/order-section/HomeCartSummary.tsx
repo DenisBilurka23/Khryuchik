@@ -2,7 +2,7 @@
 
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 
-import { getCountryCurrency } from "@/lib/countries";
+import { getCountryCurrency } from "@/shared/countries";
 
 import { useResolvedCart } from "../cart/useResolvedCart";
 import { formatCurrency } from "../utils";

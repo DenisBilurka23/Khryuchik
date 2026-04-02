@@ -8,7 +8,7 @@ import {
   defaultCountry,
   getCountryFromGeoHeaders,
   isCountryCode,
-} from "@/lib/countries";
+} from "@/shared/countries";
 
 const LOCALE_HEADER = "x-khryuchik-locale";
 
@@ -73,8 +73,14 @@ export const proxy = (request: NextRequest) => {
 
   const allowDefaultLocalePath =
     pathname === "/" ||
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/forgot-password" ||
+    pathname === "/account" ||
     pathname === "/cart" ||
     pathname === "/shop" ||
+    pathname.startsWith("/reset-password/") ||
+    pathname.startsWith("/account/") ||
     pathname === "/products" ||
     pathname.startsWith("/products/");
 

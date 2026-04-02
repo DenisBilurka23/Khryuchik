@@ -1,5 +1,5 @@
 import type { Locale } from "@/i18n/config";
-import type { CurrencyCode } from "@/lib/countries";
+import type { CurrencyCode } from "@/shared/countries";
 
 export const localeLabels: Record<Locale, string> = {
   ru: "RU",

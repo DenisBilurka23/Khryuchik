@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { CartPageView } from "@/components/cart-page-view";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
-import { getRequestCountry } from "@/lib/request-country";
+import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedCartPageProps = {
   params: Promise<{ lang: string }>;

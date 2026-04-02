@@ -9,7 +9,7 @@ import {
   getCountryFromCookieHeader,
   getCountryFromGeoHeaders,
   isCountryCode,
-} from "@/lib/countries";
+} from "@/shared/countries";
 
 export const dynamic = "force-dynamic";
 

@@ -9,7 +9,7 @@ import {
 } from "@/data/products";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
-import { getRequestCountry } from "@/lib/request-country";
+import { getRequestCountry } from "@/server/country/request-country";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;

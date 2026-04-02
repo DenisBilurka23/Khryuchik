@@ -116,6 +116,10 @@ export type StorefrontDictionary = {
   localeSwitcherLabel: string;
   countrySwitcherLabel: string;
   cartLabel: string;
+  userMenu: {
+    account: string;
+    signIn: string;
+  };
   nav: {
     books: string;
     shop: string;
@@ -242,6 +246,120 @@ export type StorefrontDictionary = {
   };
 };
 
+export type AuthPageDictionary = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  credentialsTitle: string;
+  credentialsLead: string;
+  emailLabel: string;
+  emailPlaceholder: string;
+  passwordLabel: string;
+  passwordPlaceholder: string;
+  loginButton: string;
+  forgotPasswordLinkLabel: string;
+  registerPrompt: string;
+  registerLinkLabel: string;
+  invalidCredentials: string;
+  unexpectedError: string;
+  googleTitle: string;
+  googleButton: string;
+  unavailable: string;
+  ready: string;
+  dividerLabel: string;
+  chips: string[];
+};
+
+export type ForgotPasswordPageDictionary = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  chips: string[];
+  emailLabel: string;
+  emailPlaceholder: string;
+  submitButton: string;
+  loginPrompt: string;
+  loginLinkLabel: string;
+  successMessage: string;
+  invalidEmail: string;
+  unexpectedError: string;
+};
+
+export type ResetPasswordPageDictionary = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  passwordLabel: string;
+  passwordPlaceholder: string;
+  confirmPasswordLabel: string;
+  confirmPasswordPlaceholder: string;
+  submitButton: string;
+  successMessage: string;
+  loginLinkLabel: string;
+  passwordMismatch: string;
+  passwordTooShort: string;
+  invalidToken: string;
+  unexpectedError: string;
+};
+
+export type RegisterPageDictionary = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  chips: string[];
+  nameLabel: string;
+  namePlaceholder: string;
+  emailLabel: string;
+  emailPlaceholder: string;
+  phoneLabel: string;
+  phonePlaceholder: string;
+  passwordLabel: string;
+  passwordPlaceholder: string;
+  confirmPasswordLabel: string;
+  confirmPasswordPlaceholder: string;
+  submitButton: string;
+  loginPrompt: string;
+  loginLinkLabel: string;
+  passwordMismatch: string;
+  emailTaken: string;
+  passwordTooShort: string;
+  invalidEmail: string;
+  missingFields: string;
+  unexpectedError: string;
+};
+
+export type AccountPageDictionary = {
+  account: string;
+  welcome: string;
+  lead: string;
+  profile: string;
+  orders: string;
+  books: string;
+  addresses: string;
+  favorites: string;
+  settings: string;
+  logout: string;
+  delivered: string;
+  inDelivery: string;
+  editProfile: string;
+  save: string;
+  addAddress: string;
+  allOrders: string;
+  showAll: string;
+  removeAll: string;
+  signOutButton: string;
+  security: string;
+  notifications: string;
+  languageRegion: string;
+  personalData: string;
+  recentOrders: string;
+  downloadedBooks: string;
+  shippingAddresses: string;
+  signOutTitle: string;
+  signOutText: string;
+  tabs: string[];
+};
+
 export type SeedStorefrontDictionary = Omit<
   StorefrontDictionary,
   "booksSection" | "shopSection"
@@ -256,6 +374,11 @@ export type Dictionary = {
     description: string;
   };
   storefront: StorefrontDictionary;
+  authPage: AuthPageDictionary;
+  registerPage: RegisterPageDictionary;
+  forgotPasswordPage: ForgotPasswordPageDictionary;
+  resetPasswordPage: ResetPasswordPageDictionary;
+  accountPage: AccountPageDictionary;
 };
 
 export type SeedDictionary = {
@@ -264,4 +387,9 @@ export type SeedDictionary = {
     description: string;
   };
   storefront: SeedStorefrontDictionary;
+  authPage: AuthPageDictionary;
+  registerPage: RegisterPageDictionary;
+  forgotPasswordPage: ForgotPasswordPageDictionary;
+  resetPasswordPage: ResetPasswordPageDictionary;
+  accountPage: AccountPageDictionary;
 };

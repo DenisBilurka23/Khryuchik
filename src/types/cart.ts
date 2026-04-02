@@ -1,4 +1,4 @@
-import type { CurrencyCode } from "@/lib/countries";
+import type { CurrencyCode } from "@/shared/countries";
 
 export type CartSelections = {
   language?: string;

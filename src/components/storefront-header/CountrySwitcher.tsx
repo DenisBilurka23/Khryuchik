@@ -4,7 +4,8 @@ import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { countries, countryLabels, setClientCountry } from "@/lib/countries";
+import { setClientCountry } from "@/client/country";
+import { countries, countryLabels } from "@/shared/countries";
 
 import { HeaderSelect } from "./HeaderSelect";
 import type { CountrySwitcherProps } from "./types";

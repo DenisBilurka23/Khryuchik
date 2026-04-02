@@ -4,7 +4,7 @@ import { Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "
 import Link from "next/link";
 
 import { locales, type Locale } from "@/i18n/config";
-import { countryShippingConfig } from "@/lib/countries";
+import { countryShippingConfig } from "@/shared/countries";
 
 import { CartItemCard } from "./cart/CartItemCard";
 import { EmptyCartState } from "./cart/EmptyCartState";

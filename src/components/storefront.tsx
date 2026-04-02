@@ -1,8 +1,5 @@
 import { Box } from "@mui/material";
 
-import type { Locale } from "@/i18n/config";
-import { defaultLocale, locales } from "@/i18n/config";
-
 import { BookSection } from "./books-section";
 import { FooterSection } from "./footer-section";
 import { HeroSection } from "./hero-section";
@@ -10,31 +7,12 @@ import { NewsletterSection } from "./newsletter-section";
 import { OrderSection } from "./order-section";
 import { ShopSection } from "./shop-section";
 import { StorefrontHeader } from "./storefront-header";
+import { createStorefrontHeaderViewModel } from "./storefront-header/navigation";
 import { StorefrontThemeProvider } from "./storefront-theme-provider";
 import { StorySection } from "./story-section";
 import styles from "./storefront.module.css";
 import type { StorefrontProps } from "./types";
 import { getLocalizedPath } from "./utils";
-
-const createStorefrontHeaderViewModel = (locale: Locale) => {
-  const homeHref = getLocalizedPath(locale, "/");
-
-  return {
-    localizedPaths: Object.fromEntries(
-      locales.map((targetLocale) => [
-        targetLocale,
-        targetLocale === defaultLocale ? "/" : `/${targetLocale}`,
-      ]),
-    ) as Record<Locale, string>,
-    navigationPaths: {
-      books: getLocalizedPath(locale, "/shop?category=books"),
-      shop: getLocalizedPath(locale, "/shop"),
-      story: `${homeHref}#story`,
-      faq: `${homeHref}#faq`,
-      cart: getLocalizedPath(locale, "/cart"),
-    },
-  };
-};
 
 export const Storefront = ({
   locale,

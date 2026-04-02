@@ -1,6 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import type { StorefrontDictionary } from "@/i18n/types";
-import type { CountryCode } from "@/lib/countries";
+import type { CountryCode } from "@/shared/countries";
 import type { SxProps, Theme } from "@mui/material/styles";
 
 export type StorefrontHeaderProps = {

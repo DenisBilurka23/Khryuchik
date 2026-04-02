@@ -7,7 +7,7 @@ import {
   defaultCountry,
   getCountryFromCookieHeader,
   isCountryCode,
-} from "./countries";
+} from "@/shared/countries";
 
 export const getRequestCountry = async () => {
   const requestHeaders = await headers();

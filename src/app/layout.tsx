@@ -8,7 +8,9 @@ import {
   defaultCountry,
   getCountryFromCookieHeader,
   isCountryCode,
-} from "@/lib/countries";
+} from "@/shared/countries";
+
+import { AuthSessionProvider } from "@/components/auth-session-provider";
 
 import { bodyFont, displayFont } from "./fonts";
 import "./globals.css";
@@ -32,7 +34,9 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
       className={`${displayFont.variable} ${bodyFont.variable}`}
     >
       <body>
-        <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+        <AppRouterCacheProvider>
+          <AuthSessionProvider>{children}</AuthSessionProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

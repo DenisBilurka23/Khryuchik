@@ -1,6 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import type { StorefrontDictionary } from "@/i18n/types";
-import type { CountryCode } from "@/lib/countries";
+import type { CountryCode } from "@/shared/countries";
 import type { LocalizedCategory, LocalizedProductSummary } from "@/types/catalog";
 
 export type ShopFilterValue = "all" | string;

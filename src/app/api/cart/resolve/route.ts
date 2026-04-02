@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
-import { getRequestCountry } from "@/lib/request-country";
+import { getRequestCountry } from "@/server/country/request-country";
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
 import type { StoredCartItem } from "@/types/cart";
 

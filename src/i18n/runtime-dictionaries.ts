@@ -1,5 +1,5 @@
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/lib/countries";
+import type { CountryCode } from "@/shared/countries";
 import type { Dictionary, SeedDictionary } from "@/i18n/types";
 
 import { countryStorefrontOverrides } from "./country-overrides";
@@ -80,5 +80,10 @@ export const buildRuntimeDictionary = (
         | Record<string, unknown>
         | undefined,
     ) as Dictionary["storefront"],
+    authPage: dictionary.authPage,
+    registerPage: dictionary.registerPage,
+    forgotPasswordPage: dictionary.forgotPasswordPage,
+    resetPasswordPage: dictionary.resetPasswordPage,
+    accountPage: dictionary.accountPage,
   };
 };

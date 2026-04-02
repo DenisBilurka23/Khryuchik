@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { CartPageView } from "@/components/cart-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
-import { getRequestCountry } from "@/lib/request-country";
+import { getRequestCountry } from "@/server/country/request-country";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const country = await getRequestCountry();

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
-import { getCountryCurrency } from "@/lib/countries";
+import { getCountryCurrency } from "@/shared/countries";
 
 import { InfoChip } from "../info-chip";
 import { formatCurrency, getLocalizedPath, promoBackgrounds } from "../utils";
