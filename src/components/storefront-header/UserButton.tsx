@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 
 import type { Locale } from "@/i18n/config";
 
-import { getLocalizedPath } from "../utils";
+import { getLocalizedPath } from "@/utils";
 
 type UserButtonProps = {
   locale: Locale;

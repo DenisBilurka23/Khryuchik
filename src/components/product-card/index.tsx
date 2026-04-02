@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
-import { formatCurrency } from "../utils";
+import { formatCurrency } from "@/utils";
 import { AddToCartButton } from "./AddToCartButton";
 import styles from "./product-card.module.css";
 import type { ProductCardProps } from "./types";

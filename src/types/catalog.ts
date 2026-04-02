@@ -1,5 +1,5 @@
 import type { Locale } from "@/i18n/config";
-import type { CountryCode, CurrencyCode } from "@/shared/countries";
+import type { CountryCode, CurrencyCode } from "@/utils";
 
 import type {
   ProductImage,

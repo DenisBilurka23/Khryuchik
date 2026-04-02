@@ -11,8 +11,8 @@ import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import { locales } from "@/i18n/config";
 
-import styles from "../storefront.module.css";
-import { formatCurrency, getLocalizedPath, getLocalizedProductPath } from "../utils";
+import styles from "../storefront/storefront.module.css";
+import { formatCurrency, getLocalizedPath, getLocalizedProductPath } from "@/utils";
 import { ProductGallery } from "./ProductGallery";
 import { ProductInfo } from "./ProductInfo";
 import { ProductTabs } from "./ProductTabs";

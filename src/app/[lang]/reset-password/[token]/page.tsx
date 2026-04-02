@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@mui/material";
 
 import { ResetPasswordPageView } from "@/components/reset-password-page-view";
-import { getLocalizedPath } from "@/components/utils";
+import { getLocalizedPath } from "@/utils";
 import { isLocale } from "@/i18n/config";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import type { LocalizedResetPasswordPageProps } from "@/types/auth-pages";

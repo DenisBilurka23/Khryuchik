@@ -8,9 +8,9 @@ import {
   defaultCountry,
   getCountryFromCookieHeader,
   isCountryCode,
-} from "@/shared/countries";
+} from "@/utils";
 
-import { AuthSessionProvider } from "@/components/auth-session-provider";
+import { AuthSessionProvider } from "@/components/providers/auth-session-provider";
 
 import { bodyFont, displayFont } from "./fonts";
 import "./globals.css";

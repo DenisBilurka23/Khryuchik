@@ -8,7 +8,7 @@ import {
   defaultCountry,
   getCountryFromGeoHeaders,
   isCountryCode,
-} from "@/shared/countries";
+} from "@/utils";
 
 const LOCALE_HEADER = "x-khryuchik-locale";
 

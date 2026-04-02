@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 
 import { useCart } from "../cart/store";
-import { formatCurrency } from "../utils";
+import { formatCurrency } from "@/utils";
 import type { ProductInfoProps } from "./types";
 
 export const ProductInfo = ({ locale, labels, product }: ProductInfoProps) => {

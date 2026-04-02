@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { defaultLocale, locales } from "@/i18n/config";
 
-import { localeLabels } from "../utils";
+import { localeLabels } from "@/utils";
 import { HeaderSelect } from "./HeaderSelect";
 import type { LocaleSwitcherProps } from "./types";
 

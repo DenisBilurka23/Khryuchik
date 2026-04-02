@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@mui/material";
 
 import { ForgotPasswordPageView } from "@/components/forgot-password-page-view";
-import { getLocalizedPath } from "@/components/utils";
+import { getLocalizedPath } from "@/utils";
 import { isLocale } from "@/i18n/config";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import type { LocalizedForgotPasswordPageProps } from "@/types/auth-pages";

@@ -2,10 +2,9 @@
 
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 
-import { getCountryCurrency } from "@/shared/countries";
+import { formatCurrency, getCountryCurrency } from "@/utils";
 
 import { useResolvedCart } from "../cart/useResolvedCart";
-import { formatCurrency } from "../utils";
 import type {
   HomeCartSummaryItemCountParams,
   HomeCartSummaryProps,

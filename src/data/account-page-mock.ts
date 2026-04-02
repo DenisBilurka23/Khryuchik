@@ -1,7 +1,7 @@
 import type { Locale } from "@/i18n/config";
 import type { AccountPageDictionary } from "@/i18n/types";
 
-type AccountOrderMock = {
+export type AccountOrderMock = {
   id: string;
   date: string;
   status: string;
@@ -9,31 +9,43 @@ type AccountOrderMock = {
   items: string;
 };
 
-type AccountDownloadMock = {
+export type AccountDownloadMock = {
   title: string;
   format: string;
   size: string;
 };
 
-type AccountAddressMock = {
+export type AccountAddressMock = {
   title: string;
   line1: string;
   line2: string;
   line3: string;
 };
 
-type AccountFavoriteMock = {
+export type AccountFavoriteMock = {
   title: string;
   subtitle: string;
   price: string;
   emoji: string;
+  category: string;
+  availability: string;
+  badge: string;
+  availabilityTone: "in-stock" | "warning" | "preorder";
 };
 
-type AccountPageMockData = {
+export type AccountFavoriteSuggestionMock = {
+  title: string;
+  subtitle: string;
+  emoji: string;
+};
+
+export type AccountPageMockData = {
   orders: AccountOrderMock[];
   downloads: AccountDownloadMock[];
   addresses: AccountAddressMock[];
   favorites: AccountFavoriteMock[];
+  favoriteSuggestions: AccountFavoriteSuggestionMock[];
+  favoritesTotal: string;
 };
 
 export const getAccountPageMockData = (
@@ -104,12 +116,40 @@ export const getAccountPageMockData = (
             subtitle: "Gift collection",
             price: "24 BYN",
             emoji: "☕",
+            category: "Для дома",
+            availability: "В наличии",
+            badge: "Хит",
+            availabilityTone: "in-stock",
           },
           {
             title: "Футболка Хрючик",
             subtitle: "Spring drop",
             price: "49 BYN",
             emoji: "👕",
+            category: "Одежда",
+            availability: "Осталось 3",
+            badge: "Лимит",
+            availabilityTone: "warning",
+          },
+          {
+            title: "Стикеры Хрючик",
+            subtitle: "Fun pack",
+            price: "12 BYN",
+            emoji: "✨",
+            category: "Аксессуары",
+            availability: "В наличии",
+            badge: "Новинка",
+            availabilityTone: "in-stock",
+          },
+          {
+            title: "Подарочный бокс Хрючик",
+            subtitle: "Winter collection",
+            price: "79 BYN",
+            emoji: "🎁",
+            category: "Подарки",
+            availability: "Предзаказ",
+            badge: "Популярно",
+            availabilityTone: "preorder",
           },
         ]
       : [
@@ -118,13 +158,77 @@ export const getAccountPageMockData = (
             subtitle: "Gift collection",
             price: "24 BYN",
             emoji: "☕",
+            category: "Home",
+            availability: "In stock",
+            badge: "Bestseller",
+            availabilityTone: "in-stock",
           },
           {
             title: "Khryuchik T-shirt",
             subtitle: "Spring drop",
             price: "49 BYN",
             emoji: "👕",
+            category: "Clothes",
+            availability: "Only 3 left",
+            badge: "Limited",
+            availabilityTone: "warning",
+          },
+          {
+            title: "Khryuchik stickers",
+            subtitle: "Fun pack",
+            price: "12 BYN",
+            emoji: "✨",
+            category: "Accessories",
+            availability: "In stock",
+            badge: "New",
+            availabilityTone: "in-stock",
+          },
+          {
+            title: "Khryuchik gift box",
+            subtitle: "Winter collection",
+            price: "79 BYN",
+            emoji: "🎁",
+            category: "Gifts",
+            availability: "Preorder",
+            badge: "Popular",
+            availabilityTone: "preorder",
           },
         ],
+    favoriteSuggestions: isRussian
+      ? [
+          {
+            title: "Плюшевый Хрючик",
+            subtitle: "Подобрано на основе вашего избранного",
+            emoji: "🧸",
+          },
+          {
+            title: "Новая книга Хрючика",
+            subtitle: "Подобрано на основе вашего избранного",
+            emoji: "📕",
+          },
+          {
+            title: "Арома-свеча Хрючик",
+            subtitle: "Подобрано на основе вашего избранного",
+            emoji: "🕯️",
+          },
+        ]
+      : [
+          {
+            title: "Khryuchik plush toy",
+            subtitle: "Picked based on your wishlist",
+            emoji: "🧸",
+          },
+          {
+            title: "New Khryuchik book",
+            subtitle: "Picked based on your wishlist",
+            emoji: "📕",
+          },
+          {
+            title: "Khryuchik aroma candle",
+            subtitle: "Picked based on your wishlist",
+            emoji: "🕯️",
+          },
+        ],
+    favoritesTotal: "164 BYN",
   };
 };

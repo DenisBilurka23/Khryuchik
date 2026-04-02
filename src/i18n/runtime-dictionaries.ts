@@ -1,5 +1,5 @@
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/shared/countries";
+import type { CountryCode } from "@/utils";
 import type { Dictionary, SeedDictionary } from "@/i18n/types";
 
 import { countryStorefrontOverrides } from "./country-overrides";

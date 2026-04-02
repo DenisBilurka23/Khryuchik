@@ -1,6 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import type { ProductPageLabels, StorefrontDictionary } from "@/i18n/types";
-import type { CountryCode } from "@/shared/countries";
+import type { CountryCode } from "@/utils";
 import type { LocalizedProductSummary } from "@/types/catalog";
 import type { ProductDetails, ProductImage } from "@/types/product-details";
 

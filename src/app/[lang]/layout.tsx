@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { FooterSection } from "@/components/footer-section";
 import { StorefrontHeader } from "@/components/storefront-header";
-import { StorefrontThemeProvider } from "@/components/storefront-theme-provider";
+import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
 import { isLocale, locales } from "@/i18n/config";
 import { getStorefrontLayoutContext } from "@/server/storefront/layout-context";
 

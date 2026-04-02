@@ -10,7 +10,7 @@ import {
 } from "@/server/catalog/seed-data/storefront.seed";
 import { categorySeedDocuments } from "@/server/catalog/seed-data/categories.seed";
 import { type Locale, locales } from "@/i18n/config";
-import type { CountryCode } from "@/shared/countries";
+import type { CountryCode } from "@/utils";
 import type {
   CategoryDocument,
   ProductCategory,

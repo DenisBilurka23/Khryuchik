@@ -4,7 +4,7 @@ import { CategoryTabs } from "../category-tabs";
 import { createCategoryTabOptions } from "../category-tabs/utils";
 import { ProductCard } from "../product-card";
 import { SectionHeading } from "../section-heading";
-import { getLocalizedPath, getLocalizedProductPath } from "../utils";
+import { getLocalizedPath, getLocalizedProductPath } from "@/utils";
 import styles from "./shop-section.module.css";
 import type { ShopSectionProps } from "./types";
 

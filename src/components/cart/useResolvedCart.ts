@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/shared/countries";
+import type { CountryCode } from "@/utils";
 import type { CartItem, CartResolveResponse } from "@/types/cart";
 
 import { useCart } from "./store";

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@mui/material";
 
 import { AuthPageView } from "@/components/auth-page-view";
-import { getLocalizedPath } from "@/components/utils";
+import { getLocalizedPath } from "@/utils";
 import { isLocale } from "@/i18n/config";
 import { isGoogleAuthEnabled } from "@/server/auth/config";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";

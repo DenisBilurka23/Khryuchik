@@ -4,34 +4,9 @@ import type { NextRequest } from "next/server";
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
-import type { StoredCartItem } from "@/types/cart";
+import { isStoredCartItem } from "@/types/cart-guards";
 
 export const dynamic = "force-dynamic";
-
-const isCartSelections = (value: unknown) => {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  return Object.values(value as Record<string, unknown>).every(
-    (entry) => typeof entry === "string" || typeof entry === "undefined",
-  );
-};
-
-const isStoredCartItem = (value: unknown): value is StoredCartItem => {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  const item = value as Record<string, unknown>;
-
-  return (
-    typeof item.id === "string" &&
-    typeof item.productId === "string" &&
-    typeof item.quantity === "number" &&
-    (typeof item.selections === "undefined" || isCartSelections(item.selections))
-  );
-};
 
 export const POST = async (request: NextRequest) => {
   const payload = (await request.json().catch(() => null)) as

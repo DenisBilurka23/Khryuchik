@@ -3,7 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/shared/countries";
+import type { CountryCode } from "@/utils";
 import type { ProductPlacement } from "@/types/catalog";
 import type { CartItem, StoredCartItem } from "@/types/cart";
 import type { ProductOption } from "@/types/product-details";

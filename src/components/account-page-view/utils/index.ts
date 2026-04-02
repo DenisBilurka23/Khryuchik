@@ -1,0 +1,46 @@
+import type { AccountPageDictionary } from "@/i18n/types";
+
+import type { SectionKey } from "../types";
+
+export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export const tabSections: Array<Exclude<SectionKey, "favorites" | "logout">> = [
+  "overview",
+  "orders",
+  "books",
+  "addresses",
+  "settings",
+];
+
+export const splitName = (value: string | null | undefined) => {
+  const normalizedName = value?.trim() ?? "";
+
+  if (!normalizedName) {
+    return { firstName: "", lastName: "" };
+  }
+
+  const [firstName = "", ...lastNameParts] = normalizedName.split(/\s+/);
+
+  return {
+    firstName,
+    lastName: lastNameParts.join(" "),
+  };
+};
+
+export const getProfileErrorMessage = (
+  errorCode: string,
+  dictionary: AccountPageDictionary,
+) => {
+  switch (errorCode) {
+    case "invalid_email":
+      return dictionary.invalidEmail;
+    case "email_taken":
+      return dictionary.emailTaken;
+    case "missing_fields":
+      return dictionary.missingFields;
+    case "email_managed_by_google":
+      return dictionary.emailManagedByGoogle;
+    default:
+      return dictionary.unexpectedError;
+  }
+};

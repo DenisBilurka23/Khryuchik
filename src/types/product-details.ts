@@ -1,4 +1,4 @@
-import type { CurrencyCode } from "@/shared/countries";
+import type { CurrencyCode } from "@/utils";
 
 export type ProductImage = {
   id: string;

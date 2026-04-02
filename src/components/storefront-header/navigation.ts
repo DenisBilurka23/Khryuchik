@@ -1,7 +1,7 @@
 import type { Locale } from "@/i18n/config";
 import { defaultLocale, locales } from "@/i18n/config";
 
-import { getLocalizedPath } from "../utils";
+import { getLocalizedPath } from "@/utils";
 
 export const createStorefrontHeaderViewModel = (locale: Locale) => {
   const homeHref = getLocalizedPath(locale, "/");

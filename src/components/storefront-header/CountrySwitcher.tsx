@@ -5,7 +5,7 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { setClientCountry } from "@/client/country";
-import { countries, countryLabels } from "@/shared/countries";
+import { countries, countryLabels } from "@/utils";
 
 import { HeaderSelect } from "./HeaderSelect";
 import type { CountrySwitcherProps } from "./types";

@@ -7,7 +7,7 @@ import { Box, Card, CardContent, IconButton, Stack, Typography } from "@mui/mate
 import Link from "next/link";
 
 import type { CartItemCardProps } from "./types";
-import { formatCurrency, getLocalizedProductPath } from "../utils";
+import { formatCurrency, getLocalizedProductPath } from "@/utils";
 
 export const CartItemCard = ({
   item,

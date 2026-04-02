@@ -1,4 +1,4 @@
-import type { CountryCode } from "@/shared/countries";
+import type { CountryCode } from "@/utils";
 
 import type { Locale } from "./config";
 import type { StorefrontDictionary } from "./types";

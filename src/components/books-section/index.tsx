@@ -2,7 +2,7 @@ import { Box, Container, Grid } from "@mui/material";
 
 import { BookCard } from "../book-card";
 import { SectionHeading } from "../section-heading";
-import { getLocalizedPath, getLocalizedProductPath } from "../utils";
+import { getLocalizedPath, getLocalizedProductPath } from "@/utils";
 import styles from "./books-section.module.css";
 import type { BooksSectionProps } from "./types";
 

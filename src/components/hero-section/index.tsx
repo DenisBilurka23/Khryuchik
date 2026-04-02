@@ -9,10 +9,10 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
-import { getCountryCurrency } from "@/shared/countries";
+import { getCountryCurrency } from "@/utils";
 
 import { InfoChip } from "../info-chip";
-import { formatCurrency, getLocalizedPath, promoBackgrounds } from "../utils";
+import { formatCurrency, getLocalizedPath, promoBackgrounds } from "@/utils";
 import styles from "./hero-section.module.css";
 import type { HeroSectionProps } from "./types";
 

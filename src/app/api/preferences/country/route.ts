@@ -5,7 +5,7 @@ import {
   COUNTRY_COOKIE_NAME,
   defaultCountry,
   isCountryCode,
-} from "@/shared/countries";
+} from "@/utils";
 
 export const POST = async (request: NextRequest) => {
   const payload = (await request.json().catch(() => null)) as
