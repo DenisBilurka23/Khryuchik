@@ -20,6 +20,7 @@ export type ProductGalleryProps = {
 export type ProductInfoProps = {
   locale: Locale;
   labels: ProductPageLabels;
+  wishlistAriaLabel: string;
   product: ProductDetails;
 };
 

@@ -9,6 +9,7 @@ import type {
   SafeAuthUser,
   UpdateUserProfileInput,
   UserDocument,
+  WishlistEntryDocument,
 } from "@/types/users";
 
 const USERS_COLLECTION_NAME = "users";
@@ -17,6 +18,9 @@ const EMAIL_INDEX_NAME = "email_unique";
 let usersIndexesPromise: Promise<void> | null = null;
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
+
+const sortWishlistEntries = (entries: WishlistEntryDocument[]) =>
+  [...entries].sort((left, right) => right.addedAt.getTime() - left.addedAt.getTime());
 
 const getUsersCollection = async () => {
   const db = await getMongoDb();
@@ -222,4 +226,34 @@ export const updateUserProfile = async (
   }
 
   return toSafeAuthUser(updatedUser);
+};
+
+export const getUserWishlist = async (userId: ObjectId) => {
+  const collection = await getUsersCollection();
+  const user = await collection.findOne(
+    { _id: userId },
+    { projection: { wishlist: 1 } },
+  );
+
+  return sortWishlistEntries(user?.wishlist ?? []);
+};
+
+export const setUserWishlist = async (
+  userId: ObjectId,
+  wishlist: WishlistEntryDocument[],
+) => {
+  const collection = await getUsersCollection();
+  const nextWishlist = sortWishlistEntries(wishlist);
+
+  await collection.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        wishlist: nextWishlist,
+        updatedAt: new Date(),
+      },
+    },
+  );
+
+  return nextWishlist;
 };

@@ -22,12 +22,13 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 
-import { Logo } from "../logo";
-import { CountrySwitcher } from "./CountrySwitcher";
-import { LocaleSwitcher } from "./LocaleSwitcher";
-import type { MobileMenuProps, StorefrontNavItem } from "./types";
+import { Logo } from "../../logo";
+import { CountrySwitcher } from "../country-switcher";
+import { LocaleSwitcher } from "../locale-switcher";
 
-const iconByKey: Record<StorefrontNavItem["key"], React.ReactNode> = {
+import type { MobileMenuProps } from "./types";
+
+const iconByKey: Record<MobileMenuProps["navItems"][number]["key"], React.ReactNode> = {
   books: <MenuBookOutlinedIcon fontSize="small" />,
   shop: <StorefrontOutlinedIcon fontSize="small" />,
   story: <AutoStoriesOutlinedIcon fontSize="small" />,
@@ -189,3 +190,5 @@ export const MobileMenu = ({
     </>
   );
 };
+
+export type { MobileMenuProps } from "./types";

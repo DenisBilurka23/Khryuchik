@@ -2,6 +2,11 @@ import type { ObjectId } from "mongodb";
 
 export type AuthProvider = "google" | "credentials";
 
+export type WishlistEntryDocument = {
+  productId: string;
+  addedAt: Date;
+};
+
 export type UserDocument = {
   _id?: ObjectId;
   email: string;
@@ -10,6 +15,7 @@ export type UserDocument = {
   image?: string | null;
   passwordHash?: string | null;
   authProviders: AuthProvider[];
+  wishlist?: WishlistEntryDocument[];
   createdAt: Date;
   updatedAt: Date;
 };

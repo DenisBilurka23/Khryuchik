@@ -14,7 +14,8 @@ export const HeaderSelect = ({
   disabled = false,
   sx,
 }: HeaderSelectProps) => {
-  const selectedOption = options.find((option) => option.value === value) ?? options[0];
+  const selectedOption =
+    options.find((option) => option.value === value) ?? options[0];
 
   return (
     <Select
@@ -79,3 +80,5 @@ export const HeaderSelect = ({
     </Select>
   );
 };
+
+export type { HeaderSelectOption, HeaderSelectProps } from "./types";

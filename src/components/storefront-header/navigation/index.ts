@@ -1,9 +1,12 @@
 import type { Locale } from "@/i18n/config";
 import { defaultLocale, locales } from "@/i18n/config";
-
 import { getLocalizedPath } from "@/utils";
 
-export const createStorefrontHeaderViewModel = (locale: Locale) => {
+import type { StorefrontHeaderViewModel } from "./types";
+
+export const createStorefrontHeaderViewModel = (
+  locale: Locale,
+): StorefrontHeaderViewModel => {
   const homeHref = getLocalizedPath(locale, "/");
 
   return {
@@ -18,7 +21,10 @@ export const createStorefrontHeaderViewModel = (locale: Locale) => {
       shop: getLocalizedPath(locale, "/shop"),
       story: `${homeHref}#story`,
       faq: `${homeHref}#faq`,
+      favorites: getLocalizedPath(locale, "/favorites"),
       cart: getLocalizedPath(locale, "/cart"),
     },
   };
 };
+
+export type { StorefrontHeaderViewModel, StorefrontNavigationPaths } from "./types";

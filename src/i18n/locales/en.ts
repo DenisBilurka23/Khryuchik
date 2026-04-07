@@ -82,6 +82,28 @@ const dictionary: SeedDictionary = {
       addToCart: "Add to cart",
       wishlistAriaLabel: "Add to favorites",
     },
+    favoritesLabel: "Favorites",
+    favoritesPage: {
+      eyebrow: "Guest wishlist",
+      title: "Your favorites already work without an account",
+      lead:
+        "Your saved products are already here. Keep shopping freely, and when you're ready, sign in to keep the list safe and available on other devices.",
+      savedLabel: "Saved now",
+      savedCountLabel: "items",
+      primaryAction: "Sign in and sync",
+      secondaryAction: "Create account",
+      continueAction: "Continue shopping without signing in",
+      listTitle: "Your guest wishlist",
+      guestListTitle: "Guest wishlist",
+      guestListText: "These saved products are ready now and can be attached to your account later.",
+      itemCountLabel: "items",
+      addToCart: "Add to cart",
+      view: "View",
+      breadcrumbs: {
+        home: "Home",
+        current: "Favorites",
+      },
+    },
     storySection: {
       eyebrow: "Brand story",
       title: "Stories born out of real life",

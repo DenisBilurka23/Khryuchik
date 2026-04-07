@@ -1,9 +1,7 @@
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import {
   Box,
   Card,
   CardContent,
-  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -11,6 +9,7 @@ import Link from "next/link";
 
 import { formatCurrency } from "@/utils";
 import { AddToCartButton } from "./AddToCartButton";
+import { WishlistButton } from "./WishlistButton";
 import styles from "./product-card.module.css";
 import type { ProductCardProps } from "./types";
 
@@ -68,12 +67,11 @@ export const ProductCard = ({
             className={styles.addButton}
           />
 
-          <IconButton
-            aria-label={`${wishlistAriaLabel}: ${product.title}`}
+          <WishlistButton
+            productId={product.id}
+            label={`${wishlistAriaLabel}: ${product.title}`}
             className={styles.wishlistButton}
-          >
-            <FavoriteBorderIcon fontSize="small" />
-          </IconButton>
+          />
         </Stack>
       </CardContent>
     </Card>

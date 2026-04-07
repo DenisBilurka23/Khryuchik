@@ -81,6 +81,28 @@ const dictionary: SeedDictionary = {
       addToCart: "В корзину",
       wishlistAriaLabel: "Добавить в избранное",
     },
+    favoritesLabel: "Избранное",
+    favoritesPage: {
+      eyebrow: "Guest wishlist",
+      title: "Ваше избранное уже работает без аккаунта",
+      lead:
+        "Ваши сохранённые товары уже здесь. Можете спокойно продолжать покупки, а когда захотите — войти в аккаунт, чтобы список не потерялся и был доступен на других устройствах.",
+      savedLabel: "Сейчас сохранено",
+      savedCountLabel: "товара",
+      primaryAction: "Войти и синхронизировать",
+      secondaryAction: "Создать аккаунт",
+      continueAction: "Продолжить покупки без входа",
+      listTitle: "Ваше гостевое избранное",
+      guestListTitle: "Гостевое избранное",
+      guestListText: "Список уже сохранённых товаров, который можно забрать в аккаунт позже.",
+      itemCountLabel: "товара",
+      addToCart: "В корзину",
+      view: "Просмотреть",
+      breadcrumbs: {
+        home: "Главная",
+        current: "Избранное",
+      },
+    },
     storySection: {
       eyebrow: "История бренда",
       title: "Сказки, рождённые из настоящей жизни",

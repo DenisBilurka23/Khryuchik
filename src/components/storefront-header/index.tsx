@@ -3,24 +3,18 @@ import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
-import {
-  AppBar,
-  Box,
-  Button,
-  Container,
-  Stack,
-  Toolbar,
-} from "@mui/material";
+import { AppBar, Box, Button, Container, Stack, Toolbar } from "@mui/material";
 import Link from "next/link";
 
 import { Logo } from "../logo";
-import { CartButton } from "./CartButton";
-import { CountrySwitcher } from "./CountrySwitcher";
-import { LocaleSwitcher } from "./LocaleSwitcher";
-import { MobileMenu } from "./MobileMenu";
+import { CartButton } from "./cart-button";
+import { CountrySwitcher } from "./country-switcher";
+import { FavoritesButton } from "./favorites-button";
+import { LocaleSwitcher } from "./locale-switcher";
+import { MobileMenu } from "./mobile-menu";
 import styles from "./storefront-header.module.css";
 import type { StorefrontHeaderProps, StorefrontNavItem } from "./types";
-import { UserButton } from "./UserButton";
+import { UserButton } from "./user-button";
 
 export const StorefrontHeader = ({
   locale,
@@ -107,7 +101,7 @@ export const StorefrontHeader = ({
                 country={country}
                 locale={locale}
                 label={dictionary.countrySwitcherLabel}
-                sx={{ minWidth: 112 }}
+                sx={{ minWidth: 92 }}
               />
 
               <LocaleSwitcher
@@ -141,6 +135,11 @@ export const StorefrontHeader = ({
               signInLabel={dictionary.userMenu.signIn}
             />
 
+            <FavoritesButton
+              href={navigationPaths?.favorites ?? "/favorites"}
+              label={dictionary.favoritesLabel}
+            />
+
             <CartButton
               href={navigationPaths?.cart ?? "/cart"}
               label={dictionary.cartLabel}
@@ -152,3 +151,5 @@ export const StorefrontHeader = ({
     </AppBar>
   );
 };
+
+export type { StorefrontHeaderProps, StorefrontNavItem } from "./types";

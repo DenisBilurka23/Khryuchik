@@ -1,29 +1,40 @@
 "use client";
 
 import { useState } from "react";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import {
   Box,
   Button,
   Chip,
   Divider,
+  IconButton,
   MenuItem,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 
+import { useWishlist } from "@/hooks/useWishlist";
 import { useCart } from "../cart/store";
 import { formatCurrency } from "@/utils";
 import type { ProductInfoProps } from "./types";
 
-export const ProductInfo = ({ locale, labels, product }: ProductInfoProps) => {
+export const ProductInfo = ({
+  locale,
+  labels,
+  wishlistAriaLabel,
+  product,
+}: ProductInfoProps) => {
   const { addItem } = useCart();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
   const [language, setLanguage] = useState(product.languages?.[0]?.value || "");
   const [format, setFormat] = useState(product.formats?.[0]?.value || "");
   const [size, setSize] = useState(product.sizes?.[0]?.value || "");
   const [color, setColor] = useState(product.colors?.[0]?.value || "");
+  const isWishlisted = isInWishlist(product.productId);
 
   const handleAddToCart = () => {
     addItem({
@@ -57,12 +68,32 @@ export const ProductInfo = ({ locale, labels, product }: ProductInfoProps) => {
         ) : null}
       </Stack>
 
-      <Typography
-        variant="h3"
-        sx={{ mt: 2, fontSize: { xs: 32, md: 40 }, fontWeight: 800 }}
-      >
-        {product.title}
-      </Typography>
+      <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ mt: 2 }}>
+        <Typography
+          variant="h3"
+          sx={{ flex: 1, fontSize: { xs: 32, md: 40 }, fontWeight: 800 }}
+        >
+          {product.title}
+        </Typography>
+        <IconButton
+          aria-label={`${wishlistAriaLabel}: ${product.title}`}
+          color={isWishlisted ? "primary" : "default"}
+          onClick={() => {
+            void toggleWishlist(product.productId);
+          }}
+          sx={{
+            border: "1px solid #E8D6BF",
+            bgcolor: "#fff",
+            mt: 0.5,
+          }}
+        >
+          {isWishlisted ? (
+            <FavoriteOutlinedIcon fontSize="small" />
+          ) : (
+            <FavoriteBorderIcon fontSize="small" />
+          )}
+        </IconButton>
+      </Stack>
 
       <Typography
         color="text.secondary"

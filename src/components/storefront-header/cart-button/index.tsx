@@ -4,8 +4,9 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Badge, Box, Button } from "@mui/material";
 import Link from "next/link";
 
+import { useCart } from "../../cart/store";
+
 import type { CartButtonProps } from "./types";
-import { useCart } from "../cart/store";
 
 export const CartButton = ({ href, label, className }: CartButtonProps) => {
   const { totalCount } = useCart();
@@ -46,3 +47,5 @@ export const CartButton = ({ href, label, className }: CartButtonProps) => {
     </Button>
   );
 };
+
+export type { CartButtonProps } from "./types";

@@ -104,6 +104,7 @@ export const ProductPageView = ({
                   <ProductInfo
                     locale={locale}
                     labels={dictionary.productPage}
+                    wishlistAriaLabel={dictionary.shopSection.wishlistAriaLabel}
                     product={product}
                   />
                 </Grid>

@@ -5,9 +5,10 @@ import { useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { defaultLocale, locales } from "@/i18n/config";
-
 import { localeLabels } from "@/utils";
-import { HeaderSelect } from "./HeaderSelect";
+
+import { HeaderSelect } from "../header-select";
+
 import type { LocaleSwitcherProps } from "./types";
 
 const stripLocalePrefix = (pathname: string) => {
@@ -96,3 +97,5 @@ export const LocaleSwitcher = (props: LocaleSwitcherProps) => {
     />
   );
 };
+
+export type { LocaleSwitcherProps } from "./types";

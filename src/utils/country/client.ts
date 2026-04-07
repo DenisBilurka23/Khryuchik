@@ -3,7 +3,7 @@ import {
   defaultCountry,
   getCountryFromCookieHeader,
   isCountryCode,
-} from "@/utils";
+} from "./index";
 
 export const COUNTRY_CHANGE_EVENT = "khryuchik-country-change";
 

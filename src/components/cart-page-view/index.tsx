@@ -3,12 +3,12 @@
 import { Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "@mui/material";
 import Link from "next/link";
 
+import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { countryShippingConfig, getLocalizedPath } from "@/utils";
 
 import { CartItemCard } from "../cart/CartItemCard";
 import { EmptyCartState } from "../cart/EmptyCartState";
 import { OrderSummaryCard } from "../cart/OrderSummaryCard";
-import { useResolvedCart } from "../cart/useResolvedCart";
 import styles from "../storefront/storefront.module.css";
 
 import type { CartPageViewProps } from "./types";

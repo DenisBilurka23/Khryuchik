@@ -68,6 +68,27 @@ export type ShopPageLabels = {
   };
 };
 
+export type FavoritesPageLabels = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  savedLabel: string;
+  savedCountLabel: string;
+  primaryAction: string;
+  secondaryAction: string;
+  continueAction: string;
+  listTitle: string;
+  guestListTitle: string;
+  guestListText: string;
+  itemCountLabel: string;
+  addToCart: string;
+  view: string;
+  breadcrumbs: {
+    home: string;
+    current: string;
+  };
+};
+
 export type CartPageLabels = {
   eyebrow: string;
   title: string;
@@ -171,6 +192,8 @@ export type StorefrontDictionary = {
     addToCart: string;
     wishlistAriaLabel: string;
   };
+  favoritesLabel: string;
+  favoritesPage: FavoritesPageLabels;
   storySection: {
     eyebrow: string;
     title: string;

@@ -8,6 +8,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
+import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
+
 import type { AuthPageViewProps } from "./types";
 
 export const AuthPageView = ({
@@ -49,6 +51,7 @@ export const AuthPageView = ({
     }
 
     if (result?.url) {
+      await mergeGuestWishlistAfterLogin();
       router.push(result.url);
       router.refresh();
       return;

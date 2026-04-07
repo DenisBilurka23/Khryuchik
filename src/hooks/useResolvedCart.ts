@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { resolveCartClient } from "@/client-api/cart";
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/utils";
 import type { CartItem, CartResolveResponse } from "@/types/cart";
+import type { CountryCode } from "@/utils";
 
-import { useCart } from "./store";
+import { useCart } from "@/components/cart/store";
 
 export const useResolvedCart = (locale: Locale, country: CountryCode) => {
   const cart = useCart();
@@ -26,17 +27,13 @@ export const useResolvedCart = (locale: Locale, country: CountryCode) => {
       setIsLoading(true);
 
       try {
-        const response = await fetch("/api/cart/resolve", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
+        const response = await resolveCartClient(
+          {
             locale,
             items: cart.items,
-          }),
-          signal: abortController.signal,
-        });
+          },
+          { signal: abortController.signal },
+        );
 
         if (!response.ok) {
           if (!abortController.signal.aborted) {
@@ -47,7 +44,12 @@ export const useResolvedCart = (locale: Locale, country: CountryCode) => {
           return;
         }
 
-        const payload = (await response.json()) as CartResolveResponse;
+        const payload = response.data as CartResolveResponse | null;
+
+        if (!payload) {
+          setItems([]);
+          return;
+        }
 
         setItems(payload.items);
       } catch (error) {

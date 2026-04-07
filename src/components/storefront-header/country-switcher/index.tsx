@@ -4,10 +4,12 @@ import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import { setClientCountry } from "@/client/country";
+import { updateCountryPreferenceClient } from "@/client-api/country";
+import { setClientCountry } from "@/utils/country/client";
 import { countries, countryLabels } from "@/utils";
 
-import { HeaderSelect } from "./HeaderSelect";
+import { HeaderSelect } from "../header-select";
+
 import type { CountrySwitcherProps } from "./types";
 
 export const CountrySwitcher = ({
@@ -34,13 +36,7 @@ export const CountrySwitcher = ({
     setSelectedCountry(nextCountry);
 
     try {
-      const response = await fetch("/api/preferences/country", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ country: nextCountry }),
-      });
+      const response = await updateCountryPreferenceClient(nextCountry);
 
       if (!response.ok) {
         console.error(`Failed to update country: ${response.status}`);
@@ -80,3 +76,5 @@ export const CountrySwitcher = ({
     />
   );
 };
+
+export type { CountrySwitcherProps } from "./types";

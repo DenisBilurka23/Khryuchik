@@ -1,3 +1,5 @@
+import { PATCH } from "@/client-api";
+
 type ErrorResponse = {
   error?: string;
 };
@@ -18,20 +20,4 @@ export const updateAccountProfileClient = async (payload: {
   name: string;
   email: string;
   phone: string;
-}) => {
-  const response = await fetch("/api/account/profile", {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
-
-  const data = (await response.json().catch(() => null)) as UpdateAccountProfileResponse | null;
-
-  return {
-    ok: response.ok,
-    status: response.status,
-    data,
-  };
-};
+}) => PATCH<UpdateAccountProfileResponse>("/api/account/profile", payload);

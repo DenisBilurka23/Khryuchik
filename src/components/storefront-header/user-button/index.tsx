@@ -5,15 +5,9 @@ import { Button } from "@mui/material";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 
-import type { Locale } from "@/i18n/config";
-
 import { getLocalizedPath } from "@/utils";
 
-type UserButtonProps = {
-  locale: Locale;
-  accountLabel: string;
-  signInLabel: string;
-};
+import type { UserButtonProps } from "./types";
 
 export const UserButton = ({ locale, accountLabel, signInLabel }: UserButtonProps) => {
   const { data: session } = useSession();
@@ -44,3 +38,5 @@ export const UserButton = ({ locale, accountLabel, signInLabel }: UserButtonProp
     </Button>
   );
 };
+
+export type { UserButtonProps } from "./types";

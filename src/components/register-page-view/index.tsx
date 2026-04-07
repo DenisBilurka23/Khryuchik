@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { registerUserClient } from "@/client-api/auth";
+import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
 
 import type { RegisterPageViewProps } from "./types";
 import { getRegisterErrorMessage } from "./utils";
@@ -56,6 +57,7 @@ export const RegisterPageView = ({
     setIsSubmitting(false);
 
     if (signInResult?.url) {
+      await mergeGuestWishlistAfterLogin();
       router.push(signInResult.url);
       router.refresh();
       return;
