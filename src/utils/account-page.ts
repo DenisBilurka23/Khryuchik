@@ -1,8 +1,6 @@
 import type { AccountPageDictionary } from "@/i18n/types";
 
-import type { SectionKey } from "../types";
-
-export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import type { SectionKey } from "@/components/account-page-view/types";
 
 export const tabSections: Array<Exclude<SectionKey, "favorites" | "logout">> = [
   "overview",

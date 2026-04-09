@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { registerUser } from "@/server/users/services/users.service";
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { EMAIL_PATTERN } from "@/utils/validation";
 
 export async function POST(request: Request) {
   try {

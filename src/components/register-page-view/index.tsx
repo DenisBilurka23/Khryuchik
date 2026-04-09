@@ -7,10 +7,10 @@ import { signIn } from "next-auth/react";
 import { registerUserClient } from "@/client-api/auth";
 import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
+import { getRegisterErrorMessage } from "@/utils/register-page";
 
 import { RegisterForm } from "./form";
 import type { RegisterPageViewProps } from "./types";
-import { getRegisterErrorMessage } from "./utils";
 
 export const RegisterPageView = ({
   dictionary,

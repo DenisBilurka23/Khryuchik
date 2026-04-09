@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getServerAuthSession } from "@/server/auth/config";
 import { updateAccountUserProfile } from "@/server/users/services/users.service";
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { EMAIL_PATTERN } from "@/utils/validation";
 
 export async function PATCH(request: Request) {
   try {

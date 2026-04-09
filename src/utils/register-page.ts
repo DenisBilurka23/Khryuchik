@@ -1,8 +1,8 @@
-import type { RegisterPageViewProps } from "./types";
+import type { RegisterPageDictionary } from "@/i18n/types";
 
 export const getRegisterErrorMessage = (
   errorCode: string,
-  dictionary: RegisterPageViewProps["dictionary"],
+  dictionary: RegisterPageDictionary,
 ) => {
   switch (errorCode) {
     case "email_taken":

@@ -1,6 +1,9 @@
 import type { LocalizedCategory } from "@/types/catalog";
 
-import type { CreateShopPageViewModelParams, ShopFilterValue } from "./types";
+import type {
+  CreateShopPageViewModelParams,
+  ShopFilterValue,
+} from "@/components/shop-page-view/types";
 
 export const isShopFilterValue = (
   value: string | null,

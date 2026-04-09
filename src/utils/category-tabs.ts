@@ -1,6 +1,6 @@
 import type { LocalizedCategory } from "@/types/catalog";
 
-import type { CategoryTabOption } from "./types";
+import type { CategoryTabOption } from "@/components/category-tabs/types";
 
 export const createCategoryTabOptions = ({
   categories,

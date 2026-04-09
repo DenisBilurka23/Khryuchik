@@ -1,7 +1,7 @@
 import { Box, Container, Grid } from "@mui/material";
 
 import { CategoryTabs } from "../category-tabs";
-import { createCategoryTabOptions } from "../category-tabs/utils";
+import { createCategoryTabOptions } from "@/utils/category-tabs";
 import { ProductCard } from "../product-card";
 import { SectionHeading } from "../section-heading";
 import { getLocalizedPath, getLocalizedProductPath } from "@/utils";

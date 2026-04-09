@@ -11,15 +11,15 @@ import {
 import Link from "next/link";
 
 import { CategoryTabs } from "@/components/category-tabs";
+import { getLocalizedProductPath } from "@/utils";
+import { createShopPageViewModel, isShopFilterValue } from "@/utils/shop-page";
 
 import { NewsletterSection } from "../newsletter-section";
 import { ProductCard } from "../product-card";
 import { ShopSearchField } from "../shop-search-field";
-import { getLocalizedProductPath } from "@/utils";
 import styles from "../storefront/storefront.module.css";
 
 import type { ShopFilterValue, ShopPageViewProps } from "./types";
-import { createShopPageViewModel, isShopFilterValue } from "./utils";
 
 export const ShopPageView = ({
   locale,

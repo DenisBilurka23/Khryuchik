@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { requestPasswordReset } from "@/server/users/services/users.service";
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+import { EMAIL_PATTERN } from "@/utils/validation";
 
 const getLocalizedPath = (locale: string, path: string) =>
   locale === "en" ? path : `/${locale}${path}`;

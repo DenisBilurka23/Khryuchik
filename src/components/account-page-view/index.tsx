@@ -21,6 +21,12 @@ import { signOut, useSession } from "next-auth/react";
 
 import { updateAccountProfileClient } from "@/client-api/account";
 import { getAccountPageMockData } from "@/data/account-page-mock";
+import {
+  getProfileErrorMessage,
+  splitName,
+  tabSections,
+} from "@/utils/account-page";
+import { EMAIL_PATTERN } from "@/utils/validation";
 
 import { getAccountSidebarItems } from "./model";
 import {
@@ -34,12 +40,6 @@ import {
 } from "./sections";
 import { SidebarItem } from "./shared";
 import type { AccountPageViewProps, SectionKey } from "./types";
-import {
-  EMAIL_PATTERN,
-  getProfileErrorMessage,
-  splitName,
-  tabSections,
-} from "./utils";
 
 export const AccountPageView = ({
   locale,
