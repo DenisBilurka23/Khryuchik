@@ -89,14 +89,18 @@ const dictionary: SeedDictionary = {
       lead:
         "Your saved products are already here. Keep shopping freely, and when you're ready, sign in to keep the list safe and available on other devices.",
       savedLabel: "Saved now",
-      savedCountLabel: "items",
       primaryAction: "Sign in and sync",
       secondaryAction: "Create account",
       continueAction: "Continue shopping without signing in",
       listTitle: "Your guest wishlist",
       guestListTitle: "Guest wishlist",
       guestListText: "These saved products are ready now and can be attached to your account later.",
-      itemCountLabel: "items",
+      itemCount: {
+        one: "item",
+        few: "items",
+        many: "items",
+        other: "items",
+      },
       addToCart: "Add to cart",
       view: "View",
       breadcrumbs: {
@@ -157,6 +161,8 @@ const dictionary: SeedDictionary = {
           "A quick summary of what is already in your cart before you move to checkout.",
         itemCount: {
           one: "item in cart",
+          few: "items in cart",
+          many: "items in cart",
           other: "items in cart",
         },
       },

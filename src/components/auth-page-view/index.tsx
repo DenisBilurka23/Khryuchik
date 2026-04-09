@@ -1,9 +1,20 @@
 "use client";
 
-import { useState, type SyntheticEvent } from "react";
+import { type SyntheticEvent, useState } from "react";
 import GoogleIcon from "@mui/icons-material/Google";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Alert, Box, Button, Card, CardContent, Chip, Divider, Stack, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Divider,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -68,7 +79,6 @@ export const AuthPageView = ({
         alignItems: "center",
         justifyContent: "center",
         py: { xs: 4, md: 8 },
-        px: 2,
       }}
     >
       <Card
@@ -97,18 +107,30 @@ export const AuthPageView = ({
               <Typography variant="h1" sx={{ fontSize: { xs: 34, md: 52 } }}>
                 {dictionary.title}
               </Typography>
-              <Typography color="text.secondary" sx={{ maxWidth: 620, lineHeight: 1.8 }}>
+              <Typography
+                color="text.secondary"
+                sx={{ maxWidth: 620, lineHeight: 1.8 }}
+              >
                 {dictionary.lead}
               </Typography>
             </Stack>
 
             <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               {dictionary.chips.map((chip) => (
-                <Chip key={chip} label={chip} sx={{ bgcolor: "#fff", border: "1px solid #E8D6BF" }} />
+                <Chip
+                  key={chip}
+                  label={chip}
+                  sx={{ bgcolor: "#fff", border: "1px solid #E8D6BF" }}
+                />
               ))}
             </Stack>
 
-            <Card sx={{ border: "1px solid #F0DFC8", bgcolor: "rgba(255,255,255,0.86)" }}>
+            <Card
+              sx={{
+                border: "1px solid #F0DFC8",
+                bgcolor: "rgba(255,255,255,0.86)",
+              }}
+            >
               <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                 <Stack spacing={2.5}>
                   <Box component="form" onSubmit={handleCredentialsSignIn}>
@@ -137,7 +159,9 @@ export const AuthPageView = ({
                         </Box>
                       </Stack>
 
-                      {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
+                      {errorMessage ? (
+                        <Alert severity="error">{errorMessage}</Alert>
+                      ) : null}
 
                       <TextField
                         label={dictionary.emailLabel}
@@ -171,7 +195,11 @@ export const AuthPageView = ({
                       </Button>
 
                       <Typography color="text.secondary">
-                        <Box component={Link} href={forgotPasswordHref} sx={{ color: "primary.main", fontWeight: 700 }}>
+                        <Box
+                          component={Link}
+                          href={forgotPasswordHref}
+                          sx={{ color: "primary.main", fontWeight: 700 }}
+                        >
                           {dictionary.forgotPasswordLinkLabel}
                         </Box>
                       </Typography>
@@ -205,7 +233,9 @@ export const AuthPageView = ({
                         {dictionary.googleTitle}
                       </Typography>
                       <Typography color="text.secondary">
-                        {isGoogleEnabled ? dictionary.ready : dictionary.unavailable}
+                        {isGoogleEnabled
+                          ? dictionary.ready
+                          : dictionary.unavailable}
                       </Typography>
                     </Box>
                   </Stack>
@@ -223,7 +253,11 @@ export const AuthPageView = ({
 
                   <Typography color="text.secondary">
                     {dictionary.registerPrompt}{" "}
-                    <Box component={Link} href={registerHref} sx={{ color: "primary.main", fontWeight: 700 }}>
+                    <Box
+                      component={Link}
+                      href={registerHref}
+                      sx={{ color: "primary.main", fontWeight: 700 }}
+                    >
                       {dictionary.registerLinkLabel}
                     </Box>
                   </Typography>

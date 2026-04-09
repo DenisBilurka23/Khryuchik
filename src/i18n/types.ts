@@ -14,6 +14,13 @@ export type SeedStorefrontProduct = {
   category: string;
 };
 
+export type CountLabelForms = {
+  one: string;
+  few?: string;
+  many?: string;
+  other: string;
+};
+
 export type ProductPageLabels = {
   breadcrumbs: {
     home: string;
@@ -73,14 +80,13 @@ export type FavoritesPageLabels = {
   title: string;
   lead: string;
   savedLabel: string;
-  savedCountLabel: string;
   primaryAction: string;
   secondaryAction: string;
   continueAction: string;
   listTitle: string;
   guestListTitle: string;
   guestListText: string;
-  itemCountLabel: string;
+  itemCount: CountLabelForms;
   addToCart: string;
   view: string;
   breadcrumbs: {
@@ -234,12 +240,7 @@ export type StorefrontDictionary = {
     };
     cartSummary: {
       helperText: string;
-      itemCount: {
-        one: string;
-        few?: string;
-        many?: string;
-        other: string;
-      };
+      itemCount: CountLabelForms;
     };
     summary: {
       title: string;

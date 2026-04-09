@@ -25,12 +25,6 @@ export type HomeCartSummaryProps = {
   cartHref: string;
 };
 
-export type HomeCartSummaryItemCountParams = {
-  count: number;
-  locale: HomeCartSummaryProps["locale"];
-  labels: StorefrontDictionary["orderSection"]["cartSummary"]["itemCount"];
-};
-
 export type HomeCartSummaryViewModelParams = {
   locale: HomeCartSummaryProps["locale"];
   country: CountryCode;

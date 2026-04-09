@@ -1,8 +1,17 @@
 "use client";
 
-import { useState, type SyntheticEvent } from "react";
+import { type SyntheticEvent, useState } from "react";
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
-import { Alert, Box, Button, Card, CardContent, Stack, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -68,7 +77,6 @@ export const ResetPasswordPageView = ({
         alignItems: "center",
         justifyContent: "center",
         py: { xs: 4, md: 8 },
-        px: 2,
       }}
     >
       <Card
@@ -83,23 +91,49 @@ export const ResetPasswordPageView = ({
         <CardContent sx={{ p: { xs: 3, md: 5 } }}>
           <Stack spacing={3.5}>
             <Stack spacing={1.5}>
-              <Typography sx={{ textTransform: "uppercase", letterSpacing: "0.2em", fontSize: 13, fontWeight: 700, color: "primary.main" }}>
+              <Typography
+                sx={{
+                  textTransform: "uppercase",
+                  letterSpacing: "0.2em",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: "primary.main",
+                }}
+              >
                 {dictionary.eyebrow}
               </Typography>
               <Typography variant="h1" sx={{ fontSize: { xs: 34, md: 52 } }}>
                 {dictionary.title}
               </Typography>
-              <Typography color="text.secondary" sx={{ maxWidth: 620, lineHeight: 1.8 }}>
+              <Typography
+                color="text.secondary"
+                sx={{ maxWidth: 620, lineHeight: 1.8 }}
+              >
                 {dictionary.lead}
               </Typography>
             </Stack>
 
-            <Card sx={{ border: "1px solid #F0DFC8", bgcolor: "rgba(255,255,255,0.86)" }}>
+            <Card
+              sx={{
+                border: "1px solid #F0DFC8",
+                bgcolor: "rgba(255,255,255,0.86)",
+              }}
+            >
               <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                 <Box component="form" onSubmit={handleSubmit}>
                   <Stack spacing={2.5}>
                     <Stack direction="row" spacing={1.5} alignItems="center">
-                      <Box sx={{ width: 56, height: 56, borderRadius: "20px", bgcolor: "#FFF2D6", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <Box
+                        sx={{
+                          width: 56,
+                          height: 56,
+                          borderRadius: "20px",
+                          bgcolor: "#FFF2D6",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
                         <LockResetOutlinedIcon />
                       </Box>
                       <Typography sx={{ fontWeight: 800, fontSize: 22 }}>
@@ -107,8 +141,12 @@ export const ResetPasswordPageView = ({
                       </Typography>
                     </Stack>
 
-                    {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-                    {successMessage ? <Alert severity="success">{successMessage}</Alert> : null}
+                    {errorMessage ? (
+                      <Alert severity="error">{errorMessage}</Alert>
+                    ) : null}
+                    {successMessage ? (
+                      <Alert severity="success">{successMessage}</Alert>
+                    ) : null}
 
                     <TextField
                       label={dictionary.passwordLabel}
@@ -125,18 +163,30 @@ export const ResetPasswordPageView = ({
                       placeholder={dictionary.confirmPasswordPlaceholder}
                       type="password"
                       value={confirmPassword}
-                      onChange={(event) => setConfirmPassword(event.target.value)}
+                      onChange={(event) =>
+                        setConfirmPassword(event.target.value)
+                      }
                       autoComplete="new-password"
                       required
                       fullWidth
                     />
 
-                    <Button type="submit" variant="contained" size="large" loading={isSubmitting} sx={{ alignSelf: "flex-start" }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                      loading={isSubmitting}
+                      sx={{ alignSelf: "flex-start" }}
+                    >
                       {dictionary.submitButton}
                     </Button>
 
                     <Typography color="text.secondary">
-                      <Box component={Link} href={loginHref} sx={{ color: "primary.main", fontWeight: 700 }}>
+                      <Box
+                        component={Link}
+                        href={loginHref}
+                        sx={{ color: "primary.main", fontWeight: 700 }}
+                      >
                         {dictionary.loginLinkLabel}
                       </Box>
                     </Typography>

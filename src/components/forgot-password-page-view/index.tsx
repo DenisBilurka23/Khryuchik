@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type SyntheticEvent } from "react";
+import { type SyntheticEvent, useState } from "react";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import {
   Alert,
@@ -60,7 +60,6 @@ export const ForgotPasswordPageView = ({
         alignItems: "center",
         justifyContent: "center",
         py: { xs: 4, md: 8 },
-        px: 2,
       }}
     >
       <Card

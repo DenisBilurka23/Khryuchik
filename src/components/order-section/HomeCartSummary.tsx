@@ -3,37 +3,13 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 
 import { useResolvedCart } from "@/hooks/useResolvedCart";
-import { formatCurrency, getCountryCurrency } from "@/utils";
+import { formatCurrency, getCountLabel, getCountryCurrency } from "@/utils";
 
 import type {
-  HomeCartSummaryItemCountParams,
   HomeCartSummaryProps,
   HomeCartSummaryViewModelParams,
 } from "./types";
 import styles from "./order-section.module.css";
-
-const getItemCountLabel = ({
-  count,
-  locale,
-  labels,
-}: HomeCartSummaryItemCountParams) => {
-  const pluralRules = new Intl.PluralRules(locale === "ru" ? "ru-RU" : "en-US");
-  const category = pluralRules.select(count);
-
-  if (category === "one") {
-    return `${count} ${labels.one}`;
-  }
-
-  if (category === "few" && labels.few) {
-    return `${count} ${labels.few}`;
-  }
-
-  if (category === "many" && labels.many) {
-    return `${count} ${labels.many}`;
-  }
-
-  return `${count} ${labels.other}`;
-};
 
 const createHomeCartSummaryViewModel = ({
   locale,
@@ -49,11 +25,7 @@ const createHomeCartSummaryViewModel = ({
   return {
     hasItems: totalCount > 0,
     helperText: labels.helperText,
-    itemCountLabel: getItemCountLabel({
-      count: totalCount,
-      locale,
-      labels: labels.itemCount,
-    }),
+    itemCountLabel: getCountLabel(totalCount, locale, labels.itemCount),
     previewItems,
     hiddenItemsCount,
     shouldStretchRow: previewItems.length === 4 && hiddenItemsCount > 0,

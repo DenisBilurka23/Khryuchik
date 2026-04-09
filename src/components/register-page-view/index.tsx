@@ -1,8 +1,18 @@
 "use client";
 
-import { useState, type SyntheticEvent } from "react";
+import { type SyntheticEvent, useState } from "react";
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
-import { Alert, Box, Button, Card, CardContent, Chip, Stack, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Chip,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -42,7 +52,9 @@ export const RegisterPageView = ({
 
     if (!response.ok) {
       const data = response.data;
-      setErrorMessage(getRegisterErrorMessage(data?.error ?? "unexpected_error", dictionary));
+      setErrorMessage(
+        getRegisterErrorMessage(data?.error ?? "unexpected_error", dictionary),
+      );
       setIsSubmitting(false);
       return;
     }
@@ -75,7 +87,6 @@ export const RegisterPageView = ({
         alignItems: "center",
         justifyContent: "center",
         py: { xs: 4, md: 8 },
-        px: 2,
       }}
     >
       <Card
@@ -104,18 +115,30 @@ export const RegisterPageView = ({
               <Typography variant="h1" sx={{ fontSize: { xs: 34, md: 52 } }}>
                 {dictionary.title}
               </Typography>
-              <Typography color="text.secondary" sx={{ maxWidth: 620, lineHeight: 1.8 }}>
+              <Typography
+                color="text.secondary"
+                sx={{ maxWidth: 620, lineHeight: 1.8 }}
+              >
                 {dictionary.lead}
               </Typography>
             </Stack>
 
             <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
               {dictionary.chips.map((chip) => (
-                <Chip key={chip} label={chip} sx={{ bgcolor: "#fff", border: "1px solid #E8D6BF" }} />
+                <Chip
+                  key={chip}
+                  label={chip}
+                  sx={{ bgcolor: "#fff", border: "1px solid #E8D6BF" }}
+                />
               ))}
             </Stack>
 
-            <Card sx={{ border: "1px solid #F0DFC8", bgcolor: "rgba(255,255,255,0.86)" }}>
+            <Card
+              sx={{
+                border: "1px solid #F0DFC8",
+                bgcolor: "rgba(255,255,255,0.86)",
+              }}
+            >
               <CardContent sx={{ p: { xs: 3, md: 4 } }}>
                 <Box component="form" onSubmit={handleSubmit}>
                   <Stack spacing={2.5}>
@@ -138,7 +161,9 @@ export const RegisterPageView = ({
                       </Typography>
                     </Stack>
 
-                    {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
+                    {errorMessage ? (
+                      <Alert severity="error">{errorMessage}</Alert>
+                    ) : null}
 
                     <TextField
                       label={dictionary.nameLabel}
@@ -183,19 +208,31 @@ export const RegisterPageView = ({
                       placeholder={dictionary.confirmPasswordPlaceholder}
                       type="password"
                       value={confirmPassword}
-                      onChange={(event) => setConfirmPassword(event.target.value)}
+                      onChange={(event) =>
+                        setConfirmPassword(event.target.value)
+                      }
                       autoComplete="new-password"
                       required
                       fullWidth
                     />
 
-                    <Button type="submit" variant="contained" size="large" loading={isSubmitting} sx={{ alignSelf: "flex-start" }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                      loading={isSubmitting}
+                      sx={{ alignSelf: "flex-start" }}
+                    >
                       {dictionary.submitButton}
                     </Button>
 
                     <Typography color="text.secondary">
                       {dictionary.loginPrompt}{" "}
-                      <Box component={Link} href={loginHref} sx={{ color: "primary.main", fontWeight: 700 }}>
+                      <Box
+                        component={Link}
+                        href={loginHref}
+                        sx={{ color: "primary.main", fontWeight: 700 }}
+                      >
                         {dictionary.loginLinkLabel}
                       </Box>
                     </Typography>
