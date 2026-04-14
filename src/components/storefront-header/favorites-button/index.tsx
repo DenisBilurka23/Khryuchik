@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import type { FavoritesButtonProps } from "./types";
 
-export const FavoritesButton = ({ href, label }: FavoritesButtonProps) => {
+export const FavoritesButton = ({ href, label, sx }: FavoritesButtonProps) => {
   return (
     <Button
       component={Link}
@@ -23,6 +23,7 @@ export const FavoritesButton = ({ href, label }: FavoritesButtonProps) => {
         borderRadius: "999px",
         borderColor: "#E8D6BF",
         bgcolor: "#fff",
+        ...sx,
       }}
     >
       <FavoriteBorderIcon fontSize="small" />

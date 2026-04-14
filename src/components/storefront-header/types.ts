@@ -14,7 +14,7 @@ export type StorefrontHeaderProps = {
 };
 
 export type StorefrontNavItem = {
-  key: "books" | "shop" | "story" | "faq";
+  key: "shop" | "story" | "faq";
   label: string;
   href: string;
 };

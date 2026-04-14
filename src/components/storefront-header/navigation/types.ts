@@ -1,7 +1,6 @@
 import type { Locale } from "@/i18n/config";
 
 export type StorefrontNavigationPaths = {
-  books: string;
   shop: string;
   story: string;
   faq: string;

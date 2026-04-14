@@ -15,4 +15,8 @@ export type MobileMenuProps = {
   localeSwitcherLabel: string;
   countrySwitcherLabel: string;
   homeHref: string;
+  accountLabel: string;
+  signInLabel: string;
+  favoritesHref: string;
+  favoritesLabel: string;
 };

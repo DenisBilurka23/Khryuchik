@@ -9,7 +9,12 @@ import { getLocalizedPath } from "@/utils";
 
 import type { UserButtonProps } from "./types";
 
-export const UserButton = ({ locale, accountLabel, signInLabel }: UserButtonProps) => {
+export const UserButton = ({
+  locale,
+  accountLabel,
+  signInLabel,
+  sx,
+}: UserButtonProps) => {
   const { data: session } = useSession();
   const href = session
     ? getLocalizedPath(locale, "/account")
@@ -32,6 +37,7 @@ export const UserButton = ({ locale, accountLabel, signInLabel }: UserButtonProp
         borderRadius: "999px",
         borderColor: "#E8D6BF",
         bgcolor: "#fff",
+        ...sx,
       }}
     >
       <PersonOutlineIcon fontSize="small" />

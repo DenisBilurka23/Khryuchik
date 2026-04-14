@@ -17,7 +17,6 @@ export const createStorefrontHeaderViewModel = (
       ]),
     ) as Record<Locale, string>,
     navigationPaths: {
-      books: getLocalizedPath(locale, "/shop?category=books"),
       shop: getLocalizedPath(locale, "/shop"),
       story: `${homeHref}#story`,
       faq: `${homeHref}#faq`,

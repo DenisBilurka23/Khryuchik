@@ -2,9 +2,10 @@
 
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import CloseIcon from "@mui/icons-material/Close";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
-import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import {
   Box,
@@ -20,7 +21,10 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
+
+import { getLocalizedPath } from "@/utils";
 
 import { Logo } from "../../logo";
 import { CountrySwitcher } from "../country-switcher";
@@ -28,11 +32,18 @@ import { LocaleSwitcher } from "../locale-switcher";
 
 import type { MobileMenuProps } from "./types";
 
-const iconByKey: Record<MobileMenuProps["navItems"][number]["key"], React.ReactNode> = {
-  books: <MenuBookOutlinedIcon fontSize="small" />,
+type MobileMenuItem = MobileMenuProps["navItems"][number] | {
+  key: "account" | "favorites";
+  label: string;
+  href: string;
+};
+
+const iconByKey: Record<MobileMenuItem["key"], React.ReactNode> = {
   shop: <StorefrontOutlinedIcon fontSize="small" />,
   story: <AutoStoriesOutlinedIcon fontSize="small" />,
   faq: <LocalShippingOutlinedIcon fontSize="small" />,
+  account: <PersonOutlineIcon fontSize="small" />,
+  favorites: <FavoriteBorderIcon fontSize="small" />,
 };
 
 export const MobileMenu = ({
@@ -46,8 +57,30 @@ export const MobileMenu = ({
   localeSwitcherLabel,
   countrySwitcherLabel,
   homeHref,
+  accountLabel,
+  signInLabel,
+  favoritesHref,
+  favoritesLabel,
 }: MobileMenuProps) => {
   const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
+  const accountHref = session
+    ? getLocalizedPath(locale, "/account")
+    : getLocalizedPath(locale, "/login");
+  const accountActionLabel = session ? accountLabel : signInLabel;
+  const menuItems: MobileMenuItem[] = [
+    ...navItems,
+    {
+      key: "account",
+      label: accountActionLabel,
+      href: accountHref,
+    },
+    {
+      key: "favorites",
+      label: favoritesLabel,
+      href: favoritesHref,
+    },
+  ];
 
   return (
     <>
@@ -98,7 +131,7 @@ export const MobileMenu = ({
             </IconButton>
           </Stack>
 
-          <Stack direction="row" spacing={1.25} sx={{ mt: 3 }}>
+          <Box sx={{ display: "flex", gap: 1, mt: 3 }}>
             <Box sx={{ flex: 1 }}>
               <Typography
                 variant="caption"
@@ -129,12 +162,12 @@ export const MobileMenu = ({
                 sx={{ minWidth: 0, width: "100%" }}
               />
             </Box>
-          </Stack>
+          </Box>
 
           <Divider sx={{ my: 3, borderColor: "#E8D6BF" }} />
 
           <List sx={{ p: 0 }}>
-            {navItems.map((item) => (
+            {menuItems.map((item) => (
               <Link
                 key={item.key}
                 href={item.href}
