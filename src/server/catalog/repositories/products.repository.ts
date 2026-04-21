@@ -108,3 +108,37 @@ export const findActiveProductSlugs = async (locale: Locale) => {
     ),
   );
 };
+
+export const findAllProducts = async () => {
+  const db = await getMongoDb();
+
+  return db
+    .collection<ProductDocument>("products")
+    .find({})
+    .sort({ "merchandising.sortOrder": 1, productId: 1 })
+    .toArray();
+};
+
+export const findProductById = async (productId: string) => {
+  const db = await getMongoDb();
+
+  return db.collection<ProductDocument>("products").findOne({ productId });
+};
+
+export const upsertProduct = async (product: ProductDocument) => {
+  const db = await getMongoDb();
+
+  await db.collection<ProductDocument>("products").replaceOne(
+    { productId: product.productId },
+    product,
+    { upsert: true },
+  );
+
+  return product;
+};
+
+export const countProducts = async () => {
+  const db = await getMongoDb();
+
+  return db.collection<ProductDocument>("products").countDocuments();
+};

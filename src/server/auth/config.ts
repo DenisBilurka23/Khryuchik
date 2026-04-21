@@ -69,6 +69,7 @@ export const authOptions: NextAuthOptions = {
           token.email = accountUser.email;
           token.name = accountUser.name;
           token.phone = accountUser.phone;
+          token.isAdmin = accountUser.isAdmin;
           token.authProviders = accountUser.authProviders;
           token.picture = accountUser.image ?? undefined;
         }
@@ -78,6 +79,7 @@ export const authOptions: NextAuthOptions = {
         token.email = session.user.email ?? token.email;
         token.name = session.user.name ?? token.name;
         token.phone = session.user.phone ?? token.phone;
+        token.isAdmin = session.user.isAdmin ?? token.isAdmin;
         token.authProviders = session.user.authProviders ?? token.authProviders;
         token.picture = session.user.image ?? token.picture;
       }
@@ -90,6 +92,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = typeof token.email === "string" ? token.email : session.user.email;
         session.user.name = typeof token.name === "string" ? token.name : session.user.name;
         session.user.phone = typeof token.phone === "string" ? token.phone : "";
+        session.user.isAdmin = Boolean(token.isAdmin);
         session.user.authProviders = Array.isArray(token.authProviders)
           ? token.authProviders.filter(
               (provider): provider is "google" | "credentials" =>

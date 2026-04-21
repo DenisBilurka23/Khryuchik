@@ -12,6 +12,7 @@ export type UserDocument = {
   email: string;
   name: string;
   phone: string;
+  isAdmin?: boolean;
   image?: string | null;
   passwordHash?: string | null;
   authProviders: AuthProvider[];
@@ -25,6 +26,7 @@ export type SafeAuthUser = {
   email: string;
   name: string;
   phone: string;
+  isAdmin: boolean;
   authProviders: AuthProvider[];
   image?: string | null;
 };

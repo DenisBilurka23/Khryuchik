@@ -20,7 +20,9 @@ let usersIndexesPromise: Promise<void> | null = null;
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
 const sortWishlistEntries = (entries: WishlistEntryDocument[]) =>
-  [...entries].sort((left, right) => right.addedAt.getTime() - left.addedAt.getTime());
+  [...entries].sort(
+    (left, right) => right.addedAt.getTime() - left.addedAt.getTime(),
+  );
 
 const getUsersCollection = async () => {
   const db = await getMongoDb();
@@ -42,6 +44,7 @@ const toSafeAuthUser = (user: UserDocument): SafeAuthUser => ({
   email: normalizeEmail(user.email),
   name: user.name,
   phone: user.phone,
+  isAdmin: Boolean(user.isAdmin),
   authProviders: user.authProviders,
   image: user.image ?? null,
 });
@@ -67,6 +70,7 @@ export const createCredentialsUser = async (
     email: normalizeEmail(input.email),
     name: input.name.trim(),
     phone: input.phone.trim(),
+    isAdmin: false,
     passwordHash: input.passwordHash,
     image: null,
     authProviders: ["credentials"],
@@ -114,6 +118,7 @@ export const toCredentialsAuthUser = (user: UserDocument) => ({
   id: (user._id ?? new ObjectId()).toString(),
   name: user.name,
   email: normalizeEmail(user.email),
+  isAdmin: Boolean(user.isAdmin),
   image: user.image ?? null,
 });
 
@@ -148,6 +153,7 @@ export const createGoogleUser = async (input: {
     email: normalizeEmail(input.email),
     name: input.name?.trim() || "",
     phone: "",
+    isAdmin: false,
     image: input.image ?? null,
     passwordHash: null,
     authProviders: ["google"],
@@ -226,6 +232,47 @@ export const updateUserProfile = async (
   }
 
   return toSafeAuthUser(updatedUser);
+};
+
+export const findAllUsers = async (limit?: number) => {
+  const collection = await getUsersCollection();
+  const cursor = collection
+    .find({}, { projection: { passwordHash: 0, wishlist: 0 } })
+    .sort({ createdAt: -1, _id: -1 });
+
+  if (typeof limit === "number" && limit > 0) {
+    cursor.limit(limit);
+  }
+
+  return cursor.toArray();
+};
+
+export const countUsers = async () => {
+  const collection = await getUsersCollection();
+
+  return collection.countDocuments();
+};
+
+export const countAdminUsers = async () => {
+  const collection = await getUsersCollection();
+
+  return collection.countDocuments({ isAdmin: true });
+};
+
+export const setUserAdminByEmail = async (email: string, isAdmin: boolean) => {
+  const collection = await getUsersCollection();
+  const normalizedEmail = normalizeEmail(email);
+
+  return await collection.findOneAndUpdate(
+    { email: normalizedEmail },
+    {
+      $set: {
+        isAdmin,
+        updatedAt: new Date(),
+      },
+    },
+    { returnDocument: "after" },
+  );
 };
 
 export const getUserWishlist = async (userId: ObjectId) => {

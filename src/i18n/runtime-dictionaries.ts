@@ -85,5 +85,6 @@ export const buildRuntimeDictionary = (
     forgotPasswordPage: dictionary.forgotPasswordPage,
     resetPasswordPage: dictionary.resetPasswordPage,
     accountPage: dictionary.accountPage,
+    adminPage: dictionary.adminPage,
   };
 };

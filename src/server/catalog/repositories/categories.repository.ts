@@ -22,3 +22,31 @@ export const findHomeTabCategories = async () => {
     .sort({ sortOrder: 1 })
     .toArray();
 };
+
+export const findAllCategories = async () => {
+  const db = await getMongoDb();
+
+  return db
+    .collection<CategoryDocument>("categories")
+    .find({})
+    .sort({ sortOrder: 1, key: 1 })
+    .toArray();
+};
+
+export const upsertCategory = async (category: CategoryDocument) => {
+  const db = await getMongoDb();
+
+  await db.collection<CategoryDocument>("categories").replaceOne(
+    { key: category.key },
+    category,
+    { upsert: true },
+  );
+
+  return category;
+};
+
+export const countCategories = async () => {
+  const db = await getMongoDb();
+
+  return db.collection<CategoryDocument>("categories").countDocuments();
+};

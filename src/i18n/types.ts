@@ -407,6 +407,263 @@ export type AccountPageDictionary = {
   tabs: string[];
 };
 
+export type AdminPageDictionary = {
+  layout: {
+    searchPlaceholder: string;
+    addProduct: string;
+    brandSubtitle: string;
+    secureAccessBadge: string;
+    secureAccessText: string;
+    languageSwitcherLabel: string;
+  };
+  nav: {
+    dashboard: string;
+    products: string;
+    categories: string;
+    customers: string;
+    orders: string;
+  };
+  shared: {
+    actions: {
+      edit: string;
+      update: string;
+      manage: string;
+      backToProducts: string;
+      viewCatalog: string;
+      viewAccounts: string;
+      openAccounts: string;
+    };
+    placeholders: {
+      noName: string;
+      emptyValue: string;
+    };
+    status: {
+      active: string;
+      hidden: string;
+      admin: string;
+      user: string;
+      homeTabs: string;
+      shopOnly: string;
+      ordersWired: string;
+      ordersPending: string;
+      availability: {
+        in_stock: string;
+        out_of_stock: string;
+        preorder: string;
+        made_to_order: string;
+      };
+      productTypes: {
+        book: string;
+        merch: string;
+      };
+      authProviders: {
+        google: string;
+        credentials: string;
+      };
+    };
+  };
+  dashboard: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    systemStateTitle: string;
+    systemStateDescription: string;
+    stats: {
+      productsTitle: string;
+      productsNote: string;
+      accountsTitle: string;
+      accountsNote: string;
+      categoriesTitle: string;
+      categoriesNote: string;
+      featuredTitle: string;
+      featuredNote: string;
+    };
+    recentProducts: {
+      title: string;
+      description: string;
+      action: string;
+      columns: {
+        name: string;
+        category: string;
+        price: string;
+        status: string;
+        action: string;
+      };
+    };
+    recentCustomers: {
+      title: string;
+      description: string;
+      action: string;
+      createdLabel: string;
+    };
+    categories: {
+      title: string;
+      description: string;
+      action: string;
+      itemsLabel: string;
+    };
+    orders: {
+      title: string;
+      description: string;
+      emptyTitle: string;
+      emptyDescription: string;
+    };
+  };
+  products: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    newProduct: string;
+    sectionTitle: string;
+    sectionDescription: string;
+    columns: {
+      product: string;
+      sku: string;
+      type: string;
+      category: string;
+      price: string;
+      status: string;
+      sortOrder: string;
+      action: string;
+    };
+  };
+  categories: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    savedMessage: string;
+    newCategoryTitle: string;
+    newCategoryDescription: string;
+    saveButton: string;
+    updateButton: string;
+    itemsLabel: string;
+    fields: {
+      key: string;
+      sortOrder: string;
+      ruLabel: string;
+      enLabel: string;
+      ruDescription: string;
+      enDescription: string;
+    };
+    toggles: {
+      isActive: string;
+      visibleInShop: string;
+      visibleInHomeTabs: string;
+    };
+  };
+  customers: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    sectionTitle: string;
+    sectionDescription: string;
+    createdLabel: string;
+    columns: {
+      user: string;
+      phone: string;
+      role: string;
+      providers: string;
+      created: string;
+    };
+  };
+  orders: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    sectionTitle: string;
+    sectionDescription: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    action: string;
+  };
+  productForm: {
+    newTitle: string;
+    newDescription: string;
+    editTitlePrefix: string;
+    editDescription: string;
+    savedMessage: string;
+    errorMessages: {
+      storageUnavailable: string;
+      saveFailed: string;
+      unexpected: string;
+    };
+    createButton: string;
+    saveChangesButton: string;
+    newEyebrow: string;
+    editEyebrow: string;
+    summaryTitle: string;
+    summaryGalleryAssets: string;
+    summaryDigitalFiles: string;
+    galleryCountLabel: string;
+    filesCountLabel: string;
+    infoAlert: string;
+    baseSectionTitle: string;
+    baseSectionDescription: string;
+    pricingSectionTitle: string;
+    pricingSectionDescription: string;
+    localeSectionTitle: string;
+    localeSectionDescription: string;
+    currentGalleryTitle: string;
+    currentAssetsTitle: string;
+    imagesUploadButton: string;
+    assetsUploadButton: string;
+    relatedSectionTitle: string;
+    relatedSectionDescription: string;
+    helpers: {
+      placements: string;
+      flags: string;
+      relatedProductIds: string;
+      mediaRule: string;
+      optionsRule: string;
+      specsRule: string;
+      filesRule: string;
+    };
+    fields: {
+      productId: string;
+      type: string;
+      category: string;
+      sortOrder: string;
+      availability: string;
+      quantity: string;
+      placements: string;
+      flags: string;
+      isActive: string;
+      visibleInShop: string;
+      visibleOnHome: string;
+      visibleInSearch: string;
+      featured: string;
+      trackQuantity: string;
+      allowBackorder: string;
+      byPrice: string;
+      byCurrency: string;
+      byOldPrice: string;
+      usPrice: string;
+      usCurrency: string;
+      usOldPrice: string;
+      slug: string;
+      title: string;
+      shortTitle: string;
+      shortDescription: string;
+      backgroundColor: string;
+      subtitle: string;
+      badge: string;
+      storyLabel: string;
+      storyTitle: string;
+      sku: string;
+      description: string;
+      languages: string;
+      formats: string;
+      sizes: string;
+      colors: string;
+      specs: string;
+      deliveryLines: string;
+      relatedProductIds: string;
+      thumbnail: string;
+      gallery: string;
+    };
+  };
+};
+
 export type SeedStorefrontDictionary = Omit<
   StorefrontDictionary,
   "booksSection" | "shopSection"
@@ -426,6 +683,7 @@ export type Dictionary = {
   forgotPasswordPage: ForgotPasswordPageDictionary;
   resetPasswordPage: ResetPasswordPageDictionary;
   accountPage: AccountPageDictionary;
+  adminPage: AdminPageDictionary;
 };
 
 export type SeedDictionary = {
@@ -439,4 +697,5 @@ export type SeedDictionary = {
   forgotPasswordPage: ForgotPasswordPageDictionary;
   resetPasswordPage: ResetPasswordPageDictionary;
   accountPage: AccountPageDictionary;
+  adminPage: AdminPageDictionary;
 };

@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import {
+  ADMIN_LOCALE_COOKIE_NAME,
+  ADMIN_LOCALE_QUERY_PARAM,
+  defaultLocale,
+  isLocale,
+  locales,
+} from "@/i18n/config";
 import {
   COUNTRY_COOKIE_NAME,
   COUNTRY_HEADER,
@@ -11,6 +17,9 @@ import {
 } from "@/utils";
 
 const LOCALE_HEADER = "x-khryuchik-locale";
+
+const isAdminPath = (pathname: string) =>
+  pathname === "/admin" || pathname.startsWith("/admin/");
 
 const getPreferredLocale = (request: NextRequest) => {
   const acceptLanguage = request.headers.get("accept-language");
@@ -43,6 +52,12 @@ const getPreferredCountry = (request: NextRequest) => {
   return getCountryFromGeoHeaders(request.headers) ?? defaultCountry;
 };
 
+const getAdminCookieLocale = (request: NextRequest) => {
+  const locale = request.cookies.get(ADMIN_LOCALE_COOKIE_NAME)?.value;
+
+  return locale && isLocale(locale) ? locale : null;
+};
+
 const withRequestContextHeaders = (
   request: NextRequest,
   locale: string,
@@ -70,6 +85,30 @@ const getLocaleFromPathname = (pathname: string) => {
 export const proxy = (request: NextRequest) => {
   const { pathname } = request.nextUrl;
   const country = getPreferredCountry(request);
+
+  if (isAdminPath(pathname)) {
+    const queryLocale = request.nextUrl.searchParams.get(ADMIN_LOCALE_QUERY_PARAM);
+
+    if (queryLocale && isLocale(queryLocale)) {
+      const redirectedUrl = request.nextUrl.clone();
+      redirectedUrl.searchParams.delete(ADMIN_LOCALE_QUERY_PARAM);
+
+      const response = NextResponse.redirect(redirectedUrl);
+      response.cookies.set(ADMIN_LOCALE_COOKIE_NAME, queryLocale, {
+        path: "/",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 365,
+      });
+
+      return response;
+    }
+
+    return withRequestContextHeaders(
+      request,
+      getAdminCookieLocale(request) ?? defaultLocale,
+      country,
+    );
+  }
 
   const allowDefaultLocalePath =
     pathname === "/" ||

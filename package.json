@@ -6,12 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "admin:grant": "node --env-file=.env.local --import tsx ./scripts/grant-admin.ts",
     "lint": "eslint .",
+    "check:admin-flow": "node --env-file=.env.local ./scripts/check-admin-flow.mjs",
     "seed:mongodb": "node --env-file=.env.local --import tsx ./scripts/seed-mongodb.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1030.0",
     "@emotion/cache": "^11.14.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

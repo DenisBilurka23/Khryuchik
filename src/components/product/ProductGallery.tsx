@@ -25,7 +25,11 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
           overflow: "hidden",
         }}
       >
-        {activeImage?.emoji}
+        {activeImage?.src ? (
+          <Box component="img" src={activeImage.src} alt={activeImage.alt ?? activeImage.id} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          activeImage?.emoji
+        )}
       </Paper>
 
       <Grid container spacing={2} sx={{ mt: 2 }}>
@@ -50,7 +54,11 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
                 transition: "all .2s ease",
               }}
             >
-              {image.emoji}
+              {image.src ? (
+                <Box component="img" src={image.src} alt={image.alt ?? image.id} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                image.emoji
+              )}
             </Paper>
           </Grid>
         ))}

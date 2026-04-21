@@ -1,0 +1,224 @@
+import "server-only";
+
+import type { Locale } from "@/i18n/config";
+import type {
+  AdminCategoryUpsertInput,
+  AdminProductPayload,
+} from "@/types/admin";
+import type { ProductAvailability, ProductPlacement, ProductType } from "@/types/catalog";
+import type {
+  ProductFileAsset,
+  ProductImage,
+  ProductOption,
+  ProductReview,
+} from "@/types/product-details";
+import type { CurrencyCode } from "@/utils";
+
+const parseString = (formData: FormData, key: string) => {
+  const value = formData.get(key);
+
+  return typeof value === "string" ? value : "";
+};
+
+const parseOptionalString = (formData: FormData, key: string) => {
+  const value = parseString(formData, key).trim();
+
+  return value || undefined;
+};
+
+const parseNumber = (formData: FormData, key: string, fallback = 0) => {
+  const value = Number(parseString(formData, key));
+
+  return Number.isFinite(value) ? value : fallback;
+};
+
+const parseOptionalNumber = (formData: FormData, key: string) => {
+  const rawValue = parseString(formData, key).trim();
+
+  if (!rawValue) {
+    return undefined;
+  }
+
+  const value = Number(rawValue);
+
+  return Number.isFinite(value) ? value : undefined;
+};
+
+const parseBoolean = (formData: FormData, key: string) =>
+  formData.get(key) === "on";
+
+const parseCsvList = (formData: FormData, key: string) =>
+  parseString(formData, key)
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+const toOptionValue = (label: string) =>
+  label
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9а-яё]+/gi, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+const parseMultilineList = (formData: FormData, key: string) =>
+  parseString(formData, key)
+    .split(/\r?\n/)
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+const parseJsonField = <T>(formData: FormData, key: string, fallback: T): T => {
+  const rawValue = parseString(formData, key).trim();
+
+  if (!rawValue) {
+    return fallback;
+  }
+
+  try {
+    return JSON.parse(rawValue) as T;
+  } catch {
+    throw new Error(`Invalid JSON in field: ${key}`);
+  }
+};
+
+const parseOptionLines = (formData: FormData, key: string): ProductOption[] =>
+  parseMultilineList(formData, key).map((line) => {
+    const [rawLabel, rawValue] = line.split("|").map((part) => part.trim());
+    const label = rawLabel || rawValue || "";
+    const value = rawValue || toOptionValue(label);
+
+    return { label, value };
+  }).filter((option) => option.label && option.value);
+
+const parseSpecLines = (formData: FormData, key: string) =>
+  parseMultilineList(formData, key)
+    .map((line) => {
+      const separatorMatch = line.match(/\s*[|:]\s*/);
+
+      if (!separatorMatch || separatorMatch.index === undefined) {
+        return {
+          label: "",
+          value: "",
+        };
+      }
+
+      const rawLabel = line.slice(0, separatorMatch.index).trim();
+      const rawValue = line
+        .slice(separatorMatch.index + separatorMatch[0].length)
+        .trim();
+
+      return {
+        label: rawLabel || "",
+        value: rawValue || "",
+      };
+    })
+    .filter((spec) => spec.label && spec.value);
+
+const parseLocaleTranslation = (formData: FormData, locale: Locale) => ({
+  slug: parseString(formData, `${locale}.slug`).trim(),
+  title: parseString(formData, `${locale}.title`).trim(),
+  shortTitle: parseOptionalString(formData, `${locale}.shortTitle`),
+  shortDescription: parseString(formData, `${locale}.shortDescription`).trim(),
+  price: parseNumber(formData, locale === "ru" ? "pricing.BY.price" : "pricing.US.price"),
+  currency: parseString(formData, locale === "ru" ? "pricing.BY.currency" : "pricing.US.currency") as CurrencyCode,
+  emoji: parseString(formData, `${locale}.emoji`).trim(),
+  bgColor: parseOptionalString(formData, `${locale}.bgColor`),
+  lang: parseOptionalString(formData, `${locale}.lang`) ?? locale.toUpperCase(),
+});
+
+const parseDetailLocaleTranslation = (formData: FormData, locale: Locale) => ({
+  subtitle: parseString(formData, `${locale}.subtitle`).trim(),
+  oldPrice: parseOptionalNumber(formData, `${locale}.detailOldPrice`),
+  badge: parseOptionalString(formData, `${locale}.badge`),
+  storyLabel: parseOptionalString(formData, `${locale}.storyLabel`),
+  storyTitle: parseOptionalString(formData, `${locale}.storyTitle`),
+  sku: parseString(formData, `${locale}.sku`).trim(),
+  description: parseString(formData, `${locale}.description`).trim(),
+  images: parseJsonField<ProductImage[]>(formData, `${locale}.imagesJson`, []),
+  languages: parseOptionLines(formData, `${locale}.languagesText`),
+  formats: parseOptionLines(formData, `${locale}.formatsText`),
+  sizes: parseOptionLines(formData, `${locale}.sizesText`),
+  colors: parseOptionLines(formData, `${locale}.colorsText`),
+  specs: parseSpecLines(formData, `${locale}.specsText`),
+  delivery: parseMultilineList(formData, `${locale}.deliveryLines`),
+  reviews: parseJsonField<ProductReview[]>(formData, `${locale}.reviewsJson`, []),
+  digitalAssets: parseJsonField<ProductFileAsset[]>(
+    formData,
+    `${locale}.digitalAssetsJson`,
+    [],
+  ),
+});
+
+export const parseAdminCategoryFormData = (
+  formData: FormData,
+): AdminCategoryUpsertInput => ({
+  key: parseString(formData, "key").trim(),
+  isActive: parseBoolean(formData, "isActive"),
+  visibleInShop: parseBoolean(formData, "visibleInShop"),
+  visibleInHomeTabs: parseBoolean(formData, "visibleInHomeTabs"),
+  sortOrder: parseNumber(formData, "sortOrder", 100),
+  translations: {
+    ru: {
+      label: parseString(formData, "ru.label").trim(),
+      description: parseOptionalString(formData, "ru.description"),
+    },
+    en: {
+      label: parseString(formData, "en.label").trim(),
+      description: parseOptionalString(formData, "en.description"),
+    },
+  },
+});
+
+export const parseAdminProductFormData = (
+  formData: FormData,
+): AdminProductPayload => ({
+  product: {
+    productId: parseString(formData, "productId").trim(),
+    classification: {
+      type: parseString(formData, "type") as ProductType,
+      category: parseString(formData, "category").trim(),
+    },
+    status: {
+      isActive: parseBoolean(formData, "isActive"),
+      visibleInShop: parseBoolean(formData, "visibleInShop"),
+      visibleOnHome: parseBoolean(formData, "visibleOnHome"),
+      visibleInSearch: parseBoolean(formData, "visibleInSearch"),
+    },
+    merchandising: {
+      featured: parseBoolean(formData, "featured"),
+      sortOrder: parseNumber(formData, "sortOrder", 100),
+      placements: parseCsvList(formData, "placements") as ProductPlacement[],
+      flags: parseCsvList(formData, "flags"),
+    },
+    inventory: {
+      trackQuantity: parseBoolean(formData, "trackQuantity"),
+      quantity: parseOptionalNumber(formData, "quantity") ?? null,
+      allowBackorder: parseBoolean(formData, "allowBackorder"),
+      availability: parseString(formData, "availability") as ProductAvailability,
+    },
+    pricing: {
+      BY: {
+        price: parseNumber(formData, "pricing.BY.price"),
+        currency: parseString(formData, "pricing.BY.currency") as CurrencyCode,
+        oldPrice: parseOptionalNumber(formData, "pricing.BY.oldPrice"),
+      },
+      US: {
+        price: parseNumber(formData, "pricing.US.price"),
+        currency: parseString(formData, "pricing.US.currency") as CurrencyCode,
+        oldPrice: parseOptionalNumber(formData, "pricing.US.oldPrice"),
+      },
+    },
+    translations: {
+      ru: parseLocaleTranslation(formData, "ru"),
+      en: parseLocaleTranslation(formData, "en"),
+    },
+  },
+  details: {
+    productId: parseString(formData, "productId").trim(),
+    relatedProductIds: parseCsvList(formData, "relatedProductIds"),
+    translations: {
+      ru: parseDetailLocaleTranslation(formData, "ru"),
+      en: parseDetailLocaleTranslation(formData, "en"),
+    },
+  },
+});

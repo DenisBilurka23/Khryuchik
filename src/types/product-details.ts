@@ -2,8 +2,22 @@ import type { CurrencyCode } from "@/utils";
 
 export type ProductImage = {
   id: string;
-  emoji: string;
+  emoji?: string;
   bgColor?: string;
+  src?: string;
+  alt?: string;
+  objectKey?: string;
+};
+
+export type ProductFileAsset = {
+  id: string;
+  label: string;
+  fileName: string;
+  format: string;
+  contentType?: string;
+  sizeBytes?: number;
+  objectKey: string;
+  url?: string;
 };
 
 export type ProductOption = {
@@ -40,5 +54,6 @@ export type ProductDetails = {
   specs: Array<{ label: string; value: string }>;
   delivery: string[];
   reviews: ProductReview[];
+  digitalAssets?: ProductFileAsset[];
   relatedIds: string[];
 };

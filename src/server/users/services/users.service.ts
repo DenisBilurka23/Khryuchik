@@ -7,12 +7,16 @@ import { hashPassword, verifyPassword } from "@/server/auth/password";
 import type { RegisterUserInput, SafeAuthUser, UpdateUserProfileInput } from "@/types/users";
 
 import {
+  countAdminUsers,
+  countUsers,
   addGoogleToExistingUser,
   addCredentialsToExistingUser,
   createGoogleUser,
   createCredentialsUser,
+  findAllUsers,
   findUserByEmail,
   findUserById,
+  setUserAdminByEmail,
   setUserPasswordHash,
   toCredentialsAuthUser,
   updateUserProfile,
@@ -137,6 +141,7 @@ export const getAccountUserByEmail = async (email: string) => {
     name: user.name,
     email: user.email,
     phone: user.phone,
+    isAdmin: Boolean(user.isAdmin),
     image: user.image ?? null,
     authProviders: user.authProviders,
   } satisfies SafeAuthUser;
@@ -158,6 +163,7 @@ export const getAccountUserById = async (userId: string) => {
     name: user.name,
     email: user.email,
     phone: user.phone,
+    isAdmin: Boolean(user.isAdmin),
     image: user.image ?? null,
     authProviders: user.authProviders,
   } satisfies SafeAuthUser;
@@ -199,4 +205,47 @@ export const updateAccountUserProfile = async (
   });
 
   return { ok: true as const, user };
+};
+
+export const getAdminUsers = async (limit?: number) => {
+  const users = await findAllUsers(limit);
+
+  return users.map((user) => ({
+    id: (user._id as ObjectId).toString(),
+    email: user.email,
+    name: user.name,
+    phone: user.phone,
+    isAdmin: Boolean(user.isAdmin),
+    image: user.image ?? null,
+    authProviders: user.authProviders,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  }));
+};
+
+export const getAdminUsersStats = async () => {
+  const [totalUsers, adminUsers] = await Promise.all([
+    countUsers(),
+    countAdminUsers(),
+  ]);
+
+  return {
+    totalUsers,
+    adminUsers,
+  };
+};
+
+export const grantAdminRoleToUserByEmail = async (email: string) => {
+  const user = await setUserAdminByEmail(email, true);
+
+  if (!user?._id) {
+    return null;
+  }
+
+  return {
+    id: user._id.toString(),
+    email: user.email,
+    name: user.name,
+    isAdmin: Boolean(user.isAdmin),
+  };
 };

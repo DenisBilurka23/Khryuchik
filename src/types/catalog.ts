@@ -2,6 +2,7 @@ import type { Locale } from "@/i18n/config";
 import type { CountryCode, CurrencyCode } from "@/utils";
 
 import type {
+  ProductFileAsset,
   ProductImage,
   ProductOption,
   ProductReview,
@@ -129,6 +130,7 @@ export type ProductDetailTranslation = {
   specs: Array<{ label: string; value: string }>;
   delivery: string[];
   reviews: ProductReview[];
+  digitalAssets?: ProductFileAsset[];
 };
 
 export type ProductDetailDocument = {

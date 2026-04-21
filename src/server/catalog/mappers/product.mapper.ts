@@ -118,6 +118,7 @@ export const toProductDetails = (
     specs: translation.specs,
     delivery: localizeDeliveryCopy(translation.delivery, locale, country),
     reviews: translation.reviews,
+    digitalAssets: translation.digitalAssets,
     relatedIds: detailsDocument.relatedProductIds,
   };
 };
