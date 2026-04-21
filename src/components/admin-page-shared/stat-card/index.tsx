@@ -17,3 +17,5 @@ export const AdminStatCard = ({ title, value, note }: AdminStatCardProps) => {
     </Card>
   );
 };
+
+export type { AdminStatCardProps } from "./types";

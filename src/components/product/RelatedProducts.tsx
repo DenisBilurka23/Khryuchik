@@ -28,7 +28,7 @@ export const RelatedProducts = ({ labels, relatedProducts }: RelatedProductsProp
                       sx={{
                         minHeight: 180,
                         borderRadius: "24px",
-                        bgcolor: product.bgColor ?? "#FFF8F0",
+                        bgcolor: product.thumbnailBackgroundColor ?? "#FFF8F0",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",

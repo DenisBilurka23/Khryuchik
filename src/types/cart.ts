@@ -22,7 +22,7 @@ export type CartItem = {
   price: number;
   currency: CurrencyCode;
   emoji: string;
-  bgColor?: string;
+  thumbnailBackgroundColor?: string;
   quantity: number;
   variant?: string;
 };

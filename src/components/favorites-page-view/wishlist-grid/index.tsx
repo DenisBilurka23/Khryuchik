@@ -108,7 +108,7 @@ export const FavoritesWishlistGrid = ({
                     sx={{
                       height: 180,
                       borderRadius: "20px",
-                      bgcolor: product.bgColor ?? "#FFF8F0",
+                      bgcolor: product.thumbnailBackgroundColor ?? "#FFF8F0",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -116,13 +116,6 @@ export const FavoritesWishlistGrid = ({
                       position: "relative",
                     }}
                   >
-                    {product.merchandisingFlags[0] ? (
-                      <Chip
-                        label={product.merchandisingFlags[0]}
-                        size="small"
-                        sx={{ position: "absolute", top: 10, left: 10, bgcolor: "#fff", fontWeight: 700 }}
-                      />
-                    ) : null}
                     <Button
                       variant="outlined"
                       color="inherit"

@@ -32,7 +32,7 @@ export const ProductCard = ({
             sx={{
               color: "inherit",
               display: "flex",
-              bgcolor: product.bgColor ?? undefined,
+              bgcolor: product.thumbnailBackgroundColor ?? undefined,
             }}
           >
             {product.emoji}

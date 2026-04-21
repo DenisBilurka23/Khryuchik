@@ -15,15 +15,18 @@ export type ShopProductsQueryOptions = {
 };
 
 export const findActiveProductBySlug = async (
-  locale: Locale,
+  _locale: Locale,
   slug: string,
 ) => {
   const db = await getMongoDb();
 
-  return db.collection<ProductDocument>("products").findOne({
-    [`translations.${locale}.slug`]: slug,
-    "status.isActive": true,
-  });
+  return db.collection<ProductDocument>("products").findOne(
+    {
+      slug,
+      "status.isActive": true,
+    },
+    { projection: { _id: 0 } },
+  );
 };
 
 export const findProductsForPlacement = async (
@@ -36,14 +39,20 @@ export const findProductsForPlacement = async (
 
   const cursor = db
     .collection<ProductDocument>("products")
-    .find({
-      "merchandising.placements": placement,
-      "status.isActive": true,
-      ...(placement === "shop"
-        ? { "status.visibleInShop": true }
-        : { "status.visibleOnHome": true }),
-      ...(category ? { "classification.category": category } : {}),
-    })
+    .find(
+      {
+        "status.isActive": true,
+        ...(placement === "shop"
+          ? { "status.visibleInShop": true }
+          : {
+              "status.visibleOnHome": true,
+              "classification.type":
+                placement === "home-books" ? "book" : "merch",
+            }),
+        ...(category ? { "classification.category": category } : {}),
+      },
+      { projection: { _id: 0 } },
+    )
     .sort({ "merchandising.sortOrder": 1 });
 
   if (typeof limit === "number" && limit > 0) {
@@ -62,12 +71,14 @@ export const findShopVisibleProducts = async (
 
   const cursor = db
     .collection<ProductDocument>("products")
-    .find({
-      "merchandising.placements": "shop",
-      "status.isActive": true,
-      "status.visibleInShop": true,
-      ...(category ? { "classification.category": category } : {}),
-    })
+    .find(
+      {
+        "status.isActive": true,
+        "status.visibleInShop": true,
+        ...(category ? { "classification.category": category } : {}),
+      },
+      { projection: { _id: 0 } },
+    )
     .sort({ "merchandising.sortOrder": 1 });
 
   if (typeof limit === "number" && limit > 0) {
@@ -86,24 +97,24 @@ export const findActiveProductsByIds = async (productIds: string[]) => {
 
   return db
     .collection<ProductDocument>("products")
-    .find({ productId: { $in: productIds }, "status.isActive": true })
+    .find(
+      { productId: { $in: productIds }, "status.isActive": true },
+      { projection: { _id: 0 } },
+    )
     .toArray();
 };
 
-export const findActiveProductSlugs = async (locale: Locale) => {
+export const findActiveProductSlugs = async () => {
   const db = await getMongoDb();
   const products = await db
     .collection<ProductDocument>("products")
-    .find(
-      { "status.isActive": true },
-      { projection: { _id: 0, translations: 1 } },
-    )
+    .find({ "status.isActive": true }, { projection: { _id: 0, slug: 1 } })
     .toArray();
 
   return Array.from(
     new Set(
       products
-        .map((product) => product.translations[locale]?.slug)
+        .map((product) => product.slug)
         .filter((slug): slug is string => Boolean(slug)),
     ),
   );
@@ -114,7 +125,7 @@ export const findAllProducts = async () => {
 
   return db
     .collection<ProductDocument>("products")
-    .find({})
+    .find({}, { projection: { _id: 0 } })
     .sort({ "merchandising.sortOrder": 1, productId: 1 })
     .toArray();
 };
@@ -122,17 +133,17 @@ export const findAllProducts = async () => {
 export const findProductById = async (productId: string) => {
   const db = await getMongoDb();
 
-  return db.collection<ProductDocument>("products").findOne({ productId });
+  return db
+    .collection<ProductDocument>("products")
+    .findOne({ productId }, { projection: { _id: 0 } });
 };
 
 export const upsertProduct = async (product: ProductDocument) => {
   const db = await getMongoDb();
 
-  await db.collection<ProductDocument>("products").replaceOne(
-    { productId: product.productId },
-    product,
-    { upsert: true },
-  );
+  await db
+    .collection<ProductDocument>("products")
+    .replaceOne({ productId: product.productId }, product, { upsert: true });
 
   return product;
 };

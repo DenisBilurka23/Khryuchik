@@ -475,8 +475,6 @@ export type AdminPageDictionary = {
       accountsNote: string;
       categoriesTitle: string;
       categoriesNote: string;
-      featuredTitle: string;
-      featuredNote: string;
     };
     recentProducts: {
       title: string;
@@ -596,9 +594,9 @@ export type AdminPageDictionary = {
     summaryDigitalFiles: string;
     galleryCountLabel: string;
     filesCountLabel: string;
-    infoAlert: string;
     baseSectionTitle: string;
     baseSectionDescription: string;
+    placementTitle: string;
     pricingSectionTitle: string;
     pricingSectionDescription: string;
     localeSectionTitle: string;
@@ -609,14 +607,27 @@ export type AdminPageDictionary = {
     assetsUploadButton: string;
     relatedSectionTitle: string;
     relatedSectionDescription: string;
+    reviewsSectionTitle: string;
+    reviewsSectionDescription: string;
     helpers: {
-      placements: string;
-      flags: string;
+      productId: string;
+      slug: string;
+      sku: string;
       relatedProductIds: string;
       mediaRule: string;
       optionsRule: string;
       specsRule: string;
+      reviewsRule: string;
       filesRule: string;
+    };
+    buttons: {
+      addLanguage: string;
+      addFormat: string;
+      addSize: string;
+      addColor: string;
+      addSpec: string;
+      addReview: string;
+      removeItem: string;
     };
     fields: {
       productId: string;
@@ -625,26 +636,18 @@ export type AdminPageDictionary = {
       sortOrder: string;
       availability: string;
       quantity: string;
-      placements: string;
-      flags: string;
       isActive: string;
       visibleInShop: string;
       visibleOnHome: string;
-      visibleInSearch: string;
-      featured: string;
-      trackQuantity: string;
-      allowBackorder: string;
       byPrice: string;
-      byCurrency: string;
       byOldPrice: string;
       usPrice: string;
-      usCurrency: string;
       usOldPrice: string;
       slug: string;
       title: string;
       shortTitle: string;
       shortDescription: string;
-      backgroundColor: string;
+      thumbnailBackgroundColor: string;
       subtitle: string;
       badge: string;
       storyLabel: string;
@@ -656,6 +659,13 @@ export type AdminPageDictionary = {
       sizes: string;
       colors: string;
       specs: string;
+      reviews: string;
+      specLabel: string;
+      specValue: string;
+      reviewAuthor: string;
+      reviewText: string;
+      reviewRating: string;
+      reviewDate: string;
       deliveryLines: string;
       relatedProductIds: string;
       thumbnail: string;

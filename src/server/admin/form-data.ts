@@ -5,7 +5,7 @@ import type {
   AdminCategoryUpsertInput,
   AdminProductPayload,
 } from "@/types/admin";
-import type { ProductAvailability, ProductPlacement, ProductType } from "@/types/catalog";
+import type { ProductAvailability, ProductType } from "@/types/catalog";
 import type {
   ProductFileAsset,
   ProductImage,
@@ -53,14 +53,6 @@ const parseCsvList = (formData: FormData, key: string) =>
     .map((value) => value.trim())
     .filter(Boolean);
 
-const toOptionValue = (label: string) =>
-  label
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9а-яё]+/gi, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-
 const parseMultilineList = (formData: FormData, key: string) =>
   parseString(formData, key)
     .split(/\r?\n/)
@@ -81,48 +73,17 @@ const parseJsonField = <T>(formData: FormData, key: string, fallback: T): T => {
   }
 };
 
-const parseOptionLines = (formData: FormData, key: string): ProductOption[] =>
-  parseMultilineList(formData, key).map((line) => {
-    const [rawLabel, rawValue] = line.split("|").map((part) => part.trim());
-    const label = rawLabel || rawValue || "";
-    const value = rawValue || toOptionValue(label);
-
-    return { label, value };
-  }).filter((option) => option.label && option.value);
-
-const parseSpecLines = (formData: FormData, key: string) =>
-  parseMultilineList(formData, key)
-    .map((line) => {
-      const separatorMatch = line.match(/\s*[|:]\s*/);
-
-      if (!separatorMatch || separatorMatch.index === undefined) {
-        return {
-          label: "",
-          value: "",
-        };
-      }
-
-      const rawLabel = line.slice(0, separatorMatch.index).trim();
-      const rawValue = line
-        .slice(separatorMatch.index + separatorMatch[0].length)
-        .trim();
-
-      return {
-        label: rawLabel || "",
-        value: rawValue || "",
-      };
-    })
-    .filter((spec) => spec.label && spec.value);
-
 const parseLocaleTranslation = (formData: FormData, locale: Locale) => ({
-  slug: parseString(formData, `${locale}.slug`).trim(),
   title: parseString(formData, `${locale}.title`).trim(),
   shortTitle: parseOptionalString(formData, `${locale}.shortTitle`),
   shortDescription: parseString(formData, `${locale}.shortDescription`).trim(),
   price: parseNumber(formData, locale === "ru" ? "pricing.BY.price" : "pricing.US.price"),
   currency: parseString(formData, locale === "ru" ? "pricing.BY.currency" : "pricing.US.currency") as CurrencyCode,
   emoji: parseString(formData, `${locale}.emoji`).trim(),
-  bgColor: parseOptionalString(formData, `${locale}.bgColor`),
+  thumbnailBackgroundColor: parseOptionalString(
+    formData,
+    `${locale}.thumbnailBackgroundColor`,
+  ),
   lang: parseOptionalString(formData, `${locale}.lang`) ?? locale.toUpperCase(),
 });
 
@@ -132,16 +93,15 @@ const parseDetailLocaleTranslation = (formData: FormData, locale: Locale) => ({
   badge: parseOptionalString(formData, `${locale}.badge`),
   storyLabel: parseOptionalString(formData, `${locale}.storyLabel`),
   storyTitle: parseOptionalString(formData, `${locale}.storyTitle`),
-  sku: parseString(formData, `${locale}.sku`).trim(),
   description: parseString(formData, `${locale}.description`).trim(),
   images: parseJsonField<ProductImage[]>(formData, `${locale}.imagesJson`, []),
-  languages: parseOptionLines(formData, `${locale}.languagesText`),
-  formats: parseOptionLines(formData, `${locale}.formatsText`),
-  sizes: parseOptionLines(formData, `${locale}.sizesText`),
-  colors: parseOptionLines(formData, `${locale}.colorsText`),
-  specs: parseSpecLines(formData, `${locale}.specsText`),
+  languages: parseJsonField<ProductOption[]>(formData, `${locale}.languagesJson`, []),
+  formats: parseJsonField<ProductOption[]>(formData, `${locale}.formatsJson`, []),
+  sizes: parseJsonField<ProductOption[]>(formData, `${locale}.sizesJson`, []),
+  colors: parseJsonField<ProductOption[]>(formData, `${locale}.colorsJson`, []),
+  specs: parseJsonField<Array<{ label: string; value: string }>>(formData, `${locale}.specsJson`, []),
   delivery: parseMultilineList(formData, `${locale}.deliveryLines`),
-  reviews: parseJsonField<ProductReview[]>(formData, `${locale}.reviewsJson`, []),
+  reviews: parseJsonField<ProductReview[]>(formData, `reviewsJson`, []),
   digitalAssets: parseJsonField<ProductFileAsset[]>(
     formData,
     `${locale}.digitalAssetsJson`,
@@ -174,6 +134,7 @@ export const parseAdminProductFormData = (
 ): AdminProductPayload => ({
   product: {
     productId: parseString(formData, "productId").trim(),
+    slug: parseString(formData, "slug").trim(),
     classification: {
       type: parseString(formData, "type") as ProductType,
       category: parseString(formData, "category").trim(),
@@ -182,18 +143,12 @@ export const parseAdminProductFormData = (
       isActive: parseBoolean(formData, "isActive"),
       visibleInShop: parseBoolean(formData, "visibleInShop"),
       visibleOnHome: parseBoolean(formData, "visibleOnHome"),
-      visibleInSearch: parseBoolean(formData, "visibleInSearch"),
     },
     merchandising: {
-      featured: parseBoolean(formData, "featured"),
       sortOrder: parseNumber(formData, "sortOrder", 100),
-      placements: parseCsvList(formData, "placements") as ProductPlacement[],
-      flags: parseCsvList(formData, "flags"),
     },
     inventory: {
-      trackQuantity: parseBoolean(formData, "trackQuantity"),
       quantity: parseOptionalNumber(formData, "quantity") ?? null,
-      allowBackorder: parseBoolean(formData, "allowBackorder"),
       availability: parseString(formData, "availability") as ProductAvailability,
     },
     pricing: {
@@ -215,6 +170,7 @@ export const parseAdminProductFormData = (
   },
   details: {
     productId: parseString(formData, "productId").trim(),
+    sku: parseString(formData, "sku").trim(),
     relatedProductIds: parseCsvList(formData, "relatedProductIds"),
     translations: {
       ru: parseDetailLocaleTranslation(formData, "ru"),

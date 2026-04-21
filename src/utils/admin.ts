@@ -46,15 +46,58 @@ export const getAdminCategoryLabel = (
   locale: Locale,
 ) => translations[locale]?.label ?? translations.en?.label ?? translations.ru?.label ?? "";
 
+export const normalizeSlugPart = (value: string) =>
+  value
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+
+export const normalizeSkuPart = (value: string) =>
+  value
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
+
+export const normalizeAdminDate = (value: string) => {
+  if (!value) {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  return value.slice(0, 10);
+};
+
+export const buildUniqueValue = (
+  baseValue: string,
+  isTaken: (candidate: string) => boolean,
+) => {
+  const normalizedBaseValue = baseValue || "product";
+
+  if (!isTaken(normalizedBaseValue)) {
+    return normalizedBaseValue;
+  }
+
+  let suffix = 2;
+
+  while (isTaken(`${normalizedBaseValue}-${suffix}`)) {
+    suffix += 1;
+  }
+
+  return `${normalizedBaseValue}-${suffix}`;
+};
+
 const createEmptyTranslation = (locale: Locale): ProductTranslation => ({
-  slug: "",
   title: "",
   shortTitle: "",
   shortDescription: "",
   price: 0,
   currency: locale === "ru" ? "BYN" : "USD",
   emoji: locale === "ru" ? "📘" : "📘",
-  bgColor: "#FFF8F0",
+  thumbnailBackgroundColor: "#FFF8F0",
   lang: locale === "ru" ? "RU" : "EN",
 });
 
@@ -63,7 +106,6 @@ const createEmptyDetailTranslation = (): ProductDetailTranslation => ({
   badge: "",
   storyLabel: "",
   storyTitle: "",
-  sku: "",
   description: "",
   images: [],
   languages: [],
@@ -79,6 +121,7 @@ const createEmptyDetailTranslation = (): ProductDetailTranslation => ({
 export const createEmptyAdminProductPayload = (): AdminProductPayload => ({
   product: {
     productId: "",
+    slug: "",
     classification: {
       type: "book",
       category: "books",
@@ -87,24 +130,15 @@ export const createEmptyAdminProductPayload = (): AdminProductPayload => ({
       isActive: true,
       visibleInShop: true,
       visibleOnHome: false,
-      visibleInSearch: true,
     },
     merchandising: {
-      featured: false,
       sortOrder: 100,
-      placements: ["shop"],
-      flags: [],
     },
     inventory: {
-      trackQuantity: false,
       quantity: null,
-      allowBackorder: true,
       availability: "in_stock",
     },
-    pricing: {
-      BY: { price: 0, currency: "BYN" },
-      US: { price: 0, currency: "USD" },
-    },
+    pricing: {},
     translations: {
       ru: createEmptyTranslation("ru"),
       en: createEmptyTranslation("en"),
@@ -112,6 +146,7 @@ export const createEmptyAdminProductPayload = (): AdminProductPayload => ({
   },
   details: {
     productId: "",
+    sku: "",
     relatedProductIds: [],
     translations: {
       ru: createEmptyDetailTranslation(),

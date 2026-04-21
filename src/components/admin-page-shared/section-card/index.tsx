@@ -35,3 +35,5 @@ export const AdminSectionCard = ({
     </Card>
   );
 };
+
+export type { AdminSectionCardProps } from "./types";

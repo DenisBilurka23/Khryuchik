@@ -1,12 +1,13 @@
 import { MongoClient } from "mongodb";
 
 import {
-  getProductDetails,
-  getProductSlugs,
+  getSeedProductDetails,
+  getSeedProductIds,
+  getSeedProductSku,
+  getSeedProductSlug,
 } from "@/server/catalog/seed-data/product-details.seed";
 import {
   getStorefrontBookSeedItems,
-  getStorefrontProductSeedItems,
 } from "@/server/catalog/seed-data/storefront.seed";
 import { categorySeedDocuments } from "@/server/catalog/seed-data/categories.seed";
 import { type Locale, locales } from "@/i18n/config";
@@ -17,7 +18,6 @@ import type {
   ProductDetailDocument,
   ProductDocument,
   ProductCountryPricing,
-  ProductPlacement,
   ProductType,
 } from "@/types/catalog";
 
@@ -89,39 +89,41 @@ const getProductSortOrder = (productId: string) => {
   return index === -1 ? productOrder.length + 1 : index + 1;
 };
 
-const getRequiredProductDetails = (locale: Locale, slug: string) => {
-  const product = getProductDetails(locale, slug);
+const getRequiredProductDetails = (locale: Locale, productId: string) => {
+  const product = getSeedProductDetails(locale, productId);
 
   if (!product) {
     throw new Error(
-      `Product details for locale "${locale}" and slug "${slug}" were not found`,
+      `Product details for locale "${locale}" and product "${productId}" were not found`,
     );
   }
 
   return product;
 };
 
-const buildProductPlacements = (productId: string): ProductPlacement[] => {
-  const placements = new Set<ProductPlacement>(["shop"]);
+const getRequiredProductSlug = (productId: string) => {
+  const slug = getSeedProductSlug(productId);
 
-  for (const locale of locales) {
-    const bookItems = getStorefrontBookSeedItems(locale);
-    const shopItems = getStorefrontProductSeedItems(locale);
-
-    if (bookItems.some((book) => book.slug === productId)) {
-      placements.add("home-books");
-    }
-
-    if (shopItems.some((product) => product.id === productId)) {
-      placements.add("home-shop");
-    }
+  if (!slug) {
+    throw new Error(`Shared slug for product "${productId}" was not found`);
   }
 
-  return Array.from(placements);
+  return slug;
+};
+
+const getRequiredProductSku = (productId: string) => {
+  const sku = getSeedProductSku(productId);
+
+  if (!sku) {
+    throw new Error(`Shared SKU for product "${productId}" was not found`);
+  }
+
+  return sku;
 };
 
 const buildProductDocument = (productId: string): ProductDocument => ({
   productId,
+  slug: getRequiredProductSlug(productId),
   classification: {
     type: getProductType(productId),
     category: productCategoryById[productId],
@@ -130,25 +132,12 @@ const buildProductDocument = (productId: string): ProductDocument => ({
     isActive: true,
     visibleInShop: true,
     visibleOnHome: true,
-    visibleInSearch: true,
   },
   merchandising: {
-    featured: productId === "book-winter" || productId === "mug",
     sortOrder: getProductSortOrder(productId),
-    placements: buildProductPlacements(productId),
-    flags:
-      productId === "book-winter"
-        ? ["new", "signature-story"]
-        : productId === "mug"
-          ? ["featured", "giftable"]
-          : getProductType(productId) === "book"
-            ? ["editorial"]
-            : ["merch"],
   },
   inventory: {
-    trackQuantity: getProductType(productId) !== "book",
     quantity: getProductType(productId) === "book" ? null : 25,
-    allowBackorder: getProductType(productId) === "book",
     availability: "in_stock",
   },
   pricing: productPricingByCountry[productId],
@@ -162,7 +151,6 @@ const buildProductDocument = (productId: string): ProductDocument => ({
       return [
         locale,
         {
-          slug: details.slug,
           title: details.title,
           shortTitle:
             bookItem && bookItem.title !== details.title
@@ -172,7 +160,7 @@ const buildProductDocument = (productId: string): ProductDocument => ({
           price: details.price,
           currency: "BYN" as const,
           emoji: bookItem?.emoji ?? details.images[0]?.emoji ?? "📦",
-          bgColor: details.images[0]?.bgColor,
+          thumbnailBackgroundColor: details.images[0]?.bgColor,
           lang: bookItem?.lang,
         },
       ];
@@ -184,6 +172,7 @@ const buildProductDetailDocument = (
   productId: string,
 ): ProductDetailDocument => ({
   productId,
+  sku: getRequiredProductSku(productId),
   relatedProductIds: getRequiredProductDetails("ru", productId).relatedIds,
   translations: Object.fromEntries(
     locales.map((locale) => {
@@ -194,7 +183,6 @@ const buildProductDetailDocument = (
         badge: details.badge,
         storyLabel: details.storyLabel,
         storyTitle: details.storyTitle,
-        sku: details.sku,
         description: details.description,
         images: details.images,
         languages: details.languages,
@@ -241,17 +229,9 @@ const seedProducts = async (client: MongoClient) => {
     "status.isActive": 1,
   });
   await collection.createIndex({ "inventory.availability": 1 });
+  await collection.createIndex({ slug: 1 }, { unique: true });
 
-  await Promise.all(
-    locales.map(async (locale) => {
-      await collection.createIndex(
-        { [`translations.${locale}.slug`]: 1 },
-        { unique: true },
-      );
-    }),
-  );
-
-  const productIds = getProductSlugs();
+  const productIds = getSeedProductIds();
 
   await Promise.all(
     productIds.map(async (productId) => {
@@ -296,8 +276,9 @@ const seedProductDetails = async (client: MongoClient) => {
     .collection<ProductDetailDocument>("productDetails");
 
   await collection.createIndex({ productId: 1 }, { unique: true });
+  await collection.createIndex({ sku: 1 }, { unique: true });
 
-  const productIds = getProductSlugs();
+  const productIds = getSeedProductIds();
 
   await Promise.all(
     productIds.map(async (productId) => {

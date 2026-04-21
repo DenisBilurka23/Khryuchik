@@ -105,7 +105,7 @@ export const HomeCartSummary = ({
                 <Box
                   key={item.id}
                   className={`${styles.thumbnail} ${shouldStretchRow ? styles.thumbnailFull : ""}`.trim()}
-                  sx={{ bgcolor: item.bgColor || "#FFF8F0" }}
+                  sx={{ bgcolor: item.thumbnailBackgroundColor || "#FFF8F0" }}
                   title={item.title}
                   aria-label={item.title}
                 >

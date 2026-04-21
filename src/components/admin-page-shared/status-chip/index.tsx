@@ -29,3 +29,5 @@ export const AdminStatusChip = ({ label, tone = "neutral" }: AdminStatusChipProp
     />
   );
 };
+
+export type { AdminStatusChipProps, AdminStatusChipTone } from "./types";

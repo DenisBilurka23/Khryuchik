@@ -15,26 +15,24 @@ import {
 } from "../mappers/product.mapper";
 import {
   findActiveProductBySlug,
-  findActiveProductSlugs,
   findActiveProductsByIds,
+  findActiveProductSlugs,
   findProductsForPlacement,
   findShopVisibleProducts,
 } from "../repositories/products.repository";
 import { findProductDetailsByProductId } from "../repositories/product-details.repository";
 
-const getProductSummaryBySlug = cache(async (
-  locale: Locale,
-  country: CountryCode,
-  slug: string,
-) => {
-  const product = await findActiveProductBySlug(locale, slug);
+const getProductSummaryBySlug = cache(
+  async (locale: Locale, country: CountryCode, slug: string) => {
+    const product = await findActiveProductBySlug(locale, slug);
 
-  if (!product) {
-    return null;
-  }
+    if (!product) {
+      return null;
+    }
 
-  return localizeProductSummary(product, locale, country);
-});
+    return localizeProductSummary(product, locale, country);
+  },
+);
 
 export const getProductsForPlacement = cache(
   async (
@@ -89,25 +87,23 @@ export const getProductSummariesByIds = async (
     .filter(isLocalizedProductSummary);
 };
 
-export const getProductDetails = cache(async (
-  locale: Locale,
-  country: CountryCode,
-  slug: string,
-) => {
-  const summary = await getProductSummaryBySlug(locale, country, slug);
+export const getProductDetails = cache(
+  async (locale: Locale, country: CountryCode, slug: string) => {
+    const summary = await getProductSummaryBySlug(locale, country, slug);
 
-  if (!summary) {
-    return null;
-  }
+    if (!summary) {
+      return null;
+    }
 
-  const detailsDocument = await findProductDetailsByProductId(summary.id);
+    const detailsDocument = await findProductDetailsByProductId(summary.id);
 
-  if (!detailsDocument) {
-    return null;
-  }
+    if (!detailsDocument) {
+      return null;
+    }
 
-  return toProductDetails(summary, detailsDocument, locale, country);
-});
+    return toProductDetails(summary, detailsDocument, locale, country);
+  },
+);
 
 const getSelectionLabel = (
   options: ProductOption[] | undefined,
@@ -150,12 +146,14 @@ export const resolveCartItems = async (
 ): Promise<CartItem[]> => {
   const productIds = Array.from(new Set(items.map((item) => item.productId)));
   const summaries = await getProductSummariesByIds(locale, country, productIds);
-  const summaryById = new Map(summaries.map((summary) => [summary.id, summary]));
+  const summaryById = new Map(
+    summaries.map((summary) => [summary.id, summary]),
+  );
   const detailsEntries = await Promise.all(
-    productIds.map(async (productId) => [
-      productId,
-      await findProductDetailsByProductId(productId),
-    ] as const),
+    productIds.map(
+      async (productId) =>
+        [productId, await findProductDetailsByProductId(productId)] as const,
+    ),
   );
   const detailsById = new Map(detailsEntries);
 
@@ -175,7 +173,7 @@ export const resolveCartItems = async (
         price: summary.price,
         currency: summary.currency,
         emoji: summary.emoji,
-        bgColor: summary.bgColor,
+        thumbnailBackgroundColor: summary.thumbnailBackgroundColor,
         quantity: item.quantity,
         variant: buildVariantLabel(
           item,
@@ -187,6 +185,4 @@ export const resolveCartItems = async (
   });
 };
 
-export const getProductSlugs = cache(async (locale: Locale) =>
-  findActiveProductSlugs(locale),
-);
+export const getProductSlugs = cache(async () => findActiveProductSlugs());

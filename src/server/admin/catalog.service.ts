@@ -35,7 +35,7 @@ import {
 } from "../catalog/repositories/products.repository";
 
 const getPrimaryTitle = (
-  translations: Record<Locale, { title: string; slug: string }>,
+  translations: Record<Locale, { title: string }>,
   locale: Locale = "ru",
 ) =>
   translations[locale]?.title ||
@@ -43,14 +43,7 @@ const getPrimaryTitle = (
   translations.ru?.title ||
   "—";
 
-const getPrimarySlug = (
-  translations: Record<Locale, { title: string; slug: string }>,
-  locale: Locale = "ru",
-) =>
-  translations[locale]?.slug ||
-  translations.en?.slug ||
-  translations.ru?.slug ||
-  "";
+const booksCategoryKey = "books";
 
 const getCategoryItemsCountMap = async () => {
   const products = await findAllProducts();
@@ -78,9 +71,6 @@ export const getAdminDashboardStats =
         (product) => product.classification.type === "book",
       ).length,
       categoriesCount,
-      featuredCount: products.filter(
-        (product) => product.merchandising.featured,
-      ).length,
       totalUsers: usersStats.totalUsers,
       adminUsers: usersStats.adminUsers,
     };
@@ -116,13 +106,12 @@ export const getAdminProducts = async (
   return products.map((product) => {
     const details = detailsById.get(product.productId);
     const pricing = product.pricing.BY ?? product.pricing.US;
-    const sku =
-      details?.translations.ru?.sku || details?.translations.en?.sku || "";
+    const sku = details?.sku || "";
 
     return {
       productId: product.productId,
       title: getPrimaryTitle(product.translations, locale),
-      slug: getPrimarySlug(product.translations, locale),
+      slug: product.slug,
       type: product.classification.type,
       category: product.classification.category,
       sku,
@@ -130,7 +119,6 @@ export const getAdminProducts = async (
       availability: product.inventory.availability,
       isActive: product.status.isActive,
       visibleInShop: product.status.visibleInShop,
-      featured: product.merchandising.featured,
       sortOrder: product.merchandising.sortOrder,
     };
   });
@@ -229,9 +217,31 @@ const sanitizeProductPayload = (
   payload: AdminProductPayload,
 ): AdminProductPayload => {
   const productId = payload.product.productId.trim();
+  const slug = payload.product.slug.trim();
+  const sku = payload.details.sku.trim();
+  const requestedCategory = payload.product.classification.category.trim();
+  const normalizedCategory =
+    payload.product.classification.type === "book"
+      ? booksCategoryKey
+      : requestedCategory;
 
   if (!productId) {
     throw new Error("Product ID is required");
+  }
+
+  if (!slug) {
+    throw new Error("Slug is required");
+  }
+
+  if (!normalizedCategory) {
+    throw new Error("Category is required");
+  }
+
+  if (
+    payload.product.classification.type === "merch" &&
+    normalizedCategory === booksCategoryKey
+  ) {
+    throw new Error("Merch products cannot use the books category");
   }
 
   const nextPayload: AdminProductPayload = {
@@ -240,40 +250,49 @@ const sanitizeProductPayload = (
       productId,
       classification: {
         ...payload.product.classification,
-        category: payload.product.classification.category.trim(),
+        category: normalizedCategory,
       },
       merchandising: {
         ...payload.product.merchandising,
-        flags: payload.product.merchandising.flags.filter(Boolean),
       },
+      slug,
       translations: {
         ru: {
           ...payload.product.translations.ru,
-          slug: payload.product.translations.ru.slug.trim(),
           title: payload.product.translations.ru.title.trim(),
           shortTitle:
             payload.product.translations.ru.shortTitle?.trim() || undefined,
           shortDescription:
             payload.product.translations.ru.shortDescription.trim(),
+          currency: "BYN",
         },
         en: {
           ...payload.product.translations.en,
-          slug: payload.product.translations.en.slug.trim(),
           title: payload.product.translations.en.title.trim(),
           shortTitle:
             payload.product.translations.en.shortTitle?.trim() || undefined,
           shortDescription:
             payload.product.translations.en.shortDescription.trim(),
+          currency: "USD",
         },
       },
       pricing: {
-        BY: payload.product.pricing.BY,
-        US: payload.product.pricing.US,
+        BY: {
+          ...payload.product.pricing.BY,
+          price: payload.product.pricing.BY?.price ?? 0,
+          currency: "BYN",
+        },
+        US: {
+          ...payload.product.pricing.US,
+          price: payload.product.pricing.US?.price ?? 0,
+          currency: "USD",
+        },
       },
     },
     details: {
       ...payload.details,
       productId,
+      sku,
       relatedProductIds: payload.details.relatedProductIds.filter(Boolean),
       translations: {
         ru: {
@@ -284,7 +303,6 @@ const sanitizeProductPayload = (
             payload.details.translations.ru.storyLabel?.trim() || undefined,
           storyTitle:
             payload.details.translations.ru.storyTitle?.trim() || undefined,
-          sku: payload.details.translations.ru.sku.trim(),
           description: payload.details.translations.ru.description.trim(),
         },
         en: {
@@ -295,7 +313,6 @@ const sanitizeProductPayload = (
             payload.details.translations.en.storyLabel?.trim() || undefined,
           storyTitle:
             payload.details.translations.en.storyTitle?.trim() || undefined,
-          sku: payload.details.translations.en.sku.trim(),
           description: payload.details.translations.en.description.trim(),
         },
       },

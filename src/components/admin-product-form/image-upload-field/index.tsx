@@ -109,3 +109,5 @@ export const AdminImageUploadField = ({
     </Stack>
   );
 };
+
+export type { AdminImageUploadFieldProps, PreviewImage } from "./types";

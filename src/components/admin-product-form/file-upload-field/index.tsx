@@ -58,3 +58,5 @@ export const AdminFileUploadField = ({
     </Stack>
   );
 };
+
+export type { AdminFileUploadFieldProps } from "./types";

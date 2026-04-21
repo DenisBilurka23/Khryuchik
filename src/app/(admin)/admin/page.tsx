@@ -50,11 +50,6 @@ const AdminDashboardPage = async () => {
 			value: summary.stats.categoriesCount,
 			note: `${summary.stats.booksCount} ${dictionary.dashboard.stats.categoriesNote}`,
 		},
-		{
-			title: dictionary.dashboard.stats.featuredTitle,
-			value: summary.stats.featuredCount,
-			note: dictionary.dashboard.stats.featuredNote,
-		},
 	];
 
 	return (

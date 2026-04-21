@@ -9,7 +9,7 @@ export type RelatedProductCardViewModel = {
   href: string;
   title: string;
   emoji: string;
-  bgColor: string;
+  thumbnailBackgroundColor: string;
   formattedPrice: string;
 };
 

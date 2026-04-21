@@ -1,10 +1,6 @@
-import type { ReactElement } from "react";
 import { Box, Typography } from "@mui/material";
 
-type AdminCheckboxFieldProps = {
-  control: ReactElement;
-  label: string;
-};
+import type { AdminCheckboxFieldProps } from "./types";
 
 export const AdminCheckboxField = ({ control, label }: AdminCheckboxFieldProps) => {
   return (
@@ -23,3 +19,5 @@ export const AdminCheckboxField = ({ control, label }: AdminCheckboxFieldProps) 
     </Box>
   );
 };
+
+export type { AdminCheckboxFieldProps } from "./types";

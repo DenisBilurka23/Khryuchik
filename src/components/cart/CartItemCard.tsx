@@ -35,7 +35,7 @@ export const CartItemCard = ({
                 minWidth: { sm: 140 },
                 height: 140,
                 borderRadius: "24px",
-                bgcolor: item.bgColor || "#FFF8F0",
+                bgcolor: item.thumbnailBackgroundColor || "#FFF8F0",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

@@ -45,7 +45,8 @@ const createProductPageViewModel = ({
     href: getLocalizedProductPath(locale, relatedProduct.slug),
     title: relatedProduct.title,
     emoji: relatedProduct.emoji,
-    bgColor: relatedProduct.bgColor ?? "#FFF8F0",
+    thumbnailBackgroundColor:
+      relatedProduct.thumbnailBackgroundColor ?? "#FFF8F0",
     formattedPrice: formatCurrency(
       relatedProduct.price,
       locale,

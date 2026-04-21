@@ -13,6 +13,7 @@ import {
   AdminProductFormErrorCode,
   AdminProductFormMode,
 } from "@/server/admin/product-form-state";
+import { populateAdminProductIdentifiers } from "@/server/admin/product-identifiers";
 import { requireAdminApiAccess } from "@/server/admin/auth";
 import { uploadBookFiles, uploadProductGalleryFiles } from "@/server/storage/r2-assets.service";
 import { isR2Configured } from "@/server/storage/r2";
@@ -69,6 +70,7 @@ export const saveAdminProductAction = async (formData: FormData) => {
 
   try {
     payload = parseAdminProductFormData(formData);
+    payload = await populateAdminProductIdentifiers(payload);
 
     for (const locale of locales) {
       const galleryFiles = getUploadedFiles(formData, `gallery${locale.toUpperCase()}`);

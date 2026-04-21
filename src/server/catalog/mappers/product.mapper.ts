@@ -54,26 +54,22 @@ export const localizeProductSummary = (
       localizedTranslation.title,
       localizedTranslation.shortTitle,
       localizedTranslation.shortDescription,
-      localizedTranslation.slug,
     ])
+    .concat(product.slug)
     .filter((value): value is string => Boolean(value))
     .join(" ")
     .toLowerCase();
 
   return {
     id: product.productId,
+    slug: product.slug,
     type: product.classification.type,
     category: product.classification.category,
     searchIndex,
     isActive: product.status.isActive,
-    featured: product.merchandising.featured,
     sortOrder: product.merchandising.sortOrder,
-    placements: product.merchandising.placements,
     availability: product.inventory.availability,
-    trackQuantity: product.inventory.trackQuantity,
     quantity: product.inventory.quantity,
-    allowBackorder: product.inventory.allowBackorder,
-    merchandisingFlags: product.merchandising.flags,
     ...translation,
     price: pricing.price,
     currency: pricing.currency,
@@ -108,7 +104,7 @@ export const toProductDetails = (
     badge: translation.badge,
     storyLabel: translation.storyLabel,
     storyTitle: translation.storyTitle,
-    sku: translation.sku,
+    sku: detailsDocument.sku,
     description: translation.description,
     images: translation.images,
     languages: translation.languages,

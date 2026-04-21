@@ -4,11 +4,9 @@ export { AdminPageHero } from "./page-hero";
 export { AdminSectionCard } from "./section-card";
 export { AdminStatCard } from "./stat-card";
 export { AdminStatusChip } from "./status-chip";
-export type {
-	AdminEmptyStateProps,
-	AdminPageHeroProps,
-	AdminSectionCardProps,
-	AdminStatCardProps,
-	AdminStatusChipProps,
-	AdminStatusChipTone,
-} from "./types";
+export type { AdminCheckboxFieldProps } from "./checkbox-field";
+export type { AdminEmptyStateProps } from "./empty-state";
+export type { AdminPageHeroProps } from "./page-hero";
+export type { AdminSectionCardProps } from "./section-card";
+export type { AdminStatCardProps } from "./stat-card";
+export type { AdminStatusChipProps, AdminStatusChipTone } from "./status-chip";

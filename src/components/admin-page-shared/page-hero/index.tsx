@@ -38,3 +38,5 @@ export const AdminPageHero = ({
     </Paper>
   );
 };
+
+export type { AdminPageHeroProps } from "./types";

@@ -8,7 +8,10 @@ export const findShopVisibleCategories = async () => {
 
   return db
     .collection<CategoryDocument>("categories")
-    .find({ isActive: true, visibleInShop: true })
+    .find(
+      { isActive: true, visibleInShop: true },
+      { projection: { _id: 0 } },
+    )
     .sort({ sortOrder: 1 })
     .toArray();
 };
@@ -18,7 +21,10 @@ export const findHomeTabCategories = async () => {
 
   return db
     .collection<CategoryDocument>("categories")
-    .find({ isActive: true, visibleInShop: true, visibleInHomeTabs: true })
+    .find(
+      { isActive: true, visibleInShop: true, visibleInHomeTabs: true },
+      { projection: { _id: 0 } },
+    )
     .sort({ sortOrder: 1 })
     .toArray();
 };
@@ -28,7 +34,7 @@ export const findAllCategories = async () => {
 
   return db
     .collection<CategoryDocument>("categories")
-    .find({})
+    .find({}, { projection: { _id: 0 } })
     .sort({ sortOrder: 1, key: 1 })
     .toArray();
 };

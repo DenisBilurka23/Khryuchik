@@ -26,20 +26,14 @@ export type ProductStatus = {
   isActive: boolean;
   visibleInShop: boolean;
   visibleOnHome: boolean;
-  visibleInSearch: boolean;
 };
 
 export type ProductMerchandising = {
-  featured: boolean;
   sortOrder: number;
-  placements: ProductPlacement[];
-  flags: string[];
 };
 
 export type ProductInventory = {
-  trackQuantity: boolean;
   quantity: number | null;
-  allowBackorder: boolean;
   availability: ProductAvailability;
 };
 
@@ -70,14 +64,13 @@ export type LocalizedCategory = {
 };
 
 export type ProductTranslation = {
-  slug: string;
   title: string;
   shortTitle?: string;
   shortDescription: string;
   price: number;
   currency: CurrencyCode;
   emoji: string;
-  bgColor?: string;
+  thumbnailBackgroundColor?: string;
   lang?: string;
 };
 
@@ -89,6 +82,7 @@ export type ProductCountryPricing = {
 
 export type ProductDocument = {
   productId: string;
+  slug: string;
   classification: ProductClassification;
   status: ProductStatus;
   merchandising: ProductMerchandising;
@@ -99,19 +93,15 @@ export type ProductDocument = {
 
 export type LocalizedProductSummary = ProductTranslation & {
   id: string;
+  slug: string;
   type: ProductType;
   category: ProductCategory;
   searchIndex: string;
   oldPrice?: number;
   isActive: boolean;
-  featured: boolean;
   sortOrder: number;
-  placements: ProductPlacement[];
   availability: ProductAvailability;
-  trackQuantity: boolean;
   quantity: number | null;
-  allowBackorder: boolean;
-  merchandisingFlags: string[];
 };
 
 export type ProductDetailTranslation = {
@@ -120,7 +110,6 @@ export type ProductDetailTranslation = {
   badge?: string;
   storyLabel?: string;
   storyTitle?: string;
-  sku: string;
   description: string;
   images: ProductImage[];
   languages?: ProductOption[];
@@ -135,6 +124,7 @@ export type ProductDetailTranslation = {
 
 export type ProductDetailDocument = {
   productId: string;
+  sku: string;
   relatedProductIds: string[];
   translations: Record<Locale, ProductDetailTranslation>;
 };

@@ -49,7 +49,6 @@ export type AdminProductListItem = {
   availability: ProductDocument["inventory"]["availability"];
   isActive: boolean;
   visibleInShop: boolean;
-  featured: boolean;
   sortOrder: number;
 };
 
@@ -68,7 +67,6 @@ export type AdminDashboardStats = {
   activeProducts: number;
   booksCount: number;
   categoriesCount: number;
-  featuredCount: number;
   totalUsers: number;
   adminUsers: number;
 };

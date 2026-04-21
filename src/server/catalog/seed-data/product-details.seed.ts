@@ -1,12 +1,28 @@
 import type { Locale } from "@/i18n/config";
 import type { ProductDetails } from "@/types/product-details";
 
-type SeedProductDetails = Omit<ProductDetails, "currency" | "productId">;
+type SeedLocalizedProductDetails = Omit<
+  ProductDetails,
+  "currency" | "productId" | "slug" | "sku"
+>;
 
-const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
+type SeedProductSharedDetails = {
+  slug: string;
+  sku: string;
+};
+
+const productSharedDetailsMap: Record<string, SeedProductSharedDetails> = {
+  mug: { slug: "mug", sku: "KHR-MUG-01" },
+  "book-winter": { slug: "book-winter", sku: "KHR-BOOK-01" },
+  "book-country-house": { slug: "book-country-house", sku: "KHR-BOOK-02" },
+  "book-friends": { slug: "book-friends", sku: "KHR-BOOK-03" },
+  tshirt: { slug: "tshirt", sku: "KHR-TEE-01" },
+  stickers: { slug: "stickers", sku: "KHR-STK-01" },
+};
+
+const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetails>> = {
   ru: {
     mug: {
-      slug: "mug",
       title: "Кружка Хрючик",
       subtitle: "Уютная кружка для тёплых семейных историй",
       price: 24,
@@ -14,7 +30,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       badge: "Хит недели",
       storyLabel: "Коллекция: Хрючик зимой",
       storyTitle: "Хрючик зимой",
-      sku: "KHR-MUG-01",
       description:
         "Керамическая кружка с Хрючиком — тёплый подарок для ребёнка, родителей или семейной коллекции. Отлично подходит для чая, какао и уютных домашних вечеров.",
       images: [
@@ -57,14 +72,12 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       relatedIds: ["book-winter", "tshirt", "stickers"],
     },
     "book-winter": {
-      slug: "book-winter",
       title: "Книга «Хрючик зимой»",
       subtitle: "Добрая зимняя история на русском и английском",
       price: 29,
       badge: "Новая книга",
       storyLabel: "Сюжетная история Хрючика",
       storyTitle: "Хрючик зимой",
-      sku: "KHR-BOOK-01",
       description:
         "Тёплая семейная сказка, вдохновлённая жизненными событиями. Подходит для совместного чтения и подарка детям и родителям.",
       images: [
@@ -104,14 +117,12 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       relatedIds: ["mug", "tshirt", "stickers"],
     },
     "book-country-house": {
-      slug: "book-country-house",
       title: "Книга «Хрючик на даче»",
       subtitle: "Летняя история о каникулах, семье и маленьких открытиях",
       price: 27,
       badge: "Семейная история",
       storyLabel: "Сюжетная история Хрючика",
       storyTitle: "Хрючик на даче",
-      sku: "KHR-BOOK-02",
       description:
         "Светлая история о поездках на дачу, семейных воспоминаниях и тех самых летних днях, которые остаются с нами надолго.",
       images: [
@@ -151,14 +162,12 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       relatedIds: ["mug", "stickers", "book-winter"],
     },
     "book-friends": {
-      slug: "book-friends",
       title: "Книга «Хрючик и друзья»",
       subtitle: "Добрая история о дружбе, заботе и совместных приключениях",
       price: 27,
       badge: "Для чтения перед сном",
       storyLabel: "Сюжетная история Хрючика",
       storyTitle: "Хрючик и друзья",
-      sku: "KHR-BOOK-03",
       description:
         "Книга о том, как дружба, внимание друг к другу и маленькие добрые поступки делают каждый день теплее и интереснее.",
       images: [
@@ -198,14 +207,12 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       relatedIds: ["stickers", "mug", "book-winter"],
     },
     tshirt: {
-      slug: "tshirt",
       title: "Футболка Хрючик",
       subtitle: "Мягкая футболка для прогулок, чтения и подарков",
       price: 49,
       badge: "Бестселлер",
       storyLabel: "Коллекция: Хрючик зимой",
       storyTitle: "Хрючик зимой",
-      sku: "KHR-TEE-01",
       description:
         "Базовая футболка с мягким принтом Хрючика. Подходит детям и взрослым, легко сочетается с подарочными наборами и книгами.",
       images: [
@@ -246,14 +253,12 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       relatedIds: ["mug", "book-winter", "stickers"],
     },
     stickers: {
-      slug: "stickers",
       title: "Наклейки Хрючик",
       subtitle: "Мини-набор для подарков, тетрадей и упаковки",
       price: 12,
       badge: "Маленький подарок",
       storyLabel: "Стикеры по мотивам книги",
       storyTitle: "Хрючик зимой",
-      sku: "KHR-STK-01",
       description:
         "Набор наклеек с Хрючиком для открыток, подарочной упаковки, ноутбуков и детских тетрадей. Хорошо дополняет книгу или кружку.",
       images: [
@@ -287,7 +292,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
   },
   en: {
     mug: {
-      slug: "mug",
       title: "Khryuchik mug",
       subtitle: "A cozy mug for warm family stories",
       price: 24,
@@ -295,7 +299,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       badge: "This week's favorite",
       storyLabel: "Collection: Khryuchik in Winter",
       storyTitle: "Khryuchik in Winter",
-      sku: "KHR-MUG-01",
       description:
         "A ceramic Khryuchik mug that makes a warm gift for children, parents, or a family collection. Perfect for tea, cocoa, and quiet evenings at home.",
       images: [
@@ -338,14 +341,12 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       relatedIds: ["book-winter", "tshirt", "stickers"],
     },
     "book-winter": {
-      slug: "book-winter",
       title: "Book 'Khryuchik in Winter'",
       subtitle: "A gentle winter story in Russian and English",
       price: 29,
       badge: "New book",
       storyLabel: "A story-led Khryuchik title",
       storyTitle: "Khryuchik in Winter",
-      sku: "KHR-BOOK-01",
       description:
         "A warm family tale inspired by real-life moments. Perfect for shared reading and as a gift for children and parents.",
       images: [
@@ -385,14 +386,12 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       relatedIds: ["mug", "tshirt", "stickers"],
     },
     "book-country-house": {
-      slug: "book-country-house",
       title: "Book 'Khryuchik at the Country House'",
       subtitle: "A summer story about family time and small discoveries",
       price: 27,
       badge: "Family story",
       storyLabel: "A story-led Khryuchik title",
       storyTitle: "Khryuchik at the Country House",
-      sku: "KHR-BOOK-02",
       description:
         "A bright story about time spent at the country house, family memories, and the kind of summer days that stay with you for years.",
       images: [
@@ -432,14 +431,12 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       relatedIds: ["mug", "stickers", "book-winter"],
     },
     "book-friends": {
-      slug: "book-friends",
       title: "Book 'Khryuchik and Friends'",
       subtitle: "A gentle story about friendship, care, and shared adventures",
       price: 27,
       badge: "Perfect for bedtime",
       storyLabel: "A story-led Khryuchik title",
       storyTitle: "Khryuchik and Friends",
-      sku: "KHR-BOOK-03",
       description:
         "A book about how friendship, attention, and small acts of kindness can make every day warmer and more memorable.",
       images: [
@@ -479,14 +476,12 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       relatedIds: ["stickers", "mug", "book-winter"],
     },
     tshirt: {
-      slug: "tshirt",
       title: "Khryuchik T-shirt",
       subtitle: "A soft everyday T-shirt for walks, reading, and gifting",
       price: 49,
       badge: "Bestseller",
       storyLabel: "Collection: Khryuchik in Winter",
       storyTitle: "Khryuchik in Winter",
-      sku: "KHR-TEE-01",
       description:
         "A relaxed-fit T-shirt with a soft Khryuchik print. A lovely match for books and gift bundles for both children and adults.",
       images: [
@@ -527,14 +522,12 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
       relatedIds: ["mug", "book-winter", "stickers"],
     },
     stickers: {
-      slug: "stickers",
       title: "Khryuchik stickers",
       subtitle: "A mini set for gifts, notebooks, and wrapping",
       price: 12,
       badge: "A small gift",
       storyLabel: "Stickers inspired by the book",
       storyTitle: "Khryuchik in Winter",
-      sku: "KHR-STK-01",
       description:
         "A sticker pack with Khryuchik for cards, gift wrapping, laptops, and children's notebooks. A perfect add-on to a book or mug.",
       images: [
@@ -568,8 +561,14 @@ const productDetailsMap: Record<Locale, Record<string, SeedProductDetails>> = {
   },
 };
 
-export const getProductDetails = (locale: Locale, slug: string) =>
-  productDetailsMap[locale][slug];
+export const getSeedProductDetails = (locale: Locale, productId: string) =>
+  productDetailsMap[locale][productId];
 
-export const getProductSlugs = () =>
+export const getSeedProductIds = () =>
   Array.from(new Set(Object.keys(productDetailsMap.ru)));
+
+export const getSeedProductSlug = (productId: string) =>
+  productSharedDetailsMap[productId]?.slug;
+
+export const getSeedProductSku = (productId: string) =>
+  productSharedDetailsMap[productId]?.sku;
