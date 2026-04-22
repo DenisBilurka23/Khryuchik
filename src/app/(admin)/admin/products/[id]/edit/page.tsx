@@ -34,10 +34,8 @@ const EditAdminProductPage = async ({
 }: EditAdminProductPageProps) => {
   const { id } = await params;
   const { saved, error } = await searchParams;
-  const [{ dictionary, locale }, editorData] = await Promise.all([
-    getAdminPageContext(),
-    getAdminProductEditorData(id),
-  ]);
+  const { dictionary, locale } = await getAdminPageContext();
+  const editorData = await getAdminProductEditorData(id, locale);
 
   return (
     <Stack gap={2}>
@@ -51,6 +49,8 @@ const EditAdminProductPage = async ({
         sharedDictionary={dictionary.shared}
         payload={editorData.payload}
         categories={editorData.categories}
+        initialRelatedProductOptions={editorData.initialRelatedProductOptions}
+        selectedRelatedProductOptions={editorData.selectedRelatedProductOptions}
         action={saveAdminProductAction}
         isNew={false}
         errorMessage={getAdminProductFormErrorMessage(error, dictionary.productForm)}

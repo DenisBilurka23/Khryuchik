@@ -644,14 +644,14 @@ const dictionary: SeedDictionary = {
       assetsUploadButton: "Upload PDF/files",
       relatedSectionTitle: "Related products",
       relatedSectionDescription:
-        "Comma-separated productId list for cross-sell and related products.",
+        "Choose related products from the list for cross-sell and related products.",
       reviewsSectionTitle: "Reviews",
       reviewsSectionDescription: "Shared product reviews used across all language versions.",
       helpers: {
         productId: "Leave empty to generate it automatically.",
         slug: "Leave empty to generate it from the EN title and normalize it for URLs.",
         sku: "Leave empty to generate it automatically from the product ID.",
-        relatedProductIds: "Comma-separated product IDs",
+        relatedProductIds: "Start typing a title, ID, or slug and pick products from the list.",
         mediaRule: "The first image is used as the thumbnail. The rest become the gallery.",
         optionsRule: "Type a value and press Enter.",
         specsRule: "Add specifications as separate fields with a name and a value.",

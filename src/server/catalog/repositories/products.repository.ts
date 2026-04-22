@@ -4,6 +4,9 @@ import type { Locale } from "@/i18n/config";
 import { getMongoDb } from "@/server/db/mongodb";
 import type { ProductDocument, ProductPlacement } from "@/types/catalog";
 
+const escapeRegex = (value: string) =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 export type ProductPlacementQueryOptions = {
   category?: string;
   limit?: number;
@@ -12,6 +15,12 @@ export type ProductPlacementQueryOptions = {
 export type ShopProductsQueryOptions = {
   category?: string;
   limit?: number;
+};
+
+export type AdminProductSearchQueryOptions = {
+  query?: string;
+  limit?: number;
+  excludeProductId?: string;
 };
 
 export const findActiveProductBySlug = async (
@@ -127,6 +136,59 @@ export const findAllProducts = async () => {
     .collection<ProductDocument>("products")
     .find({}, { projection: { _id: 0 } })
     .sort({ "merchandising.sortOrder": 1, productId: 1 })
+    .toArray();
+};
+
+export const findProductsByIds = async (productIds: string[]) => {
+  if (productIds.length === 0) {
+    return [];
+  }
+
+  const db = await getMongoDb();
+
+  return db
+    .collection<ProductDocument>("products")
+    .find(
+      { productId: { $in: productIds } },
+      { projection: { _id: 0 } },
+    )
+    .toArray();
+};
+
+export const findAdminProductsForSearch = async (
+  _locale: Locale,
+  options?: AdminProductSearchQueryOptions,
+) => {
+  const db = await getMongoDb();
+  const query = options?.query?.trim() ?? "";
+  const limit =
+    typeof options?.limit === "number" && options.limit > 0
+      ? options.limit
+      : 10;
+  const regex = query ? new RegExp(escapeRegex(query), "i") : null;
+
+  return db
+    .collection<ProductDocument>("products")
+    .find(
+      {
+        ...(options?.excludeProductId
+          ? { productId: { $ne: options.excludeProductId } }
+          : {}),
+        ...(regex
+          ? {
+              $or: [
+                { productId: regex },
+                { slug: regex },
+                { "translations.ru.title": regex },
+                { "translations.en.title": regex },
+              ],
+            }
+          : {}),
+      },
+      { projection: { _id: 0 } },
+    )
+    .sort({ "merchandising.sortOrder": 1, productId: 1 })
+    .limit(limit)
     .toArray();
 };
 

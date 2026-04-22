@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { Locale } from "@/i18n/config";
+import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryListItem,
   AdminCategoryUpsertInput,
@@ -8,6 +8,7 @@ import type {
   AdminDashboardStats,
   AdminProductEditorData,
   AdminProductListItem,
+  AdminProductOption,
   AdminProductPayload,
 } from "@/types/admin";
 import type { CategoryDocument } from "@/types/catalog";
@@ -29,14 +30,16 @@ import {
   upsertProductDetails,
 } from "../catalog/repositories/product-details.repository";
 import {
+  findAdminProductsForSearch,
   findAllProducts,
   findProductById,
+  findProductsByIds,
   upsertProduct,
 } from "../catalog/repositories/products.repository";
 
 const getPrimaryTitle = (
   translations: Record<Locale, { title: string }>,
-  locale: Locale = "ru",
+  locale: Locale = defaultLocale,
 ) =>
   translations[locale]?.title ||
   translations.en?.title ||
@@ -44,6 +47,62 @@ const getPrimaryTitle = (
   "—";
 
 const booksCategoryKey = "books";
+
+type AdminProductOptionsQuery = {
+  locale: Locale;
+  productIds?: string[];
+  query?: string;
+  excludeProductId?: string;
+  limit?: number;
+};
+
+const mapProductsToAdminOptions = (
+  products: Array<{
+    productId: string;
+    slug: string;
+    translations: Record<Locale, { title: string }>;
+  }>,
+  locale: Locale,
+): AdminProductOption[] =>
+  products.map((product) => ({
+    id: product.productId,
+    title: getPrimaryTitle(product.translations, locale),
+    slug: product.slug,
+  }));
+
+export const getAdminProductOptions = async ({
+  locale,
+  productIds,
+  query,
+  excludeProductId,
+  limit = 10,
+}: AdminProductOptionsQuery): Promise<AdminProductOption[]> => {
+  if (productIds && productIds.length > 0) {
+    const products = await findProductsByIds(productIds);
+    const productsById = new Map(
+      products.map((product) => [product.productId, product]),
+    );
+
+    return productIds
+      .map((productId) => productsById.get(productId))
+      .filter((product): product is NonNullable<typeof product> =>
+        Boolean(product),
+      )
+      .map((product) => ({
+        id: product.productId,
+        title: getPrimaryTitle(product.translations, locale),
+        slug: product.slug,
+      }));
+  }
+
+  const products = await findAdminProductsForSearch(locale, {
+    query,
+    excludeProductId,
+    limit,
+  });
+
+  return mapProductsToAdminOptions(products, locale);
+};
 
 const getCategoryItemsCountMap = async () => {
   const products = await findAllProducts();
@@ -93,7 +152,7 @@ export const getAdminCustomers = async (
 };
 
 export const getAdminProducts = async (
-  locale: Locale = "ru",
+  locale: Locale = defaultLocale,
 ): Promise<AdminProductListItem[]> => {
   const [products, detailsDocuments] = await Promise.all([
     findAllProducts(),
@@ -145,8 +204,16 @@ export const getAdminCategories = async (): Promise<
 
 export const getAdminProductEditorData = async (
   productId?: string,
+  locale: Locale = defaultLocale,
 ): Promise<AdminProductEditorData> => {
-  const categories = await findAllCategories();
+  const [categories, initialRelatedProductOptions] = await Promise.all([
+    findAllCategories(),
+    getAdminProductOptions({
+      locale,
+      excludeProductId: productId,
+      limit: 10,
+    }),
+  ]);
 
   if (!productId) {
     const emptyPayload = createEmptyAdminProductPayload();
@@ -157,7 +224,9 @@ export const getAdminProductEditorData = async (
 
     return {
       categories,
+      initialRelatedProductOptions,
       payload: emptyPayload,
+      selectedRelatedProductOptions: [],
     };
   }
 
@@ -170,12 +239,19 @@ export const getAdminProductEditorData = async (
     throw new Error(`Product ${productId} was not found`);
   }
 
+  const selectedRelatedProductOptions = await getAdminProductOptions({
+    locale,
+    productIds: details.relatedProductIds,
+  });
+
   return {
     categories,
+    initialRelatedProductOptions,
     payload: {
       product,
       details,
     },
+    selectedRelatedProductOptions,
   };
 };
 
@@ -340,7 +416,7 @@ export const saveAdminProduct = async (payload: AdminProductPayload) => {
   return sanitizedPayload;
 };
 
-export const getAdminSummaryData = async (locale: Locale = "ru") => {
+export const getAdminSummaryData = async (locale: Locale = defaultLocale) => {
   const [stats, products, categories, customers] = await Promise.all([
     getAdminDashboardStats(),
     getAdminProducts(locale),

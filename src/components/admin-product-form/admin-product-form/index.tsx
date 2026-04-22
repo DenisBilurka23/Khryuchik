@@ -27,6 +27,8 @@ export const AdminProductForm = ({
   sharedDictionary,
   payload,
   categories,
+  initialRelatedProductOptions,
+  selectedRelatedProductOptions,
   action,
   isNew,
   errorMessage,
@@ -124,9 +126,12 @@ export const AdminProductForm = ({
           />
 
           <AdminProductRelatedSection
+            locale={locale}
             dictionary={dictionary}
             submitLabel={submitLabel}
             payload={payload}
+            initialProductOptions={initialRelatedProductOptions}
+            selectedProductOptions={selectedRelatedProductOptions}
           />
         </Stack>
       </form>

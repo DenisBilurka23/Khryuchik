@@ -4,6 +4,7 @@ import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
+import { updateAdminLocalePreferenceClient } from "@/client-api/admin-locale";
 import { locales } from "@/i18n/config";
 import { localeLabels } from "@/utils";
 import { HeaderSelect } from "@/components/storefront-header/header-select";
@@ -45,13 +46,9 @@ export const AdminLocaleSwitcher = ({
       activeElement.blur();
     }
 
-    const response = await fetch("/api/preferences/admin-locale", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ locale: nextLocale }),
-    }).catch(() => null);
+    const response = await updateAdminLocalePreferenceClient(nextLocale).catch(
+      () => null,
+    );
 
     if (!response?.ok) {
       setSelectedLocale(previousLocale);

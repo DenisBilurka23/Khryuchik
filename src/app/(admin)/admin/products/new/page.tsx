@@ -22,10 +22,8 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 const NewAdminProductPage = async ({ searchParams }: NewAdminProductPageProps) => {
   const { error } = await searchParams;
-  const [{ dictionary, locale }, editorData] = await Promise.all([
-    getAdminPageContext(),
-    getAdminProductEditorData(),
-  ]);
+  const { dictionary, locale } = await getAdminPageContext();
+  const editorData = await getAdminProductEditorData(undefined, locale);
 
   return (
     <AdminProductForm
@@ -37,6 +35,8 @@ const NewAdminProductPage = async ({ searchParams }: NewAdminProductPageProps) =
       sharedDictionary={dictionary.shared}
       payload={editorData.payload}
       categories={editorData.categories}
+      initialRelatedProductOptions={editorData.initialRelatedProductOptions}
+      selectedRelatedProductOptions={editorData.selectedRelatedProductOptions}
       action={saveAdminProductAction}
       isNew
       errorMessage={getAdminProductFormErrorMessage(error, dictionary.productForm)}

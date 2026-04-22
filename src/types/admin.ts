@@ -52,6 +52,12 @@ export type AdminProductListItem = {
   sortOrder: number;
 };
 
+export type AdminProductOption = {
+  id: string;
+  title: string;
+  slug: string;
+};
+
 export type AdminCategoryListItem = {
   key: string;
   isActive: boolean;
@@ -74,6 +80,8 @@ export type AdminDashboardStats = {
 export type AdminProductEditorData = {
   payload: AdminProductPayload;
   categories: CategoryDocument[];
+  initialRelatedProductOptions: AdminProductOption[];
+  selectedRelatedProductOptions: AdminProductOption[];
 };
 
 export type AdminCategoryUpsertInput = {
