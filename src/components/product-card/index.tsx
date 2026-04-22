@@ -8,8 +8,8 @@ import {
 import Link from "next/link";
 
 import { formatCurrency } from "@/utils";
-import { AddToCartButton } from "./AddToCartButton";
-import { WishlistButton } from "./WishlistButton";
+import { AddToCartButton } from "./add-to-cart-button";
+import { WishlistButton } from "./wishlist-button";
 import styles from "./product-card.module.css";
 import type { ProductCardProps } from "./types";
 

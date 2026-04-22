@@ -6,9 +6,7 @@ import Link from "next/link";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { countryShippingConfig, getLocalizedPath } from "@/utils";
 
-import { CartItemCard } from "../cart/CartItemCard";
-import { EmptyCartState } from "../cart/EmptyCartState";
-import { OrderSummaryCard } from "../cart/OrderSummaryCard";
+import { CartItemCard, EmptyCartState, OrderSummaryCard } from "../cart";
 import styles from "../storefront/storefront.module.css";
 
 import type { CartPageViewProps } from "./types";

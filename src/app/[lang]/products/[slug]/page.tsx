@@ -16,7 +16,7 @@ type LocalizedProductPageProps = {
 };
 
 export const generateStaticParams = () =>
-  Promise.all(locales.map(async (lang) => [lang, await getProductSlugs(lang)] as const)).then(
+  Promise.all(locales.map(async (lang) => [lang, await getProductSlugs()] as const)).then(
     (localizedSlugs) =>
       localizedSlugs.flatMap(([lang, slugs]) =>
         slugs.map((slug) => ({ lang, slug })),

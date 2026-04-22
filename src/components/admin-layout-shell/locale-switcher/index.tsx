@@ -4,17 +4,11 @@ import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-import {
-  type Locale,
-  locales,
-} from "@/i18n/config";
+import { locales } from "@/i18n/config";
 import { localeLabels } from "@/utils";
 import { HeaderSelect } from "@/components/storefront-header/header-select";
 
-type AdminLocaleSwitcherProps = {
-  locale: Locale;
-  label: string;
-};
+import type { AdminLocaleSwitcherProps } from "./types";
 
 export const AdminLocaleSwitcher = ({
   locale,
@@ -34,7 +28,11 @@ export const AdminLocaleSwitcher = ({
   );
 
   const handleChange = async (nextLocale: string) => {
-    if ((nextLocale !== "ru" && nextLocale !== "en") || nextLocale === selectedLocale || isPending) {
+    if (
+      (nextLocale !== "ru" && nextLocale !== "en") ||
+      nextLocale === selectedLocale ||
+      isPending
+    ) {
       return;
     }
 
@@ -76,7 +74,9 @@ export const AdminLocaleSwitcher = ({
         void handleChange(value);
       }}
       disabled={isPending}
-      icon={<LanguageOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />}
+      icon={
+        <LanguageOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
+      }
       sx={{ minWidth: 110 }}
     />
   );

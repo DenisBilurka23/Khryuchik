@@ -2,7 +2,7 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Box, Button, Paper, Typography } from "@mui/material";
 import Link from "next/link";
 
-import type { EmptyCartStateProps } from "./types";
+import type { EmptyCartStateProps } from "../types";
 
 export const EmptyCartState = ({
   title,

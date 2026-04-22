@@ -16,7 +16,7 @@ type ProductPageProps = {
 };
 
 export const generateStaticParams = () =>
-  getProductSlugs(defaultLocale).then((slugs) =>
+  getProductSlugs().then((slugs) =>
     slugs.map((slug) => ({ slug })),
   );
 

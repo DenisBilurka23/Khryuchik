@@ -6,11 +6,7 @@ import { IconButton } from "@mui/material";
 
 import { useWishlist } from "@/hooks/useWishlist";
 
-type WishlistButtonProps = {
-  productId: string;
-  label: string;
-  className?: string;
-};
+import type { WishlistButtonProps } from "./types";
 
 export const WishlistButton = ({ productId, label, className }: WishlistButtonProps) => {
   const { isInWishlist, toggleWishlist } = useWishlist();

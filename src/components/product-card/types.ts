@@ -8,9 +8,3 @@ export type ProductCardProps = {
   wishlistAriaLabel: string;
   detailsHref: string;
 };
-
-export type AddToCartButtonProps = {
-  productId: string;
-  label: string;
-  className?: string;
-};

@@ -6,7 +6,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { HomeCartSummary } from "./HomeCartSummary";
+import { HomeCartSummary } from "./home-cart-summary";
 import styles from "./order-section.module.css";
 import type { OrderSectionProps } from "./types";
 

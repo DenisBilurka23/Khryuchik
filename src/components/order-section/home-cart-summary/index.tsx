@@ -9,7 +9,7 @@ import type {
   HomeCartSummaryProps,
   HomeCartSummaryViewModelParams,
 } from "./types";
-import styles from "./order-section.module.css";
+import styles from "../order-section.module.css";
 
 const createHomeCartSummaryViewModel = ({
   locale,

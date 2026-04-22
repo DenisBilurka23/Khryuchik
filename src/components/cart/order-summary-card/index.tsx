@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { formatCurrency, getCountryCurrency } from "@/utils";
 
-import type { OrderSummaryCardProps } from "./types";
+import type { OrderSummaryCardProps } from "../types";
 
 export const OrderSummaryCard = ({
   locale,

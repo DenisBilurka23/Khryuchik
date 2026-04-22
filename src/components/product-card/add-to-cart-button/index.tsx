@@ -2,8 +2,9 @@
 
 import { Button } from "@mui/material";
 
+import { useCart } from "@/components/cart/store";
+
 import type { AddToCartButtonProps } from "./types";
-import { useCart } from "../cart/store";
 
 export const AddToCartButton = ({
   productId,

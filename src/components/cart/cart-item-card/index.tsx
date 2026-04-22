@@ -6,8 +6,9 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { Box, Card, CardContent, IconButton, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
-import type { CartItemCardProps } from "./types";
 import { formatCurrency, getLocalizedProductPath } from "@/utils";
+
+import type { CartItemCardProps } from "../types";
 
 export const CartItemCard = ({
   item,
