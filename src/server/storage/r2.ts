@@ -1,6 +1,10 @@
 import "server-only";
 
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 const {
   R2_ACCOUNT_ID,
@@ -97,4 +101,26 @@ export const uploadPrivateObject = async ({
   return {
     objectKey,
   };
+};
+
+export const deletePublicObject = async (objectKey: string) => {
+  const client = getR2Client();
+
+  await client.send(
+    new DeleteObjectCommand({
+      Bucket: R2_BUCKET_PUBLIC,
+      Key: objectKey,
+    }),
+  );
+};
+
+export const deletePrivateObject = async (objectKey: string) => {
+  const client = getR2Client();
+
+  await client.send(
+    new DeleteObjectCommand({
+      Bucket: R2_BUCKET_PRIVATE,
+      Key: objectKey,
+    }),
+  );
 };

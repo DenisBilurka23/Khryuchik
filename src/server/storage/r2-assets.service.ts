@@ -5,7 +5,12 @@ import { randomUUID } from "crypto";
 import type { Locale } from "@/i18n/config";
 import type { ProductFileAsset, ProductImage } from "@/types/product-details";
 
-import { uploadPrivateObject, uploadPublicObject } from "./r2";
+import {
+  deletePrivateObject,
+  deletePublicObject,
+  uploadPrivateObject,
+  uploadPublicObject,
+} from "./r2";
 
 const sanitizeFileName = (fileName: string) =>
   fileName
@@ -74,5 +79,21 @@ export const uploadBookFiles = async ({
           objectKey: uploaded.objectKey,
         } satisfies ProductFileAsset;
       }),
+  );
+};
+
+export const deleteProductGalleryObjects = async (objectKeys: string[]) => {
+  await Promise.all(
+    objectKeys.filter(Boolean).map(async (objectKey) => {
+      await deletePublicObject(objectKey);
+    }),
+  );
+};
+
+export const deleteBookAssetObjects = async (objectKeys: string[]) => {
+  await Promise.all(
+    objectKeys.filter(Boolean).map(async (objectKey) => {
+      await deletePrivateObject(objectKey);
+    }),
   );
 };

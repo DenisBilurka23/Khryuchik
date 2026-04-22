@@ -17,6 +17,12 @@ import { populateAdminProductIdentifiers } from "@/server/admin/product-identifi
 import { requireAdminApiAccess } from "@/server/admin/auth";
 import { uploadBookFiles, uploadProductGalleryFiles } from "@/server/storage/r2-assets.service";
 import { isR2Configured } from "@/server/storage/r2";
+import type { ProductImage } from "@/types/product-details";
+
+type ImageOrderEntry = {
+  id: string;
+  kind: "existing" | "new";
+};
 
 const requireAdmin = async () => {
   const session = await requireAdminApiAccess();
@@ -30,6 +36,82 @@ const getUploadedFiles = (formData: FormData, key: string) =>
   formData
     .getAll(key)
     .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+
+const parseImageOrder = (formData: FormData, key: string): ImageOrderEntry[] => {
+  const value = formData.get(key);
+
+  if (typeof value !== "string" || !value.trim()) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(value) as unknown;
+
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed.filter((entry): entry is ImageOrderEntry => {
+      if (!entry || typeof entry !== "object") {
+        return false;
+      }
+
+      const candidate = entry as Partial<ImageOrderEntry>;
+
+      return (
+        typeof candidate.id === "string" &&
+        (candidate.kind === "existing" || candidate.kind === "new")
+      );
+    });
+  } catch {
+    return [];
+  }
+};
+
+const mergeOrderedImages = ({
+  existingImages,
+  uploadedImages,
+  imageOrder,
+}: {
+  existingImages: ProductImage[];
+  uploadedImages: ProductImage[];
+  imageOrder: ImageOrderEntry[];
+}) => {
+  if (imageOrder.length === 0) {
+    return [...existingImages, ...uploadedImages];
+  }
+
+  const existingImagesById = new Map(
+    existingImages.map((image) => [image.id, image]),
+  );
+  const remainingUploadedImages = [...uploadedImages];
+  const orderedImages: ProductImage[] = [];
+
+  imageOrder.forEach((entry) => {
+    if (entry.kind === "existing") {
+      const existingImage = existingImagesById.get(entry.id);
+
+      if (existingImage) {
+        orderedImages.push(existingImage);
+        existingImagesById.delete(entry.id);
+      }
+
+      return;
+    }
+
+    const nextUploadedImage = remainingUploadedImages.shift();
+
+    if (nextUploadedImage) {
+      orderedImages.push(nextUploadedImage);
+    }
+  });
+
+  return [
+    ...orderedImages,
+    ...existingImagesById.values(),
+    ...remainingUploadedImages,
+  ];
+};
 
 const getAdminProductErrorRedirectPath = (
   formData: FormData,
@@ -75,6 +157,7 @@ export const saveAdminProductAction = async (formData: FormData) => {
     for (const locale of locales) {
       const galleryFiles = getUploadedFiles(formData, `gallery${locale.toUpperCase()}`);
       const assetFiles = getUploadedFiles(formData, `digitalAssets${locale.toUpperCase()}`);
+      const imageOrder = parseImageOrder(formData, `${locale}.imagesOrderJson`);
 
       if ((galleryFiles.length > 0 || assetFiles.length > 0) && !isR2Configured) {
         console.error("Admin product save failed: R2 is not configured", {
@@ -88,18 +171,21 @@ export const saveAdminProductAction = async (formData: FormData) => {
         break;
       }
 
+      let uploadedImages: ProductImage[] = [];
+
       if (galleryFiles.length > 0) {
-        const uploadedImages = await uploadProductGalleryFiles({
+        uploadedImages = await uploadProductGalleryFiles({
           productId: payload.product.productId,
           locale,
           files: galleryFiles,
         });
-
-        payload.details.translations[locale].images = [
-          ...payload.details.translations[locale].images,
-          ...uploadedImages,
-        ];
       }
+
+      payload.details.translations[locale].images = mergeOrderedImages({
+        existingImages: payload.details.translations[locale].images,
+        uploadedImages,
+        imageOrder,
+      });
 
       if (assetFiles.length > 0) {
         const uploadedAssets = await uploadBookFiles({

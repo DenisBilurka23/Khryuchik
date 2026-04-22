@@ -59,11 +59,6 @@ export const AdminProductLocaleSection = ({
           />
           <input
             type="hidden"
-            name={`${locale}.imagesJson`}
-            value={stringifyJson(details.images)}
-          />
-          <input
-            type="hidden"
             name={`${locale}.digitalAssetsJson`}
             value={stringifyJson(details.digitalAssets)}
           />
@@ -154,8 +149,11 @@ export const AdminProductLocaleSection = ({
         >
           <AdminImageUploadField
             name={`gallery${locale.toUpperCase()}`}
+            existingImagesInputName={`${locale}.imagesJson`}
+            imageOrderInputName={`${locale}.imagesOrderJson`}
             buttonLabel={`${dictionary.imagesUploadButton} ${locale.toUpperCase()}`}
             helperText={dictionary.helpers.mediaRule}
+            removeButtonLabel={dictionary.buttons.removeItem}
             thumbnailLabel={dictionary.fields.thumbnail}
             galleryLabel={dictionary.fields.gallery}
             existingImages={details.images}

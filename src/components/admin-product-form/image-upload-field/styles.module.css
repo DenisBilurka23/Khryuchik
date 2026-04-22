@@ -1,0 +1,77 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.removeButton {
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(217, 108, 130, 0.2);
+  background: rgba(255, 255, 255, 0.9);
+  color: #b9556e;
+}
+
+.removeButton:hover {
+  background: #fff1f4;
+}
+
+.dragHandle {
+  display: grid;
+  grid-template-columns: repeat(2, 4px);
+  gap: 1.4px;
+  opacity: 0.55;
+  flex-shrink: 0;
+  touch-action: none;
+  padding: 3px;
+}
+
+.imageFrame {
+  height: 96px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-size: 32px;
+  position: relative;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 12px;
+}
+
+.overlay {
+  width: 148px;
+  max-width: 34vw;
+}
+
+.draggableCard {
+  cursor: grab;
+}
+
+.draggingCard {
+  cursor: grabbing;
+}
+
+:global(body.admin-image-dragging),
+:global(body.admin-image-dragging *) {
+  cursor: grabbing !important;
+}

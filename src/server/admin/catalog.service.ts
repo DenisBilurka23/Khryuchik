@@ -36,6 +36,10 @@ import {
   findProductsByIds,
   upsertProduct,
 } from "../catalog/repositories/products.repository";
+import {
+  deleteBookAssetObjects,
+  deleteProductGalleryObjects,
+} from "../storage/r2-assets.service";
 
 const getPrimaryTitle = (
   translations: Record<Locale, { title: string }>,
@@ -405,12 +409,73 @@ const sanitizeProductPayload = (
   return nextPayload;
 };
 
+const getRemovedObjectKeys = ({
+  previousPayload,
+  nextPayload,
+}: {
+  previousPayload?: Awaited<ReturnType<typeof findProductDetailsByProductId>>;
+  nextPayload: AdminProductPayload;
+}) => {
+  if (!previousPayload) {
+    return {
+      galleryObjectKeys: [] as string[],
+      assetObjectKeys: [] as string[],
+    };
+  }
+
+  const previousGalleryObjectKeys = new Set(
+    Object.values(previousPayload.translations)
+      .flatMap((translation) => translation.images)
+      .map((image) => image.objectKey)
+      .filter((objectKey): objectKey is string => Boolean(objectKey)),
+  );
+  const nextGalleryObjectKeys = new Set(
+    Object.values(nextPayload.details.translations)
+      .flatMap((translation) => translation.images)
+      .map((image) => image.objectKey)
+      .filter((objectKey): objectKey is string => Boolean(objectKey)),
+  );
+  const previousAssetObjectKeys = new Set(
+    Object.values(previousPayload.translations)
+      .flatMap((translation) => translation.digitalAssets ?? [])
+      .map((asset) => asset.objectKey)
+      .filter(Boolean),
+  );
+  const nextAssetObjectKeys = new Set(
+    Object.values(nextPayload.details.translations)
+      .flatMap((translation) => translation.digitalAssets ?? [])
+      .map((asset) => asset.objectKey)
+      .filter(Boolean),
+  );
+
+  return {
+    galleryObjectKeys: [...previousGalleryObjectKeys].filter(
+      (objectKey) => !nextGalleryObjectKeys.has(objectKey),
+    ),
+    assetObjectKeys: [...previousAssetObjectKeys].filter(
+      (objectKey) => !nextAssetObjectKeys.has(objectKey),
+    ),
+  };
+};
+
 export const saveAdminProduct = async (payload: AdminProductPayload) => {
   const sanitizedPayload = sanitizeProductPayload(payload);
+  const previousDetails = await findProductDetailsByProductId(
+    sanitizedPayload.product.productId,
+  );
+  const removedObjectKeys = getRemovedObjectKeys({
+    previousPayload: previousDetails,
+    nextPayload: sanitizedPayload,
+  });
 
   await Promise.all([
     upsertProduct(sanitizedPayload.product),
     upsertProductDetails(sanitizedPayload.details),
+  ]);
+
+  await Promise.allSettled([
+    deleteProductGalleryObjects(removedObjectKeys.galleryObjectKeys),
+    deleteBookAssetObjects(removedObjectKeys.assetObjectKeys),
   ]);
 
   return sanitizedPayload;
