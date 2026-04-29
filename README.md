@@ -24,7 +24,6 @@ Required variables:
 
 Optional but recommended:
 
-- `ADMIN_EMAILS`
 - `GOOGLE_CLIENT_ID`
 - `GOOGLE_CLIENT_SECRET`
 - `R2_ACCOUNT_ID`
@@ -39,37 +38,15 @@ The app does not use a local runtime fallback for dictionaries or product detail
 
 ## Admin access
 
-Admin access is now primarily stored in MongoDB via the user field `isAdmin`.
+Admin access is stored in MongoDB via the user field `isAdmin`.
 
-- By default, `/admin` opens only for users with `isAdmin=true` in MongoDB.
-- `ADMIN_EMAILS` remains available as a bootstrap/emergency override.
-- If `ADMIN_EMAILS` is empty, `/admin` stays closed.
-- For local development only, you can explicitly opt into unsafe open access with `ADMIN_ALLOW_UNSAFE_DEV_ACCESS=true`.
-
-Examples:
-
-```bash
-ADMIN_EMAILS=owner@example.com,manager@example.com
-```
-
-Unsafe local-only override:
-
-```bash
-ADMIN_ALLOW_UNSAFE_DEV_ACCESS=true
-```
-
-`development` here is based on `NODE_ENV`, not on whether the request comes from `localhost`.
+- `/admin` opens only for users with `isAdmin=true` in MongoDB.
+- The runtime no longer grants admin access from environment variables.
 
 How to create the first admin account:
 
 1. Register a normal account through `/register` or sign in with Google.
 2. Run `npm run admin:grant -- you@example.com`.
-3. Sign in with that account and open `/admin`.
-
-If you need an env-based emergency override instead of a DB role:
-
-1. Add the email to `ADMIN_EMAILS`.
-2. Restart the app.
 3. Sign in with that account and open `/admin`.
 
 ## Seed MongoDB

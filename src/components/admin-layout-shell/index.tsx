@@ -4,7 +4,6 @@ import {
   Avatar,
   Box,
   Button,
-  Chip,
   Container,
   Paper,
   Stack,
@@ -100,25 +99,6 @@ export const AdminLayoutShell = ({
               </Stack>
 
               <AdminNavigation items={navItems} />
-
-              <Paper
-                elevation={0}
-                sx={{
-                  mt: 2,
-                  p: 2,
-                  borderRadius: "22px",
-                  border: "1px solid #F0DFC8",
-                  bgcolor: "#FFF8F0",
-                }}
-              >
-                <Stack gap={1}>
-                  <Chip label={dictionary.layout.secureAccessBadge} sx={{ alignSelf: "flex-start", bgcolor: "#FCE5EA", fontWeight: 800 }} />
-                  <Typography fontWeight={700}>{email}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {dictionary.layout.secureAccessText}
-                  </Typography>
-                </Stack>
-              </Paper>
             </Paper>
 
             <Box sx={{ minWidth: 0 }}>{children}</Box>

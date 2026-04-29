@@ -412,7 +412,6 @@ export type AdminPageDictionary = {
     searchPlaceholder: string;
     addProduct: string;
     brandSubtitle: string;
-    secureAccessBadge: string;
     secureAccessText: string;
     languageSwitcherLabel: string;
   };

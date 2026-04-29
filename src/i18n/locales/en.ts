@@ -437,9 +437,8 @@ const dictionary: SeedDictionary = {
       searchPlaceholder: "Search products, accounts, and SKU...",
       addProduct: "Add product",
       brandSubtitle: "Admin panel",
-      secureAccessBadge: "Secure access",
       secureAccessText:
-        "Admin access is verified through the MongoDB user record. Environment variables are now only used for bootstrap or emergency override.",
+        "Admin access is verified only through the user's isAdmin field in MongoDB.",
       languageSwitcherLabel: "Interface language",
     },
     nav: {

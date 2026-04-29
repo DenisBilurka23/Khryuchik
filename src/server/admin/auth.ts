@@ -5,30 +5,6 @@ import { redirect } from "next/navigation";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getAccountUserByEmail, getAccountUserById } from "@/server/users/services/users.service";
 
-const isUnsafeDevAdminAccessEnabled = () =>
-  process.env.NODE_ENV !== "production" &&
-  process.env.ADMIN_ALLOW_UNSAFE_DEV_ACCESS === "true";
-
-const getAdminEmails = () =>
-  (process.env.ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
-
-export const isAdminEmail = (email: string | null | undefined) => {
-  if (!email) {
-    return false;
-  }
-
-  const adminEmails = getAdminEmails();
-
-  if (adminEmails.length === 0) {
-    return isUnsafeDevAdminAccessEnabled();
-  }
-
-  return adminEmails.includes(email.toLowerCase());
-};
-
 const hasDatabaseAdminAccess = async (input: {
   userId?: string;
   email?: string | null;
@@ -39,11 +15,7 @@ const hasDatabaseAdminAccess = async (input: {
       ? await getAccountUserByEmail(input.email)
       : null;
 
-  if (accountUser?.isAdmin) {
-    return true;
-  }
-
-  return isAdminEmail(accountUser?.email ?? input.email);
+  return Boolean(accountUser?.isAdmin);
 };
 
 export const requireAdminPageAccess = async (callbackUrl = "/admin") => {

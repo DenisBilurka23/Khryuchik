@@ -435,9 +435,8 @@ const dictionary: SeedDictionary = {
       searchPlaceholder: "Поиск по товарам, аккаунтам и SKU...",
       addProduct: "Добавить товар",
       brandSubtitle: "Админ-панель",
-      secureAccessBadge: "Безопасный доступ",
       secureAccessText:
-        "Доступ в админку проверяется через пользователя в MongoDB. Переменные окружения теперь нужны только для bootstrap или аварийного override.",
+        "Доступ в админку проверяется только через поле isAdmin у пользователя в MongoDB.",
       languageSwitcherLabel: "Язык интерфейса",
     },
     nav: {
