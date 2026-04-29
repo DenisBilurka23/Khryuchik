@@ -51,6 +51,7 @@ const EditAdminProductPage = async ({
         categories={editorData.categories}
         initialRelatedProductOptions={editorData.initialRelatedProductOptions}
         selectedRelatedProductOptions={editorData.selectedRelatedProductOptions}
+        selectedStoryProductOption={editorData.selectedStoryProductOption}
         action={saveAdminProductAction}
         isNew={false}
         errorMessage={getAdminProductFormErrorMessage(error, dictionary.productForm)}

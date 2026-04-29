@@ -100,11 +100,6 @@ export const AdminProductLocaleSection = ({
             name={`${locale}.storyLabel`}
             defaultValue={details.storyLabel ?? ""}
           />
-          <TextField
-            label={dictionary.fields.storyTitle}
-            name={`${locale}.storyTitle`}
-            defaultValue={details.storyTitle ?? ""}
-          />
         </Box>
 
         <Box

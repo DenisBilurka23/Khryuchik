@@ -2,12 +2,11 @@ import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
-import type { StoryConnectionCardProps } from "./types";
+import type { StoryConnectionCardProps } from "../types";
 
 export const StoryConnectionCard = ({
-  storyTitle = "Khryuchik in Winter",
+  product,
   description,
-  buttonHref,
   labels,
 }: StoryConnectionCardProps) => {
   return (
@@ -31,25 +30,26 @@ export const StoryConnectionCard = ({
             width: 64,
             height: 64,
             borderRadius: "20px",
-            bgcolor: "#fff",
+            bgcolor: product.thumbnailBackgroundColor ?? "#fff",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            fontSize: 36,
           }}
         >
-          <AutoStoriesOutlinedIcon />
+          {product.emoji ? <span>{product.emoji}</span> : <AutoStoriesOutlinedIcon />}
         </Box>
 
         <Box sx={{ flex: 1 }}>
           <Typography sx={{ fontSize: 22, fontWeight: 800 }}>
-            {labels.storyConnection.title.replace("{title}", storyTitle)}
+            {labels.storyConnection.title.replace("{title}", product.title)}
           </Typography>
           <Typography color="text.secondary" sx={{ mt: 1.5, lineHeight: 1.8 }}>
             {description}
           </Typography>
         </Box>
 
-        <Link href={buttonHref} style={{ textDecoration: "none", color: "inherit" }}>
+        <Link href={product.href} style={{ textDecoration: "none", color: "inherit" }}>
           <Button component="span" variant="contained">
             {labels.actions.viewBook}
           </Button>

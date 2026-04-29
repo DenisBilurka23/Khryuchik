@@ -17,13 +17,16 @@ export const GET = async (request: NextRequest) => {
     const query = request.nextUrl.searchParams.get("q") ?? "";
     const excludeProductId =
       request.nextUrl.searchParams.get("excludeProductId") ?? undefined;
+    const limitParam = Number(request.nextUrl.searchParams.get("limit") ?? "10");
     const locale =
       localeParam && isLocale(localeParam) ? localeParam : defaultLocale;
     const items = await getAdminProductOptions({
       locale,
       query,
       excludeProductId,
-      limit: 2,
+      limit: Number.isFinite(limitParam)
+        ? Math.min(Math.max(limitParam, 1), 20)
+        : 10,
     });
 
     return NextResponse.json({ items });

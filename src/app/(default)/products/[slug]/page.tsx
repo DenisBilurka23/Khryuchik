@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { ProductPageView } from "@/components/product/ProductPageView";
+import { ProductPageView } from "@/components/product";
 import {
   getProductDetails,
   getProductSlugs,
@@ -66,9 +66,14 @@ const DefaultProductPage = async ({ params }: ProductPageProps) => {
     notFound();
   }
 
-  const [dictionary, relatedProducts] = await Promise.all([
+  const [dictionary, relatedProducts, storyProducts] = await Promise.all([
     getDictionary(defaultLocale, country),
     getProductSummariesByIds(defaultLocale, country, product.relatedIds),
+    getProductSummariesByIds(
+      defaultLocale,
+      country,
+      product.storyProductId ? [product.storyProductId] : [],
+    ),
   ]);
 
   return (
@@ -78,6 +83,7 @@ const DefaultProductPage = async ({ params }: ProductPageProps) => {
       dictionary={dictionary.storefront}
       product={product}
       relatedProducts={relatedProducts}
+      storyProduct={storyProducts[0] ?? null}
     />
   );
 };

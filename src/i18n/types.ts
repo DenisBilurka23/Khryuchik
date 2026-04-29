@@ -613,6 +613,7 @@ export type AdminPageDictionary = {
       slug: string;
       sku: string;
       relatedProductIds: string;
+      storyProductId: string;
       mediaRule: string;
       optionsRule: string;
       specsRule: string;
@@ -650,7 +651,7 @@ export type AdminPageDictionary = {
       subtitle: string;
       badge: string;
       storyLabel: string;
-      storyTitle: string;
+      storyProductId: string;
       sku: string;
       description: string;
       languages: string;

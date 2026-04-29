@@ -14,6 +14,7 @@ export type AdminProductFormProps = {
   categories: CategoryDocument[];
   initialRelatedProductOptions: AdminProductOption[];
   selectedRelatedProductOptions: AdminProductOption[];
+  selectedStoryProductOption?: AdminProductOption;
   action: (formData: FormData) => Promise<void>;
   isNew: boolean;
   errorMessage?: string;

@@ -1,30 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import {
-  Autocomplete,
-  Box,
-  Button,
-  Chip,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-
-import { searchAdminProductsClient } from "@/client-api/admin";
+import { Button } from "@mui/material";
+import type { AdminProductOption } from "@/types/admin";
 
 import { AdminSectionCard } from "../../../admin-page-shared";
+import { AdminProductAutocompleteField } from "./product-autocomplete-field";
 import type { AdminProductRelatedSectionProps } from "./types";
+import { useProductSearch } from "./use-product-search";
 
-const createFallbackOption = (id: string) => ({
+const createFallbackOption = (id: string): AdminProductOption => ({
   id,
   title: id,
   slug: "",
 });
 
-const mergeOptions = (...groups: Array<Array<{ id: string; title: string; slug: string }>>) => {
+const mergeOptions = (...groups: AdminProductOption[][]) => {
   const seen = new Set<string>();
 
   return groups.flat().filter((option) => {
@@ -44,6 +37,7 @@ export const AdminProductRelatedSection = ({
   payload,
   initialProductOptions,
   selectedProductOptions,
+  selectedStoryProductOption,
 }: AdminProductRelatedSectionProps) => {
   const initialSelectedOptions = useMemo(
     () =>
@@ -59,92 +53,52 @@ export const AdminProductRelatedSection = ({
         ),
     [payload.details.relatedProductIds, selectedProductOptions],
   );
-  const initialOptions = useMemo(
-    () => mergeOptions(initialSelectedOptions, initialProductOptions),
-    [initialProductOptions, initialSelectedOptions],
-  );
   const [selectedOptions, setSelectedOptions] = useState(initialSelectedOptions);
-  const [options, setOptions] = useState(initialOptions);
+  const [selectedStoryOption, setSelectedStoryOption] = useState(
+    selectedStoryProductOption ?? null,
+  );
   const [inputValue, setInputValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const timeoutRef = useRef<number | null>(null);
-  const requestIdRef = useRef(0);
+  const [storyInputValue, setStoryInputValue] = useState("");
 
   useEffect(() => {
     setSelectedOptions(initialSelectedOptions);
   }, [initialSelectedOptions]);
 
   useEffect(() => {
-    if (inputValue.trim()) {
-      return;
-    }
+    setSelectedStoryOption(selectedStoryProductOption ?? null);
+  }, [selectedStoryProductOption]);
 
-    setOptions(mergeOptions(selectedOptions, initialProductOptions));
-  }, [initialProductOptions, inputValue, selectedOptions]);
+  const fallbackOptions = useMemo(
+    () =>
+      mergeOptions(
+        selectedOptions,
+        selectedStoryOption ? [selectedStoryOption] : [],
+        initialProductOptions,
+      ),
+    [initialProductOptions, selectedOptions, selectedStoryOption],
+  );
 
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
+  const { options: relatedSearchOptions, isLoading } = useProductSearch({
+    locale,
+    query: inputValue,
+    excludeProductId: payload.product.productId,
+    fallbackOptions,
+  });
+  const { options: storySearchOptions, isLoading: isStoryLoading } = useProductSearch({
+    locale,
+    query: storyInputValue,
+    excludeProductId: payload.product.productId,
+    fallbackOptions,
+  });
 
-  useEffect(() => {
-    if (timeoutRef.current !== null) {
-      window.clearTimeout(timeoutRef.current);
-    }
-
-    const trimmedQuery = inputValue.trim();
-
-    if (!trimmedQuery) {
-      setIsLoading(false);
-      setOptions(mergeOptions(selectedOptions, initialProductOptions));
-      return;
-    }
-
-    timeoutRef.current = window.setTimeout(() => {
-      const currentRequestId = requestIdRef.current + 1;
-      requestIdRef.current = currentRequestId;
-      setIsLoading(true);
-
-      searchAdminProductsClient({
-        locale,
-        query: trimmedQuery,
-        excludeProductId: payload.product.productId,
-        limit: 10,
-      })
-        .then((response) => {
-          if (requestIdRef.current !== currentRequestId) {
-            return;
-          }
-
-          if (!response.ok) {
-            throw new Error("Failed to load products");
-          }
-
-          setOptions(mergeOptions(selectedOptions, response.data?.items ?? []));
-        })
-        .catch(() => {
-          if (requestIdRef.current !== currentRequestId) {
-            return;
-          }
-
-          setOptions(mergeOptions(selectedOptions, initialProductOptions));
-        })
-        .finally(() => {
-          if (requestIdRef.current === currentRequestId) {
-            setIsLoading(false);
-          }
-        });
-    }, 350);
-
-    return () => {
-      if (timeoutRef.current !== null) {
-        window.clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [initialProductOptions, inputValue, locale, payload.product.productId, selectedOptions]);
+  const relatedOptions = useMemo(
+    () => mergeOptions(fallbackOptions, relatedSearchOptions),
+    [fallbackOptions, relatedSearchOptions],
+  );
+  const storyOptions = useMemo(
+    () => mergeOptions(fallbackOptions, storySearchOptions),
+    [fallbackOptions, storySearchOptions],
+  );
 
   return (
     <AdminSectionCard
@@ -163,84 +117,45 @@ export const AdminProductRelatedSection = ({
     >
       <input
         type="hidden"
+        name="storyProductId"
+        value={selectedStoryOption?.id ?? ""}
+      />
+      <input
+        type="hidden"
         name="relatedProductIds"
         value={selectedOptions.map((option) => option.id).join(",")}
       />
-      <Autocomplete
+      <AdminProductAutocompleteField
+        options={storyOptions}
+        value={selectedStoryOption}
+        inputValue={storyInputValue}
+        loading={isStoryLoading}
+        label={dictionary.fields.storyProductId}
+        placeholder={dictionary.fields.storyProductId}
+        helperText={dictionary.helpers.storyProductId}
+        onChange={(_, value) => {
+          setSelectedStoryOption(Array.isArray(value) ? null : value);
+        }}
+        onInputChange={(_, value) => {
+          setStoryInputValue(value);
+        }}
+      />
+      <AdminProductAutocompleteField
         multiple
         openOnFocus
         filterSelectedOptions
-        options={options}
+        options={relatedOptions}
         value={selectedOptions}
         inputValue={inputValue}
         loading={isLoading}
-        isOptionEqualToValue={(option, value) => option.id === value.id}
-        getOptionLabel={(option) => option.title}
-        filterOptions={(currentOptions) => currentOptions}
+        label={dictionary.fields.relatedProductIds}
+        placeholder={dictionary.fields.relatedProductIds}
+        helperText={dictionary.helpers.relatedProductIds}
         onChange={(_, value) => {
-          setSelectedOptions(value);
+          setSelectedOptions(Array.isArray(value) ? value : []);
         }}
         onInputChange={(_, value) => {
           setInputValue(value);
-        }}
-        slotProps={{
-          popper: {
-            modifiers: [
-              {
-                name: "offset",
-                options: {
-                  offset: [0, 10],
-                },
-              },
-            ],
-          },
-          paper: {
-            sx: {
-              borderRadius: "20px",
-              border: "1px solid #EED9C2",
-              boxShadow: "0 24px 60px rgba(39, 27, 20, 0.16), 0 10px 24px rgba(39, 27, 20, 0.10)",
-              backgroundImage: "none",
-            },
-          },
-        }}
-        renderValue={(value, getItemProps) =>
-          value.map((option, index) => {
-            const itemProps = getItemProps({ index });
-
-            return (
-              <Chip
-                {...itemProps}
-                key={option.id}
-                label={option.title}
-                sx={{ borderRadius: "999px", fontWeight: 600, bgcolor: "#FFF4F6" }}
-              />
-            );
-          })
-        }
-        renderOption={(props, option) => (
-          <Box component="li" {...props} key={option.id}>
-            <Stack spacing={0.25} sx={{ py: 0.5 }}>
-              <Typography sx={{ fontWeight: 700 }}>{option.title}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {option.id}{option.slug ? ` • ${option.slug}` : ""}
-              </Typography>
-            </Stack>
-          </Box>
-        )}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label={dictionary.fields.relatedProductIds}
-            placeholder={selectedOptions.length === 0 ? dictionary.fields.relatedProductIds : ""}
-            helperText={dictionary.helpers.relatedProductIds}
-            fullWidth
-          />
-        )}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            alignItems: "flex-start",
-            py: 0.75,
-          },
         }}
       />
     </AdminSectionCard>

@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import type { ProductTabsProps } from "./types";
+import type { ProductTabsProps } from "../types";
 
 export const ProductTabs = ({ labels, product }: ProductTabsProps) => {
   const [tab, setTab] = useState(0);
@@ -56,10 +56,7 @@ export const ProductTabs = ({ labels, product }: ProductTabsProps) => {
           <Grid container spacing={2}>
             {product.specs.map((spec) => (
               <Grid key={spec.label} size={{ xs: 12, md: 6 }}>
-                <Paper
-                  elevation={0}
-                  sx={{ p: 2.5, borderRadius: "20px", bgcolor: "#FFF8F0" }}
-                >
+                <Paper elevation={0} sx={{ p: 2.5, borderRadius: "20px", bgcolor: "#FFF8F0" }}>
                   <Typography variant="body2" color="text.secondary">
                     {spec.label}
                   </Typography>
@@ -97,20 +94,11 @@ export const ProductTabs = ({ labels, product }: ProductTabsProps) => {
                 elevation={0}
                 sx={{ p: 3, borderRadius: "20px", bgcolor: "#FFF8F0", mb: 2 }}
               >
-                <Typography sx={{ fontWeight: 700 }}>
-                  {review.author}
-                </Typography>
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mt: 0.5 }}
-                >
+                <Typography sx={{ fontWeight: 700 }}>{review.author}</Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
                   {review.date} • {"★".repeat(review.rating)}
                 </Typography>
-                <Typography
-                  color="text.secondary"
-                  sx={{ mt: 1.5, lineHeight: 1.8 }}
-                >
+                <Typography color="text.secondary" sx={{ mt: 1.5, lineHeight: 1.8 }}>
                   {review.text}
                 </Typography>
               </Paper>

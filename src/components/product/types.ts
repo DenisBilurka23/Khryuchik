@@ -4,6 +4,13 @@ import type { CountryCode } from "@/utils";
 import type { LocalizedProductSummary } from "@/types/catalog";
 import type { ProductDetails, ProductImage } from "@/types/product-details";
 
+export type StoryProductCardViewModel = {
+  href: string;
+  title: string;
+  emoji?: string;
+  thumbnailBackgroundColor?: string;
+};
+
 export type RelatedProductCardViewModel = {
   id: string;
   href: string;
@@ -30,9 +37,8 @@ export type ProductTabsProps = {
 };
 
 export type StoryConnectionCardProps = {
-  storyTitle?: string;
+  product: StoryProductCardViewModel;
   description: string;
-  buttonHref: string;
   labels: ProductPageLabels;
 };
 
@@ -47,4 +53,5 @@ export type ProductPageViewProps = {
   dictionary: StorefrontDictionary;
   product: ProductDetails;
   relatedProducts: LocalizedProductSummary[];
+  storyProduct?: LocalizedProductSummary | null;
 };

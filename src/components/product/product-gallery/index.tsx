@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Box, Grid, Paper } from "@mui/material";
 
-import type { ProductGalleryProps } from "./types";
+import type { ProductGalleryProps } from "../types";
 
 export const ProductGallery = ({ images }: ProductGalleryProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -26,7 +26,12 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
         }}
       >
         {activeImage?.src ? (
-          <Box component="img" src={activeImage.src} alt={activeImage.alt ?? activeImage.id} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <Box
+            component="img"
+            src={activeImage.src}
+            alt={activeImage.alt ?? activeImage.id}
+            sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
         ) : (
           activeImage?.emoji
         )}
@@ -55,7 +60,12 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
               }}
             >
               {image.src ? (
-                <Box component="img" src={image.src} alt={image.alt ?? image.id} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <Box
+                  component="img"
+                  src={image.src}
+                  alt={image.alt ?? image.id}
+                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
               ) : (
                 image.emoji
               )}

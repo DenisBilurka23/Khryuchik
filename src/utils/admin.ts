@@ -105,7 +105,6 @@ const createEmptyDetailTranslation = (): ProductDetailTranslation => ({
   subtitle: "",
   badge: "",
   storyLabel: "",
-  storyTitle: "",
   description: "",
   images: [],
   languages: [],
@@ -147,6 +146,7 @@ export const createEmptyAdminProductPayload = (): AdminProductPayload => ({
   details: {
     productId: "",
     sku: "",
+    storyProductId: "",
     relatedProductIds: [],
     translations: {
       ru: createEmptyDetailTranslation(),

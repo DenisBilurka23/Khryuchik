@@ -29,6 +29,7 @@ export const AdminProductForm = ({
   categories,
   initialRelatedProductOptions,
   selectedRelatedProductOptions,
+  selectedStoryProductOption,
   action,
   isNew,
   errorMessage,
@@ -132,6 +133,7 @@ export const AdminProductForm = ({
             payload={payload}
             initialProductOptions={initialRelatedProductOptions}
             selectedProductOptions={selectedRelatedProductOptions}
+            selectedStoryProductOption={selectedStoryProductOption}
           />
         </Stack>
       </form>

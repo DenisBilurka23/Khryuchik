@@ -231,6 +231,7 @@ export const getAdminProductEditorData = async (
       initialRelatedProductOptions,
       payload: emptyPayload,
       selectedRelatedProductOptions: [],
+      selectedStoryProductOption: undefined,
     };
   }
 
@@ -247,6 +248,12 @@ export const getAdminProductEditorData = async (
     locale,
     productIds: details.relatedProductIds,
   });
+  const [selectedStoryProductOption] = details.storyProductId
+    ? await getAdminProductOptions({
+        locale,
+        productIds: [details.storyProductId],
+      })
+    : [];
 
   return {
     categories,
@@ -256,6 +263,7 @@ export const getAdminProductEditorData = async (
       details,
     },
     selectedRelatedProductOptions,
+    selectedStoryProductOption,
   };
 };
 
@@ -373,6 +381,7 @@ const sanitizeProductPayload = (
       ...payload.details,
       productId,
       sku,
+      storyProductId: payload.details.storyProductId?.trim() || undefined,
       relatedProductIds: payload.details.relatedProductIds.filter(Boolean),
       translations: {
         ru: {
@@ -381,8 +390,6 @@ const sanitizeProductPayload = (
           badge: payload.details.translations.ru.badge?.trim() || undefined,
           storyLabel:
             payload.details.translations.ru.storyLabel?.trim() || undefined,
-          storyTitle:
-            payload.details.translations.ru.storyTitle?.trim() || undefined,
           description: payload.details.translations.ru.description.trim(),
         },
         en: {
@@ -391,8 +398,6 @@ const sanitizeProductPayload = (
           badge: payload.details.translations.en.badge?.trim() || undefined,
           storyLabel:
             payload.details.translations.en.storyLabel?.trim() || undefined,
-          storyTitle:
-            payload.details.translations.en.storyTitle?.trim() || undefined,
           description: payload.details.translations.en.description.trim(),
         },
       },

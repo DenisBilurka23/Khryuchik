@@ -37,6 +37,7 @@ const NewAdminProductPage = async ({ searchParams }: NewAdminProductPageProps) =
       categories={editorData.categories}
       initialRelatedProductOptions={editorData.initialRelatedProductOptions}
       selectedRelatedProductOptions={editorData.selectedRelatedProductOptions}
+      selectedStoryProductOption={editorData.selectedStoryProductOption}
       action={saveAdminProductAction}
       isNew
       errorMessage={getAdminProductFormErrorMessage(error, dictionary.productForm)}

@@ -1,9 +1,13 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import Link from "next/link";
 
-import type { RelatedProductsProps } from "./types";
+import type { RelatedProductsProps } from "../types";
 
 export const RelatedProducts = ({ labels, relatedProducts }: RelatedProductsProps) => {
+  if (relatedProducts.length === 0) {
+    return null;
+  }
+
   return (
     <Box sx={{ mt: 8 }}>
       <Typography variant="h2" sx={{ fontSize: { xs: 30, md: 42 }, mb: 4 }}>
@@ -38,16 +42,11 @@ export const RelatedProducts = ({ labels, relatedProducts }: RelatedProductsProp
                       {product.emoji}
                     </Box>
 
-                    <Typography
-                      variant="h6"
-                      sx={{ mt: 3, fontSize: 18, fontWeight: 700 }}
-                    >
+                    <Typography variant="h6" sx={{ mt: 3, fontSize: 18, fontWeight: 700 }}>
                       {product.title}
                     </Typography>
 
-                    <Typography
-                      sx={{ mt: 1, color: "primary.main", fontWeight: 700 }}
-                    >
+                    <Typography sx={{ mt: 1, color: "primary.main", fontWeight: 700 }}>
                       {product.formattedPrice}
                     </Typography>
                   </CardContent>

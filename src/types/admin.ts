@@ -82,6 +82,7 @@ export type AdminProductEditorData = {
   categories: CategoryDocument[];
   initialRelatedProductOptions: AdminProductOption[];
   selectedRelatedProductOptions: AdminProductOption[];
+  selectedStoryProductOption?: AdminProductOption;
 };
 
 export type AdminCategoryUpsertInput = {

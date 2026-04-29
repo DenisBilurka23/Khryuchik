@@ -92,7 +92,6 @@ const parseDetailLocaleTranslation = (formData: FormData, locale: Locale) => ({
   oldPrice: parseOptionalNumber(formData, `${locale}.detailOldPrice`),
   badge: parseOptionalString(formData, `${locale}.badge`),
   storyLabel: parseOptionalString(formData, `${locale}.storyLabel`),
-  storyTitle: parseOptionalString(formData, `${locale}.storyTitle`),
   description: parseString(formData, `${locale}.description`).trim(),
   images: parseJsonField<ProductImage[]>(formData, `${locale}.imagesJson`, []),
   languages: parseJsonField<ProductOption[]>(formData, `${locale}.languagesJson`, []),
@@ -171,6 +170,7 @@ export const parseAdminProductFormData = (
   details: {
     productId: parseString(formData, "productId").trim(),
     sku: parseString(formData, "sku").trim(),
+    storyProductId: parseOptionalString(formData, "storyProductId"),
     relatedProductIds: parseCsvList(formData, "relatedProductIds"),
     translations: {
       ru: parseDetailLocaleTranslation(formData, "ru"),

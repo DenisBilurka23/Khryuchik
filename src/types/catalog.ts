@@ -125,6 +125,7 @@ export type ProductDetailTranslation = {
 export type ProductDetailDocument = {
   productId: string;
   sku: string;
+  storyProductId?: string;
   relatedProductIds: string[];
   translations: Record<Locale, ProductDetailTranslation>;
 };

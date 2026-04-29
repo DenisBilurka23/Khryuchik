@@ -17,9 +17,9 @@ import {
 } from "@mui/material";
 
 import { useWishlist } from "@/hooks/useWishlist";
-import { useCart } from "../cart/store";
 import { formatCurrency } from "@/utils";
-import type { ProductInfoProps } from "./types";
+import { useCart } from "../../cart/store";
+import type { ProductInfoProps } from "../types";
 
 export const ProductInfo = ({
   locale,
@@ -35,6 +35,7 @@ export const ProductInfo = ({
   const [size, setSize] = useState(product.sizes?.[0]?.value || "");
   const [color, setColor] = useState(product.colors?.[0]?.value || "");
   const isWishlisted = isInWishlist(product.productId);
+  const hasMetaChips = Boolean(product.badge || product.storyLabel);
 
   const handleAddToCart = () => {
     addItem({
@@ -51,22 +52,20 @@ export const ProductInfo = ({
 
   return (
     <Box>
-      <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-        {product.badge ? (
-          <Chip
-            label={product.badge}
-            color="secondary"
-            sx={{ fontWeight: 700 }}
-          />
-        ) : null}
-        {product.storyLabel ? (
-          <Chip
-            label={product.storyLabel}
-            variant="outlined"
-            sx={{ borderColor: "#E8D6BF" }}
-          />
-        ) : null}
-      </Stack>
+      {hasMetaChips ? (
+        <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
+          {product.badge ? (
+            <Chip label={product.badge} color="secondary" sx={{ fontWeight: 700 }} />
+          ) : null}
+          {product.storyLabel ? (
+            <Chip
+              label={product.storyLabel}
+              variant="outlined"
+              sx={{ borderColor: "#E8D6BF" }}
+            />
+          ) : null}
+        </Stack>
+      ) : null}
 
       <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ mt: 2 }}>
         <Typography
@@ -95,17 +94,12 @@ export const ProductInfo = ({
         </IconButton>
       </Stack>
 
-      <Typography
-        color="text.secondary"
-        sx={{ mt: 1, fontSize: 18, lineHeight: 1.7 }}
-      >
+      <Typography color="text.secondary" sx={{ mt: 1, fontSize: 18, lineHeight: 1.7 }}>
         {product.subtitle}
       </Typography>
 
       <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 3 }}>
-        <Typography
-          sx={{ fontSize: 32, fontWeight: 800, color: "primary.main" }}
-        >
+        <Typography sx={{ fontSize: 32, fontWeight: 800, color: "primary.main" }}>
           {formatCurrency(product.price, locale, product.currency)}
         </Typography>
         {product.oldPrice ? (

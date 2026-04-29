@@ -9,4 +9,5 @@ export type AdminProductRelatedSectionProps = {
   payload: AdminProductPayload;
   initialProductOptions: AdminProductOption[];
   selectedProductOptions: AdminProductOption[];
+  selectedStoryProductOption?: AdminProductOption;
 };
