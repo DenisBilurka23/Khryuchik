@@ -210,8 +210,22 @@ export const upsertProduct = async (product: ProductDocument) => {
   return product;
 };
 
+export const deleteProductById = async (productId: string) => {
+  const db = await getMongoDb();
+
+  return db.collection<ProductDocument>("products").deleteOne({ productId });
+};
+
 export const countProducts = async () => {
   const db = await getMongoDb();
 
   return db.collection<ProductDocument>("products").countDocuments();
+};
+
+export const countProductsByCategoryKey = async (categoryKey: string) => {
+  const db = await getMongoDb();
+
+  return db.collection<ProductDocument>("products").countDocuments({
+    "classification.category": categoryKey,
+  });
 };

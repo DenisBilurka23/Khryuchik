@@ -511,6 +511,7 @@ export type AdminPageDictionary = {
     title: string;
     description: string;
     newProduct: string;
+    deletedMessage: string;
     sectionTitle: string;
     sectionDescription: string;
     columns: {
@@ -533,14 +534,23 @@ export type AdminPageDictionary = {
     newCategoryDescription: string;
     saveButton: string;
     updateButton: string;
+    deleteButton: string;
+    deletedMessage: string;
+    deleteBlockedMessage: string;
+    deleteProtectedMessage: string;
+    deleteFailedMessage: string;
+    deleteDialogTitle: string;
+    deleteDialogDescription: string;
+    confirmDeleteButton: string;
+    cancelDeleteButton: string;
+    deleteBlockedHint: string;
+    deleteProtectedHint: string;
     itemsLabel: string;
     fields: {
       key: string;
       sortOrder: string;
       ruLabel: string;
       enLabel: string;
-      ruDescription: string;
-      enDescription: string;
     };
     toggles: {
       isActive: string;
@@ -582,10 +592,16 @@ export type AdminPageDictionary = {
     errorMessages: {
       storageUnavailable: string;
       saveFailed: string;
+      deleteFailed: string;
       unexpected: string;
     };
     createButton: string;
     saveChangesButton: string;
+    deleteButton: string;
+    deleteDialogTitle: string;
+    deleteDialogDescription: string;
+    confirmDeleteButton: string;
+    cancelDeleteButton: string;
     newEyebrow: string;
     editEyebrow: string;
     summaryTitle: string;

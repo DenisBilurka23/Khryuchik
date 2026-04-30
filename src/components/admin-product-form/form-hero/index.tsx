@@ -1,5 +1,7 @@
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import { Button, Paper, Stack, Typography } from "@mui/material";
+import { Button, Paper, Stack, Tooltip, Typography } from "@mui/material";
+
+import { DeleteProductButton } from "@/components/admin-products-page-view/delete-product-button";
 
 import { getAdminCategoryLabel, getAdminProductTypeLabel } from "@/utils/admin";
 
@@ -10,6 +12,13 @@ export const AdminProductFormHero = ({
   title,
   description,
   submitLabel,
+  deleteLabel,
+  productId,
+  deleteAction,
+  deleteDialogTitle,
+  deleteDialogDescription,
+  confirmDeleteLabel,
+  cancelDeleteLabel,
   isNew,
   locale,
   dictionary,
@@ -35,22 +44,38 @@ export const AdminProductFormHero = ({
       description={description}
       actions={
         <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
-          <Button
-            href="/admin/products"
-            variant="outlined"
-            color="inherit"
-            sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
-          >
-            {sharedDictionary.actions.backToProducts}
-          </Button>
-          <Button
-            type="submit"
-            form="admin-product-form"
-            variant="contained"
-            startIcon={<SaveOutlinedIcon />}
-          >
-            {submitLabel}
-          </Button>
+          <Tooltip title={sharedDictionary.actions.backToProducts}>
+            <Button
+              href="/admin/products"
+              variant="outlined"
+              color="inherit"
+              sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
+            >
+              {sharedDictionary.actions.backToProducts}
+            </Button>
+          </Tooltip>
+          {!isNew && deleteLabel && productId && deleteAction && deleteDialogTitle && deleteDialogDescription && confirmDeleteLabel && cancelDeleteLabel ? (
+            <DeleteProductButton
+              productId={productId}
+              label={deleteLabel}
+              action={deleteAction}
+              dialogTitle={deleteDialogTitle}
+              dialogDescription={deleteDialogDescription}
+              confirmLabel={confirmDeleteLabel}
+              cancelLabel={cancelDeleteLabel}
+              tooltip={deleteLabel}
+            />
+          ) : null}
+          <Tooltip title={submitLabel}>
+            <Button
+              type="submit"
+              form="admin-product-form"
+              variant="contained"
+              startIcon={<SaveOutlinedIcon />}
+            >
+              {submitLabel}
+            </Button>
+          </Tooltip>
         </Stack>
       }
       aside={

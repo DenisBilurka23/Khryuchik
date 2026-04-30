@@ -1,6 +1,7 @@
 "use client";
 
-import type { SyntheticEvent } from "react";
+import type { HTMLAttributes, Key, SyntheticEvent } from "react";
+import type { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
 
 import {
   Autocomplete,
@@ -37,7 +38,7 @@ const getAutocompleteSlotProps = () => ({
 });
 
 const renderAutocompleteOption = (
-  props: React.HTMLAttributes<HTMLLIElement> & { key: string },
+  props: HTMLAttributes<HTMLLIElement> & { key: Key },
   option: AdminProductOption,
 ) => (
   <Box component="li" {...props} key={option.id}>
@@ -67,8 +68,8 @@ export const AdminProductAutocompleteField = ({
   multiple = false,
   openOnFocus = false,
   filterSelectedOptions = false,
-  onChange,
-  onInputChange,
+  onChangeAction,
+  onInputChangeAction,
 }: AdminProductAutocompleteFieldProps) => {
   const sharedProps = {
     options,
@@ -79,7 +80,7 @@ export const AdminProductAutocompleteField = ({
     filterOptions: (currentOptions: AdminProductOption[]) => currentOptions,
     slotProps: getAutocompleteSlotProps(),
     renderOption: renderAutocompleteOption,
-    renderInput: (params: Parameters<NonNullable<typeof Autocomplete>[0]["renderInput"]>[0]) => (
+    renderInput: (params: AutocompleteRenderInputParams) => (
       <TextField
         {...params}
         label={label}
@@ -104,9 +105,9 @@ export const AdminProductAutocompleteField = ({
         getOptionLabel={getOptionLabel}
         filterOptions={(currentOptions) => currentOptions}
         onChange={(event, nextValue) => {
-          onChange(event as SyntheticEvent, nextValue);
+          onChangeAction(event as SyntheticEvent, nextValue);
         }}
-        onInputChange={onInputChange}
+        onInputChange={onInputChangeAction}
         slotProps={getAutocompleteSlotProps()}
         renderValue={(currentValue, getItemProps) =>
           currentValue.map((option, index) => {
@@ -147,9 +148,9 @@ export const AdminProductAutocompleteField = ({
       {...sharedProps}
       value={!Array.isArray(value) ? value : null}
       onChange={(event, nextValue) => {
-        onChange(event as SyntheticEvent, nextValue);
+        onChangeAction(event as SyntheticEvent, nextValue);
       }}
-      onInputChange={onInputChange}
+      onInputChange={onInputChangeAction}
     />
   );
 };

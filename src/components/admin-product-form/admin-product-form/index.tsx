@@ -31,6 +31,11 @@ export const AdminProductForm = ({
   selectedRelatedProductOptions,
   selectedStoryProductOption,
   action,
+  deleteAction,
+  deleteDialogTitle,
+  deleteDialogDescription,
+  confirmDeleteLabel,
+  cancelDeleteLabel,
   isNew,
   errorMessage,
 }: AdminProductFormProps) => {
@@ -78,6 +83,13 @@ export const AdminProductForm = ({
         title={title}
         description={description}
         submitLabel={submitLabel}
+        deleteLabel={dictionary.deleteButton}
+        productId={payload.product.productId}
+        deleteAction={deleteAction}
+        deleteDialogTitle={deleteDialogTitle}
+        deleteDialogDescription={deleteDialogDescription}
+        confirmDeleteLabel={confirmDeleteLabel}
+        cancelDeleteLabel={cancelDeleteLabel}
         isNew={isNew}
         locale={locale}
         dictionary={dictionary}

@@ -16,6 +16,11 @@ export type AdminProductFormProps = {
   selectedRelatedProductOptions: AdminProductOption[];
   selectedStoryProductOption?: AdminProductOption;
   action: (formData: FormData) => Promise<void>;
+  deleteAction?: (formData: FormData) => Promise<void>;
+  deleteDialogTitle?: string;
+  deleteDialogDescription?: string;
+  confirmDeleteLabel?: string;
+  cancelDeleteLabel?: string;
   isNew: boolean;
   errorMessage?: string;
 };

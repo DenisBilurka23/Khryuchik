@@ -11,7 +11,7 @@ import type {
   AdminProductOption,
   AdminProductPayload,
 } from "@/types/admin";
-import type { CategoryDocument } from "@/types/catalog";
+import type { CategoryDocument, ProductDetailDocument } from "@/types/catalog";
 
 import { createEmptyAdminProductPayload } from "@/utils/admin";
 import {
@@ -20,16 +20,21 @@ import {
 } from "@/server/users/services/users.service";
 
 import {
+  deleteCategoryByKey,
   countCategories,
   findAllCategories,
   upsertCategory,
 } from "../catalog/repositories/categories.repository";
 import {
+  deleteProductDetailsByProductId,
   findAllProductDetails,
   findProductDetailsByProductId,
+  removeProductReferencesFromDetails,
   upsertProductDetails,
 } from "../catalog/repositories/product-details.repository";
 import {
+  countProductsByCategoryKey,
+  deleteProductById,
   findAdminProductsForSearch,
   findAllProducts,
   findProductById,
@@ -51,6 +56,25 @@ const getPrimaryTitle = (
   "—";
 
 const booksCategoryKey = "books";
+
+export const adminCategoryDeleteErrorCodes = {
+  InvalidKey: "invalid-key",
+  NotEmpty: "not-empty",
+  Protected: "protected",
+} as const;
+
+export type AdminCategoryDeleteErrorCode =
+  (typeof adminCategoryDeleteErrorCodes)[keyof typeof adminCategoryDeleteErrorCodes];
+
+export class AdminCategoryDeleteError extends Error {
+  code: AdminCategoryDeleteErrorCode;
+
+  constructor(code: AdminCategoryDeleteErrorCode) {
+    super(code);
+    this.code = code;
+    this.name = "AdminCategoryDeleteError";
+  }
+}
 
 type AdminProductOptionsQuery = {
   locale: Locale;
@@ -272,11 +296,9 @@ const normalizeCategoryTranslations = (
 ): CategoryDocument["translations"] => ({
   ru: {
     label: translations.ru?.label?.trim() ?? "",
-    description: translations.ru?.description?.trim() || undefined,
   },
   en: {
     label: translations.en?.label?.trim() ?? "",
-    description: translations.en?.description?.trim() || undefined,
   },
 });
 
@@ -299,6 +321,81 @@ export const saveAdminCategory = async (input: AdminCategoryUpsertInput) => {
   }
 
   return upsertCategory(category);
+};
+
+export const deleteAdminCategory = async (key: string) => {
+  const normalizedKey = key.trim();
+
+  if (!normalizedKey) {
+    throw new AdminCategoryDeleteError(adminCategoryDeleteErrorCodes.InvalidKey);
+  }
+
+  if (normalizedKey === booksCategoryKey) {
+    throw new AdminCategoryDeleteError(adminCategoryDeleteErrorCodes.Protected);
+  }
+
+  const linkedProductsCount = await countProductsByCategoryKey(normalizedKey);
+
+  if (linkedProductsCount > 0) {
+    throw new AdminCategoryDeleteError(adminCategoryDeleteErrorCodes.NotEmpty);
+  }
+
+  await deleteCategoryByKey(normalizedKey);
+};
+
+const getDetailObjectKeys = (details: ProductDetailDocument | null | undefined) => {
+  if (!details) {
+    return {
+      galleryObjectKeys: [] as string[],
+      assetObjectKeys: [] as string[],
+    };
+  }
+
+  return {
+    galleryObjectKeys: Object.values(details.translations)
+      .flatMap((translation) => translation.images)
+      .map((image) => image.objectKey)
+      .filter((objectKey): objectKey is string => Boolean(objectKey)),
+    assetObjectKeys: Object.values(details.translations)
+      .flatMap((translation) => translation.digitalAssets ?? [])
+      .map((asset) => asset.objectKey)
+      .filter((objectKey): objectKey is string => Boolean(objectKey)),
+  };
+};
+
+export const deleteAdminProduct = async (productId: string) => {
+  const normalizedProductId = productId.trim();
+
+  if (!normalizedProductId) {
+    throw new Error("Product ID is required");
+  }
+
+  const [product, details] = await Promise.all([
+    findProductById(normalizedProductId),
+    findProductDetailsByProductId(normalizedProductId),
+  ]);
+
+  if (!product) {
+    throw new Error("Product not found");
+  }
+
+  const removedObjectKeys = getDetailObjectKeys(details);
+
+  await Promise.all([
+    deleteProductById(normalizedProductId),
+    deleteProductDetailsByProductId(normalizedProductId),
+    removeProductReferencesFromDetails(normalizedProductId),
+  ]);
+
+  await Promise.allSettled([
+    deleteProductGalleryObjects(removedObjectKeys.galleryObjectKeys),
+    deleteBookAssetObjects(removedObjectKeys.assetObjectKeys),
+  ]);
+
+  return {
+    productId: normalizedProductId,
+    slug: product.slug,
+  };
 };
 
 const sanitizeProductPayload = (

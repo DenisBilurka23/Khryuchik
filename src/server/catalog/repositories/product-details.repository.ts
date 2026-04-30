@@ -31,3 +31,27 @@ export const upsertProductDetails = async (details: ProductDetailDocument) => {
 
   return details;
 };
+
+export const deleteProductDetailsByProductId = async (productId: string) => {
+  const db = await getMongoDb();
+
+  return db
+    .collection<ProductDetailDocument>("productDetails")
+    .deleteOne({ productId });
+};
+
+export const removeProductReferencesFromDetails = async (productId: string) => {
+  const db = await getMongoDb();
+  const collection = db.collection<ProductDetailDocument>("productDetails");
+
+  await Promise.all([
+    collection.updateMany(
+      { storyProductId: productId },
+      { $unset: { storyProductId: "" } },
+    ),
+    collection.updateMany(
+      { relatedProductIds: productId },
+      { $pull: { relatedProductIds: productId } },
+    ),
+  ]);
+};

@@ -13,9 +13,9 @@ export type AdminProductAutocompleteFieldProps = {
   multiple?: boolean;
   openOnFocus?: boolean;
   filterSelectedOptions?: boolean;
-  onChange: (
+  onChangeAction: (
     event: SyntheticEvent,
     value: AdminProductOption | AdminProductOption[] | null,
   ) => void;
-  onInputChange: (event: SyntheticEvent, value: string) => void;
+  onInputChangeAction: (event: SyntheticEvent, value: string) => void;
 };

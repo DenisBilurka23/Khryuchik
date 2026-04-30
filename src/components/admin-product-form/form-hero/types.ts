@@ -6,6 +6,13 @@ export type AdminProductFormHeroProps = {
   title: string;
   description: string;
   submitLabel: string;
+  deleteLabel?: string;
+  productId?: string;
+  deleteAction?: (formData: FormData) => Promise<void>;
+  deleteDialogTitle?: string;
+  deleteDialogDescription?: string;
+  confirmDeleteLabel?: string;
+  cancelDeleteLabel?: string;
   isNew: boolean;
   locale: Locale;
   dictionary: AdminPageDictionary["productForm"];

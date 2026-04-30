@@ -8,6 +8,7 @@ export enum AdminProductFormMode {
 export enum AdminProductFormErrorCode {
   StorageUnavailable = "storage-unavailable",
   SaveFailed = "save-failed",
+  DeleteFailed = "delete-failed",
   Unexpected = "unexpected",
 }
 
@@ -20,6 +21,8 @@ export const getAdminProductFormErrorMessage = (
       return dictionary.errorMessages.storageUnavailable;
     case AdminProductFormErrorCode.SaveFailed:
       return dictionary.errorMessages.saveFailed;
+    case AdminProductFormErrorCode.DeleteFailed:
+      return dictionary.errorMessages.deleteFailed;
     case AdminProductFormErrorCode.Unexpected:
       return dictionary.errorMessages.unexpected;
     default:

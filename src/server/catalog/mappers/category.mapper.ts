@@ -16,7 +16,6 @@ export const localizeCategory = (
   return {
     key: category.key,
     label: translation.label,
-    description: translation.description,
     sortOrder: category.sortOrder,
   };
 };

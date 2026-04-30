@@ -7,7 +7,7 @@ import { createAdminMetadata } from "@/server/admin/metadata";
 import { getAdminPageContext } from "@/server/admin/page-context";
 import { getAdminProductFormErrorMessage } from "@/server/admin/product-form-state";
 
-import { saveAdminProductAction } from "../../../actions";
+import { deleteAdminProductAction, saveAdminProductAction } from "../../../actions";
 
 type EditAdminProductPageProps = {
   params: Promise<{ id: string }>;
@@ -53,6 +53,11 @@ const EditAdminProductPage = async ({
         selectedRelatedProductOptions={editorData.selectedRelatedProductOptions}
         selectedStoryProductOption={editorData.selectedStoryProductOption}
         action={saveAdminProductAction}
+        deleteAction={deleteAdminProductAction}
+        deleteDialogTitle={dictionary.productForm.deleteDialogTitle}
+        deleteDialogDescription={dictionary.productForm.deleteDialogDescription}
+        confirmDeleteLabel={dictionary.productForm.confirmDeleteButton}
+        cancelDeleteLabel={dictionary.productForm.cancelDeleteButton}
         isNew={false}
         errorMessage={getAdminProductFormErrorMessage(error, dictionary.productForm)}
       />

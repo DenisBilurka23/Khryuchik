@@ -44,7 +44,6 @@ export type ProductClassification = {
 
 export type CategoryTranslation = {
   label: string;
-  description?: string;
 };
 
 export type CategoryDocument = {
@@ -59,7 +58,6 @@ export type CategoryDocument = {
 export type LocalizedCategory = {
   key: CategoryKey;
   label: string;
-  description?: string;
   sortOrder: number;
 };
 

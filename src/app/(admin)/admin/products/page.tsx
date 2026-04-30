@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
-import { Box, Button, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import { Alert, Box, Button, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+
+import { DeleteProductButton } from "@/components/admin-products-page-view/delete-product-button";
+import { EditProductButton } from "@/components/admin-products-page-view/edit-product-button";
 
 import { AdminPageHero, AdminSectionCard, AdminStatusChip } from "@/components/admin-page-shared";
+import { deleteAdminProductAction } from "@/app/(admin)/admin/actions";
 import { getAdminProducts } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { getAdminPageContext } from "@/server/admin/page-context";
@@ -16,8 +21,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
 	);
 };
 
-const AdminProductsPage = async () => {
-	const [{ dictionary }, products] = await Promise.all([
+type AdminProductsPageProps = {
+  searchParams: Promise<{ deleted?: string }>;
+};
+
+const AdminProductsPage = async ({ searchParams }: AdminProductsPageProps) => {
+    const { deleted } = await searchParams;
+    const [{ dictionary }, products] = await Promise.all([
 		getAdminPageContext(),
 		getAdminProducts(),
 	]);
@@ -26,6 +36,8 @@ const AdminProductsPage = async () => {
 	return (
 		<Stack gap={3}>
 			<AdminPageHero eyebrow={dictionary.products.eyebrow} title={dictionary.products.title} description={dictionary.products.description} actions={<Button href="/admin/products/new" variant="contained">{dictionary.products.newProduct}</Button>} />
+
+			{deleted === "1" ? <Alert severity="success">{dictionary.products.deletedMessage}</Alert> : null}
 
 			<AdminSectionCard title={dictionary.products.sectionTitle} description={`${dictionary.products.sectionDescription}: ${products.length}`}>
 				<Box sx={{ overflowX: "auto" }}>
@@ -63,7 +75,27 @@ const AdminProductsPage = async () => {
 									</TableCell>
 									<TableCell>{product.sortOrder}</TableCell>
 									<TableCell align="right">
-										<Button href={`/admin/products/${product.productId}/edit`} variant="outlined">{shared.actions.edit}</Button>
+										<Stack direction="row" gap={0.5} justifyContent="flex-end">
+											<EditProductButton
+												href={`/admin/products/${product.productId}/edit`}
+												label={shared.actions.edit}
+												size="small"
+											/>
+											<DeleteProductButton
+												productId={product.productId}
+												label={dictionary.productForm.deleteButton}
+												action={deleteAdminProductAction}
+												dialogTitle={dictionary.productForm.deleteDialogTitle}
+												dialogDescription={dictionary.productForm.deleteDialogDescription}
+												confirmLabel={dictionary.productForm.confirmDeleteButton}
+												cancelLabel={dictionary.productForm.cancelDeleteButton}
+												icon={<DeleteOutlineOutlinedIcon key="delete-product-icon" />}
+												iconOnly
+												tooltip={dictionary.productForm.deleteButton}
+												ariaLabel={dictionary.productForm.deleteButton}
+												size="small"
+											/>
+										</Stack>
 									</TableCell>
 								</TableRow>
 							))}

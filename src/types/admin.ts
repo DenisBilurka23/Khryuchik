@@ -91,7 +91,5 @@ export type AdminCategoryUpsertInput = {
   visibleInShop: boolean;
   visibleInHomeTabs: boolean;
   sortOrder: number;
-  translations: Partial<
-    Record<Locale, { label: string; description?: string }>
-  >;
+  translations: Partial<Record<Locale, { label: string }>>;
 };

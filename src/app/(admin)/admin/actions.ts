@@ -4,7 +4,14 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { locales } from "@/i18n/config";
-import { saveAdminCategory, saveAdminProduct } from "@/server/admin/catalog.service";
+import {
+  AdminCategoryDeleteError,
+  adminCategoryDeleteErrorCodes,
+  deleteAdminCategory,
+  deleteAdminProduct,
+  saveAdminCategory,
+  saveAdminProduct,
+} from "@/server/admin/catalog.service";
 import {
   parseAdminCategoryFormData,
   parseAdminProductFormData,
@@ -131,6 +138,50 @@ const getAdminProductErrorRedirectPath = (
   return `/admin/products/new?error=${errorCode}`;
 };
 
+const revalidateCategoryDependentPaths = () => {
+  revalidatePath("/admin");
+  revalidatePath("/admin/categories");
+  revalidatePath("/");
+  revalidatePath("/shop");
+  revalidatePath("/favorites");
+
+  for (const locale of locales) {
+    if (locale === "en") {
+      continue;
+    }
+
+    revalidatePath(`/${locale}`);
+    revalidatePath(`/${locale}/shop`);
+    revalidatePath(`/${locale}/favorites`);
+  }
+};
+
+const revalidateProductDependentPaths = (productSlug?: string) => {
+  revalidatePath("/admin");
+  revalidatePath("/admin/products");
+  revalidatePath("/");
+  revalidatePath("/shop");
+  revalidatePath("/favorites");
+
+  if (productSlug) {
+    revalidatePath(`/products/${productSlug}`);
+  }
+
+  for (const locale of locales) {
+    if (locale === "en") {
+      continue;
+    }
+
+    revalidatePath(`/${locale}`);
+    revalidatePath(`/${locale}/shop`);
+    revalidatePath(`/${locale}/favorites`);
+
+    if (productSlug) {
+      revalidatePath(`/${locale}/products/${productSlug}`);
+    }
+  }
+};
+
 export const saveAdminCategoryAction = async (formData: FormData) => {
   await requireAdmin();
 
@@ -138,9 +189,29 @@ export const saveAdminCategoryAction = async (formData: FormData) => {
 
   await saveAdminCategory(input);
 
-  revalidatePath("/admin");
-  revalidatePath("/admin/categories");
+  revalidateCategoryDependentPaths();
   redirect("/admin/categories?saved=1");
+};
+
+export const deleteAdminCategoryAction = async (formData: FormData) => {
+  await requireAdmin();
+
+  const key = formData.get("key");
+  const normalizedKey = typeof key === "string" ? key.trim() : "";
+
+  try {
+    await deleteAdminCategory(normalizedKey);
+  } catch (error) {
+    if (error instanceof AdminCategoryDeleteError) {
+      redirect(`/admin/categories?error=${error.code}`);
+    }
+
+    console.error("Admin category delete failed", error);
+    redirect(`/admin/categories?error=${adminCategoryDeleteErrorCodes.InvalidKey}`);
+  }
+
+  revalidateCategoryDependentPaths();
+  redirect("/admin/categories?deleted=1");
 };
 
 export const saveAdminProductAction = async (formData: FormData) => {
@@ -204,8 +275,7 @@ export const saveAdminProductAction = async (formData: FormData) => {
     if (!errorCode) {
       await saveAdminProduct(payload);
 
-      revalidatePath("/admin");
-      revalidatePath("/admin/products");
+      revalidateProductDependentPaths(payload.product.slug);
       redirectPath = `/admin/products/${payload.product.productId}/edit?saved=1`;
     }
   } catch (error) {
@@ -220,4 +290,26 @@ export const saveAdminProductAction = async (formData: FormData) => {
         errorCode ?? AdminProductFormErrorCode.Unexpected,
       ),
   );
+};
+
+export const deleteAdminProductAction = async (formData: FormData) => {
+  await requireAdmin();
+
+  const rawProductId = formData.get("productId");
+  const productId = typeof rawProductId === "string" ? rawProductId.trim() : "";
+
+  try {
+    const deletedProduct = await deleteAdminProduct(productId);
+
+    revalidateProductDependentPaths(deletedProduct.slug);
+    redirect("/admin/products?deleted=1");
+  } catch (error) {
+    console.error("Admin product delete failed", error);
+    redirect(
+      getAdminProductErrorRedirectPath(
+        formData,
+        AdminProductFormErrorCode.DeleteFailed,
+      ),
+    );
+  }
 };

@@ -133,10 +133,10 @@ export const AdminProductRelatedSection = ({
         label={dictionary.fields.storyProductId}
         placeholder={dictionary.fields.storyProductId}
         helperText={dictionary.helpers.storyProductId}
-        onChange={(_, value) => {
+        onChangeAction={(_, value) => {
           setSelectedStoryOption(Array.isArray(value) ? null : value);
         }}
-        onInputChange={(_, value) => {
+        onInputChangeAction={(_, value) => {
           setStoryInputValue(value);
         }}
       />
@@ -151,10 +151,10 @@ export const AdminProductRelatedSection = ({
         label={dictionary.fields.relatedProductIds}
         placeholder={dictionary.fields.relatedProductIds}
         helperText={dictionary.helpers.relatedProductIds}
-        onChange={(_, value) => {
+        onChangeAction={(_, value) => {
           setSelectedOptions(Array.isArray(value) ? value : []);
         }}
-        onInputChange={(_, value) => {
+        onInputChangeAction={(_, value) => {
           setInputValue(value);
         }}
       />

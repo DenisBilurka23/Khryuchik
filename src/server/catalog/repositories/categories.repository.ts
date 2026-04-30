@@ -51,6 +51,12 @@ export const upsertCategory = async (category: CategoryDocument) => {
   return category;
 };
 
+export const deleteCategoryByKey = async (key: string) => {
+  const db = await getMongoDb();
+
+  return db.collection<CategoryDocument>("categories").deleteOne({ key });
+};
+
 export const countCategories = async () => {
   const db = await getMongoDb();
 

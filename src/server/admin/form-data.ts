@@ -119,11 +119,9 @@ export const parseAdminCategoryFormData = (
   translations: {
     ru: {
       label: parseString(formData, "ru.label").trim(),
-      description: parseOptionalString(formData, "ru.description"),
     },
     en: {
       label: parseString(formData, "en.label").trim(),
-      description: parseOptionalString(formData, "en.description"),
     },
   },
 });
