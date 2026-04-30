@@ -1,24 +1,42 @@
 import type { Metadata } from "next";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { Alert, Box, Button, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 
 import { DeleteProductButton } from "@/components/admin-products-page-view/delete-product-button";
 import { EditProductButton } from "@/components/admin-products-page-view/edit-product-button";
 
-import { AdminPageHero, AdminSectionCard, AdminStatusChip } from "@/components/admin-page-shared";
+import {
+  AdminPageHero,
+  AdminSectionCard,
+  AdminStatusChip,
+} from "@/components/admin-page-shared";
 import { deleteAdminProductAction } from "@/app/(admin)/admin/actions";
 import { getAdminProducts } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { getAdminPageContext } from "@/server/admin/page-context";
-import { getAdminAvailabilityLabel, getAdminProductTypeLabel } from "@/utils/admin";
+import {
+  getAdminAvailabilityLabel,
+  getAdminProductTypeLabel,
+} from "@/utils/admin";
 
 export const generateMetadata = async (): Promise<Metadata> => {
-	const { dictionary } = await getAdminPageContext();
+  const { dictionary } = await getAdminPageContext();
 
-	return createAdminMetadata(
-		dictionary.products.title,
-		dictionary.products.description,
-	);
+  return createAdminMetadata(
+    dictionary.products.title,
+    dictionary.products.description,
+  );
 };
 
 type AdminProductsPageProps = {
@@ -26,85 +44,132 @@ type AdminProductsPageProps = {
 };
 
 const AdminProductsPage = async ({ searchParams }: AdminProductsPageProps) => {
-    const { deleted } = await searchParams;
-    const [{ dictionary }, products] = await Promise.all([
-		getAdminPageContext(),
-		getAdminProducts(),
-	]);
-	const shared = dictionary.shared;
+  const { deleted } = await searchParams;
+  const { dictionary, locale } = await getAdminPageContext();
+  const products = await getAdminProducts(locale);
+  const shared = dictionary.shared;
 
-	return (
-		<Stack gap={3}>
-			<AdminPageHero eyebrow={dictionary.products.eyebrow} title={dictionary.products.title} description={dictionary.products.description} actions={<Button href="/admin/products/new" variant="contained">{dictionary.products.newProduct}</Button>} />
+  return (
+    <Stack gap={3}>
+      <AdminPageHero
+        eyebrow={dictionary.products.eyebrow}
+        title={dictionary.products.title}
+        description={dictionary.products.description}
+        actions={
+          <Button href="/admin/products/new" variant="contained">
+            {dictionary.products.newProduct}
+          </Button>
+        }
+      />
+      {deleted === "1" ? (
+        <Alert severity="success">{dictionary.products.deletedMessage}</Alert>
+      ) : null}
 
-			{deleted === "1" ? <Alert severity="success">{dictionary.products.deletedMessage}</Alert> : null}
-
-			<AdminSectionCard title={dictionary.products.sectionTitle} description={`${dictionary.products.sectionDescription}: ${products.length}`}>
-				<Box sx={{ overflowX: "auto" }}>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell>{dictionary.products.columns.product}</TableCell>
-								<TableCell>{dictionary.products.columns.sku}</TableCell>
-								<TableCell>{dictionary.products.columns.type}</TableCell>
-								<TableCell>{dictionary.products.columns.category}</TableCell>
-								<TableCell>{dictionary.products.columns.price}</TableCell>
-								<TableCell>{dictionary.products.columns.status}</TableCell>
-								<TableCell>{dictionary.products.columns.sortOrder}</TableCell>
-								<TableCell align="right">{dictionary.products.columns.action}</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{products.map((product) => (
-								<TableRow key={product.productId} hover>
-									<TableCell>
-										<Stack gap={0.5}>
-											<Typography fontWeight={700}>{product.title}</Typography>
-											<Typography variant="body2" color="text.secondary">{product.slug}</Typography>
-										</Stack>
-									</TableCell>
-									<TableCell>{product.sku || shared.placeholders.emptyValue}</TableCell>
-									<TableCell>{getAdminProductTypeLabel(product.type, shared.status.productTypes)}</TableCell>
-									<TableCell>{product.category}</TableCell>
-									<TableCell>{product.priceLabel}</TableCell>
-									<TableCell>
-										<Stack direction="row" gap={1} flexWrap="wrap">
-											<AdminStatusChip label={product.isActive ? shared.status.active : shared.status.hidden} tone={product.isActive ? "success" : "neutral"} />
-											<AdminStatusChip label={getAdminAvailabilityLabel(product.availability, shared.status.availability)} tone={product.availability === "in_stock" ? "success" : product.availability === "preorder" ? "info" : "warning"} />
-										</Stack>
-									</TableCell>
-									<TableCell>{product.sortOrder}</TableCell>
-									<TableCell align="right">
-										<Stack direction="row" gap={0.5} justifyContent="flex-end">
-											<EditProductButton
-												href={`/admin/products/${product.productId}/edit`}
-												label={shared.actions.edit}
-												size="small"
-											/>
-											<DeleteProductButton
-												productId={product.productId}
-												label={dictionary.productForm.deleteButton}
-												action={deleteAdminProductAction}
-												dialogTitle={dictionary.productForm.deleteDialogTitle}
-												dialogDescription={dictionary.productForm.deleteDialogDescription}
-												confirmLabel={dictionary.productForm.confirmDeleteButton}
-												cancelLabel={dictionary.productForm.cancelDeleteButton}
-												icon={<DeleteOutlineOutlinedIcon key="delete-product-icon" />}
-												iconOnly
-												tooltip={dictionary.productForm.deleteButton}
-												ariaLabel={dictionary.productForm.deleteButton}
-												size="small"
-											/>
-										</Stack>
-									</TableCell>
-								</TableRow>
-							))}
-						</TableBody>
-					</Table>
-				</Box>
-			</AdminSectionCard>
-		</Stack>
-	);
+      <AdminSectionCard
+        title={dictionary.products.sectionTitle}
+        description={`${dictionary.products.sectionDescription}: ${products.length}`}
+      >
+        <Box sx={{ overflowX: "auto" }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>{dictionary.products.columns.product}</TableCell>
+                <TableCell>{dictionary.products.columns.sku}</TableCell>
+                <TableCell>{dictionary.products.columns.type}</TableCell>
+                <TableCell>{dictionary.products.columns.category}</TableCell>
+                <TableCell>{dictionary.products.columns.price}</TableCell>
+                <TableCell>{dictionary.products.columns.status}</TableCell>
+                <TableCell>{dictionary.products.columns.sortOrder}</TableCell>
+                <TableCell align="right">
+                  {dictionary.products.columns.action}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {products.map((product) => (
+                <TableRow key={product.productId} hover>
+                  <TableCell>
+                    <Stack gap={0.5}>
+                      <Typography fontWeight={700}>{product.title}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {product.slug}
+                      </Typography>
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    {product.sku || shared.placeholders.emptyValue}
+                  </TableCell>
+                  <TableCell>
+                    {getAdminProductTypeLabel(
+                      product.type,
+                      shared.status.productTypes,
+                    )}
+                  </TableCell>
+                  <TableCell>{product.categoryLabel}</TableCell>
+                  <TableCell>{product.priceLabel}</TableCell>
+                  <TableCell>
+                    <Stack direction="row" gap={1} flexWrap="wrap">
+                      <AdminStatusChip
+                        label={
+                          product.isActive
+                            ? shared.status.active
+                            : shared.status.hidden
+                        }
+                        tone={product.isActive ? "success" : "neutral"}
+                      />
+                      <AdminStatusChip
+                        label={getAdminAvailabilityLabel(
+                          product.availability,
+                          shared.status.availability,
+                        )}
+                        tone={
+                          product.availability === "in_stock"
+                            ? "success"
+                            : product.availability === "preorder"
+                              ? "info"
+                              : "warning"
+                        }
+                      />
+                    </Stack>
+                  </TableCell>
+                  <TableCell>{product.sortOrder}</TableCell>
+                  <TableCell align="right">
+                    <Stack direction="row" gap={0.5} justifyContent="flex-end">
+                      <EditProductButton
+                        href={`/admin/products/${product.productId}/edit`}
+                        label={shared.actions.edit}
+                        size="small"
+                      />
+                      <DeleteProductButton
+                        productId={product.productId}
+                        label={dictionary.productForm.deleteButton}
+                        action={deleteAdminProductAction}
+                        dialogTitle={dictionary.productForm.deleteDialogTitle}
+                        dialogDescription={
+                          dictionary.productForm.deleteDialogDescription
+                        }
+                        confirmLabel={
+                          dictionary.productForm.confirmDeleteButton
+                        }
+                        cancelLabel={dictionary.productForm.cancelDeleteButton}
+                        icon={
+                          <DeleteOutlineOutlinedIcon key="delete-product-icon" />
+                        }
+                        iconOnly
+                        tooltip={dictionary.productForm.deleteButton}
+                        ariaLabel={dictionary.productForm.deleteButton}
+                        size="small"
+                      />
+                    </Stack>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
+      </AdminSectionCard>
+    </Stack>
+  );
 };
 
 export default AdminProductsPage;
