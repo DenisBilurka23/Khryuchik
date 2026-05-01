@@ -27,9 +27,11 @@ const NewAdminProductPage = async ({ searchParams }: NewAdminProductPageProps) =
 
   return (
     <AdminProductForm
+      key={`new:${error ?? "ok"}`}
       title={dictionary.productForm.newTitle}
       description={dictionary.productForm.newDescription}
       submitLabel={dictionary.productForm.createButton}
+      pendingSubmitLabel={dictionary.productForm.creatingButton}
       locale={locale}
       dictionary={dictionary.productForm}
       sharedDictionary={dictionary.shared}

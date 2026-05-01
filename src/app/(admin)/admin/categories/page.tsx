@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
-import { Alert, Box, Button, Checkbox, Stack, TextField } from "@mui/material";
+import { Alert, Box, Checkbox, Stack, TextField } from "@mui/material";
 
 import { AdminCategoryCard } from "@/components/admin-categories-page-view/category-card";
-import { AdminCheckboxField, AdminPageHero, AdminSectionCard } from "@/components/admin-page-shared";
+import {
+  AdminCheckboxField,
+  AdminConfirmSubmitButton,
+  AdminPageHero,
+  AdminSectionCard,
+} from "@/components/admin-page-shared";
 import { deleteAdminCategoryAction, saveAdminCategoryAction } from "@/app/(admin)/admin/actions";
 import { getAdminCategories } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
@@ -56,7 +61,11 @@ const AdminCategoriesPage = async ({ searchParams }: AdminCategoriesPageProps) =
               <AdminCheckboxField control={<Checkbox name="visibleInHomeTabs" />} label={labels.toggles.visibleInHomeTabs} />
             </Box>
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button type="submit" variant="contained">{labels.saveButton}</Button>
+              <AdminConfirmSubmitButton
+                variant="contained"
+                label={labels.saveButton}
+                pendingLabel={labels.savingButton}
+              />
             </Box>
           </Stack>
         </form>

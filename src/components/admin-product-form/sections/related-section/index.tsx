@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import { Button } from "@mui/material";
+import { Stack } from "@mui/material";
+
 import type { AdminProductOption } from "@/types/admin";
 
 import { AdminSectionCard } from "../../../admin-page-shared";
@@ -33,7 +33,6 @@ const mergeOptions = (...groups: AdminProductOption[][]) => {
 export const AdminProductRelatedSection = ({
   locale,
   dictionary,
-  submitLabel,
   payload,
   initialProductOptions,
   selectedProductOptions,
@@ -104,16 +103,6 @@ export const AdminProductRelatedSection = ({
     <AdminSectionCard
       title={dictionary.relatedSectionTitle}
       description={dictionary.relatedSectionDescription}
-      action={
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          startIcon={<SaveOutlinedIcon />}
-        >
-          {submitLabel}
-        </Button>
-      }
     >
       <input
         type="hidden"
@@ -125,39 +114,41 @@ export const AdminProductRelatedSection = ({
         name="relatedProductIds"
         value={selectedOptions.map((option) => option.id).join(",")}
       />
-      <AdminProductAutocompleteField
-        options={storyOptions}
-        value={selectedStoryOption}
-        inputValue={storyInputValue}
-        loading={isStoryLoading}
-        label={dictionary.fields.storyProductId}
-        placeholder={dictionary.fields.storyProductId}
-        helperText={dictionary.helpers.storyProductId}
-        onChangeAction={(_, value) => {
-          setSelectedStoryOption(Array.isArray(value) ? null : value);
-        }}
-        onInputChangeAction={(_, value) => {
-          setStoryInputValue(value);
-        }}
-      />
-      <AdminProductAutocompleteField
-        multiple
-        openOnFocus
-        filterSelectedOptions
-        options={relatedOptions}
-        value={selectedOptions}
-        inputValue={inputValue}
-        loading={isLoading}
-        label={dictionary.fields.relatedProductIds}
-        placeholder={dictionary.fields.relatedProductIds}
-        helperText={dictionary.helpers.relatedProductIds}
-        onChangeAction={(_, value) => {
-          setSelectedOptions(Array.isArray(value) ? value : []);
-        }}
-        onInputChangeAction={(_, value) => {
-          setInputValue(value);
-        }}
-      />
+      <Stack gap={2}>
+        <AdminProductAutocompleteField
+          options={storyOptions}
+          value={selectedStoryOption}
+          inputValue={storyInputValue}
+          loading={isStoryLoading}
+          label={dictionary.fields.storyProductId}
+          placeholder={dictionary.fields.storyProductId}
+          helperText={dictionary.helpers.storyProductId}
+          onChangeAction={(_, value) => {
+            setSelectedStoryOption(Array.isArray(value) ? null : value);
+          }}
+          onInputChangeAction={(_, value) => {
+            setStoryInputValue(value);
+          }}
+        />
+        <AdminProductAutocompleteField
+          multiple
+          openOnFocus
+          filterSelectedOptions
+          options={relatedOptions}
+          value={selectedOptions}
+          inputValue={inputValue}
+          loading={isLoading}
+          label={dictionary.fields.relatedProductIds}
+          placeholder={dictionary.fields.relatedProductIds}
+          helperText={dictionary.helpers.relatedProductIds}
+          onChangeAction={(_, value) => {
+            setSelectedOptions(Array.isArray(value) ? value : []);
+          }}
+          onInputChangeAction={(_, value) => {
+            setInputValue(value);
+          }}
+        />
+      </Stack>
     </AdminSectionCard>
   );
 };

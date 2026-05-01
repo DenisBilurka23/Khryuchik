@@ -5,13 +5,18 @@ import { DeleteProductButton } from "@/components/admin-products-page-view/delet
 
 import { getAdminCategoryLabel, getAdminProductTypeLabel } from "@/utils/admin";
 
-import { AdminPageHero, AdminStatusChip } from "../../admin-page-shared";
+import {
+  AdminConfirmSubmitButton,
+  AdminPageHero,
+  AdminStatusChip,
+} from "../../admin-page-shared";
 import type { AdminProductFormHeroProps } from "./types";
 
 export const AdminProductFormHero = ({
   title,
   description,
   submitLabel,
+  pendingSubmitLabel,
   deleteLabel,
   productId,
   deleteAction,
@@ -29,6 +34,7 @@ export const AdminProductFormHero = ({
   isActive,
   totalImages,
   totalAssets,
+  isSubmitting = false,
 }: AdminProductFormHeroProps) => {
   const categoryLabel =
     getAdminCategoryLabel(
@@ -66,15 +72,17 @@ export const AdminProductFormHero = ({
               tooltip={deleteLabel}
             />
           ) : null}
-          <Tooltip title={submitLabel}>
-            <Button
-              type="submit"
-              form="admin-product-form"
-              variant="contained"
-              startIcon={<SaveOutlinedIcon />}
-            >
-              {submitLabel}
-            </Button>
+          <Tooltip title={isSubmitting ? pendingSubmitLabel ?? submitLabel : submitLabel}>
+            <span>
+              <AdminConfirmSubmitButton
+                form="admin-product-form"
+                variant="contained"
+                startIcon={<SaveOutlinedIcon />}
+                label={submitLabel}
+                pendingLabel={pendingSubmitLabel}
+                pending={isSubmitting}
+              />
+            </span>
           </Tooltip>
         </Stack>
       }

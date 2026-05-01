@@ -7,6 +7,7 @@ export type AdminProductFormProps = {
   title: string;
   description: string;
   submitLabel: string;
+  pendingSubmitLabel?: string;
   locale: Locale;
   dictionary: AdminPageDictionary["productForm"];
   sharedDictionary: AdminPageDictionary["shared"];

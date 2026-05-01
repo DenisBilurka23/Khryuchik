@@ -1,10 +1,12 @@
 export { AdminCheckboxField } from "./checkbox-field";
+export { AdminConfirmSubmitButton } from "./confirm-submit-button";
 export { AdminEmptyState } from "./empty-state";
 export { AdminPageHero } from "./page-hero";
 export { AdminSectionCard } from "./section-card";
 export { AdminStatCard } from "./stat-card";
 export { AdminStatusChip } from "./status-chip";
 export type { AdminCheckboxFieldProps } from "./checkbox-field";
+export type { AdminConfirmSubmitButtonProps } from "./confirm-submit-button";
 export type { AdminEmptyStateProps } from "./empty-state";
 export type { AdminPageHeroProps } from "./page-hero";
 export type { AdminSectionCardProps } from "./section-card";

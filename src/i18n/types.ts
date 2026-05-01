@@ -533,6 +533,7 @@ export type AdminPageDictionary = {
     newCategoryTitle: string;
     newCategoryDescription: string;
     saveButton: string;
+    savingButton: string;
     updateButton: string;
     deleteButton: string;
     deletedMessage: string;
@@ -583,6 +584,12 @@ export type AdminPageDictionary = {
     emptyDescription: string;
     action: string;
   };
+  errorBoundary: {
+    title: string;
+    genericMessage: string;
+    payloadTooLargeMessage: string;
+    retryButton: string;
+  };
   productForm: {
     newTitle: string;
     newDescription: string;
@@ -596,7 +603,9 @@ export type AdminPageDictionary = {
       unexpected: string;
     };
     createButton: string;
+    creatingButton: string;
     saveChangesButton: string;
+    savingChangesButton: string;
     deleteButton: string;
     deleteDialogTitle: string;
     deleteDialogDescription: string;
@@ -624,6 +633,8 @@ export type AdminPageDictionary = {
     relatedSectionDescription: string;
     reviewsSectionTitle: string;
     reviewsSectionDescription: string;
+    footerTitle: string;
+    footerDescription: string;
     helpers: {
       productId: string;
       slug: string;

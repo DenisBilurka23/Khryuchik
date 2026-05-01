@@ -2,10 +2,15 @@
 
 import { useRef } from "react";
 
-import { Box, Button, Checkbox, Stack, TextField } from "@mui/material";
+import { Box, Checkbox, Stack, TextField } from "@mui/material";
 
 import { ModalButton } from "@/components/modal-button";
-import { AdminCheckboxField, AdminSectionCard, AdminStatusChip } from "@/components/admin-page-shared";
+import {
+  AdminCheckboxField,
+  AdminConfirmSubmitButton,
+  AdminSectionCard,
+  AdminStatusChip,
+} from "@/components/admin-page-shared";
 
 import type { AdminCategoryCardProps } from "./types";
 
@@ -80,7 +85,10 @@ export const AdminCategoryCard = ({
               disabled={deletionDisabled}
               tooltip={deleteBlockedReason ?? undefined}
             />
-            <Button type="submit" variant="outlined">{labels.updateButton}</Button>
+            <AdminConfirmSubmitButton
+              variant="outlined"
+              label={labels.updateButton}
+            />
           </Box>
         </Stack>
       </form>

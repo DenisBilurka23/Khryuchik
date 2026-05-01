@@ -43,6 +43,7 @@ export type ProductDetails = {
   oldPrice?: number;
   badge?: string;
   storyLabel?: string;
+  storyTitle?: string;
   storyProductId?: string;
   sku: string;
   description: string;

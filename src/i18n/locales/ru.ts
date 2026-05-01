@@ -562,6 +562,7 @@ const dictionary: SeedDictionary = {
       newCategoryTitle: "Новая категория",
       newCategoryDescription: "Создание новой категории сразу в рабочем контексте.",
       saveButton: "Сохранить категорию",
+      savingButton: "Сохраняем категорию...",
       updateButton: "Обновить",
       deleteButton: "Удалить",
       deletedMessage: "Категория удалена.",
@@ -615,6 +616,14 @@ const dictionary: SeedDictionary = {
         "Сейчас cart и checkout не создают документы заказов, поэтому админка не рисует фейковые строки. Следующий технический шаг здесь — завести order schema, repository и создание заказа после оформления.",
       action: "Открыть аккаунты",
     },
+    errorBoundary: {
+      title: "Ошибка в админке",
+      genericMessage:
+        "Что-то пошло не так при обработке этой страницы или действия. Попробуйте повторить еще раз.",
+      payloadTooLargeMessage:
+        "Запрос получился слишком большим. Уменьшите количество или размер картинок и файлов, затем попробуйте снова.",
+      retryButton: "Повторить",
+    },
     productForm: {
       newTitle: "Новый товар",
       newDescription: "Создание товара на отдельной странице со всеми реальными полями каталога.",
@@ -628,7 +637,9 @@ const dictionary: SeedDictionary = {
         unexpected: "Произошла ошибка при сохранении товара. Попробуйте еще раз.",
       },
       createButton: "Создать товар",
+      creatingButton: "Создаём товар...",
       saveChangesButton: "Сохранить изменения",
+      savingChangesButton: "Сохраняем изменения...",
       deleteButton: "Удалить товар",
       deleteDialogTitle: "Удалить товар?",
       deleteDialogDescription: "Товар, его детальные данные, изображения, файлы и связанные ссылки будут удалены. Это действие нельзя отменить.",
@@ -656,6 +667,8 @@ const dictionary: SeedDictionary = {
       relatedSectionDescription: "Выберите связанные товары из списка для cross-sell и related products.",
       reviewsSectionTitle: "Отзывы",
       reviewsSectionDescription: "Общие отзывы для товара. Они используются для всех языковых версий.",
+      footerTitle: "Готово к публикации?",
+      footerDescription: "Проверьте данные товара и создайте карточку товара.",
       helpers: {
         productId: "Можно оставить пустым. ID сгенерируется автоматически.",
         slug: "Если пусто, слаг возьмётся из EN title и будет приведён к URL-виду.",

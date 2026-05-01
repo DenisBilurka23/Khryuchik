@@ -254,6 +254,9 @@ export const AdminImageUploadField = ({
           name={name}
           accept="image/*"
           multiple
+          onClick={(event) => {
+            event.currentTarget.value = "";
+          }}
           onChange={(event) => {
             const selectedFiles = Array.from(event.target.files ?? []);
 
@@ -287,7 +290,6 @@ export const AdminImageUploadField = ({
               ...fileEntriesRef.current,
               ...nextFileEntries.map(({ id, file }) => ({ id, file })),
             ]);
-            event.currentTarget.value = "";
           }}
         />
       </Button>

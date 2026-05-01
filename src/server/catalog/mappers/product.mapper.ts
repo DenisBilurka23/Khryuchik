@@ -103,6 +103,7 @@ export const toProductDetails = (
     oldPrice: summary.oldPrice,
     badge: translation.badge,
     storyLabel: translation.storyLabel,
+    storyTitle: translation.storyTitle,
     storyProductId: detailsDocument.storyProductId,
     sku: detailsDocument.sku,
     description: translation.description,

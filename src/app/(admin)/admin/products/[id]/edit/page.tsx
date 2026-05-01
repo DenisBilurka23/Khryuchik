@@ -41,9 +41,11 @@ const EditAdminProductPage = async ({
     <Stack gap={2}>
       {saved === "1" ? <Alert severity="success">{dictionary.productForm.savedMessage}</Alert> : null}
       <AdminProductForm
+        key={`${id}:${saved ?? "0"}:${error ?? "ok"}`}
         title={`${dictionary.productForm.editTitlePrefix}: ${editorData.payload.product.productId}`}
         description={dictionary.productForm.editDescription}
         submitLabel={dictionary.productForm.saveChangesButton}
+        pendingSubmitLabel={dictionary.productForm.savingChangesButton}
         locale={locale}
         dictionary={dictionary.productForm}
         sharedDictionary={dictionary.shared}

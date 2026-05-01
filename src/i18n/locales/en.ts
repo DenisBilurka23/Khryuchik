@@ -565,6 +565,7 @@ const dictionary: SeedDictionary = {
       newCategoryTitle: "New category",
       newCategoryDescription: "Create a new category directly in the working context.",
       saveButton: "Save category",
+      savingButton: "Saving category...",
       updateButton: "Update",
       deleteButton: "Delete",
       deletedMessage: "Category deleted.",
@@ -619,6 +620,14 @@ const dictionary: SeedDictionary = {
         "Right now cart and checkout do not create order documents, so the admin does not render fake rows. The next technical step here is an order schema, repository, and order creation after checkout.",
       action: "Open accounts",
     },
+    errorBoundary: {
+      title: "Admin error",
+      genericMessage:
+        "Something went wrong while processing this page or action. Try again.",
+      payloadTooLargeMessage:
+        "The request is too large. Reduce the number or size of images and files, then try again.",
+      retryButton: "Retry",
+    },
     productForm: {
       newTitle: "New product",
       newDescription: "Create a product on a separate page with all real catalog fields.",
@@ -632,7 +641,9 @@ const dictionary: SeedDictionary = {
         unexpected: "An error occurred while saving the product. Try again.",
       },
       createButton: "Create product",
+      creatingButton: "Creating product...",
       saveChangesButton: "Save changes",
+      savingChangesButton: "Saving changes...",
       deleteButton: "Delete product",
       deleteDialogTitle: "Delete this product?",
       deleteDialogDescription: "The product, its details, images, files, and linked references will be removed. This action cannot be undone.",
@@ -662,6 +673,8 @@ const dictionary: SeedDictionary = {
         "Choose related products from the list for cross-sell and related products.",
       reviewsSectionTitle: "Reviews",
       reviewsSectionDescription: "Shared product reviews used across all language versions.",
+      footerTitle: "Ready to publish?",
+      footerDescription: "Review the product data and create the product card.",
       helpers: {
         productId: "Leave empty to generate it automatically.",
         slug: "Leave empty to generate it from the EN title and normalize it for URLs.",

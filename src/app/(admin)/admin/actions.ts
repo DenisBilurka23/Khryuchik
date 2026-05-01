@@ -297,12 +297,11 @@ export const deleteAdminProductAction = async (formData: FormData) => {
 
   const rawProductId = formData.get("productId");
   const productId = typeof rawProductId === "string" ? rawProductId.trim() : "";
+  let deletedProductSlug: string | undefined;
 
   try {
     const deletedProduct = await deleteAdminProduct(productId);
-
-    revalidateProductDependentPaths(deletedProduct.slug);
-    redirect("/admin/products?deleted=1");
+    deletedProductSlug = deletedProduct.slug;
   } catch (error) {
     console.error("Admin product delete failed", error);
     redirect(
@@ -312,4 +311,7 @@ export const deleteAdminProductAction = async (formData: FormData) => {
       ),
     );
   }
+
+  revalidateProductDependentPaths(deletedProductSlug);
+  redirect("/admin/products?deleted=1");
 };

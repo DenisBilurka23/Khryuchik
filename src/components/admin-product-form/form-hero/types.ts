@@ -6,6 +6,7 @@ export type AdminProductFormHeroProps = {
   title: string;
   description: string;
   submitLabel: string;
+  pendingSubmitLabel?: string;
   deleteLabel?: string;
   productId?: string;
   deleteAction?: (formData: FormData) => Promise<void>;
@@ -23,4 +24,5 @@ export type AdminProductFormHeroProps = {
   isActive: boolean;
   totalImages: number;
   totalAssets: number;
+  isSubmitting?: boolean;
 };
