@@ -41,8 +41,6 @@ export const HomeCartSummary = ({
   locale,
   country,
   cartTitle,
-  emptyTitle,
-  emptyText,
   totalLabel,
   shopLabel,
   cartLabel,
@@ -126,16 +124,7 @@ export const HomeCartSummary = ({
               {totalLabel}: {formattedSubtotal}
             </Typography>
           </Box>
-        ) : (
-          <Paper
-            elevation={0}
-            className={styles.cartCard}
-            sx={{ mt: 3, p: 2.5 }}
-          >
-            <Typography className={styles.summaryMetaTitle}>{emptyTitle}</Typography>
-            <Typography className={styles.emptyText}>{emptyText}</Typography>
-          </Paper>
-        )}
+        ) : null}
       </Box>
 
       <Stack spacing={2} className={styles.summaryActions}>

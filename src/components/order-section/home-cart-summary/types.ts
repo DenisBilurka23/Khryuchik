@@ -6,8 +6,6 @@ export type HomeCartSummaryProps = {
   locale: "ru" | "en";
   country: CountryCode;
   cartTitle: string;
-  emptyTitle: string;
-  emptyText: string;
   totalLabel: string;
   shopLabel: string;
   cartLabel: string;
