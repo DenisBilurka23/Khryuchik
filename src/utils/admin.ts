@@ -46,7 +46,7 @@ export const getAdminCategoryLabel = (
   locale: Locale,
 ) => translations[locale]?.label ?? translations.en?.label ?? translations.ru?.label ?? "";
 
-export const normalizeSlugPart = (value: string) =>
+export const normalizeIdentifierPart = (value: string) =>
   value
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")

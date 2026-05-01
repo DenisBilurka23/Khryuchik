@@ -111,7 +111,7 @@ const parseDetailLocaleTranslation = (formData: FormData, locale: Locale) => ({
 export const parseAdminCategoryFormData = (
   formData: FormData,
 ): AdminCategoryUpsertInput => ({
-  key: parseString(formData, "key").trim(),
+  key: parseOptionalString(formData, "key"),
   isActive: parseBoolean(formData, "isActive"),
   visibleInShop: parseBoolean(formData, "visibleInShop"),
   visibleInHomeTabs: parseBoolean(formData, "visibleInHomeTabs"),

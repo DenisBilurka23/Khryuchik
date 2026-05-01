@@ -3,8 +3,8 @@ import "server-only";
 import type { AdminProductPayload } from "@/types/admin";
 import {
   buildUniqueValue,
+  normalizeIdentifierPart,
   normalizeSkuPart,
-  normalizeSlugPart,
 } from "@/utils/admin";
 
 import { findAllProductDetails } from "../catalog/repositories/product-details.repository";
@@ -43,11 +43,11 @@ export const populateAdminProductIdentifiers = async (
   );
 
   const slug = buildUniqueValue(
-    normalizeSlugPart(requestedSlug) || "product",
+    normalizeIdentifierPart(requestedSlug) || "product",
     (candidate) => takenSlugs.has(candidate),
   );
   const productId = buildUniqueValue(
-    normalizeSlugPart(currentProductId || slug) || "product",
+    normalizeIdentifierPart(currentProductId || slug) || "product",
     (candidate) => takenProductIds.has(candidate),
   );
   const requestedSku =

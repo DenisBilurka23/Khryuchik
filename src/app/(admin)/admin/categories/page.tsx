@@ -50,7 +50,7 @@ const AdminCategoriesPage = async ({ searchParams }: AdminCategoriesPageProps) =
         <form action={saveAdminCategoryAction}>
           <Stack gap={2}>
             <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" }, gap: 2 }}>
-              <TextField label={labels.fields.key} name="key" required />
+              <TextField label={labels.fields.key} name="key" />
               <TextField label={labels.fields.sortOrder} name="sortOrder" type="number" defaultValue={100} />
               <TextField label={labels.fields.ruLabel} name="ru.label" required />
               <TextField label={labels.fields.enLabel} name="en.label" required />

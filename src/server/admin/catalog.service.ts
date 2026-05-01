@@ -11,11 +11,17 @@ import type {
   AdminProductOption,
   AdminProductPayload,
 } from "@/types/admin";
-import type { CategoryDocument, ProductDetailDocument } from "@/types/catalog";
+import type {
+  CategoryDocument,
+  CategoryTranslation,
+  ProductDetailDocument,
+} from "@/types/catalog";
 
 import {
+  buildUniqueValue,
   createEmptyAdminProductPayload,
   getAdminCategoryLabel,
+  normalizeIdentifierPart,
 } from "@/utils/admin";
 import {
   getAdminUsers,
@@ -304,7 +310,7 @@ export const getAdminProductEditorData = async (
 
 const normalizeCategoryTranslations = (
   translations: AdminCategoryUpsertInput["translations"],
-): CategoryDocument["translations"] => ({
+): Record<Locale, CategoryTranslation> => ({
   ru: {
     label: translations.ru?.label?.trim() ?? "",
   },
@@ -313,22 +319,37 @@ const normalizeCategoryTranslations = (
   },
 });
 
+const resolveAdminCategoryKey = async (
+  input: AdminCategoryUpsertInput,
+  translations: ReturnType<typeof normalizeCategoryTranslations>,
+) => {
+  const requestedKey = input.key?.trim();
+
+  if (requestedKey) {
+    return requestedKey;
+  }
+
+  const categories = await findAllCategories();
+  const takenKeys = new Set(categories.map((category) => category.key));
+  const generatedBaseKey = normalizeIdentifierPart(translations.en.label) || "category";
+
+  return buildUniqueValue(generatedBaseKey, (candidate) => takenKeys.has(candidate));
+};
+
 export const saveAdminCategory = async (input: AdminCategoryUpsertInput) => {
+  const translations = normalizeCategoryTranslations(input.translations);
+  const key = await resolveAdminCategoryKey(input, translations);
   const category: CategoryDocument = {
-    key: input.key.trim(),
+    key,
     isActive: input.isActive,
     visibleInShop: input.visibleInShop,
     visibleInHomeTabs: input.visibleInHomeTabs,
     sortOrder: Number.isFinite(input.sortOrder) ? input.sortOrder : 100,
-    translations: normalizeCategoryTranslations(input.translations),
+    translations,
   };
 
-  if (
-    !category.key ||
-    !category.translations.ru?.label ||
-    !category.translations.en?.label
-  ) {
-    throw new Error("Category key and both localized labels are required");
+  if (!category.translations.ru?.label || !category.translations.en?.label) {
+    throw new Error("Both localized labels are required");
   }
 
   return upsertCategory(category);

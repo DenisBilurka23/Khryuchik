@@ -87,7 +87,7 @@ export type AdminProductEditorData = {
 };
 
 export type AdminCategoryUpsertInput = {
-  key: string;
+  key?: string;
   isActive: boolean;
   visibleInShop: boolean;
   visibleInHomeTabs: boolean;
