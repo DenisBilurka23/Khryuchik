@@ -102,7 +102,7 @@ const AdminDashboardPage = async () => {
 												<Typography variant="body2" color="text.secondary">{product.slug}</Typography>
 											</Stack>
 										</TableCell>
-										<TableCell>{product.category}</TableCell>
+										<TableCell>{product.categoryLabel}</TableCell>
 										<TableCell>{product.priceLabel}</TableCell>
 										<TableCell>
 											<AdminStatusChip label={product.isActive ? shared.status.active : shared.status.hidden} tone={product.isActive ? "success" : "neutral"} />

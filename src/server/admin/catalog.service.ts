@@ -13,15 +13,18 @@ import type {
 } from "@/types/admin";
 import type { CategoryDocument, ProductDetailDocument } from "@/types/catalog";
 
-import { createEmptyAdminProductPayload } from "@/utils/admin";
+import {
+  createEmptyAdminProductPayload,
+  getAdminCategoryLabel,
+} from "@/utils/admin";
 import {
   getAdminUsers,
   getAdminUsersStats,
 } from "@/server/users/services/users.service";
 
 import {
-  deleteCategoryByKey,
   countCategories,
+  deleteCategoryByKey,
   findAllCategories,
   upsertCategory,
 } from "../catalog/repositories/categories.repository";
@@ -182,16 +185,21 @@ export const getAdminCustomers = async (
 export const getAdminProducts = async (
   locale: Locale = defaultLocale,
 ): Promise<AdminProductListItem[]> => {
-  const [products, detailsDocuments] = await Promise.all([
+  const [products, detailsDocuments, categories] = await Promise.all([
     findAllProducts(),
     findAllProductDetails(),
+    findAllCategories(),
   ]);
   const detailsById = new Map(
     detailsDocuments.map((details) => [details.productId, details]),
   );
+  const categoriesByKey = new Map(
+    categories.map((category) => [category.key, category]),
+  );
 
   return products.map((product) => {
     const details = detailsById.get(product.productId);
+    const category = categoriesByKey.get(product.classification.category);
     const pricing = product.pricing.BY ?? product.pricing.US;
     const sku = details?.sku || "";
 
@@ -201,6 +209,9 @@ export const getAdminProducts = async (
       slug: product.slug,
       type: product.classification.type,
       category: product.classification.category,
+      categoryLabel:
+        getAdminCategoryLabel(category?.translations ?? {}, locale) ||
+        product.classification.category,
       sku,
       priceLabel: pricing ? `${pricing.price} ${pricing.currency}` : "—",
       availability: product.inventory.availability,
@@ -327,7 +338,9 @@ export const deleteAdminCategory = async (key: string) => {
   const normalizedKey = key.trim();
 
   if (!normalizedKey) {
-    throw new AdminCategoryDeleteError(adminCategoryDeleteErrorCodes.InvalidKey);
+    throw new AdminCategoryDeleteError(
+      adminCategoryDeleteErrorCodes.InvalidKey,
+    );
   }
 
   if (normalizedKey === booksCategoryKey) {
@@ -343,7 +356,9 @@ export const deleteAdminCategory = async (key: string) => {
   await deleteCategoryByKey(normalizedKey);
 };
 
-const getDetailObjectKeys = (details: ProductDetailDocument | null | undefined) => {
+const getDetailObjectKeys = (
+  details: ProductDetailDocument | null | undefined,
+) => {
   if (!details) {
     return {
       galleryObjectKeys: [] as string[],

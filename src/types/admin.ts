@@ -44,6 +44,7 @@ export type AdminProductListItem = {
   slug: string;
   type: ProductType;
   category: string;
+  categoryLabel: string;
   sku: string;
   priceLabel: string;
   availability: ProductDocument["inventory"]["availability"];
