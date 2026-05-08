@@ -563,6 +563,7 @@ export type AdminPageDictionary = {
     eyebrow: string;
     title: string;
     description: string;
+    deletedMessage: string;
     sectionTitle: string;
     sectionDescription: string;
     createdLabel: string;
@@ -570,8 +571,66 @@ export type AdminPageDictionary = {
       user: string;
       phone: string;
       role: string;
-      providers: string;
       created: string;
+      action: string;
+    };
+    form: {
+      editEyebrow: string;
+      editTitlePrefix: string;
+      editDescription: string;
+      savedMessage: string;
+      saveChangesButton: string;
+      savingChangesButton: string;
+      deleteButton: string;
+      deleteDialogTitle: string;
+      deleteDialogDescription: string;
+      confirmDeleteButton: string;
+      cancelDeleteButton: string;
+      sections: {
+        profileTitle: string;
+        profileDescription: string;
+        accessTitle: string;
+        accessDescription: string;
+        metadataTitle: string;
+        metadataDescription: string;
+      };
+      fields: {
+        userId: string;
+        email: string;
+        name: string;
+        phone: string;
+        avatar: string;
+        providers: string;
+        createdAt: string;
+        updatedAt: string;
+      };
+      buttons: {
+        uploadAvatar: string;
+        replaceAvatar: string;
+        removeAvatar: string;
+      };
+      toggles: {
+        isAdmin: string;
+      };
+      helpers: {
+        avatar: string;
+        emptyAvatar: string;
+        providers: string;
+        currentAccount: string;
+        currentRoleChange: string;
+      };
+      errorMessages: {
+        notFound: string;
+        storageUnavailable: string;
+        emailTaken: string;
+        emailManagedByGoogle: string;
+        cannotDeleteSelf: string;
+        cannotDemoteSelf: string;
+        lastAdmin: string;
+        saveFailed: string;
+        deleteFailed: string;
+        unexpected: string;
+      };
     };
   };
   orders: {

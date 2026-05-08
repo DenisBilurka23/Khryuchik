@@ -33,6 +33,18 @@ export type AdminCustomerListItem = {
   createdAt: string;
 };
 
+export type AdminCustomerEditorData = {
+  id: string;
+  email: string;
+  name: string;
+  phone: string;
+  isAdmin: boolean;
+  image?: string | null;
+  authProviders: AuthProvider[];
+  createdAt: string;
+  updatedAt: string;
+};
+
 export type AdminProductPayload = {
   product: ProductDocument;
   details: ProductDetailDocument;

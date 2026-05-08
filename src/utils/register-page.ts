@@ -1,17 +1,19 @@
+import { AuthInputErrorCode } from "@/types/auth";
 import type { RegisterPageDictionary } from "@/i18n/types";
+import { UserOperationErrorReason } from "@/types/users";
 
 export const getRegisterErrorMessage = (
   errorCode: string,
   dictionary: RegisterPageDictionary,
 ) => {
   switch (errorCode) {
-    case "email_taken":
+    case UserOperationErrorReason.EmailTaken:
       return dictionary.emailTaken;
-    case "password_too_short":
+    case AuthInputErrorCode.PasswordTooShort:
       return dictionary.passwordTooShort;
-    case "invalid_email":
+    case AuthInputErrorCode.InvalidEmail:
       return dictionary.invalidEmail;
-    case "missing_fields":
+    case AuthInputErrorCode.MissingFields:
       return dictionary.missingFields;
     default:
       return dictionary.unexpectedError;

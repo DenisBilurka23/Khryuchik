@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { resetPasswordWithToken } from "@/server/users/services/users.service";
+import { AuthInputErrorCode } from "@/types/auth";
 
 export async function POST(request: Request) {
   try {
@@ -9,11 +10,11 @@ export async function POST(request: Request) {
     const password = typeof body.password === "string" ? body.password : "";
 
     if (!token || !password) {
-      return NextResponse.json({ error: "missing_fields" }, { status: 400 });
+      return NextResponse.json({ error: AuthInputErrorCode.MissingFields }, { status: 400 });
     }
 
     if (password.length < 8) {
-      return NextResponse.json({ error: "password_too_short" }, { status: 400 });
+      return NextResponse.json({ error: AuthInputErrorCode.PasswordTooShort }, { status: 400 });
     }
 
     const result = await resetPasswordWithToken(token, password);
@@ -24,6 +25,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch {
-    return NextResponse.json({ error: "unexpected_error" }, { status: 500 });
+    return NextResponse.json({ error: AuthInputErrorCode.UnexpectedError }, { status: 500 });
   }
 }

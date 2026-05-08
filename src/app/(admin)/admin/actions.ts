@@ -8,10 +8,13 @@ import {
   AdminCategoryDeleteError,
   adminCategoryDeleteErrorCodes,
   deleteAdminCategory,
+  deleteAdminCustomer,
   deleteAdminProduct,
   saveAdminCategory,
+  saveAdminCustomer,
   saveAdminProduct,
 } from "@/server/admin/catalog.service";
+import { AdminCustomerFormErrorCode } from "@/server/admin/customer-form-state";
 import {
   parseAdminCategoryFormData,
   parseAdminProductFormData,
@@ -22,8 +25,14 @@ import {
 } from "@/server/admin/product-form-state";
 import { populateAdminProductIdentifiers } from "@/server/admin/product-identifiers";
 import { requireAdminApiAccess } from "@/server/admin/auth";
-import { uploadBookFiles, uploadProductGalleryFiles } from "@/server/storage/r2-assets.service";
+import {
+  deleteUserAvatarObject,
+  uploadBookFiles,
+  uploadProductGalleryFiles,
+  uploadUserAvatarFile,
+} from "@/server/storage/r2-assets.service";
 import { isR2Configured } from "@/server/storage/r2";
+import { UserOperationErrorReason } from "@/types/users";
 import type { ProductImage } from "@/types/product-details";
 
 type ImageOrderEntry = {
@@ -31,20 +40,34 @@ type ImageOrderEntry = {
   kind: "existing" | "new";
 };
 
+const isUploadedFile = (
+  entry: FormDataEntryValue | null | undefined,
+): entry is File =>
+  typeof entry === "object" &&
+  entry !== null &&
+  "size" in entry &&
+  typeof entry.size === "number" &&
+  entry.size > 0 &&
+  "arrayBuffer" in entry &&
+  typeof entry.arrayBuffer === "function";
+
 const requireAdmin = async () => {
   const session = await requireAdminApiAccess();
 
   if (!session) {
     redirect("/login?callbackUrl=%2Fadmin");
   }
+
+  return session;
 };
 
 const getUploadedFiles = (formData: FormData, key: string) =>
-  formData
-    .getAll(key)
-    .filter((entry): entry is File => entry instanceof File && entry.size > 0);
+  formData.getAll(key).filter((entry): entry is File => isUploadedFile(entry));
 
-const parseImageOrder = (formData: FormData, key: string): ImageOrderEntry[] => {
+const parseImageOrder = (
+  formData: FormData,
+  key: string,
+): ImageOrderEntry[] => {
   const value = formData.get(key);
 
   if (typeof value !== "string" || !value.trim()) {
@@ -125,9 +148,10 @@ const getAdminProductErrorRedirectPath = (
   errorCode: AdminProductFormErrorCode,
 ) => {
   const rawFormMode = formData.get("formMode");
-  const formMode = rawFormMode === AdminProductFormMode.Edit
-    ? AdminProductFormMode.Edit
-    : AdminProductFormMode.New;
+  const formMode =
+    rawFormMode === AdminProductFormMode.Edit
+      ? AdminProductFormMode.Edit
+      : AdminProductFormMode.New;
   const rawProductId = formData.get("productId");
   const productId = typeof rawProductId === "string" ? rawProductId.trim() : "";
 
@@ -136,6 +160,22 @@ const getAdminProductErrorRedirectPath = (
   }
 
   return `/admin/products/new?error=${errorCode}`;
+};
+
+const getAdminCustomerErrorRedirectPath = (
+  formData: FormData,
+  errorCode: AdminCustomerFormErrorCode,
+) => {
+  const rawUserId = formData.get("userId");
+  const userId = typeof rawUserId === "string" ? rawUserId.trim() : "";
+  const rawSource = formData.get("source");
+  const source = rawSource === "edit" ? "edit" : "list";
+
+  if (source === "edit" && userId) {
+    return `/admin/customers/${userId}/edit?error=${errorCode}`;
+  }
+
+  return `/admin/customers?error=${errorCode}`;
 };
 
 const revalidateCategoryDependentPaths = () => {
@@ -182,6 +222,11 @@ const revalidateProductDependentPaths = (productSlug?: string) => {
   }
 };
 
+const revalidateCustomerDependentPaths = () => {
+  revalidatePath("/admin");
+  revalidatePath("/admin/customers");
+};
+
 export const saveAdminCategoryAction = async (formData: FormData) => {
   await requireAdmin();
 
@@ -207,7 +252,9 @@ export const deleteAdminCategoryAction = async (formData: FormData) => {
     }
 
     console.error("Admin category delete failed", error);
-    redirect(`/admin/categories?error=${adminCategoryDeleteErrorCodes.InvalidKey}`);
+    redirect(
+      `/admin/categories?error=${adminCategoryDeleteErrorCodes.InvalidKey}`,
+    );
   }
 
   revalidateCategoryDependentPaths();
@@ -226,11 +273,20 @@ export const saveAdminProductAction = async (formData: FormData) => {
     payload = await populateAdminProductIdentifiers(payload);
 
     for (const locale of locales) {
-      const galleryFiles = getUploadedFiles(formData, `gallery${locale.toUpperCase()}`);
-      const assetFiles = getUploadedFiles(formData, `digitalAssets${locale.toUpperCase()}`);
+      const galleryFiles = getUploadedFiles(
+        formData,
+        `gallery${locale.toUpperCase()}`,
+      );
+      const assetFiles = getUploadedFiles(
+        formData,
+        `digitalAssets${locale.toUpperCase()}`,
+      );
       const imageOrder = parseImageOrder(formData, `${locale}.imagesOrderJson`);
 
-      if ((galleryFiles.length > 0 || assetFiles.length > 0) && !isR2Configured) {
+      if (
+        (galleryFiles.length > 0 || assetFiles.length > 0) &&
+        !isR2Configured
+      ) {
         console.error("Admin product save failed: R2 is not configured", {
           productId: payload.product.productId,
           locale,
@@ -314,4 +370,223 @@ export const deleteAdminProductAction = async (formData: FormData) => {
 
   revalidateProductDependentPaths(deletedProductSlug);
   redirect("/admin/products?deleted=1");
+};
+
+export const saveAdminCustomerAction = async (formData: FormData) => {
+  const session = await requireAdmin();
+
+  const rawUserId = formData.get("userId");
+  const userId = typeof rawUserId === "string" ? rawUserId.trim() : "";
+  const rawEmail = formData.get("email");
+  const rawName = formData.get("name");
+  const rawPhone = formData.get("phone");
+  const rawIsAdmin = formData.get("isAdmin");
+  const rawRemoveAvatar = formData.get("removeAvatar");
+  const rawAvatar = formData.get("avatar");
+  const avatarFile = isUploadedFile(rawAvatar) ? rawAvatar : null;
+  const removeAvatar = rawRemoveAvatar === "1" || rawRemoveAvatar === "true";
+  let uploadedAvatar:
+    | Awaited<ReturnType<typeof uploadUserAvatarFile>>
+    | undefined;
+
+  const cleanupUploadedAvatar = async () => {
+    if (!uploadedAvatar?.objectKey) {
+      return;
+    }
+
+    await deleteUserAvatarObject(uploadedAvatar.objectKey).catch(
+      (cleanupError) => {
+        console.error("Admin customer avatar cleanup failed", cleanupError);
+      },
+    );
+  };
+
+  if (avatarFile && !isR2Configured) {
+    return redirect(
+      getAdminCustomerErrorRedirectPath(
+        formData,
+        AdminCustomerFormErrorCode.StorageUnavailable,
+      ),
+    );
+  }
+
+  let result: Awaited<ReturnType<typeof saveAdminCustomer>> | undefined;
+
+  try {
+    if (avatarFile) {
+      uploadedAvatar = await uploadUserAvatarFile({ userId, file: avatarFile });
+    }
+
+    if (avatarFile && !uploadedAvatar?.url) {
+      await cleanupUploadedAvatar();
+      return redirect(
+        getAdminCustomerErrorRedirectPath(
+          formData,
+          AdminCustomerFormErrorCode.SaveFailed,
+        ),
+      );
+    }
+
+    result = await saveAdminCustomer(session.user.id, userId, {
+      email: typeof rawEmail === "string" ? rawEmail.trim() : "",
+      name: typeof rawName === "string" ? rawName.trim() : "",
+      phone: typeof rawPhone === "string" ? rawPhone.trim() : "",
+      isAdmin: rawIsAdmin === "on" || rawIsAdmin === "true",
+      ...(uploadedAvatar
+        ? {
+            image: uploadedAvatar.url,
+            avatarObjectKey: uploadedAvatar.objectKey,
+          }
+        : removeAvatar
+          ? {
+              image: null,
+              avatarObjectKey: null,
+            }
+          : {}),
+    });
+  } catch (error) {
+    console.error("Admin customer save failed", error);
+
+    await cleanupUploadedAvatar();
+
+    return redirect(
+      getAdminCustomerErrorRedirectPath(
+        formData,
+        AdminCustomerFormErrorCode.SaveFailed,
+      ),
+    );
+  }
+
+  if (!result?.ok) {
+    await cleanupUploadedAvatar();
+
+    switch (result.reason) {
+      case UserOperationErrorReason.NotFound:
+        return redirect(
+          getAdminCustomerErrorRedirectPath(
+            formData,
+            AdminCustomerFormErrorCode.NotFound,
+          ),
+        );
+      case UserOperationErrorReason.EmailTaken:
+        return redirect(
+          getAdminCustomerErrorRedirectPath(
+            formData,
+            AdminCustomerFormErrorCode.EmailTaken,
+          ),
+        );
+      case UserOperationErrorReason.EmailManagedByGoogle:
+        return redirect(
+          getAdminCustomerErrorRedirectPath(
+            formData,
+            AdminCustomerFormErrorCode.EmailManagedByGoogle,
+          ),
+        );
+      case UserOperationErrorReason.CannotDemoteSelf:
+        return redirect(
+          getAdminCustomerErrorRedirectPath(
+            formData,
+            AdminCustomerFormErrorCode.CannotDemoteSelf,
+          ),
+        );
+      case UserOperationErrorReason.LastAdmin:
+        return redirect(
+          getAdminCustomerErrorRedirectPath(
+            formData,
+            AdminCustomerFormErrorCode.LastAdmin,
+          ),
+        );
+      default:
+        return redirect(
+          getAdminCustomerErrorRedirectPath(
+            formData,
+            AdminCustomerFormErrorCode.Unexpected,
+          ),
+        );
+    }
+  }
+
+  if (
+    result.previousAvatarObjectKey &&
+    result.previousAvatarObjectKey !== result.nextAvatarObjectKey
+  ) {
+    await deleteUserAvatarObject(result.previousAvatarObjectKey).catch(
+      (cleanupError) => {
+        console.error(
+          "Admin customer previous avatar cleanup failed",
+          cleanupError,
+        );
+      },
+    );
+  }
+
+  revalidateCustomerDependentPaths();
+  return redirect(`/admin/customers/${userId}/edit?saved=1`);
+};
+
+export const deleteAdminCustomerAction = async (formData: FormData) => {
+  const session = await requireAdmin();
+
+  const rawUserId = formData.get("userId");
+  const userId = typeof rawUserId === "string" ? rawUserId.trim() : "";
+  let result: Awaited<ReturnType<typeof deleteAdminCustomer>> | undefined;
+
+  try {
+    result = await deleteAdminCustomer(session.user.id, userId);
+  } catch (error) {
+    console.error("Admin customer delete failed", error);
+    redirect(
+      getAdminCustomerErrorRedirectPath(
+        formData,
+        AdminCustomerFormErrorCode.DeleteFailed,
+      ),
+    );
+  }
+
+  if (!result?.ok) {
+    switch (result.reason) {
+      case UserOperationErrorReason.NotFound:
+        return redirect(
+          getAdminCustomerErrorRedirectPath(
+            formData,
+            AdminCustomerFormErrorCode.NotFound,
+          ),
+        );
+      case UserOperationErrorReason.CannotDeleteSelf:
+        return redirect(
+          getAdminCustomerErrorRedirectPath(
+            formData,
+            AdminCustomerFormErrorCode.CannotDeleteSelf,
+          ),
+        );
+      case UserOperationErrorReason.LastAdmin:
+        return redirect(
+          getAdminCustomerErrorRedirectPath(
+            formData,
+            AdminCustomerFormErrorCode.LastAdmin,
+          ),
+        );
+      default:
+        return redirect(
+          getAdminCustomerErrorRedirectPath(
+            formData,
+            AdminCustomerFormErrorCode.Unexpected,
+          ),
+        );
+    }
+  }
+
+  if (result.avatarObjectKey) {
+    await deleteUserAvatarObject(result.avatarObjectKey).catch(
+      (cleanupError) => {
+        console.error(
+          "Admin customer avatar delete cleanup failed",
+          cleanupError,
+        );
+      },
+    );
+  }
+
+  revalidateCustomerDependentPaths();
+  return redirect("/admin/customers?deleted=1");
 };

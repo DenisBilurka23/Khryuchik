@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { confirmPasswordResetClient } from "@/client-api/auth";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
+import { AuthInputErrorCode, PasswordResetErrorReason } from "@/types/auth";
 
 import { ResetPasswordForm } from "./form";
 import type { ResetPasswordPageViewProps } from "./types";
@@ -40,10 +41,10 @@ export const ResetPasswordPageView = ({
 
     if (!response.ok) {
       switch (data?.error) {
-        case "password_too_short":
+        case AuthInputErrorCode.PasswordTooShort:
           setErrorMessage(dictionary.passwordTooShort);
           return;
-        case "invalid_token":
+        case PasswordResetErrorReason.InvalidToken:
           setErrorMessage(dictionary.invalidToken);
           return;
         default:

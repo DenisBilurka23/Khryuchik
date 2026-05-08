@@ -4,6 +4,7 @@ import { type SyntheticEvent, useState } from "react";
 
 import { requestPasswordResetClient } from "@/client-api/auth";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
+import { AuthInputErrorCode } from "@/types/auth";
 
 import { ForgotPasswordForm } from "./form";
 import type { ForgotPasswordPageViewProps } from "./types";
@@ -31,7 +32,7 @@ export const ForgotPasswordPageView = ({
 
     if (!response.ok) {
       setErrorMessage(
-        data?.error === "invalid_email"
+        data?.error === AuthInputErrorCode.InvalidEmail
           ? dictionary.invalidEmail
           : dictionary.unexpectedError,
       );

@@ -46,7 +46,7 @@ const getR2Client = () => {
   return r2Client;
 };
 
-const toBuffer = async (file: File) => Buffer.from(await file.arrayBuffer());
+const toBuffer = async (file: Blob) => Buffer.from(await file.arrayBuffer());
 
 const buildPublicUrl = (objectKey: string) => {
   if (!R2_PUBLIC_BASE_URL) {
@@ -61,7 +61,7 @@ export const uploadPublicObject = async ({
   file,
 }: {
   objectKey: string;
-  file: File;
+  file: Blob;
 }) => {
   const client = getR2Client();
 
@@ -85,7 +85,7 @@ export const uploadPrivateObject = async ({
   file,
 }: {
   objectKey: string;
-  file: File;
+  file: Blob;
 }) => {
   const client = getR2Client();
 

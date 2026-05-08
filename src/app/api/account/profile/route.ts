@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { getServerAuthSession } from "@/server/auth/config";
 import { updateAccountUserProfile } from "@/server/users/services/users.service";
+import { UserOperationErrorReason } from "@/types/users";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
 export async function PATCH(request: Request) {
@@ -33,11 +34,11 @@ export async function PATCH(request: Request) {
 
     if (!result.ok) {
       const status =
-        result.reason === "email_taken"
+        result.reason === UserOperationErrorReason.EmailTaken
           ? 409
-          : result.reason === "email_managed_by_google"
+          : result.reason === UserOperationErrorReason.EmailManagedByGoogle
             ? 403
-            : result.reason === "not_found"
+            : result.reason === UserOperationErrorReason.NotFound
               ? 404
               : 400;
 

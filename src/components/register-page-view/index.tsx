@@ -7,6 +7,7 @@ import { signIn } from "next-auth/react";
 import { registerUserClient } from "@/client-api/auth";
 import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
+import { AuthInputErrorCode } from "@/types/auth";
 import { getRegisterErrorMessage } from "@/utils/register-page";
 
 import { RegisterForm } from "./form";
@@ -42,7 +43,7 @@ export const RegisterPageView = ({
     if (!response.ok) {
       const data = response.data;
       setErrorMessage(
-        getRegisterErrorMessage(data?.error ?? "unexpected_error", dictionary),
+        getRegisterErrorMessage(data?.error ?? AuthInputErrorCode.UnexpectedError, dictionary),
       );
       setIsSubmitting(false);
       return;

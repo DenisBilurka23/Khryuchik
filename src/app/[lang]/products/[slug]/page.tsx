@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ProductPageView } from "@/components/product";
 import {
   getProductDetails,
-  getProductSlugs,
   getProductSummariesByIds,
 } from "@/data/products";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
@@ -14,14 +13,6 @@ import { getRequestCountry } from "@/server/country/request-country";
 type LocalizedProductPageProps = {
   params: Promise<{ lang: string; slug: string }>;
 };
-
-export const generateStaticParams = () =>
-  Promise.all(locales.map(async (lang) => [lang, await getProductSlugs()] as const)).then(
-    (localizedSlugs) =>
-      localizedSlugs.flatMap(([lang, slugs]) =>
-        slugs.map((slug) => ({ lang, slug })),
-      ),
-  );
 
 export const generateMetadata = async ({
   params,

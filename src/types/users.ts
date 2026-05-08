@@ -2,6 +2,15 @@ import type { ObjectId } from "mongodb";
 
 export type AuthProvider = "google" | "credentials";
 
+export enum UserOperationErrorReason {
+  NotFound = "not_found",
+  EmailTaken = "email_taken",
+  EmailManagedByGoogle = "email_managed_by_google",
+  CannotDemoteSelf = "cannot_demote_self",
+  CannotDeleteSelf = "cannot_delete_self",
+  LastAdmin = "last_admin",
+}
+
 export type WishlistEntryDocument = {
   productId: string;
   addedAt: Date;
@@ -14,6 +23,7 @@ export type UserDocument = {
   phone: string;
   isAdmin?: boolean;
   image?: string | null;
+  avatarObjectKey?: string | null;
   passwordHash?: string | null;
   authProviders: AuthProvider[];
   wishlist?: WishlistEntryDocument[];
@@ -42,6 +52,12 @@ export type UpdateUserProfileInput = {
   email: string;
   name: string;
   phone: string;
+};
+
+export type UpdateAdminUserInput = UpdateUserProfileInput & {
+  isAdmin: boolean;
+  image?: string | null;
+  avatarObjectKey?: string | null;
 };
 
 export type PasswordResetTokenDocument = {

@@ -4,11 +4,20 @@ import { ObjectId } from "mongodb";
 
 import { createPasswordResetToken, hashPasswordResetToken } from "@/server/auth/reset-password";
 import { hashPassword, verifyPassword } from "@/server/auth/password";
-import type { RegisterUserInput, SafeAuthUser, UpdateUserProfileInput } from "@/types/users";
+import { PasswordResetErrorReason } from "@/types/auth";
+import type {
+  RegisterUserInput,
+  SafeAuthUser,
+  UpdateAdminUserInput,
+  UpdateUserProfileInput,
+  UserDocument,
+} from "@/types/users";
+import { UserOperationErrorReason } from "@/types/users";
 
 import {
   countAdminUsers,
   countUsers,
+  deleteUserById,
   addGoogleToExistingUser,
   addCredentialsToExistingUser,
   createGoogleUser,
@@ -19,6 +28,7 @@ import {
   setUserAdminByEmail,
   setUserPasswordHash,
   toCredentialsAuthUser,
+  updateAdminUser,
   updateUserProfile,
 } from "../repositories/users.repository";
 import {
@@ -29,11 +39,50 @@ import {
 
 const PASSWORD_RESET_TOKEN_TTL_MS = 1000 * 60 * 30;
 
+const resolveNextUpdatableEmail = async ({
+  userId,
+  existingUser,
+  inputEmail,
+}: {
+  userId: string;
+  existingUser: UserDocument;
+  inputEmail: string;
+}): Promise<
+  | {
+      ok: false;
+      reason:
+        | UserOperationErrorReason.EmailManagedByGoogle
+        | UserOperationErrorReason.EmailTaken;
+    }
+  | {
+      ok: true;
+      nextEmail: string;
+    }
+> => {
+  const nextEmail = inputEmail.trim().toLowerCase();
+  const currentEmail = existingUser.email.trim().toLowerCase();
+  const hasGoogleProvider = existingUser.authProviders.includes("google");
+
+  if (hasGoogleProvider && nextEmail !== currentEmail) {
+    return { ok: false, reason: UserOperationErrorReason.EmailManagedByGoogle };
+  }
+
+  if (nextEmail !== currentEmail) {
+    const userWithSameEmail = await findUserByEmail(nextEmail);
+
+    if (userWithSameEmail?._id && userWithSameEmail._id.toString() !== userId) {
+      return { ok: false, reason: UserOperationErrorReason.EmailTaken };
+    }
+  }
+
+  return { ok: true, nextEmail };
+};
+
 export const registerUser = async (input: RegisterUserInput) => {
   const existingUser = await findUserByEmail(input.email);
 
   if (existingUser?.passwordHash) {
-    return { ok: false as const, reason: "email_taken" as const };
+    return { ok: false as const, reason: UserOperationErrorReason.EmailTaken };
   }
 
   const passwordHash = await hashPassword(input.password);
@@ -98,13 +147,13 @@ export const resetPasswordWithToken = async (
   const resetToken = await findActivePasswordResetToken(tokenHash);
 
   if (!resetToken?._id) {
-    return { ok: false as const, reason: "invalid_token" as const };
+    return { ok: false as const, reason: PasswordResetErrorReason.InvalidToken };
   }
 
   const user = await findUserById(resetToken.userId);
 
   if (!user?._id) {
-    return { ok: false as const, reason: "invalid_token" as const };
+    return { ok: false as const, reason: PasswordResetErrorReason.InvalidToken };
   }
 
   const passwordHash = await hashPassword(password);
@@ -174,30 +223,26 @@ export const updateAccountUserProfile = async (
   input: UpdateUserProfileInput,
 ) => {
   if (!ObjectId.isValid(userId)) {
-    return { ok: false as const, reason: "not_found" as const };
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
   }
 
   const existingUser = await findUserById(new ObjectId(userId));
 
   if (!existingUser?._id) {
-    return { ok: false as const, reason: "not_found" as const };
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
   }
 
-  const nextEmail = input.email.trim().toLowerCase();
-  const currentEmail = existingUser.email.trim().toLowerCase();
-  const hasGoogleProvider = existingUser.authProviders.includes("google");
+  const emailResolution = await resolveNextUpdatableEmail({
+    userId,
+    existingUser,
+    inputEmail: input.email,
+  });
 
-  if (hasGoogleProvider && nextEmail !== currentEmail) {
-    return { ok: false as const, reason: "email_managed_by_google" as const };
+  if (!emailResolution.ok) {
+    return emailResolution;
   }
 
-  if (nextEmail !== currentEmail) {
-    const userWithSameEmail = await findUserByEmail(nextEmail);
-
-    if (userWithSameEmail?._id && userWithSameEmail._id.toString() !== userId) {
-      return { ok: false as const, reason: "email_taken" as const };
-    }
-  }
+  const { nextEmail } = emailResolution;
 
   const user = await updateUserProfile(new ObjectId(userId), {
     ...input,
@@ -221,6 +266,136 @@ export const getAdminUsers = async (limit?: number) => {
     createdAt: user.createdAt,
     updatedAt: user.updatedAt,
   }));
+};
+
+export const getAdminUserEditorData = async (userId: string) => {
+  if (!ObjectId.isValid(userId)) {
+    return null;
+  }
+
+  const user = await findUserById(new ObjectId(userId));
+
+  if (!user?._id) {
+    return null;
+  }
+
+  return {
+    id: user._id.toString(),
+    email: user.email,
+    name: user.name,
+    phone: user.phone,
+    isAdmin: Boolean(user.isAdmin),
+    image: user.image ?? null,
+    authProviders: user.authProviders,
+    createdAt: user.createdAt.toISOString(),
+    updatedAt: user.updatedAt.toISOString(),
+  };
+};
+
+export const updateAdminUserAccount = async (
+  actorUserId: string,
+  userId: string,
+  input: UpdateAdminUserInput,
+) => {
+  if (!ObjectId.isValid(userId)) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  const existingUser = await findUserById(new ObjectId(userId));
+
+  if (!existingUser?._id) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  if (actorUserId === userId && !input.isAdmin) {
+    return { ok: false as const, reason: UserOperationErrorReason.CannotDemoteSelf };
+  }
+
+  if (existingUser.isAdmin && !input.isAdmin) {
+    const { adminUsers } = await getAdminUsersStats();
+
+    if (adminUsers <= 1) {
+      return { ok: false as const, reason: UserOperationErrorReason.LastAdmin };
+    }
+  }
+
+  const emailResolution = await resolveNextUpdatableEmail({
+    userId,
+    existingUser,
+    inputEmail: input.email,
+  });
+
+  if (!emailResolution.ok) {
+    return emailResolution;
+  }
+
+  const { nextEmail } = emailResolution;
+
+  const user = await updateAdminUser(new ObjectId(userId), {
+    ...input,
+    email: nextEmail,
+  });
+
+  return {
+    ok: true as const,
+    previousAvatarObjectKey: existingUser.avatarObjectKey ?? null,
+    nextAvatarObjectKey: user.avatarObjectKey ?? null,
+    user: {
+      id: user._id?.toString() ?? userId,
+      email: user.email,
+      name: user.name,
+      phone: user.phone,
+      isAdmin: Boolean(user.isAdmin),
+      image: user.image ?? null,
+      authProviders: user.authProviders,
+      createdAt: user.createdAt.toISOString(),
+      updatedAt: user.updatedAt.toISOString(),
+    },
+  };
+};
+
+export const deleteAdminUserAccount = async (
+  actorUserId: string,
+  userId: string,
+) => {
+  if (!ObjectId.isValid(userId)) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  if (actorUserId === userId) {
+    return { ok: false as const, reason: UserOperationErrorReason.CannotDeleteSelf };
+  }
+
+  const existingUser = await findUserById(new ObjectId(userId));
+
+  if (!existingUser?._id) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  if (existingUser.isAdmin) {
+    const { adminUsers } = await getAdminUsersStats();
+
+    if (adminUsers <= 1) {
+      return { ok: false as const, reason: UserOperationErrorReason.LastAdmin };
+    }
+  }
+
+  const deletedUser = await deleteUserById(new ObjectId(userId));
+
+  if (!deletedUser?._id) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  return {
+    ok: true as const,
+    user: {
+      id: deletedUser._id.toString(),
+      email: deletedUser.email,
+      name: deletedUser.name,
+      isAdmin: Boolean(deletedUser.isAdmin),
+    },
+    avatarObjectKey: deletedUser.avatarObjectKey ?? null,
+  };
 };
 
 export const getAdminUsersStats = async () => {

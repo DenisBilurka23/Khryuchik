@@ -26,6 +26,28 @@ const getFileExtension = (fileName: string) => {
   return extension ? extension.toLowerCase() : "bin";
 };
 
+type UploadableBinary = Blob & {
+  name?: string;
+};
+
+const getUploadFileName = (file: UploadableBinary, fallbackBaseName: string) => {
+  const rawName = typeof file.name === "string" ? file.name.trim() : "";
+
+  if (rawName) {
+    return rawName;
+  }
+
+  const extension = file.type === "image/png"
+    ? "png"
+    : file.type === "image/jpeg"
+      ? "jpg"
+      : file.type === "image/webp"
+        ? "webp"
+        : "bin";
+
+  return `${fallbackBaseName}.${extension}`;
+};
+
 export const uploadProductGalleryFiles = async ({
   productId,
   locale,
@@ -33,24 +55,42 @@ export const uploadProductGalleryFiles = async ({
 }: {
   productId: string;
   locale: Locale;
-  files: File[];
+  files: UploadableBinary[];
 }): Promise<ProductImage[]> => {
   return await Promise.all(
     files
       .filter((file) => file.size > 0)
       .map(async (file) => {
-        const objectKey = `products/${productId}/${locale}/gallery/${randomUUID()}-${sanitizeFileName(file.name)}`;
+        const fileName = getUploadFileName(file, "gallery-image");
+        const objectKey = `products/${productId}/${locale}/gallery/${randomUUID()}-${sanitizeFileName(fileName)}`;
         const uploaded = await uploadPublicObject({ objectKey, file });
 
         return {
           id: randomUUID(),
           src: uploaded.url,
           objectKey: uploaded.objectKey,
-          alt: file.name,
+          alt: fileName,
           bgColor: "#FFF8F0",
         } satisfies ProductImage;
       }),
   );
+};
+
+export const uploadUserAvatarFile = async ({
+  userId,
+  file,
+}: {
+  userId: string;
+  file: UploadableBinary;
+}) => {
+  const fileName = getUploadFileName(file, "avatar");
+  const objectKey = `users/${userId}/avatar/${randomUUID()}-${sanitizeFileName(fileName)}`;
+  const uploaded = await uploadPublicObject({ objectKey, file });
+
+  return {
+    objectKey: uploaded.objectKey,
+    url: uploaded.url,
+  };
 };
 
 export const uploadBookFiles = async ({
@@ -60,20 +100,21 @@ export const uploadBookFiles = async ({
 }: {
   productId: string;
   locale: Locale;
-  files: File[];
+  files: UploadableBinary[];
 }): Promise<ProductFileAsset[]> => {
   return await Promise.all(
     files
       .filter((file) => file.size > 0)
       .map(async (file) => {
-        const objectKey = `books/${productId}/${locale}/${randomUUID()}-${sanitizeFileName(file.name)}`;
+        const fileName = getUploadFileName(file, "book-file");
+        const objectKey = `books/${productId}/${locale}/${randomUUID()}-${sanitizeFileName(fileName)}`;
         const uploaded = await uploadPrivateObject({ objectKey, file });
 
         return {
           id: randomUUID(),
-          label: file.name,
-          fileName: file.name,
-          format: getFileExtension(file.name),
+          label: fileName,
+          fileName,
+          format: getFileExtension(fileName),
           contentType: file.type,
           sizeBytes: file.size,
           objectKey: uploaded.objectKey,
@@ -96,4 +137,12 @@ export const deleteBookAssetObjects = async (objectKeys: string[]) => {
       await deletePrivateObject(objectKey);
     }),
   );
+};
+
+export const deleteUserAvatarObject = async (objectKey?: string | null) => {
+  if (!objectKey) {
+    return;
+  }
+
+  await deletePublicObject(objectKey);
 };

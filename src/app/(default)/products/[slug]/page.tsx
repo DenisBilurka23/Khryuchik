@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { ProductPageView } from "@/components/product";
 import {
   getProductDetails,
-  getProductSlugs,
   getProductSummariesByIds,
 } from "@/data/products";
 import { defaultLocale, locales } from "@/i18n/config";
@@ -14,11 +13,6 @@ import { getRequestCountry } from "@/server/country/request-country";
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
 };
-
-export const generateStaticParams = () =>
-  getProductSlugs().then((slugs) =>
-    slugs.map((slug) => ({ slug })),
-  );
 
 export const generateMetadata = async ({
   params,

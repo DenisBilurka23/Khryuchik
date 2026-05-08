@@ -202,6 +202,7 @@ export const AdminImageUploadField = ({
 
       {orderedImages.length > 0 ? (
         <DndContext
+          id={`${imageOrderInputName}-dnd-context`}
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}

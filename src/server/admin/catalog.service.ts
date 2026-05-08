@@ -4,6 +4,7 @@ import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryListItem,
   AdminCategoryUpsertInput,
+  AdminCustomerEditorData,
   AdminCustomerListItem,
   AdminDashboardStats,
   AdminProductEditorData,
@@ -24,8 +25,11 @@ import {
   normalizeIdentifierPart,
 } from "@/utils/admin";
 import {
+  deleteAdminUserAccount,
+  getAdminUserEditorData,
   getAdminUsers,
   getAdminUsersStats,
+  updateAdminUserAccount,
 } from "@/server/users/services/users.service";
 
 import {
@@ -187,6 +191,28 @@ export const getAdminCustomers = async (
     createdAt: user.createdAt.toISOString(),
   }));
 };
+
+export const getAdminCustomerEditorData = async (
+  userId: string,
+): Promise<AdminCustomerEditorData | null> => getAdminUserEditorData(userId);
+
+export const saveAdminCustomer = async (
+  actorUserId: string,
+  userId: string,
+  input: {
+    email: string;
+    name: string;
+    phone: string;
+    isAdmin: boolean;
+    image?: string | null;
+    avatarObjectKey?: string | null;
+  },
+) => updateAdminUserAccount(actorUserId, userId, input);
+
+export const deleteAdminCustomer = async (
+  actorUserId: string,
+  userId: string,
+) => deleteAdminUserAccount(actorUserId, userId);
 
 export const getAdminProducts = async (
   locale: Locale = defaultLocale,

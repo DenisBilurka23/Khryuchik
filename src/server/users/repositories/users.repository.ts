@@ -7,6 +7,7 @@ import type {
   AuthProvider,
   RegisterUserInput,
   SafeAuthUser,
+  UpdateAdminUserInput,
   UpdateUserProfileInput,
   UserDocument,
   WishlistEntryDocument,
@@ -73,6 +74,7 @@ export const createCredentialsUser = async (
     isAdmin: false,
     passwordHash: input.passwordHash,
     image: null,
+    avatarObjectKey: null,
     authProviders: ["credentials"],
     createdAt: now,
     updatedAt: now,
@@ -155,6 +157,7 @@ export const createGoogleUser = async (input: {
     phone: "",
     isAdmin: false,
     image: input.image ?? null,
+    avatarObjectKey: null,
     passwordHash: null,
     authProviders: ["google"],
     createdAt: now,
@@ -190,6 +193,7 @@ export const addGoogleToExistingUser = async (
         email: normalizeEmail(input.email),
         name: nextName,
         image: nextImage,
+        avatarObjectKey: existingUser.avatarObjectKey ?? null,
         updatedAt: new Date(),
       },
       $addToSet: {
@@ -234,6 +238,41 @@ export const updateUserProfile = async (
   return toSafeAuthUser(updatedUser);
 };
 
+export const updateAdminUser = async (
+  userId: ObjectId,
+  input: UpdateAdminUserInput,
+) => {
+  const collection = await getUsersCollection();
+
+  const updateSet: Partial<UserDocument> & { updatedAt: Date } = {
+    email: normalizeEmail(input.email),
+    name: input.name.trim(),
+    phone: input.phone.trim(),
+    isAdmin: input.isAdmin,
+    updatedAt: new Date(),
+  };
+
+  if ("image" in input) {
+    updateSet.image = input.image ?? null;
+    updateSet.avatarObjectKey = input.avatarObjectKey ?? null;
+  }
+
+  await collection.updateOne(
+    { _id: userId },
+    {
+      $set: updateSet,
+    },
+  );
+
+  const updatedUser = await collection.findOne({ _id: userId });
+
+  if (!updatedUser) {
+    throw new Error("Failed to load updated user");
+  }
+
+  return updatedUser;
+};
+
 export const findAllUsers = async (limit?: number) => {
   const collection = await getUsersCollection();
   const cursor = collection
@@ -273,6 +312,12 @@ export const setUserAdminByEmail = async (email: string, isAdmin: boolean) => {
     },
     { returnDocument: "after" },
   );
+};
+
+export const deleteUserById = async (userId: ObjectId) => {
+  const collection = await getUsersCollection();
+
+  return collection.findOneAndDelete({ _id: userId });
 };
 
 export const getUserWishlist = async (userId: ObjectId) => {

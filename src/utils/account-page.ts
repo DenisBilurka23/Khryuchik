@@ -1,4 +1,5 @@
 import type { AccountPageDictionary } from "@/i18n/types";
+import { UserOperationErrorReason } from "@/types/users";
 
 import type { SectionKey } from "@/components/account-page-view/types";
 
@@ -32,11 +33,11 @@ export const getProfileErrorMessage = (
   switch (errorCode) {
     case "invalid_email":
       return dictionary.invalidEmail;
-    case "email_taken":
+    case UserOperationErrorReason.EmailTaken:
       return dictionary.emailTaken;
     case "missing_fields":
       return dictionary.missingFields;
-    case "email_managed_by_google":
+    case UserOperationErrorReason.EmailManagedByGoogle:
       return dictionary.emailManagedByGoogle;
     default:
       return dictionary.unexpectedError;
