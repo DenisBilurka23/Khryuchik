@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 
 export type AdminLayoutShellProps = {
   email: string;
+  profileHref: string;
   locale: Locale;
   dictionary: AdminPageDictionary;
   navItems: AdminNavItem[];

@@ -18,6 +18,7 @@ const AdminLayout = async ({ children }: { children: ReactNode }) => {
   return (
     <AdminLayoutShell
       email={session.user.email ?? "admin@khryuchik"}
+      profileHref={`/admin/customers/${session.user.id}/edit`}
       locale={locale}
       dictionary={dictionary}
       navItems={createAdminNavItems(dictionary.nav)}

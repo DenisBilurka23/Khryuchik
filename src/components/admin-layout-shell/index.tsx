@@ -1,3 +1,4 @@
+import Link from "next/link";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import {
   AppBar,
@@ -19,6 +20,7 @@ import type { AdminLayoutShellProps } from "./types";
 
 export const AdminLayoutShell = ({
   email,
+  profileHref,
   locale,
   dictionary,
   navItems,
@@ -49,7 +51,15 @@ export const AdminLayoutShell = ({
                 <Button href="/admin/products/new" variant="contained" startIcon={<AddOutlinedIcon />}>
                   {dictionary.layout.addProduct}
                 </Button>
-                <Avatar sx={{ bgcolor: "#FCE5EA", color: "#27272A" }}>{email[0]?.toUpperCase() ?? "A"}</Avatar>
+                <Link
+                  href={profileHref}
+                  aria-label={email}
+                  style={{ display: "inline-flex", borderRadius: "999px" }}
+                >
+                  <Avatar sx={{ bgcolor: "#FCE5EA", color: "#27272A" }}>
+                    {email[0]?.toUpperCase() ?? "A"}
+                  </Avatar>
+                </Link>
               </Stack>
             </Toolbar>
           </Container>
