@@ -3,12 +3,17 @@ import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 
 import { PersonalDetailsSection, SectionCard } from "../../shared";
+import { CountrySwitcher } from "../../../storefront-header/country-switcher";
+import { LocaleSwitcher } from "../../../storefront-header/locale-switcher";
 
 import type { SettingsSectionProps } from "./types";
 
 export const SettingsSection = ({
   locale,
+  country,
   dictionary,
+  localeSwitcherLabel,
+  countrySwitcherLabel,
   firstName,
   lastName,
   email,
@@ -26,6 +31,11 @@ export const SettingsSection = ({
   onEmailChange,
   onPhoneChange,
 }: SettingsSectionProps) => {
+  const localizedAccountPaths = {
+    en: "/account",
+    ru: "/ru/account",
+  } as const;
+
   return (
     <Stack spacing={3}>
       <PersonalDetailsSection
@@ -51,17 +61,19 @@ export const SettingsSection = ({
       <SectionCard title={dictionary.languageRegion}>
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              fullWidth
-              label={locale === "ru" ? "Язык" : "Language"}
-              defaultValue={locale === "ru" ? "Русский" : "English"}
+            <CountrySwitcher
+              country={country}
+              locale={locale}
+              label={countrySwitcherLabel}
+              sx={{ width: "100%", minWidth: 0 }}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              fullWidth
-              label={locale === "ru" ? "Регион магазина" : "Store region"}
-              defaultValue={locale === "ru" ? "Беларусь" : "Belarus"}
+            <LocaleSwitcher
+              locale={locale}
+              label={localeSwitcherLabel}
+              localizedPaths={localizedAccountPaths}
+              sx={{ width: "100%", minWidth: 0 }}
             />
           </Grid>
         </Grid>
@@ -89,11 +101,11 @@ export const SettingsSection = ({
             bgcolor: "#fff",
           }}
         >
-          <Typography sx={{ fontWeight: 700 }}>Email updates</Typography>
+          <Typography sx={{ fontWeight: 700 }}>
+            {dictionary.notificationsEmailUpdatesTitle}
+          </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {locale === "ru"
-              ? "Новые книги, статусы заказов и сезонные коллекции."
-              : "New books, order updates, and seasonal collections."}
+            {dictionary.notificationsEmailUpdatesDescription}
           </Typography>
         </Paper>
       </SectionCard>
@@ -110,14 +122,14 @@ export const SettingsSection = ({
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={locale === "ru" ? "Новый пароль" : "New password"}
+              label={dictionary.newPasswordLabel}
               type="password"
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={locale === "ru" ? "Повторите пароль" : "Repeat password"}
+              label={dictionary.repeatPasswordLabel}
               type="password"
             />
           </Grid>

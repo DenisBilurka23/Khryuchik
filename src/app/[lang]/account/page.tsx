@@ -32,7 +32,15 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
 
   return (
     <Container maxWidth="lg">
-      <AccountPageView locale={lang} dictionary={dictionary.accountPage} homeHref={lang === "en" ? "/" : `/${lang}`} user={user ?? session.user ?? {}} />
+      <AccountPageView
+        locale={lang}
+        country={country}
+        dictionary={dictionary.accountPage}
+        localeSwitcherLabel={dictionary.storefront.localeSwitcherLabel}
+        countrySwitcherLabel={dictionary.storefront.countrySwitcherLabel}
+        homeHref={lang === "en" ? "/" : `/${lang}`}
+        user={user ?? session.user ?? {}}
+      />
     </Container>
   );
 };

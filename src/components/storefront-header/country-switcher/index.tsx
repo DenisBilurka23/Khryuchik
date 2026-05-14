@@ -26,7 +26,9 @@ export const CountrySwitcher = ({
     setSelectedCountry(country);
   }, [country]);
 
-  const updateCountry = async (nextCountry: CountrySwitcherProps["country"]) => {
+  const updateCountry = async (
+    nextCountry: CountrySwitcherProps["country"],
+  ) => {
     if (nextCountry === selectedCountry || isPending) {
       return;
     }
@@ -61,7 +63,9 @@ export const CountrySwitcher = ({
     <HeaderSelect
       value={selectedCountry}
       label={label}
-      icon={<PublicOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />}
+      icon={
+        <PublicOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
+      }
       disabled={isPending}
       options={countries.map((targetCountry) => ({
         value: targetCountry,

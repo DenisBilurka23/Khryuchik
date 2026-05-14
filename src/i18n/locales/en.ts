@@ -413,8 +413,13 @@ const dictionary: SeedDictionary = {
     signOutButton: "Sign out",
     security: "Security",
     notifications: "Notifications",
+    notificationsEmailUpdatesTitle: "Email updates",
+    notificationsEmailUpdatesDescription:
+      "New books, order updates, and seasonal collections.",
     languageRegion: "Language and region",
     personalData: "Personal details",
+    newPasswordLabel: "New password",
+    repeatPasswordLabel: "Repeat password",
     recentOrders: "Recent orders",
     downloadedBooks: "Downloaded books",
     shippingAddresses: "Shipping addresses",

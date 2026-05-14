@@ -14,6 +14,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 
 import { updateAccountProfileClient } from "@/client-api/account";
@@ -34,15 +35,38 @@ import {
 import { AccountAvatarUploadField, SidebarItem } from "./shared";
 import type { AccountPageViewProps, SectionKey } from "./types";
 
+const accountSectionKeys: SectionKey[] = [
+  "overview",
+  "orders",
+  "books",
+  "addresses",
+  "favorites",
+  "settings",
+  "logout",
+];
+
+const getActiveSection = (searchParams: { get: (name: string) => string | null }) => {
+  const sectionParam = searchParams.get("section");
+
+  return accountSectionKeys.includes(sectionParam as SectionKey)
+    ? (sectionParam as SectionKey)
+    : "overview";
+};
+
 export const AccountPageView = ({
   locale,
+  country,
   dictionary,
+  localeSwitcherLabel,
+  countrySwitcherLabel,
   homeHref,
   user,
 }: AccountPageViewProps) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { update } = useSession();
   const copy = dictionary;
-  const [activeSection, setActiveSection] = useState<SectionKey>("overview");
   const [profileUser, setProfileUser] = useState(user);
   const { firstName: initialFirstName, lastName: initialLastName } = splitName(user.name);
   const [firstName, setFirstName] = useState(initialFirstName);
@@ -73,6 +97,7 @@ export const AccountPageView = ({
     (item) => item.availabilityTone === "in-stock",
   ).length;
   const sidebarItems = getAccountSidebarItems(copy);
+  const activeSection = getActiveSection(searchParams);
 
   useEffect(() => {
     return () => {
@@ -95,8 +120,24 @@ export const AccountPageView = ({
     setProfileSuccess(null);
   };
 
+  const replaceSection = (nextSection: SectionKey) => {
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+
+    if (nextSection === "overview") {
+      nextSearchParams.delete("section");
+    } else {
+      nextSearchParams.set("section", nextSection);
+    }
+
+    const nextSearch = nextSearchParams.toString();
+
+    router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, {
+      scroll: false,
+    });
+  };
+
   const openProfileSettings = () => {
-    setActiveSection("settings");
+    replaceSection("settings");
     beginProfileEditing();
   };
 
@@ -186,7 +227,11 @@ export const AccountPageView = ({
   };
 
   const handleSidebarClick = (key: SectionKey) => {
-    setActiveSection(key);
+    if (key === activeSection) {
+      return;
+    }
+
+    replaceSection(key);
   };
 
   const renderSection = () => {
@@ -213,7 +258,10 @@ export const AccountPageView = ({
         return (
           <SettingsSection
             locale={locale}
+            country={country}
             dictionary={copy}
+            localeSwitcherLabel={localeSwitcherLabel}
+            countrySwitcherLabel={countrySwitcherLabel}
             firstName={firstName}
             lastName={lastName}
             email={email}

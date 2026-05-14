@@ -25,7 +25,15 @@ const AccountPage = async () => {
 
   return (
     <Container maxWidth="lg">
-      <AccountPageView locale={defaultLocale} dictionary={dictionary.accountPage} homeHref="/" user={user ?? session.user ?? {}} />
+      <AccountPageView
+        locale={defaultLocale}
+        country={country}
+        dictionary={dictionary.accountPage}
+        localeSwitcherLabel={dictionary.storefront.localeSwitcherLabel}
+        countrySwitcherLabel={dictionary.storefront.countrySwitcherLabel}
+        homeHref="/"
+        user={user ?? session.user ?? {}}
+      />
     </Container>
   );
 };

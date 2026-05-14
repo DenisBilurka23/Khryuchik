@@ -89,6 +89,7 @@ export const LocaleSwitcher = (props: LocaleSwitcherProps) => {
           startTransition(() => {
             router.push(
               nextSearch ? `${nextPathname}?${nextSearch}` : nextPathname,
+              { scroll: false },
             );
           });
         }

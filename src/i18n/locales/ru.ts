@@ -411,8 +411,13 @@ const dictionary: SeedDictionary = {
     signOutButton: "Выйти",
     security: "Безопасность",
     notifications: "Уведомления",
+    notificationsEmailUpdatesTitle: "Email updates",
+    notificationsEmailUpdatesDescription:
+      "Новые книги, статусы заказов и сезонные коллекции.",
     languageRegion: "Язык и регион",
     personalData: "Личные данные",
+    newPasswordLabel: "Новый пароль",
+    repeatPasswordLabel: "Повторите пароль",
     recentOrders: "Последние заказы",
     downloadedBooks: "Скачанные книги",
     shippingAddresses: "Адреса доставки",

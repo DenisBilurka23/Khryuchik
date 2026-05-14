@@ -389,8 +389,12 @@ export type AccountPageDictionary = {
   signOutButton: string;
   security: string;
   notifications: string;
+  notificationsEmailUpdatesTitle: string;
+  notificationsEmailUpdatesDescription: string;
   languageRegion: string;
   personalData: string;
+  newPasswordLabel: string;
+  repeatPasswordLabel: string;
   recentOrders: string;
   downloadedBooks: string;
   shippingAddresses: string;
