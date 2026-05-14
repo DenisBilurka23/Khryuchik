@@ -1,31 +1,23 @@
 "use client";
 
-import { useState, type SyntheticEvent } from "react";
+import { useEffect, useRef, useState, type SyntheticEvent } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import {
-  Avatar,
   Box,
   Button,
   Card,
   CardContent,
-  Chip,
   Grid,
   List,
-  Paper,
   Stack,
-  Tab,
-  Tabs,
+  Paper,
   Typography,
 } from "@mui/material";
 import { signOut, useSession } from "next-auth/react";
 
 import { updateAccountProfileClient } from "@/client-api/account";
 import { getAccountPageMockData } from "@/data/account-page-mock";
-import {
-  getProfileErrorMessage,
-  splitName,
-  tabSections,
-} from "@/utils/account-page";
+import { getProfileErrorMessage, splitName } from "@/utils/account-page";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
 import { getAccountSidebarItems } from "./model";
@@ -38,7 +30,7 @@ import {
   OverviewSection,
   SettingsSection,
 } from "./sections";
-import { SidebarItem } from "./shared";
+import { AccountAvatarUploadField, SidebarItem } from "./shared";
 import type { AccountPageViewProps, SectionKey } from "./types";
 
 export const AccountPageView = ({
@@ -49,7 +41,6 @@ export const AccountPageView = ({
 }: AccountPageViewProps) => {
   const { update } = useSession();
   const copy = dictionary;
-  const [tab, setTab] = useState(0);
   const [activeSection, setActiveSection] = useState<SectionKey>("overview");
   const [profileUser, setProfileUser] = useState(user);
   const { firstName: initialFirstName, lastName: initialLastName } = splitName(user.name);
@@ -61,6 +52,9 @@ export const AccountPageView = ({
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profileSuccess, setProfileSuccess] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreviewSrc, setAvatarPreviewSrc] = useState(user.image ?? null);
+  const avatarPreviewUrlRef = useRef<string | null>(null);
   const userName = profileUser.name || (locale === "ru" ? "Пользователь" : "User");
   const userEmail = profileUser.email || "email@example.com";
   const userInitial = userName.charAt(0).toUpperCase();
@@ -79,10 +73,35 @@ export const AccountPageView = ({
   ).length;
   const sidebarItems = getAccountSidebarItems(copy);
 
+  useEffect(() => {
+    return () => {
+      if (avatarPreviewUrlRef.current) {
+        URL.revokeObjectURL(avatarPreviewUrlRef.current);
+      }
+    };
+  }, []);
+
+  const clearAvatarPreviewUrl = () => {
+    if (avatarPreviewUrlRef.current) {
+      URL.revokeObjectURL(avatarPreviewUrlRef.current);
+      avatarPreviewUrlRef.current = null;
+    }
+  };
+
   const beginProfileEditing = () => {
     setIsEditingProfile(true);
     setProfileError(null);
     setProfileSuccess(null);
+  };
+
+  const handleAvatarSelect = (file: File) => {
+    beginProfileEditing();
+    clearAvatarPreviewUrl();
+
+    const nextPreviewUrl = URL.createObjectURL(file);
+    avatarPreviewUrlRef.current = nextPreviewUrl;
+    setAvatarFile(file);
+    setAvatarPreviewSrc(nextPreviewUrl);
   };
 
   const handleProfileSave = async (event?: SyntheticEvent) => {
@@ -111,6 +130,7 @@ export const AccountPageView = ({
       name: normalizedName,
       email: normalizedEmail,
       phone,
+      avatar: avatarFile,
     });
 
     setIsSavingProfile(false);
@@ -127,6 +147,9 @@ export const AccountPageView = ({
     setLastName(splitName(response.data.user.name).lastName);
     setEmail(response.data.user.email);
     setPhone(response.data.user.phone);
+    clearAvatarPreviewUrl();
+    setAvatarFile(null);
+    setAvatarPreviewSrc(response.data.user.image ?? null);
     setIsEditingProfile(false);
     setProfileSuccess(copy.saved);
 
@@ -142,19 +165,8 @@ export const AccountPageView = ({
     });
   };
 
-  const handleTabChange = (_event: SyntheticEvent, value: number) => {
-    setTab(value);
-    setActiveSection(tabSections[value]);
-  };
-
   const handleSidebarClick = (key: SectionKey) => {
     setActiveSection(key);
-
-    const nextTab = tabSections.indexOf(key as (typeof tabSections)[number]);
-
-    if (nextTab >= 0) {
-      setTab(nextTab);
-    }
   };
 
   const renderSection = () => {
@@ -218,37 +230,28 @@ export const AccountPageView = ({
   return (
     <Box sx={{ py: { xs: 4, md: 6 } }}>
       <Grid container spacing={3.5}>
-        <Grid size={{ xs: 12, md: 4, lg: 3.5 }}>
-          <Card sx={{ border: "1px solid #F0DFC8", mb: 3 }}>
+        <Grid
+          size={{ xs: 12, md: 4, lg: 3.5 }}
+          order={{ xs: 1, md: 1 }}
+          sx={{ display: "flex" }}
+        >
+          <Card sx={{ border: "1px solid #F0DFC8", width: "100%", height: "100%" }}>
             <CardContent sx={{ p: 3 }}>
               <Stack alignItems="center" textAlign="center">
-                <Avatar
-                  src={user.image ?? undefined}
-                  sx={{
-                    width: 84,
-                    height: 84,
-                    bgcolor: "#FCE5EA",
-                    color: "#27272A",
-                    fontSize: 30,
-                  }}
-                >
-                  {userInitial}
-                </Avatar>
+                <AccountAvatarUploadField
+                  imageSrc={avatarPreviewSrc}
+                  imageAlt={userName}
+                  fallbackLabel={userInitial}
+                  changeLabel={copy.changeAvatar}
+                  replaceLabel={copy.replaceAvatar}
+                  emptyLabel={copy.avatarEmptyLabel}
+                  onRequestEditAction={beginProfileEditing}
+                  onFileSelectAction={handleAvatarSelect}
+                />
                 <Typography sx={{ mt: 2, fontSize: 24, fontWeight: 800 }}>
                   {userName}
                 </Typography>
                 <Typography color="text.secondary">{userEmail}</Typography>
-                <Stack direction="row" spacing={1} sx={{ mt: 2 }}>
-                  <Chip label="Belarus store" sx={{ bgcolor: "#FCE5EA", fontWeight: 700 }} />
-                  <Chip
-                    label={locale.toUpperCase()}
-                    sx={{
-                      bgcolor: "#fff",
-                      border: "1px solid #E8D6BF",
-                      fontWeight: 700,
-                    }}
-                  />
-                </Stack>
                 <Button
                   variant="outlined"
                   color="inherit"
@@ -261,34 +264,23 @@ export const AccountPageView = ({
               </Stack>
             </CardContent>
           </Card>
-
-          <Card sx={{ border: "1px solid #F0DFC8" }}>
-            <CardContent sx={{ p: 2 }}>
-              <List sx={{ p: 0 }}>
-                {sidebarItems.map((item) => (
-                  <SidebarItem
-                    key={item.key}
-                    icon={item.icon}
-                    label={item.label}
-                    active={activeSection === item.key}
-                    onClick={() => handleSidebarClick(item.key)}
-                  />
-                ))}
-              </List>
-            </CardContent>
-          </Card>
         </Grid>
 
-        <Grid size={{ xs: 12, md: 8, lg: 8.5 }}>
+        <Grid
+          size={{ xs: 12, md: 8, lg: 8.5 }}
+          order={{ xs: 3, md: 2 }}
+          sx={{ display: "flex" }}
+        >
           <Paper
             elevation={0}
             sx={{
-              mb: 3,
               p: { xs: 3, md: 4 },
               borderRadius: "32px",
               background:
                 "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.45), transparent 28%), #fff",
               border: "1px solid #F0DFC8",
+              width: "100%",
+              height: "100%",
             }}
           >
             <Typography
@@ -309,31 +301,27 @@ export const AccountPageView = ({
               {copy.lead}
             </Typography>
           </Paper>
+        </Grid>
 
-          <Paper
-            sx={{
-              mb: 3,
-              borderRadius: "24px",
-              overflow: "hidden",
-              border: "1px solid #F0DFC8",
-            }}
-          >
-            <Tabs
-              value={tab}
-              onChange={handleTabChange}
-              variant="scrollable"
-              scrollButtons="auto"
-              sx={{
-                px: 1,
-                "& .MuiTabs-indicator": { height: 3, borderRadius: 999 },
-              }}
-            >
-              {copy.tabs.map((label) => (
-                <Tab key={label} label={label} />
-              ))}
-            </Tabs>
-          </Paper>
+        <Grid size={{ xs: 12, md: 4, lg: 3.5 }} order={{ xs: 2, md: 3 }}>
+          <Card sx={{ border: "1px solid #F0DFC8" }}>
+            <CardContent sx={{ p: 2 }}>
+              <List sx={{ p: 0 }}>
+                {sidebarItems.map((item) => (
+                  <SidebarItem
+                    key={item.key}
+                    icon={item.icon}
+                    label={item.label}
+                    active={activeSection === item.key}
+                    onClick={() => handleSidebarClick(item.key)}
+                  />
+                ))}
+              </List>
+            </CardContent>
+          </Card>
+        </Grid>
 
+        <Grid size={{ xs: 12, md: 8, lg: 8.5 }} order={{ xs: 4, md: 4 }}>
           {renderSection()}
         </Grid>
       </Grid>

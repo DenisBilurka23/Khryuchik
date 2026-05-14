@@ -1,8 +1,9 @@
 "use client";
 
-import PhotoCameraOutlinedIcon from "@mui/icons-material/PhotoCameraOutlined";
 import { useEffect, useRef, useState } from "react";
-import { Avatar, Box, Button, ButtonBase, Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
+
+import { AvatarUploadButton } from "@/components/avatar-upload-button";
 
 import type { AdminCustomerAvatarUploadFieldProps } from "./types";
 
@@ -73,75 +74,20 @@ export const AdminCustomerAvatarUploadField = ({
         }}
       />
 
-      <Box sx={{ position: "relative", flexShrink: 0 }}>
-        <ButtonBase
-          type="button"
-          aria-label={`${label}: ${previewSrc ? replaceButtonLabel : buttonLabel}`}
-          title={helperText}
-          onClick={() => {
-            inputRef.current?.click();
-          }}
-          sx={{
-            display: "block",
-            borderRadius: "50%",
-            overflow: "hidden",
-            position: "relative",
-            boxShadow: "0 16px 36px rgba(196, 155, 120, 0.18)",
-            transition: "transform 160ms ease, box-shadow 160ms ease",
-            "&:hover": {
-              transform: "translateY(-1px)",
-              boxShadow: "0 20px 42px rgba(196, 155, 120, 0.24)",
-            },
-            "&:hover .avatar-upload-overlay, &:focus-visible .avatar-upload-overlay": {
-              opacity: 1,
-            },
-          }}
-        >
-          <Avatar
-            src={previewSrc ?? undefined}
-            alt={currentImageAlt}
-            sx={{
-              width: 120,
-              height: 120,
-              border: "4px solid #fff",
-            }}
-          />
-          <Box
-            sx={{
-              position: "absolute",
-              inset: 0,
-              display: "grid",
-              placeItems: "center",
-              bgcolor: "rgba(39, 33, 42, 0.34)",
-              color: "#fff",
-              opacity: previewSrc ? 0 : 1,
-              transition: "opacity 160ms ease",
-            }}
-            className="avatar-upload-overlay"
-          >
-            <PhotoCameraOutlinedIcon sx={{ fontSize: 28 }} />
-          </Box>
-        </ButtonBase>
-        <Box
-          sx={{
-            position: "absolute",
-            right: -2,
-            bottom: -2,
-            width: 36,
-            height: 36,
-            display: "grid",
-            placeItems: "center",
-            borderRadius: "50%",
-            bgcolor: "#FF7B92",
-            color: "#fff",
-            border: "3px solid #fff",
-            boxShadow: "0 10px 24px rgba(255, 123, 146, 0.35)",
-            pointerEvents: "none",
-          }}
-        >
-          <PhotoCameraOutlinedIcon sx={{ fontSize: 18 }} />
-        </Box>
-      </Box>
+      <AvatarUploadButton
+        imageSrc={previewSrc}
+        imageAlt={currentImageAlt}
+        ariaLabel={`${label}: ${previewSrc ? replaceButtonLabel : buttonLabel}`}
+        title={helperText}
+        size={120}
+        overlayIconSize={28}
+        badgeSize={36}
+        badgeIconSize={18}
+        avatarSx={{ border: "4px solid #fff" }}
+        onClickAction={() => {
+          inputRef.current?.click();
+        }}
+      />
 
       <Typography
         variant="body2"

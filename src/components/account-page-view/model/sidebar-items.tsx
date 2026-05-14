@@ -14,7 +14,7 @@ export const getAccountSidebarItems = (
   dictionary: AccountPageDictionary,
 ): AccountSidebarItem[] => {
   return [
-    { key: "overview", label: dictionary.profile, icon: <PersonOutlineIcon /> },
+    { key: "overview", label: dictionary.tabs[0], icon: <PersonOutlineIcon /> },
     { key: "orders", label: dictionary.orders, icon: <ReceiptLongOutlinedIcon /> },
     { key: "books", label: dictionary.books, icon: <MenuBookOutlinedIcon /> },
     {

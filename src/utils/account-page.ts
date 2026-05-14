@@ -1,16 +1,6 @@
 import type { AccountPageDictionary } from "@/i18n/types";
 import { UserOperationErrorReason } from "@/types/users";
 
-import type { SectionKey } from "@/components/account-page-view/types";
-
-export const tabSections: Array<Exclude<SectionKey, "favorites" | "logout">> = [
-  "overview",
-  "orders",
-  "books",
-  "addresses",
-  "settings",
-];
-
 export const splitName = (value: string | null | undefined) => {
   const normalizedName = value?.trim() ?? "";
 

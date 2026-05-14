@@ -20,6 +20,18 @@ let usersIndexesPromise: Promise<void> | null = null;
 
 const normalizeEmail = (email: string) => email.trim().toLowerCase();
 
+const applyAvatarUpdateFields = (
+  updateSet: Partial<UserDocument>,
+  input: Pick<UpdateUserProfileInput, "image" | "avatarObjectKey">,
+) => {
+  if (!("image" in input)) {
+    return;
+  }
+
+  updateSet.image = input.image ?? null;
+  updateSet.avatarObjectKey = input.avatarObjectKey ?? null;
+};
+
 const sortWishlistEntries = (entries: WishlistEntryDocument[]) =>
   [...entries].sort(
     (left, right) => right.addedAt.getTime() - left.addedAt.getTime(),
@@ -217,15 +229,19 @@ export const updateUserProfile = async (
 ) => {
   const collection = await getUsersCollection();
 
+  const updateSet: Partial<UserDocument> & { updatedAt: Date } = {
+    email: normalizeEmail(input.email),
+    name: input.name.trim(),
+    phone: input.phone.trim(),
+    updatedAt: new Date(),
+  };
+
+  applyAvatarUpdateFields(updateSet, input);
+
   await collection.updateOne(
     { _id: userId },
     {
-      $set: {
-        email: normalizeEmail(input.email),
-        name: input.name.trim(),
-        phone: input.phone.trim(),
-        updatedAt: new Date(),
-      },
+      $set: updateSet,
     },
   );
 
@@ -252,10 +268,7 @@ export const updateAdminUser = async (
     updatedAt: new Date(),
   };
 
-  if ("image" in input) {
-    updateSet.image = input.image ?? null;
-    updateSet.avatarObjectKey = input.avatarObjectKey ?? null;
-  }
+  applyAvatarUpdateFields(updateSet, input);
 
   await collection.updateOne(
     { _id: userId },

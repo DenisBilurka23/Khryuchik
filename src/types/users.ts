@@ -52,6 +52,8 @@ export type UpdateUserProfileInput = {
   email: string;
   name: string;
   phone: string;
+  image?: string | null;
+  avatarObjectKey?: string | null;
 };
 
 export type UpdateAdminUserInput = UpdateUserProfileInput & {

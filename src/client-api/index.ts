@@ -6,6 +6,27 @@ export type ClientApiResponse<TResponse> = {
 
 type RequestOptions = Omit<RequestInit, "method" | "body">;
 
+const serializeRequestBody = (body?: unknown) => {
+  if (body === undefined) {
+    return {
+      serializedBody: undefined,
+      shouldSetJsonContentType: false,
+    };
+  }
+
+  if (body instanceof FormData) {
+    return {
+      serializedBody: body,
+      shouldSetJsonContentType: false,
+    };
+  }
+
+  return {
+    serializedBody: JSON.stringify(body),
+    shouldSetJsonContentType: true,
+  };
+};
+
 const request = async <TResponse>(
   method: string,
   url: string,
@@ -13,8 +34,9 @@ const request = async <TResponse>(
   options?: RequestOptions,
 ): Promise<ClientApiResponse<TResponse>> => {
   const headers = new Headers(options?.headers);
+  const { serializedBody, shouldSetJsonContentType } = serializeRequestBody(body);
 
-  if (body !== undefined && !headers.has("Content-Type")) {
+  if (shouldSetJsonContentType && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
 
@@ -22,7 +44,7 @@ const request = async <TResponse>(
     ...options,
     method,
     headers,
-    body: body === undefined ? undefined : JSON.stringify(body),
+    body: serializedBody,
   });
 
   const data = (await response.json().catch(() => null)) as TResponse | null;

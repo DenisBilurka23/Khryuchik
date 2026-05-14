@@ -366,6 +366,10 @@ export type AccountPageDictionary = {
   delivered: string;
   inDelivery: string;
   editProfile: string;
+  changeAvatar: string;
+  replaceAvatar: string;
+  removeAvatar: string;
+  avatarEmptyLabel: string;
   save: string;
   saved: string;
   firstNameLabel: string;

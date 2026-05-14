@@ -2,7 +2,10 @@ import "server-only";
 
 import { ObjectId } from "mongodb";
 
-import { createPasswordResetToken, hashPasswordResetToken } from "@/server/auth/reset-password";
+import {
+  createPasswordResetToken,
+  hashPasswordResetToken,
+} from "@/server/auth/reset-password";
 import { hashPassword, verifyPassword } from "@/server/auth/password";
 import { PasswordResetErrorReason } from "@/types/auth";
 import type {
@@ -15,13 +18,13 @@ import type {
 import { UserOperationErrorReason } from "@/types/users";
 
 import {
+  addCredentialsToExistingUser,
+  addGoogleToExistingUser,
   countAdminUsers,
   countUsers,
-  deleteUserById,
-  addGoogleToExistingUser,
-  addCredentialsToExistingUser,
-  createGoogleUser,
   createCredentialsUser,
+  createGoogleUser,
+  deleteUserById,
   findAllUsers,
   findUserByEmail,
   findUserById,
@@ -88,10 +91,13 @@ export const registerUser = async (input: RegisterUserInput) => {
   const passwordHash = await hashPassword(input.password);
 
   if (existingUser?._id) {
-    const user = await addCredentialsToExistingUser(existingUser._id as ObjectId, {
-      ...input,
-      passwordHash,
-    });
+    const user = await addCredentialsToExistingUser(
+      existingUser._id as ObjectId,
+      {
+        ...input,
+        passwordHash,
+      },
+    );
 
     return { ok: true as const, user };
   }
@@ -134,7 +140,11 @@ export const requestPasswordReset = async (email: string) => {
   const tokenHash = hashPasswordResetToken(token);
   const expiresAt = new Date(Date.now() + PASSWORD_RESET_TOKEN_TTL_MS);
 
-  await replacePasswordResetTokenForUser(user._id as ObjectId, tokenHash, expiresAt);
+  await replacePasswordResetTokenForUser(
+    user._id as ObjectId,
+    tokenHash,
+    expiresAt,
+  );
 
   return token;
 };
@@ -147,13 +157,19 @@ export const resetPasswordWithToken = async (
   const resetToken = await findActivePasswordResetToken(tokenHash);
 
   if (!resetToken?._id) {
-    return { ok: false as const, reason: PasswordResetErrorReason.InvalidToken };
+    return {
+      ok: false as const,
+      reason: PasswordResetErrorReason.InvalidToken,
+    };
   }
 
   const user = await findUserById(resetToken.userId);
 
   if (!user?._id) {
-    return { ok: false as const, reason: PasswordResetErrorReason.InvalidToken };
+    return {
+      ok: false as const,
+      reason: PasswordResetErrorReason.InvalidToken,
+    };
   }
 
   const passwordHash = await hashPassword(password);
@@ -249,7 +265,15 @@ export const updateAccountUserProfile = async (
     email: nextEmail,
   });
 
-  return { ok: true as const, user };
+  return {
+    ok: true as const,
+    previousAvatarObjectKey: existingUser.avatarObjectKey ?? null,
+    nextAvatarObjectKey:
+      "image" in input
+        ? (input.avatarObjectKey ?? null)
+        : (existingUser.avatarObjectKey ?? null),
+    user,
+  };
 };
 
 export const getAdminUsers = async (limit?: number) => {
@@ -308,7 +332,10 @@ export const updateAdminUserAccount = async (
   }
 
   if (actorUserId === userId && !input.isAdmin) {
-    return { ok: false as const, reason: UserOperationErrorReason.CannotDemoteSelf };
+    return {
+      ok: false as const,
+      reason: UserOperationErrorReason.CannotDemoteSelf,
+    };
   }
 
   if (existingUser.isAdmin && !input.isAdmin) {
@@ -363,7 +390,10 @@ export const deleteAdminUserAccount = async (
   }
 
   if (actorUserId === userId) {
-    return { ok: false as const, reason: UserOperationErrorReason.CannotDeleteSelf };
+    return {
+      ok: false as const,
+      reason: UserOperationErrorReason.CannotDeleteSelf,
+    };
   }
 
   const existingUser = await findUserById(new ObjectId(userId));
