@@ -2,13 +2,52 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 
-import { SectionCard } from "../../shared";
+import { PersonalDetailsSection, SectionCard } from "../../shared";
 
 import type { SettingsSectionProps } from "./types";
 
-export const SettingsSection = ({ locale, dictionary }: SettingsSectionProps) => {
+export const SettingsSection = ({
+  locale,
+  dictionary,
+  firstName,
+  lastName,
+  email,
+  phone,
+  isEditingProfile,
+  isSavingProfile,
+  isEmailEditable,
+  profileError,
+  profileSuccess,
+  onBeginEdit,
+  onCancel,
+  onSave,
+  onFirstNameChange,
+  onLastNameChange,
+  onEmailChange,
+  onPhoneChange,
+}: SettingsSectionProps) => {
   return (
     <Stack spacing={3}>
+      <PersonalDetailsSection
+        dictionary={dictionary}
+        firstName={firstName}
+        lastName={lastName}
+        email={email}
+        phone={phone}
+        isEditingProfile={isEditingProfile}
+        isSavingProfile={isSavingProfile}
+        isEmailEditable={isEmailEditable}
+        profileError={profileError}
+        profileSuccess={profileSuccess}
+        onBeginEdit={onBeginEdit}
+        onCancel={onCancel}
+        onSave={onSave}
+        onFirstNameChange={onFirstNameChange}
+        onLastNameChange={onLastNameChange}
+        onEmailChange={onEmailChange}
+        onPhoneChange={onPhoneChange}
+      />
+
       <SectionCard title={dictionary.languageRegion}>
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6 }}>

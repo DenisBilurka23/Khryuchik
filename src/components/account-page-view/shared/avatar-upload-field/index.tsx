@@ -36,6 +36,7 @@ export const AccountAvatarUploadField = ({
             return;
           }
 
+          onRequestEditAction?.();
           onFileSelectAction(file);
         }}
       />
@@ -51,7 +52,6 @@ export const AccountAvatarUploadField = ({
           fontSize: 30,
         }}
         onClickAction={() => {
-          onRequestEditAction?.();
           inputRef.current?.click();
         }}
       />

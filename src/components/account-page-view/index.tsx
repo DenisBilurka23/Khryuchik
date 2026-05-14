@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type SyntheticEvent } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import {
   Box,
   Button,
@@ -94,8 +95,27 @@ export const AccountPageView = ({
     setProfileSuccess(null);
   };
 
-  const handleAvatarSelect = (file: File) => {
+  const openProfileSettings = () => {
+    setActiveSection("settings");
     beginProfileEditing();
+  };
+
+  const cancelProfileEditing = () => {
+    const { firstName: nextFirstName, lastName: nextLastName } = splitName(profileUser.name);
+
+    setFirstName(nextFirstName);
+    setLastName(nextLastName);
+    setEmail(profileUser.email ?? "");
+    setPhone(profileUser.phone ?? "");
+    clearAvatarPreviewUrl();
+    setAvatarFile(null);
+    setAvatarPreviewSrc(profileUser.image ?? null);
+    setIsEditingProfile(false);
+    setProfileError(null);
+    setProfileSuccess(null);
+  };
+
+  const handleAvatarSelect = (file: File) => {
     clearAvatarPreviewUrl();
 
     const nextPreviewUrl = URL.createObjectURL(file);
@@ -190,7 +210,28 @@ export const AccountPageView = ({
           />
         );
       case "settings":
-        return <SettingsSection locale={locale} dictionary={copy} />;
+        return (
+          <SettingsSection
+            locale={locale}
+            dictionary={copy}
+            firstName={firstName}
+            lastName={lastName}
+            email={email}
+            phone={phone}
+            isEditingProfile={isEditingProfile}
+            isSavingProfile={isSavingProfile}
+            isEmailEditable={isEmailEditable}
+            profileError={profileError}
+            profileSuccess={profileSuccess}
+            onBeginEdit={beginProfileEditing}
+            onCancel={cancelProfileEditing}
+            onSave={() => handleProfileSave()}
+            onFirstNameChange={setFirstName}
+            onLastNameChange={setLastName}
+            onEmailChange={setEmail}
+            onPhoneChange={setPhone}
+          />
+        );
       case "logout":
         return (
           <LogoutSection
@@ -217,6 +258,7 @@ export const AccountPageView = ({
             profileError={profileError}
             profileSuccess={profileSuccess}
             onBeginEdit={beginProfileEditing}
+            onCancel={cancelProfileEditing}
             onSave={handleProfileSave}
             onFirstNameChange={setFirstName}
             onLastNameChange={setLastName}
@@ -245,7 +287,7 @@ export const AccountPageView = ({
                   changeLabel={copy.changeAvatar}
                   replaceLabel={copy.replaceAvatar}
                   emptyLabel={copy.avatarEmptyLabel}
-                  onRequestEditAction={beginProfileEditing}
+                  onRequestEditAction={openProfileSettings}
                   onFileSelectAction={handleAvatarSelect}
                 />
                 <Typography sx={{ mt: 2, fontSize: 24, fontWeight: 800 }}>
@@ -253,13 +295,20 @@ export const AccountPageView = ({
                 </Typography>
                 <Typography color="text.secondary">{userEmail}</Typography>
                 <Button
-                  variant="outlined"
-                  color="inherit"
-                  startIcon={<EditOutlinedIcon />}
-                  sx={{ mt: 2.5, borderColor: "#E8D6BF", bgcolor: "#fff" }}
-                  onClick={beginProfileEditing}
+                  variant={isEditingProfile ? "contained" : "outlined"}
+                  color={isEditingProfile ? undefined : "inherit"}
+                  startIcon={
+                    isEditingProfile ? <SaveOutlinedIcon /> : <EditOutlinedIcon />
+                  }
+                  sx={
+                    isEditingProfile
+                      ? { mt: 2.5 }
+                      : { mt: 2.5, borderColor: "#E8D6BF", bgcolor: "#fff" }
+                  }
+                  onClick={isEditingProfile ? () => void handleProfileSave() : openProfileSettings}
+                  loading={isSavingProfile}
                 >
-                  {copy.editProfile}
+                  {isEditingProfile ? copy.save : copy.editProfile}
                 </Button>
               </Stack>
             </CardContent>

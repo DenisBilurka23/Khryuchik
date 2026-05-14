@@ -394,6 +394,7 @@ const dictionary: SeedDictionary = {
     replaceAvatar: "Replace avatar",
     removeAvatar: "Remove avatar",
     avatarEmptyLabel: "Add a profile photo for quicker recognition.",
+    cancel: "Cancel",
     save: "Save",
     saved: "Profile saved.",
     firstNameLabel: "First name",

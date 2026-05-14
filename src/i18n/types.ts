@@ -370,6 +370,7 @@ export type AccountPageDictionary = {
   replaceAvatar: string;
   removeAvatar: string;
   avatarEmptyLabel: string;
+  cancel: string;
   save: string;
   saved: string;
   firstNameLabel: string;

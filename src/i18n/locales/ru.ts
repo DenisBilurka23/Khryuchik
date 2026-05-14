@@ -392,6 +392,7 @@ const dictionary: SeedDictionary = {
     replaceAvatar: "Заменить аватар",
     removeAvatar: "Убрать аватар",
     avatarEmptyLabel: "Добавьте фото профиля, чтобы аккаунт было проще узнать.",
+    cancel: "Отмена",
     save: "Сохранить",
     saved: "Профиль сохранён.",
     firstNameLabel: "Имя",
