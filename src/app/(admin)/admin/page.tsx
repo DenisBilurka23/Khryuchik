@@ -35,9 +35,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const AdminDashboardPage = async () => {
-	const [locale, messages, summary] = await Promise.all([
-		resolveLocale("admin"),
-		getMessages(),
+	const locale = await resolveLocale("admin");
+	const [messages, summary] = await Promise.all([
+		getMessages({ locale }),
 		getAdminSummaryData(),
 	]);
 	const { adminPage: dictionary } = messages as Dictionary;

@@ -75,7 +75,6 @@ const DefaultProductPage = async ({ params }: ProductPageProps) => {
   return (
     <ProductPageView
       locale={defaultLocale}
-      country={country}
       product={product}
       relatedProducts={relatedProducts}
       storyProduct={storyProducts[0] ?? null}

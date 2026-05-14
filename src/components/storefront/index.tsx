@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
+import { getMessages } from "next-intl/server";
 
-import { getDictionary } from "@/i18n/dictionaries";
 import type { Dictionary } from "@/i18n/types";
 
 import { BookSection } from "../books-section";
@@ -22,10 +22,8 @@ export const Storefront = async ({
   shopProducts,
   selectedShopCategory,
 }: StorefrontProps) => {
-  const { storefront: dictionary } = (await getDictionary(
-    locale,
-    country,
-  )) as Dictionary;
+  const { storefront: dictionary } =
+    ((await getMessages({ locale })) as Dictionary);
   const { navigationPaths } = createStorefrontHeaderViewModel(locale);
   const { shop: shopHref, cart: cartHref } = navigationPaths;
 

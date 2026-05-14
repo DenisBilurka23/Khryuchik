@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { getMessages } from "next-intl/server";
 import {
   AppBar,
   Avatar,
@@ -13,7 +14,6 @@ import {
 } from "@mui/material";
 
 import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
-import { getDictionary } from "@/i18n/dictionaries";
 import type { Dictionary } from "@/i18n/types";
 import { createAdminNavItems } from "@/utils/admin";
 
@@ -25,13 +25,9 @@ export const AdminLayoutShell = async ({
   email,
   profileHref,
   locale,
-  country,
   children,
 }: AdminLayoutShellProps) => {
-  const { adminPage: dictionary } = (await getDictionary(
-    locale,
-    country,
-  )) as Dictionary;
+  const { adminPage: dictionary } = ((await getMessages({ locale })) as Dictionary);
   const navItems = createAdminNavItems(dictionary.nav);
 
   return (

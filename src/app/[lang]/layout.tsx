@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
+import { getMessages } from "next-intl/server";
 
 import { FooterSection } from "@/components/footer-section";
+import { IntlClientProvider } from "@/components/providers/intl-client-provider";
 import { StorefrontHeader } from "@/components/storefront-header";
 import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
 import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
@@ -25,23 +27,28 @@ const LocaleLayout = async ({
     notFound();
   }
 
-  const country = await getRequestCountry();
+  const [country, messages] = await Promise.all([
+    getRequestCountry(),
+    getMessages({ locale: lang }),
+  ]);
   const { localizedPaths, navigationPaths } =
     createStorefrontHeaderViewModel(lang);
   const homeHref = lang === "en" ? "/" : `/${lang}`;
 
   return (
-    <StorefrontThemeProvider>
-      <StorefrontHeader
-        locale={lang}
-        country={country}
-        homeHref={homeHref}
-        localizedPaths={localizedPaths}
-        navigationPaths={navigationPaths}
-      />
-      {children}
-      <FooterSection locale={lang} country={country} />
-    </StorefrontThemeProvider>
+    <IntlClientProvider locale={lang} messages={messages}>
+      <StorefrontThemeProvider>
+        <StorefrontHeader
+          locale={lang}
+          country={country}
+          homeHref={homeHref}
+          localizedPaths={localizedPaths}
+          navigationPaths={navigationPaths}
+        />
+        {children}
+        <FooterSection locale={lang} />
+      </StorefrontThemeProvider>
+    </IntlClientProvider>
   );
 };
 

@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useMessages } from "next-intl";
 
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import { Alert, Box, Paper, Stack, Typography } from "@mui/material";
 
-import type { Dictionary } from "@/i18n/types";
 import type { ProductType } from "@/types/catalog";
 import { getAdminProductFormErrorMessage } from "@/server/admin/product-form-state";
 
@@ -26,6 +24,8 @@ const booksCategoryKey = "books";
 
 export const AdminProductForm = ({
   locale,
+  dictionary,
+  sharedDictionary,
   payload,
   categories,
   initialRelatedProductOptions,
@@ -36,9 +36,6 @@ export const AdminProductForm = ({
   isNew,
   errorCode,
 }: AdminProductFormProps) => {
-  const { adminPage } = useMessages() as Dictionary;
-  const dictionary = adminPage.productForm;
-  const sharedDictionary = adminPage.shared;
   const title = isNew
     ? dictionary.newTitle
     : `${dictionary.editTitlePrefix}: ${payload.product.productId}`;

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Alert, Stack } from "@mui/material";
 
 import { AdminCustomerForm } from "@/components/admin-customer-form";
 import { deleteAdminCustomerAction, saveAdminCustomerAction } from "@/app/(admin)/admin/actions";
+import type { Dictionary } from "@/i18n/types";
 import { getAdminCustomerEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { requireAdminPageAccess } from "@/server/admin/auth";
@@ -48,6 +49,8 @@ const EditAdminCustomerPage = async ({
     locale,
     namespace: "adminPage.customers.form",
   });
+  const messages = await getMessages({ locale });
+  const { adminPage } = messages as Dictionary;
   const customer = await getAdminCustomerEditorData(id);
 
   if (!customer) {
@@ -60,6 +63,8 @@ const EditAdminCustomerPage = async ({
       <AdminCustomerForm
         customer={customer}
         locale={locale}
+        dictionary={adminPage.customers.form}
+        sharedDictionary={adminPage.shared}
         action={saveAdminCustomerAction}
         deleteAction={deleteAdminCustomerAction}
         errorCode={error}

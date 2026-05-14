@@ -36,9 +36,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 const AdminCategoriesPage = async ({ searchParams }: AdminCategoriesPageProps) => {
   const { deleted, error, saved } = await searchParams;
-  const [locale, messages, categories] = await Promise.all([
-    resolveLocale("admin"),
-    getMessages(),
+  const locale = await resolveLocale("admin");
+  const [messages, categories] = await Promise.all([
+    getMessages({ locale }),
     getAdminCategories(),
   ]);
   const { adminPage: dictionary } = messages as Dictionary;

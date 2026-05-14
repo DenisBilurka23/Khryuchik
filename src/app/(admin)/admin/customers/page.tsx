@@ -33,10 +33,12 @@ type AdminCustomersPageProps = {
 };
 
 const AdminCustomersPage = async ({ searchParams }: AdminCustomersPageProps) => {
-	const [{ deleted, error }, locale, messages, customers, session] = await Promise.all([
+	const [{ deleted, error }, locale] = await Promise.all([
 		searchParams,
 		resolveLocale("admin"),
-		getMessages(),
+	]);
+	const [messages, customers, session] = await Promise.all([
+		getMessages({ locale }),
 		getAdminCustomers(),
 		requireAdminPageAccess("/admin/customers"),
 	]);

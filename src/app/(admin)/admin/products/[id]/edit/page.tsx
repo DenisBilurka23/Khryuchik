@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Alert, Stack } from "@mui/material";
 
 import { AdminProductForm } from "@/components/admin-product-form";
+import type { Dictionary } from "@/i18n/types";
 import { getAdminProductEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
@@ -44,6 +45,8 @@ const EditAdminProductPage = async ({
     locale,
     namespace: "adminPage.productForm",
   });
+  const messages = await getMessages({ locale });
+  const { adminPage } = messages as Dictionary;
   const editorData = await getAdminProductEditorData(id, locale);
 
   return (
@@ -52,6 +55,8 @@ const EditAdminProductPage = async ({
       <AdminProductForm
         key={`${id}:${saved ?? "0"}:${error ?? "ok"}`}
         locale={locale}
+        dictionary={adminPage.productForm}
+        sharedDictionary={adminPage.shared}
         payload={editorData.payload}
         categories={editorData.categories}
         initialRelatedProductOptions={editorData.initialRelatedProductOptions}
