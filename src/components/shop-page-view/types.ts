@@ -8,7 +8,6 @@ export type ShopFilterValue = "all" | string;
 export type ShopPageViewProps = {
   locale: Locale;
   country: CountryCode;
-  dictionary: StorefrontDictionary;
   categories: LocalizedCategory[];
   products: LocalizedProductSummary[];
   initialCategory?: string;

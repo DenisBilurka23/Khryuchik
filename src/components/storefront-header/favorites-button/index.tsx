@@ -3,10 +3,14 @@
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import type { FavoritesButtonProps } from "./types";
 
-export const FavoritesButton = ({ href, label, sx }: FavoritesButtonProps) => {
+export const FavoritesButton = ({ href, sx }: FavoritesButtonProps) => {
+  const t = useTranslations("storefront");
+  const label = t("favoritesLabel");
+
   return (
     <Button
       component={Link}

@@ -12,8 +12,6 @@ export const SettingsSection = ({
   locale,
   country,
   dictionary,
-  localeSwitcherLabel,
-  countrySwitcherLabel,
   firstName,
   lastName,
   email,
@@ -64,14 +62,12 @@ export const SettingsSection = ({
             <CountrySwitcher
               country={country}
               locale={locale}
-              label={countrySwitcherLabel}
               sx={{ width: "100%", minWidth: 0 }}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <LocaleSwitcher
               locale={locale}
-              label={localeSwitcherLabel}
               localizedPaths={localizedAccountPaths}
               sx={{ width: "100%", minWidth: 0 }}
             />

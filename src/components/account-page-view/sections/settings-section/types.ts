@@ -6,8 +6,6 @@ export type SettingsSectionProps = {
   locale: Locale;
   country: CountryCode;
   dictionary: AccountPageDictionary;
-  localeSwitcherLabel: string;
-  countrySwitcherLabel: string;
   firstName: string;
   lastName: string;
   email: string;

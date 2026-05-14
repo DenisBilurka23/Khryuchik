@@ -1,19 +1,21 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
+import { useMessages } from "next-intl";
 
 import { requestPasswordResetClient } from "@/client-api/auth";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
+import type { Dictionary } from "@/i18n/types";
 import { AuthInputErrorCode } from "@/types/auth";
 
 import { ForgotPasswordForm } from "./form";
 import type { ForgotPasswordPageViewProps } from "./types";
 
 export const ForgotPasswordPageView = ({
-  dictionary,
   locale,
   loginHref,
 }: ForgotPasswordPageViewProps) => {
+  const { forgotPasswordPage: dictionary } = useMessages() as Dictionary;
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);

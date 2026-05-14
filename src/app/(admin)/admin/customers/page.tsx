@@ -1,23 +1,30 @@
 import type { Metadata } from "next";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { Alert, Box, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { getMessages, getTranslations } from "next-intl/server";
 
 import { deleteAdminCustomerAction } from "@/app/(admin)/admin/actions";
 import { DeleteCustomerButton, EditCustomerButton } from "@/components/admin-customers-page-view";
 import { AdminPageHero, AdminSectionCard, AdminStatusChip } from "@/components/admin-page-shared";
+import type { Dictionary } from "@/i18n/types";
 import { getAdminCustomerFormErrorMessage } from "@/server/admin/customer-form-state";
 import { getAdminCustomers } from "@/server/admin/catalog.service";
 import { requireAdminPageAccess } from "@/server/admin/auth";
 import { createAdminMetadata } from "@/server/admin/metadata";
-import { getAdminPageContext } from "@/server/admin/page-context";
+import { resolveLocale } from "@/server/i18n/request-locale";
 import { formatAdminDate } from "@/utils/admin";
 
 export const generateMetadata = async (): Promise<Metadata> => {
-	const { dictionary } = await getAdminPageContext();
+	const locale = await resolveLocale("admin");
+	const tCustomers = await getTranslations({
+		locale,
+		namespace: "adminPage.customers",
+	});
 
 	return createAdminMetadata(
-		dictionary.customers.title,
-		dictionary.customers.description,
+		tCustomers("title"),
+		tCustomers("description"),
+		locale,
 	);
 };
 
@@ -26,12 +33,14 @@ type AdminCustomersPageProps = {
 };
 
 const AdminCustomersPage = async ({ searchParams }: AdminCustomersPageProps) => {
-	const [{ deleted, error }, { dictionary, locale }, customers, session] = await Promise.all([
+	const [{ deleted, error }, locale, messages, customers, session] = await Promise.all([
 		searchParams,
-		getAdminPageContext(),
+		resolveLocale("admin"),
+		getMessages(),
 		getAdminCustomers(),
 		requireAdminPageAccess("/admin/customers"),
 	]);
+	const { adminPage: dictionary } = messages as Dictionary;
 	const shared = dictionary.shared;
 
 	return (

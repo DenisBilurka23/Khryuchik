@@ -3,6 +3,7 @@
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import { Button } from "@mui/material";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 
 import { getLocalizedPath } from "@/utils";
@@ -11,15 +12,14 @@ import type { UserButtonProps } from "./types";
 
 export const UserButton = ({
   locale,
-  accountLabel,
-  signInLabel,
   sx,
 }: UserButtonProps) => {
+  const t = useTranslations("storefront");
   const { data: session } = useSession();
   const href = session
     ? getLocalizedPath(locale, "/account")
     : getLocalizedPath(locale, "/login");
-  const label = session ? accountLabel : signInLabel;
+  const label = session ? t("userMenu.account") : t("userMenu.signIn");
 
   return (
     <Button

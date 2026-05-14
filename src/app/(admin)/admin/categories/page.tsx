@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Alert, Box, Checkbox, Stack, TextField } from "@mui/material";
+import { getMessages, getTranslations } from "next-intl/server";
 
 import { AdminCategoryCard } from "@/components/admin-categories-page-view/category-card";
 import {
@@ -9,9 +10,10 @@ import {
   AdminSectionCard,
 } from "@/components/admin-page-shared";
 import { deleteAdminCategoryAction, saveAdminCategoryAction } from "@/app/(admin)/admin/actions";
+import type { Dictionary } from "@/i18n/types";
 import { getAdminCategories } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
-import { getAdminPageContext } from "@/server/admin/page-context";
+import { resolveLocale } from "@/server/i18n/request-locale";
 import { getAdminCategoryLabel } from "@/utils/admin";
 
 type AdminCategoriesPageProps = {
@@ -19,20 +21,27 @@ type AdminCategoriesPageProps = {
 };
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const { dictionary } = await getAdminPageContext();
+  const locale = await resolveLocale("admin");
+  const tCategories = await getTranslations({
+    locale,
+    namespace: "adminPage.categories",
+  });
 
   return createAdminMetadata(
-    dictionary.categories.title,
-    dictionary.categories.description,
+    tCategories("title"),
+    tCategories("description"),
+    locale,
   );
 };
 
 const AdminCategoriesPage = async ({ searchParams }: AdminCategoriesPageProps) => {
   const { deleted, error, saved } = await searchParams;
-  const [{ dictionary, locale }, categories] = await Promise.all([
-    getAdminPageContext(),
+  const [locale, messages, categories] = await Promise.all([
+    resolveLocale("admin"),
+    getMessages(),
     getAdminCategories(),
   ]);
+  const { adminPage: dictionary } = messages as Dictionary;
   const shared = dictionary.shared;
   const labels = dictionary.categories;
 

@@ -13,19 +13,27 @@ import {
 } from "@mui/material";
 
 import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
+import { getDictionary } from "@/i18n/dictionaries";
+import type { Dictionary } from "@/i18n/types";
+import { createAdminNavItems } from "@/utils/admin";
 
 import { AdminLocaleSwitcher } from "./locale-switcher";
 import { AdminNavigation } from "../admin-navigation";
 import type { AdminLayoutShellProps } from "./types";
 
-export const AdminLayoutShell = ({
+export const AdminLayoutShell = async ({
   email,
   profileHref,
   locale,
-  dictionary,
-  navItems,
+  country,
   children,
 }: AdminLayoutShellProps) => {
+  const { adminPage: dictionary } = (await getDictionary(
+    locale,
+    country,
+  )) as Dictionary;
+  const navItems = createAdminNavItems(dictionary.nav);
+
   return (
     <StorefrontThemeProvider>
       <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>

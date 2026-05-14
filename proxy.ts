@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 import {
   ADMIN_LOCALE_COOKIE_NAME,
   ADMIN_LOCALE_QUERY_PARAM,
+  LOCALE_HEADER,
   defaultLocale,
   isLocale,
   locales,
@@ -15,8 +16,6 @@ import {
   getCountryFromGeoHeaders,
   isCountryCode,
 } from "@/utils";
-
-const LOCALE_HEADER = "x-khryuchik-locale";
 
 const isAdminPath = (pathname: string) =>
   pathname === "/admin" || pathname.startsWith("/admin/");

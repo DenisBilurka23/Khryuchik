@@ -12,6 +12,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { getMessages, getTranslations } from "next-intl/server";
 
 import { DeleteProductButton } from "@/components/admin-products-page-view/delete-product-button";
 import { EditProductButton } from "@/components/admin-products-page-view/edit-product-button";
@@ -22,20 +23,26 @@ import {
   AdminStatusChip,
 } from "@/components/admin-page-shared";
 import { deleteAdminProductAction } from "@/app/(admin)/admin/actions";
+import type { Dictionary } from "@/i18n/types";
 import { getAdminProducts } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
-import { getAdminPageContext } from "@/server/admin/page-context";
+import { resolveLocale } from "@/server/i18n/request-locale";
 import {
   getAdminAvailabilityLabel,
   getAdminProductTypeLabel,
 } from "@/utils/admin";
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const { dictionary } = await getAdminPageContext();
+  const locale = await resolveLocale("admin");
+  const tProducts = await getTranslations({
+    locale,
+    namespace: "adminPage.products",
+  });
 
   return createAdminMetadata(
-    dictionary.products.title,
-    dictionary.products.description,
+    tProducts("title"),
+    tProducts("description"),
+    locale,
   );
 };
 
@@ -45,7 +52,9 @@ type AdminProductsPageProps = {
 
 const AdminProductsPage = async ({ searchParams }: AdminProductsPageProps) => {
   const { deleted } = await searchParams;
-  const { dictionary, locale } = await getAdminPageContext();
+  const locale = await resolveLocale("admin");
+  const messages = await getMessages({ locale });
+  const { adminPage: dictionary } = messages as Dictionary;
   const products = await getAdminProducts(locale);
   const shared = dictionary.shared;
 

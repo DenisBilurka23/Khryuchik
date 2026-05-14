@@ -10,6 +10,9 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
+import { getDictionary } from "@/i18n/dictionaries";
+import type { Dictionary } from "@/i18n/types";
+
 import { CategoryTabs } from "@/components/category-tabs";
 import { getLocalizedProductPath } from "@/utils";
 import { createShopPageViewModel, isShopFilterValue } from "@/utils/shop-page";
@@ -21,15 +24,18 @@ import styles from "../storefront/storefront.module.css";
 
 import type { ShopFilterValue, ShopPageViewProps } from "./types";
 
-export const ShopPageView = ({
+export const ShopPageView = async ({
   locale,
   country,
-  dictionary,
   categories,
   products,
   initialCategory,
   initialQuery,
 }: ShopPageViewProps) => {
+  const { storefront: dictionary } = (await getDictionary(
+    locale,
+    country,
+  )) as Dictionary;
   const initialCategoryParam = initialCategory ?? null;
   const selectedFilter: ShopFilterValue = isShopFilterValue(
     initialCategoryParam,

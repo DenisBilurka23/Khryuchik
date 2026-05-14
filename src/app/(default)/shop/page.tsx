@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { ShopPageView } from "@/components/shop-page-view";
 import { getShopCategories, getShopProducts } from "@/data/products";
 import { defaultLocale, locales } from "@/i18n/config";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type DefaultShopPageProps = {
@@ -11,12 +11,14 @@ type DefaultShopPageProps = {
 };
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const country = await getRequestCountry();
-  const dictionary = await getDictionary(defaultLocale, country);
+  const tStorefront = await getTranslations({
+    locale: defaultLocale,
+    namespace: "storefront",
+  });
 
   return {
-    title: `${dictionary.storefront.nav.shop} | ${dictionary.storefront.brand.title}`,
-    description: dictionary.storefront.shopPage.lead,
+    title: `${tStorefront("nav.shop")} | ${tStorefront("brand.title")}`,
+    description: tStorefront("shopPage.lead"),
     alternates: {
       canonical: "/shop",
       languages: Object.fromEntries(
@@ -29,9 +31,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
     openGraph: {
       type: "website",
       locale: defaultLocale,
-      title: `${dictionary.storefront.nav.shop} | ${dictionary.storefront.brand.title}`,
-      description: dictionary.storefront.shopPage.lead,
-      siteName: dictionary.storefront.brand.title,
+      title: `${tStorefront("nav.shop")} | ${tStorefront("brand.title")}`,
+      description: tStorefront("shopPage.lead"),
+      siteName: tStorefront("brand.title"),
     },
   };
 };
@@ -39,8 +41,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const DefaultShopPage = async ({ searchParams }: DefaultShopPageProps) => {
   const { category, q } = await searchParams;
   const country = await getRequestCountry();
-  const [dictionary, categories, products] = await Promise.all([
-    getDictionary(defaultLocale, country),
+  const [categories, products] = await Promise.all([
     getShopCategories(defaultLocale),
     getShopProducts(defaultLocale, country),
   ]);
@@ -49,7 +50,6 @@ const DefaultShopPage = async ({ searchParams }: DefaultShopPageProps) => {
     <ShopPageView
       locale={defaultLocale}
       country={country}
-      dictionary={dictionary.storefront}
       categories={categories}
       products={products}
       initialCategory={category}

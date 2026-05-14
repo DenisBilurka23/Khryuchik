@@ -1,5 +1,5 @@
 import type { Locale } from "@/i18n/config";
-import type { ProductPageLabels, StorefrontDictionary } from "@/i18n/types";
+import type { ProductPageLabels } from "@/i18n/types";
 import type { CountryCode } from "@/utils";
 import type { LocalizedProductSummary } from "@/types/catalog";
 import type { ProductDetails, ProductImage } from "@/types/product-details";
@@ -50,7 +50,6 @@ export type RelatedProductsProps = {
 export type ProductPageViewProps = {
   locale: Locale;
   country: CountryCode;
-  dictionary: StorefrontDictionary;
   product: ProductDetails;
   relatedProducts: LocalizedProductSummary[];
   storyProduct?: LocalizedProductSummary | null;

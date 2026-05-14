@@ -1,5 +1,6 @@
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import { useMessages } from "next-intl";
 import {
   Alert,
   Avatar,
@@ -21,6 +22,8 @@ import {
   AdminSectionCard,
   AdminStatusChip,
 } from "@/components/admin-page-shared";
+import type { Dictionary } from "@/i18n/types";
+import { getAdminCustomerFormErrorMessage } from "@/server/admin/customer-form-state";
 import { formatAdminDate, getAdminAuthProviderLabel } from "@/utils/admin";
 
 import { AdminCustomerAvatarUploadField } from "./avatar-upload-field";
@@ -29,13 +32,15 @@ import type { AdminCustomerFormProps } from "./types";
 export const AdminCustomerForm = ({
   customer,
   locale,
-  dictionary,
-  sharedDictionary,
   action,
   deleteAction,
-  errorMessage,
+  errorCode,
   isCurrentUser = false,
 }: AdminCustomerFormProps) => {
+  const { adminPage } = useMessages() as Dictionary;
+  const dictionary = adminPage.customers.form;
+  const sharedDictionary = adminPage.shared;
+  const errorMessage = getAdminCustomerFormErrorMessage(errorCode, dictionary);
   const title = customer.name || customer.email;
 
   return (

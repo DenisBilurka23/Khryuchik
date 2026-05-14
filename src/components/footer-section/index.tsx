@@ -1,9 +1,24 @@
 import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 
-import styles from "./footer-section.module.css";
-import type { FooterSectionProps } from "./types";
+import type { Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
+import type { Dictionary } from "@/i18n/types";
+import type { CountryCode } from "@/utils";
 
-export const FooterSection = ({ dictionary }: FooterSectionProps) => {
+import styles from "./footer-section.module.css";
+
+export const FooterSection = async ({
+  locale,
+  country,
+}: {
+  locale: Locale;
+  country: CountryCode;
+}) => {
+  const { storefront: dictionary } = (await getDictionary(
+    locale,
+    country,
+  )) as Dictionary;
+
   return (
     <Box component="footer" id="faq" className={styles.footer}>
       <Container maxWidth="lg" sx={{ py: 8 }}>

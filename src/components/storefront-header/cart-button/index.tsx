@@ -3,13 +3,16 @@
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { Badge, Box, Button } from "@mui/material";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { useCart } from "../../cart/store";
 
 import type { CartButtonProps } from "./types";
 
-export const CartButton = ({ href, label, className }: CartButtonProps) => {
+export const CartButton = ({ href, className }: CartButtonProps) => {
+  const t = useTranslations("storefront");
   const { totalCount } = useCart();
+  const label = t("cartLabel");
   const icon = (
     <Badge badgeContent={totalCount} color="primary">
       <ShoppingBagOutlinedIcon fontSize="small" />

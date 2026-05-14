@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { Storefront } from "@/components/storefront";
@@ -8,7 +9,6 @@ import {
   getShopProducts,
 } from "@/data/products";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedPageProps = {
@@ -25,12 +25,14 @@ export const generateMetadata = async ({
     notFound();
   }
 
-  const country = await getRequestCountry();
-  const dictionary = await getDictionary(lang, country);
+  const [tMetadata, tBrand] = await Promise.all([
+    getTranslations({ locale: lang, namespace: "metadata" }),
+    getTranslations({ locale: lang, namespace: "storefront.brand" }),
+  ]);
 
   return {
-    title: dictionary.metadata.title,
-    description: dictionary.metadata.description,
+    title: tMetadata("title"),
+    description: tMetadata("description"),
     alternates: {
       canonical: lang === defaultLocale ? "/" : `/${lang}`,
       languages: Object.fromEntries(
@@ -43,9 +45,9 @@ export const generateMetadata = async ({
     openGraph: {
       type: "website",
       locale: lang,
-      title: dictionary.metadata.title,
-      description: dictionary.metadata.description,
-      siteName: dictionary.storefront.brand.title,
+      title: tMetadata("title"),
+      description: tMetadata("description"),
+      siteName: tBrand("title"),
     },
   };
 };
@@ -59,8 +61,7 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
   }
 
   const country = await getRequestCountry();
-  const [dictionary, books, shopCategories] = await Promise.all([
-    getDictionary(lang, country),
+  const [books, shopCategories] = await Promise.all([
     getProductsForPlacement(lang, country, "home-books"),
     getHomeTabCategories(lang),
   ]);
@@ -80,7 +81,6 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
     <Storefront
       locale={lang}
       country={country}
-      dictionary={dictionary.storefront}
       shopCategories={shopCategories}
       books={books}
       shopProducts={shopProducts}

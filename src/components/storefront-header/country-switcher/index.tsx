@@ -2,6 +2,7 @@
 
 import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
 import { useEffect, useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import { updateCountryPreferenceClient } from "@/client-api/country";
@@ -18,6 +19,7 @@ export const CountrySwitcher = ({
   label,
   sx,
 }: CountrySwitcherProps) => {
+  const t = useTranslations("storefront");
   const router = useRouter();
   const [selectedCountry, setSelectedCountry] = useState(country);
   const [isPending, startTransition] = useTransition();
@@ -62,7 +64,7 @@ export const CountrySwitcher = ({
   return (
     <HeaderSelect
       value={selectedCountry}
-      label={label}
+      label={label ?? t("countrySwitcherLabel")}
       icon={
         <PublicOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
       }

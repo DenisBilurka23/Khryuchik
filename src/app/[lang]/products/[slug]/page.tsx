@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { ProductPageView } from "@/components/product";
@@ -7,7 +8,6 @@ import {
   getProductSummariesByIds,
 } from "@/data/products";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedProductPageProps = {
@@ -30,10 +30,10 @@ export const generateMetadata = async ({
     notFound();
   }
 
-  const dictionary = await getDictionary(lang, country);
+  const tBrand = await getTranslations({ locale: lang, namespace: "storefront.brand" });
 
   return {
-    title: `${product.title} | ${dictionary.storefront.brand.title}`,
+    title: `${product.title} | ${tBrand("title")}`,
     description: product.description,
     alternates: {
       canonical:
@@ -54,7 +54,7 @@ export const generateMetadata = async ({
       locale: lang,
       title: product.title,
       description: product.description,
-      siteName: dictionary.storefront.brand.title,
+      siteName: tBrand("title"),
     },
   };
 };
@@ -73,8 +73,7 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
     notFound();
   }
 
-  const [dictionary, relatedProducts, storyProducts] = await Promise.all([
-    getDictionary(lang, country),
+  const [relatedProducts, storyProducts] = await Promise.all([
     getProductSummariesByIds(lang, country, product.relatedIds),
     getProductSummariesByIds(
       lang,
@@ -87,7 +86,6 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
     <ProductPageView
       locale={lang}
       country={country}
-      dictionary={dictionary.storefront}
       product={product}
       relatedProducts={relatedProducts}
       storyProduct={storyProducts[0] ?? null}

@@ -1,5 +1,8 @@
 import { Box } from "@mui/material";
 
+import { getDictionary } from "@/i18n/dictionaries";
+import type { Dictionary } from "@/i18n/types";
+
 import { BookSection } from "../books-section";
 import { HeroSection } from "../hero-section";
 import { NewsletterSection } from "../newsletter-section";
@@ -11,15 +14,18 @@ import { StorySection } from "../story-section";
 import styles from "./storefront.module.css";
 import type { StorefrontProps } from "./types";
 
-export const Storefront = ({
+export const Storefront = async ({
   locale,
   country,
-  dictionary,
   shopCategories,
   books,
   shopProducts,
   selectedShopCategory,
 }: StorefrontProps) => {
+  const { storefront: dictionary } = (await getDictionary(
+    locale,
+    country,
+  )) as Dictionary;
   const { navigationPaths } = createStorefrontHeaderViewModel(locale);
   const { shop: shopHref, cart: cartHref } = navigationPaths;
 

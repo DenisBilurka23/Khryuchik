@@ -16,11 +16,11 @@ const LocalizedLoginPage = async ({ params, searchParams }: LocalizedLoginPagePr
   }
 
   const { callbackUrl } = await searchParams;
-  const { dictionary } = await getGuestAuthPageContext(lang);
+  await getGuestAuthPageContext(lang);
 
   return (
     <Container maxWidth="lg">
-      <AuthPageView dictionary={dictionary.authPage} callbackUrl={callbackUrl ?? `/${lang}/account`} isGoogleEnabled={isGoogleAuthEnabled} registerHref={getLocalizedPath(lang, "/register")} forgotPasswordHref={getLocalizedPath(lang, "/forgot-password")} />
+      <AuthPageView callbackUrl={callbackUrl ?? `/${lang}/account`} isGoogleEnabled={isGoogleAuthEnabled} registerHref={getLocalizedPath(lang, "/register")} forgotPasswordHref={getLocalizedPath(lang, "/forgot-password")} />
     </Container>
   );
 };

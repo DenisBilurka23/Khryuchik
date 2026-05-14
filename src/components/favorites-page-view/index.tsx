@@ -1,6 +1,9 @@
 "use client";
 
 import { Box, Container, Paper } from "@mui/material";
+import { useMessages } from "next-intl";
+
+import type { Dictionary } from "@/i18n/types";
 
 import { useWishlist } from "@/hooks/useWishlist";
 import { getCountLabel } from "@/utils";
@@ -14,14 +17,14 @@ import type { ResolvedWishlistItem } from "./wishlist-grid";
 
 export const FavoritesPageView = ({
   locale,
-  storefrontDictionary,
-  accountDictionary,
   categoryLabels,
   isAuthenticated: initialIsAuthenticated,
   shopHref,
   loginHref,
   registerHref,
 }: FavoritesPageViewProps) => {
+  const { storefront: storefrontDictionary, accountPage: accountDictionary } =
+    useMessages() as Dictionary;
   const { addItem } = useCart();
   const { items, ids, isLoading, isAuthenticated, toggleWishlist } = useWishlist();
   const authState = isAuthenticated || initialIsAuthenticated;

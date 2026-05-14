@@ -1,20 +1,22 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
+import { useMessages } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import { confirmPasswordResetClient } from "@/client-api/auth";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
+import type { Dictionary } from "@/i18n/types";
 import { AuthInputErrorCode, PasswordResetErrorReason } from "@/types/auth";
 
 import { ResetPasswordForm } from "./form";
 import type { ResetPasswordPageViewProps } from "./types";
 
 export const ResetPasswordPageView = ({
-  dictionary,
   token,
   loginHref,
 }: ResetPasswordPageViewProps) => {
+  const { resetPasswordPage: dictionary } = useMessages() as Dictionary;
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

@@ -14,12 +14,11 @@ const LocalizedForgotPasswordPage = async ({ params }: LocalizedForgotPasswordPa
     notFound();
   }
 
-  const { dictionary } = await getGuestAuthPageContext(lang);
+  await getGuestAuthPageContext(lang);
 
   return (
     <Container maxWidth="lg">
       <ForgotPasswordPageView
-        dictionary={dictionary.forgotPasswordPage}
         locale={lang}
         loginHref={getLocalizedPath(lang, "/login")}
       />

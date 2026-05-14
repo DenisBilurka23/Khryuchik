@@ -18,12 +18,11 @@ const LocalizedRegisterPage = async ({
   }
 
   const { callbackUrl } = await searchParams;
-  const { dictionary } = await getGuestAuthPageContext(lang);
+  await getGuestAuthPageContext(lang);
 
   return (
     <Container maxWidth="lg">
       <RegisterPageView
-        dictionary={dictionary.registerPage}
         callbackUrl={callbackUrl ?? `/${lang}/account`}
         loginHref={getLocalizedPath(lang, "/login")}
       />

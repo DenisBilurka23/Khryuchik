@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { CartPageView } from "@/components/cart-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getRequestCountry } from "@/server/country/request-country";
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const country = await getRequestCountry();
-  const dictionary = await getDictionary(defaultLocale, country);
+  const tStorefront = await getTranslations({
+    locale: defaultLocale,
+    namespace: "storefront",
+  });
 
   return {
-    title: `${dictionary.storefront.cartPage.breadcrumbs.current} | ${dictionary.storefront.brand.title}`,
-    description: dictionary.storefront.cartPage.lead,
+    title: `${tStorefront("cartPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
+    description: tStorefront("cartPage.lead"),
     alternates: {
       canonical: "/cart",
       languages: Object.fromEntries(
@@ -24,24 +26,17 @@ export const generateMetadata = async (): Promise<Metadata> => {
     openGraph: {
       type: "website",
       locale: defaultLocale,
-      title: `${dictionary.storefront.cartPage.breadcrumbs.current} | ${dictionary.storefront.brand.title}`,
-      description: dictionary.storefront.cartPage.lead,
-      siteName: dictionary.storefront.brand.title,
+      title: `${tStorefront("cartPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
+      description: tStorefront("cartPage.lead"),
+      siteName: tStorefront("brand.title"),
     },
   };
 };
 
 const DefaultCartPage = async () => {
   const country = await getRequestCountry();
-  const dictionary = await getDictionary(defaultLocale, country);
 
-  return (
-    <CartPageView
-      locale={defaultLocale}
-      country={country}
-      dictionary={dictionary.storefront}
-    />
-  );
+  return <CartPageView locale={defaultLocale} country={country} />;
 };
 
 export default DefaultCartPage;

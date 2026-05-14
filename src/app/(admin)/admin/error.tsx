@@ -1,33 +1,11 @@
 "use client";
 
 import { Alert, Button, Stack, Typography } from "@mui/material";
-
-import {
-  ADMIN_LOCALE_COOKIE_NAME,
-  defaultLocale,
-  isLocale,
-} from "@/i18n/config";
-import { dictionariesByLocale } from "@/i18n/runtime-dictionaries";
+import { useTranslations } from "next-intl";
 
 type AdminErrorPageProps = {
   error: Error & { digest?: string; statusCode?: number; cause?: unknown };
   reset: () => void;
-};
-
-const getAdminLocaleFromCookie = () => {
-  if (typeof document === "undefined") {
-    return defaultLocale;
-  }
-
-  const cookieValue = document.cookie
-    .split(";")
-    .map((part) => part.trim())
-    .find((part) => part.startsWith(`${ADMIN_LOCALE_COOKIE_NAME}=`))
-    ?.split("=")[1];
-
-  const decodedValue = cookieValue ? decodeURIComponent(cookieValue) : undefined;
-
-  return decodedValue && isLocale(decodedValue) ? decodedValue : defaultLocale;
 };
 
 const getErrorMessage = (value: unknown): string | undefined => {
@@ -60,27 +38,27 @@ const isPayloadTooLargeError = (
 
 const AdminErrorPage = ({ error, reset }: AdminErrorPageProps) => {
   console.error("Admin route error boundary", error);
-  const dictionary =
-    dictionariesByLocale[getAdminLocaleFromCookie()].adminPage;
+  const tError = useTranslations("adminPage.errorBoundary");
+  const tActions = useTranslations("adminPage.shared.actions");
   const isPayloadTooLarge = isPayloadTooLargeError(error);
   const errorMessage = isPayloadTooLarge
-    ? dictionary.errorBoundary.payloadTooLargeMessage
-    : dictionary.errorBoundary.genericMessage;
+    ? tError("payloadTooLargeMessage")
+    : tError("genericMessage");
 
   return (
     <Stack gap={2} sx={{ maxWidth: 720, px: { xs: 2, md: 3 }, py: 4 }}>
       <Typography variant="h4" fontWeight={800}>
-        {dictionary.errorBoundary.title}
+        {tError("title")}
       </Typography>
       <Alert severity="error">
         {errorMessage}
       </Alert>
       <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
         <Button variant="contained" onClick={() => reset()}>
-          {dictionary.errorBoundary.retryButton}
+          {tError("retryButton")}
         </Button>
         <Button variant="outlined" href="/admin/products">
-          {dictionary.shared.actions.backToProducts}
+          {tActions("backToProducts")}
         </Button>
       </Stack>
     </Stack>

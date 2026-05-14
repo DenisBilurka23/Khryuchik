@@ -14,11 +14,13 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import { useMessages } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 
 import { updateAccountProfileClient } from "@/client-api/account";
 import { getAccountPageMockData } from "@/data/account-page-mock";
+import type { Dictionary } from "@/i18n/types";
 import { getProfileErrorMessage, splitName } from "@/utils/account-page";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
@@ -56,17 +58,14 @@ const getActiveSection = (searchParams: { get: (name: string) => string | null }
 export const AccountPageView = ({
   locale,
   country,
-  dictionary,
-  localeSwitcherLabel,
-  countrySwitcherLabel,
   homeHref,
   user,
 }: AccountPageViewProps) => {
+  const { accountPage: copy } = useMessages() as Dictionary;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { update } = useSession();
-  const copy = dictionary;
   const [profileUser, setProfileUser] = useState(user);
   const { firstName: initialFirstName, lastName: initialLastName } = splitName(user.name);
   const [firstName, setFirstName] = useState(initialFirstName);
@@ -260,8 +259,6 @@ export const AccountPageView = ({
             locale={locale}
             country={country}
             dictionary={copy}
-            localeSwitcherLabel={localeSwitcherLabel}
-            countrySwitcherLabel={countrySwitcherLabel}
             firstName={firstName}
             lastName={lastName}
             email={email}

@@ -21,6 +21,7 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -47,27 +48,21 @@ const iconByKey: Record<MobileMenuItem["key"], React.ReactNode> = {
 };
 
 export const MobileMenu = ({
-  brand,
   locale,
   country,
   localizedPaths,
   navItems,
   cartHref,
-  cartLabel,
-  localeSwitcherLabel,
-  countrySwitcherLabel,
   homeHref,
-  accountLabel,
-  signInLabel,
   favoritesHref,
-  favoritesLabel,
 }: MobileMenuProps) => {
+  const t = useTranslations("storefront");
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
   const accountHref = session
     ? getLocalizedPath(locale, "/account")
     : getLocalizedPath(locale, "/login");
-  const accountActionLabel = session ? accountLabel : signInLabel;
+  const accountActionLabel = session ? t("userMenu.account") : t("userMenu.signIn");
   const menuItems: MobileMenuItem[] = [
     ...navItems,
     {
@@ -77,7 +72,7 @@ export const MobileMenu = ({
     },
     {
       key: "favorites",
-      label: favoritesLabel,
+      label: t("favoritesLabel"),
       href: favoritesHref,
     },
   ];
@@ -120,7 +115,7 @@ export const MobileMenu = ({
               onClick={() => setOpen(false)}
               style={{ textDecoration: "none", color: "inherit" }}
             >
-              <Logo title={brand.title} subtitle={brand.subtitle} />
+              <Logo title={t("brand.title")} subtitle={t("brand.subtitle")} />
             </Link>
 
             <IconButton
@@ -138,12 +133,11 @@ export const MobileMenu = ({
                 color="text.secondary"
                 sx={{ display: "block", mb: 0.75 }}
               >
-                {countrySwitcherLabel}
+                {t("countrySwitcherLabel")}
               </Typography>
               <CountrySwitcher
                 country={country}
                 locale={locale}
-                label={countrySwitcherLabel}
                 sx={{ minWidth: 0, width: "100%" }}
               />
             </Box>
@@ -153,11 +147,10 @@ export const MobileMenu = ({
                 color="text.secondary"
                 sx={{ display: "block", mb: 0.75 }}
               >
-                {localeSwitcherLabel}
+                {t("localeSwitcherLabel")}
               </Typography>
               <LocaleSwitcher
                 locale={locale}
-                label={localeSwitcherLabel}
                 localizedPaths={localizedPaths}
                 sx={{ minWidth: 0, width: "100%" }}
               />
@@ -215,7 +208,7 @@ export const MobileMenu = ({
                 "&:hover": { bgcolor: "#09090B" },
               }}
             >
-              {cartLabel}
+              {t("cartLabel")}
             </Button>
           </Link>
         </Box>

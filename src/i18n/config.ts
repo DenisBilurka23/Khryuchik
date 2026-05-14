@@ -2,6 +2,8 @@ export const locales = ["ru", "en"] as const;
 
 export const defaultLocale = "en";
 
+export const LOCALE_HEADER = "x-khryuchik-locale";
+
 export const ADMIN_LOCALE_COOKIE_NAME = "khryuchik-admin-locale";
 
 export const ADMIN_LOCALE_QUERY_PARAM = "adminLocale";

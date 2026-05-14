@@ -1,12 +1,14 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
+import { useMessages } from "next-intl";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { registerUserClient } from "@/client-api/auth";
 import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
+import type { Dictionary } from "@/i18n/types";
 import { AuthInputErrorCode } from "@/types/auth";
 import { getRegisterErrorMessage } from "@/utils/register-page";
 
@@ -14,10 +16,10 @@ import { RegisterForm } from "./form";
 import type { RegisterPageViewProps } from "./types";
 
 export const RegisterPageView = ({
-  dictionary,
   callbackUrl,
   loginHref,
 }: RegisterPageViewProps) => {
+  const { registerPage: dictionary } = useMessages() as Dictionary;
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

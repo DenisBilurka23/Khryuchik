@@ -1,9 +1,10 @@
-import type { FavoritesPageViewProps } from "../types";
+import type { AccountPageDictionary, FavoritesPageLabels } from "@/i18n/types";
+import type { Locale } from "@/i18n/config";
 
 export type FavoritesHeroProps = {
-  locale: FavoritesPageViewProps["locale"];
-  guestCopy: FavoritesPageViewProps["storefrontDictionary"]["favoritesPage"];
-  authCopy: FavoritesPageViewProps["accountDictionary"];
+  locale: Locale;
+  guestCopy: FavoritesPageLabels;
+  authCopy: AccountPageDictionary;
   authState: boolean;
   countLabel: string;
   shopHref: string;

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { ShopPageView } from "@/components/shop-page-view";
 import { getShopCategories, getShopProducts } from "@/data/products";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedShopPageProps = {
@@ -23,12 +23,11 @@ export const generateMetadata = async ({
     notFound();
   }
 
-  const country = await getRequestCountry();
-  const dictionary = await getDictionary(lang, country);
+  const tStorefront = await getTranslations({ locale: lang, namespace: "storefront" });
 
   return {
-    title: `${dictionary.storefront.nav.shop} | ${dictionary.storefront.brand.title}`,
-    description: dictionary.storefront.shopPage.lead,
+    title: `${tStorefront("nav.shop")} | ${tStorefront("brand.title")}`,
+    description: tStorefront("shopPage.lead"),
     alternates: {
       canonical: lang === defaultLocale ? "/shop" : `/${lang}/shop`,
       languages: Object.fromEntries(
@@ -41,9 +40,9 @@ export const generateMetadata = async ({
     openGraph: {
       type: "website",
       locale: lang,
-      title: `${dictionary.storefront.nav.shop} | ${dictionary.storefront.brand.title}`,
-      description: dictionary.storefront.shopPage.lead,
-      siteName: dictionary.storefront.brand.title,
+      title: `${tStorefront("nav.shop")} | ${tStorefront("brand.title")}`,
+      description: tStorefront("shopPage.lead"),
+      siteName: tStorefront("brand.title"),
     },
   };
 };
@@ -60,8 +59,7 @@ const LocalizedShopPage = async ({
   }
 
   const country = await getRequestCountry();
-  const [dictionary, categories, products] = await Promise.all([
-    getDictionary(lang, country),
+  const [categories, products] = await Promise.all([
     getShopCategories(lang),
     getShopProducts(lang, country),
   ]);
@@ -70,7 +68,6 @@ const LocalizedShopPage = async ({
     <ShopPageView
       locale={lang}
       country={country}
-      dictionary={dictionary.storefront}
       categories={categories}
       products={products}
       initialCategory={category}

@@ -3,9 +3,10 @@ import { notFound } from "next/navigation";
 
 import { FooterSection } from "@/components/footer-section";
 import { StorefrontHeader } from "@/components/storefront-header";
+import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
 import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
 import { isLocale, locales } from "@/i18n/config";
-import { getStorefrontLayoutContext } from "@/server/storefront/layout-context";
+import { getRequestCountry } from "@/server/country/request-country";
 
 export const dynamicParams = false;
 
@@ -24,21 +25,22 @@ const LocaleLayout = async ({
     notFound();
   }
 
-  const { country, dictionary, localizedPaths, navigationPaths, homeHref } =
-    await getStorefrontLayoutContext(lang);
+  const country = await getRequestCountry();
+  const { localizedPaths, navigationPaths } =
+    createStorefrontHeaderViewModel(lang);
+  const homeHref = lang === "en" ? "/" : `/${lang}`;
 
   return (
     <StorefrontThemeProvider>
       <StorefrontHeader
         locale={lang}
         country={country}
-        dictionary={dictionary.storefront}
         homeHref={homeHref}
         localizedPaths={localizedPaths}
         navigationPaths={navigationPaths}
       />
       {children}
-      <FooterSection dictionary={dictionary.storefront} />
+      <FooterSection locale={lang} country={country} />
     </StorefrontThemeProvider>
   );
 };

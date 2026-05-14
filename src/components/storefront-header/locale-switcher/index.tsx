@@ -2,6 +2,7 @@
 
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import { useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { defaultLocale, locales } from "@/i18n/config";
@@ -42,6 +43,7 @@ const getPathForLocale = (
 
 export const LocaleSwitcher = (props: LocaleSwitcherProps) => {
   const { locale, label, sx } = props;
+  const t = useTranslations("storefront");
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -50,7 +52,7 @@ export const LocaleSwitcher = (props: LocaleSwitcherProps) => {
   return (
     <HeaderSelect
       value={locale}
-      label={label}
+      label={label ?? t("localeSwitcherLabel")}
       icon={
         <LanguageOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
       }

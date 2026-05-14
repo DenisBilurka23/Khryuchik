@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 
 import type { Locale } from "@/i18n/config";
-import type { AccountPageDictionary } from "@/i18n/types";
 import type { CountryCode } from "@/utils";
 import type { AuthProvider } from "@/types/users";
 
@@ -17,9 +16,6 @@ export type AccountPageUser = {
 export type AccountPageViewProps = {
   locale: Locale;
   country: CountryCode;
-  dictionary: AccountPageDictionary;
-  localeSwitcherLabel: string;
-  countrySwitcherLabel: string;
   homeHref: string;
   user: AccountPageUser;
 };

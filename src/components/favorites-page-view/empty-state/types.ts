@@ -1,8 +1,8 @@
-import type { FavoritesPageViewProps } from "../types";
+import type { AccountPageDictionary, FavoritesPageLabels } from "@/i18n/types";
 
 export type FavoritesEmptyStateProps = {
   authState: boolean;
-  authCopy: FavoritesPageViewProps["accountDictionary"];
-  guestCopy: FavoritesPageViewProps["storefrontDictionary"]["favoritesPage"];
+  authCopy: AccountPageDictionary;
+  guestCopy: FavoritesPageLabels;
   shopHref: string;
 };

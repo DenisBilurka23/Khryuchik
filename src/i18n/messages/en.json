@@ -1,0 +1,808 @@
+{
+  "metadata": {
+    "title": "Khryuchik | Stories, books, and merch for the whole family",
+    "description": "Khryuchik website with bilingual books, a merch shop, and SEO-friendly localized pages in Russian and English."
+  },
+  "storefront": {
+    "brand": {
+      "title": "Khryuchik",
+      "subtitle": "Stories • Books • Merch",
+      "shortLabel": "Khryuchik"
+    },
+    "localeSwitcherLabel": "Language switcher",
+    "countrySwitcherLabel": "Country switcher",
+    "cartLabel": "Cart",
+    "userMenu": {
+      "account": "Account",
+      "signIn": "Sign in"
+    },
+    "nav": {
+      "books": "Books",
+      "shop": "Shop",
+      "story": "Story",
+      "faq": "Shipping"
+    },
+    "hero": {
+      "badge": "✨ Books in Russian and English",
+      "title": "The warm world of Khryuchik — stories, books, and merch for the whole family",
+      "highlight": "Khryuchik",
+      "lead": "Kind stories inspired by real life, plus cozy products with a beloved character: books, mugs, T-shirts, stickers, and gift bundles.",
+      "primaryAction": "Browse books",
+      "secondaryAction": "Open the shop",
+      "chips": [
+        "📦 Shipping across Belarus and internationally",
+        "🌍 RU / EN website versions",
+        "🎁 Ready-made gift sets"
+      ],
+      "featuredHit": {
+        "label": "This week's favorite",
+        "title": "Khryuchik mug",
+        "price": 24
+      },
+      "character": {
+        "eyebrow": "Main character",
+        "title": "Khryuchik",
+        "subtitle": "the hero of gentle family stories",
+        "emoji": "🐷"
+      },
+      "newBook": {
+        "label": "New book",
+        "title": "RU / EN edition",
+        "edition": "bilingual release",
+        "emoji": "📕"
+      },
+      "promos": [
+        {
+          "eyebrow": "Collection",
+          "title": "Khryuchik in Winter",
+          "desc": "A book, a mug, and a warm blanket in one themed bundle."
+        },
+        {
+          "eyebrow": "For gifting",
+          "title": "Gift Box",
+          "desc": "Ready-made sets for children and parents."
+        }
+      ]
+    },
+    "booksSection": {
+      "eyebrow": "Books",
+      "title": "Stories you want to read again and again",
+      "actionLabel": "All books",
+      "detailsButton": "Details",
+      "buyButton": "Buy"
+    },
+    "shopSection": {
+      "eyebrow": "Shop",
+      "title": "Favorite Khryuchik merch",
+      "actionLabel": "All merch",
+      "addToCart": "Add to cart",
+      "wishlistAriaLabel": "Add to favorites"
+    },
+    "favoritesLabel": "Favorites",
+    "favoritesPage": {
+      "eyebrow": "Guest wishlist",
+      "title": "Your favorites already work without an account",
+      "lead": "Your saved products are already here. Keep shopping freely, and when you're ready, sign in to keep the list safe and available on other devices.",
+      "savedLabel": "Saved now",
+      "primaryAction": "Sign in and sync",
+      "secondaryAction": "Create account",
+      "continueAction": "Continue shopping without signing in",
+      "listTitle": "Your guest wishlist",
+      "guestListTitle": "Guest wishlist",
+      "guestListText": "These saved products are ready now and can be attached to your account later.",
+      "itemCount": {
+        "one": "item",
+        "few": "items",
+        "many": "items",
+        "other": "items"
+      },
+      "addToCart": "Add to cart",
+      "view": "View",
+      "breadcrumbs": {
+        "home": "Home",
+        "current": "Favorites"
+      }
+    },
+    "storySection": {
+      "eyebrow": "Brand story",
+      "title": "Stories born out of real life",
+      "text": "Khryuchik is more than a character. It is a warm family world inspired by real moments, memories, and experiences worth keeping in a book and in the heart.",
+      "actionLabel": "Read the story",
+      "features": [
+        {
+          "emoji": "🌍",
+          "title": "Two language versions",
+          "text": "A Russian and English catalog, books, and product cards for both local and international audiences."
+        },
+        {
+          "emoji": "🎁",
+          "title": "Collections built around book plots",
+          "text": "Each book can grow into its own merch collection: apparel, mugs, postcards, stickers, and bundles."
+        }
+      ]
+    },
+    "orderSection": {
+      "eyebrow": "Order",
+      "title": "Build the bundle on the homepage, then review everything in the cart",
+      "lead": "The homepage now focuses on discovery. Once you know what you want, move to the dedicated cart page where the selected items and the next checkout step live.",
+      "nextTitle": "How the order flow works now",
+      "nextText": "Add products from the catalog, open the cart from the header, and review the bundle, totals, and next actions there.",
+      "cartTitle": "Next step",
+      "emptyTitle": "The cart now has its own page",
+      "emptyText": "There is no duplicate mini-cart on the homepage anymore. Pick products above, then open the full cart page when you are ready.",
+      "quantityLabel": "Quantity",
+      "totalLabel": "Estimated total",
+      "form": {
+        "nameLabel": "Your name",
+        "namePlaceholder": "For example, Anna",
+        "contactLabel": "Preferred contact",
+        "contactPlaceholder": "Phone, Telegram, or Instagram",
+        "noteLabel": "Order details",
+        "notePlaceholder": "For example: signed postcard, gift wrapping, or a child's name on the card",
+        "copyButton": "Copy inquiry",
+        "emailButton": "Open email",
+        "clearButton": "Clear cart"
+      },
+      "status": {
+        "emptyCart": "Add products to the cart first.",
+        "copied": "The inquiry has been copied. You can now send it via Telegram, Instagram, or email.",
+        "cleared": "The cart has been cleared."
+      },
+      "cartSummary": {
+        "helperText": "A quick summary of what is already in your cart before you move to checkout.",
+        "itemCount": {
+          "one": "item in cart",
+          "few": "items in cart",
+          "many": "items in cart",
+          "other": "items in cart"
+        }
+      },
+      "summary": {
+        "title": "Khryuchik merch inquiry",
+        "nameFallback": "not provided",
+        "contactFallback": "not provided",
+        "itemsTitle": "Order items:",
+        "emptyItem": "• No products selected yet",
+        "totalLabel": "Total",
+        "noteLabel": "Notes",
+        "noteFallback": "none"
+      },
+      "emailSubject": "Khryuchik merch order"
+    },
+    "productPage": {
+      "breadcrumbs": {
+        "home": "Home",
+        "shop": "Shop"
+      },
+      "selectors": {
+        "language": "Language",
+        "format": "Format",
+        "size": "Size",
+        "color": "Color",
+        "quantity": "Quantity"
+      },
+      "actions": {
+        "addToCart": "Add to cart",
+        "buyNow": "Buy now",
+        "viewBook": "View the book"
+      },
+      "details": {
+        "sku": "SKU",
+        "securePayment": "Secure online payment",
+        "shipping": "Shipping across Belarus and internationally",
+        "languageSupport": "RU / EN versions available for books"
+      },
+      "tabs": {
+        "description": "Description",
+        "specs": "Specifications",
+        "delivery": "Delivery and payment",
+        "reviews": "Reviews"
+      },
+      "relatedTitle": "Build your own Khryuchik bundle",
+      "storyConnection": {
+        "title": "This product was inspired by the story '{title}'",
+        "description": "Add the book to your purchase and create a cozy Khryuchik gift set."
+      }
+    },
+    "shopPage": {
+      "eyebrow": "Catalog",
+      "title": "Khryuchik shop — books, gifts, and cozy merch",
+      "lead": "Browse bilingual books, mugs, T-shirts, stickers, and gift-ready items inspired by Khryuchik's gentle stories.",
+      "filters": {
+        "all": "All"
+      },
+      "searchPlaceholder": "Search products",
+      "resultsLabel": "Products found",
+      "emptyTitle": "Nothing found",
+      "emptyText": "Try changing your search or choosing another category.",
+      "resetFilters": "Reset filters",
+      "breadcrumbs": {
+        "home": "Home",
+        "current": "Shop"
+      }
+    },
+    "cartPage": {
+      "eyebrow": "Cart",
+      "title": "Your cozy Khryuchik order",
+      "lead": "Review the selected books and merch, adjust quantities, and continue to the next checkout step.",
+      "breadcrumbs": {
+        "home": "Home",
+        "shop": "Shop",
+        "current": "Cart"
+      },
+      "emptyState": {
+        "title": "Your cart is still empty",
+        "text": "Add books, mugs, T-shirts, and other warm Khryuchik items to build your cozy bundle.",
+        "action": "Go to the shop"
+      },
+      "itemCard": {
+        "variantLabel": "Variant",
+        "removeLabel": "Remove item"
+      },
+      "summary": {
+        "title": "Your order",
+        "promoPlaceholder": "Promo code",
+        "promoButton": "Apply",
+        "itemsLabel": "Items",
+        "shippingLabel": "Shipping",
+        "freeShipping": "Free",
+        "discountLabel": "Discount",
+        "totalLabel": "Total",
+        "checkoutButton": "Continue to checkout",
+        "continueShopping": "Continue shopping",
+        "infoTitle": "Cozy delivery",
+        "infoText": "PDF books are delivered after payment, while physical products can be shipped across Belarus and internationally."
+      }
+    },
+    "newsletter": {
+      "eyebrow": "Newsletter",
+      "title": "Get updates on new books and Khryuchik collections",
+      "text": "Announcements about new stories, merch drops, gift bundles, and seasonal releases — without extra noise.",
+      "emailPlaceholder": "Your email",
+      "buttonLabel": "Subscribe"
+    },
+    "footer": {
+      "description": "Gentle family stories and cozy merch for children and adults.",
+      "sections": [
+        {
+          "title": "Sections",
+          "items": [
+            "Books",
+            "Shop",
+            "Khryuchik story",
+            "Gift bundles"
+          ]
+        },
+        {
+          "title": "For customers",
+          "items": [
+            "Shipping and payment",
+            "Returns",
+            "FAQ",
+            "Contacts"
+          ]
+        },
+        {
+          "title": "Socials",
+          "items": [
+            "Instagram",
+            "TikTok",
+            "Telegram",
+            "Email"
+          ]
+        }
+      ]
+    }
+  },
+  "authPage": {
+    "eyebrow": "Account",
+    "title": "Sign in to your Khryuchik account",
+    "lead": "Use Google to access your profile, saved addresses, future orders, and your account area across devices.",
+    "credentialsTitle": "Email and password",
+    "credentialsLead": "Sign in with the email and password you created in your Khryuchik account.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "name@example.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Your password",
+    "loginButton": "Sign in",
+    "forgotPasswordLinkLabel": "Forgot password?",
+    "registerPrompt": "No account yet?",
+    "registerLinkLabel": "Create account",
+    "invalidCredentials": "Incorrect email or password.",
+    "unexpectedError": "Unable to sign in right now. Try again in a moment.",
+    "googleTitle": "Google Auth",
+    "googleButton": "Continue with Google",
+    "unavailable": "Google sign-in is not configured yet. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to enable it.",
+    "ready": "OAuth is ready for sign-in.",
+    "dividerLabel": "or",
+    "chips": [
+      "Orders",
+      "Books",
+      "Addresses"
+    ]
+  },
+  "registerPage": {
+    "eyebrow": "Registration",
+    "title": "Create your Khryuchik account",
+    "lead": "Register with email and password to keep your profile, contact phone, delivery details, and future order history in one place.",
+    "chips": [
+      "Email login",
+      "Phone contact",
+      "Future orders"
+    ],
+    "nameLabel": "Full name",
+    "namePlaceholder": "Anna Peterson",
+    "emailLabel": "Email",
+    "emailPlaceholder": "name@example.com",
+    "phoneLabel": "Phone",
+    "phonePlaceholder": "+1 647 000 00 00",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmPasswordLabel": "Confirm password",
+    "confirmPasswordPlaceholder": "Repeat your password",
+    "submitButton": "Create account",
+    "loginPrompt": "Already have an account?",
+    "loginLinkLabel": "Sign in",
+    "passwordMismatch": "Passwords do not match.",
+    "emailTaken": "An account with this email already exists.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "invalidEmail": "Enter a valid email address.",
+    "missingFields": "Fill in all required fields.",
+    "unexpectedError": "Unable to create account right now. Try again in a moment."
+  },
+  "forgotPasswordPage": {
+    "eyebrow": "Password reset",
+    "title": "Reset your password",
+    "lead": "Enter your email and we will prepare a password reset link for your Khryuchik account.",
+    "chips": [
+      "Email recovery",
+      "30 minute token",
+      "Safe reset"
+    ],
+    "emailLabel": "Email",
+    "emailPlaceholder": "name@example.com",
+    "submitButton": "Send reset link",
+    "loginPrompt": "Remembered your password?",
+    "loginLinkLabel": "Back to sign in",
+    "successMessage": "If an account with this email exists, the reset link has been prepared.",
+    "invalidEmail": "Enter a valid email address.",
+    "unexpectedError": "Unable to start password reset right now. Try again in a moment."
+  },
+  "resetPasswordPage": {
+    "eyebrow": "New password",
+    "title": "Choose a new password",
+    "lead": "Set a new password for your Khryuchik account. After that you can sign in with email and password.",
+    "passwordLabel": "New password",
+    "passwordPlaceholder": "At least 8 characters",
+    "confirmPasswordLabel": "Confirm new password",
+    "confirmPasswordPlaceholder": "Repeat your new password",
+    "submitButton": "Save new password",
+    "successMessage": "Password updated. You can now sign in with your new password.",
+    "loginLinkLabel": "Go to sign in",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "invalidToken": "This reset link is invalid or has expired.",
+    "unexpectedError": "Unable to reset the password right now. Try again in a moment."
+  },
+  "accountPage": {
+    "account": "Account",
+    "welcome": "Welcome to the Khryuchik account",
+    "lead": "Manage orders, downloaded books, delivery addresses, and future account preferences from one place.",
+    "profile": "Profile",
+    "orders": "My orders",
+    "books": "My books",
+    "addresses": "Addresses",
+    "favorites": "Favorites",
+    "settings": "Settings",
+    "logout": "Sign out",
+    "delivered": "Delivered",
+    "inDelivery": "In delivery",
+    "editProfile": "Edit profile",
+    "changeAvatar": "Change avatar",
+    "replaceAvatar": "Replace avatar",
+    "removeAvatar": "Remove avatar",
+    "avatarEmptyLabel": "Add a profile photo for quicker recognition.",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saved": "Profile saved.",
+    "firstNameLabel": "First name",
+    "lastNameLabel": "Last name",
+    "emailLabel": "Email",
+    "phoneLabel": "Phone",
+    "invalidEmail": "Enter a valid email address.",
+    "emailTaken": "This email is already used by another account.",
+    "missingFields": "Fill in your name and email.",
+    "emailManagedByGoogle": "Email is managed by Google for this account and cannot be changed here.",
+    "unexpectedError": "Unable to save your profile right now. Try again in a moment.",
+    "addAddress": "Add address",
+    "allOrders": "All orders",
+    "showAll": "Show all",
+    "removeAll": "Clear",
+    "signOutButton": "Sign out",
+    "security": "Security",
+    "notifications": "Notifications",
+    "notificationsEmailUpdatesTitle": "Email updates",
+    "notificationsEmailUpdatesDescription": "New books, order updates, and seasonal collections.",
+    "languageRegion": "Language and region",
+    "personalData": "Personal details",
+    "newPasswordLabel": "New password",
+    "repeatPasswordLabel": "Repeat password",
+    "recentOrders": "Recent orders",
+    "downloadedBooks": "Downloaded books",
+    "shippingAddresses": "Shipping addresses",
+    "favoritesEyebrow": "Wishlist",
+    "favoritesTitle": "Your favorites",
+    "favoritesLead": "Saved books and merch live here so you can compare collections, return later, and move everything to cart in one step.",
+    "favoritesSavedLabel": "Saved",
+    "favoritesInStockLabel": "In stock",
+    "favoritesTotalLabel": "Total",
+    "favoritesListTitle": "Wishlist",
+    "favoritesAddAllToCart": "Add all to cart",
+    "favoritesFilterAll": "All",
+    "favoritesPriceLabel": "Price",
+    "favoritesView": "View",
+    "favoritesRecommendationsTitle": "You may also like",
+    "favoritesRecommendationsAction": "View all",
+    "signOutTitle": "Sign out of account",
+    "signOutText": "You can safely sign out here. Later we can add device sessions, order sync, and saved cart merge on login.",
+    "tabs": [
+      "Overview",
+      "Orders",
+      "Books",
+      "Addresses",
+      "Settings"
+    ]
+  },
+  "adminPage": {
+    "layout": {
+      "searchPlaceholder": "Search products, accounts, and SKU...",
+      "addProduct": "Add product",
+      "brandSubtitle": "Admin panel",
+      "secureAccessText": "Admin access is verified only through the user's isAdmin field in MongoDB.",
+      "languageSwitcherLabel": "Interface language"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "categories": "Categories",
+      "customers": "Accounts",
+      "orders": "Orders"
+    },
+    "shared": {
+      "actions": {
+        "edit": "Edit",
+        "update": "Update",
+        "manage": "Manage",
+        "backToProducts": "Back to products",
+        "viewCatalog": "Full catalog",
+        "viewAccounts": "All accounts",
+        "openAccounts": "Open accounts"
+      },
+      "placeholders": {
+        "noName": "No name",
+        "emptyValue": "-"
+      },
+      "status": {
+        "active": "Active",
+        "hidden": "Hidden",
+        "admin": "Admin",
+        "user": "User",
+        "homeTabs": "Home tabs",
+        "shopOnly": "Shop only",
+        "ordersWired": "Orders wired",
+        "ordersPending": "Orders pending",
+        "availability": {
+          "in_stock": "In stock",
+          "out_of_stock": "Out of stock",
+          "preorder": "Preorder",
+          "made_to_order": "Made to order"
+        },
+        "productTypes": {
+          "book": "Book",
+          "merch": "Merch"
+        },
+        "authProviders": {
+          "google": "Google",
+          "credentials": "Email"
+        }
+      }
+    },
+    "dashboard": {
+      "eyebrow": "Dashboard",
+      "title": "Khryuchik store operations",
+      "description": "This admin is built around real catalog and account data. It shows what already lives in MongoDB and what is still waiting for a business-process integration.",
+      "systemStateTitle": "System state",
+      "systemStateDescription": "Accounts and catalog data are already live. The order source is not connected to the admin yet.",
+      "stats": {
+        "productsTitle": "Products",
+        "productsNote": "active and visible in the working catalog",
+        "accountsTitle": "Accounts",
+        "accountsNote": "with administrator access",
+        "categoriesTitle": "Categories",
+        "categoriesNote": "book SKU currently in the catalog"
+      },
+      "recentProducts": {
+        "title": "Latest products",
+        "description": "Fast path into editing product cards.",
+        "action": "Full catalog",
+        "columns": {
+          "name": "Name",
+          "category": "Category",
+          "price": "Price",
+          "status": "Status",
+          "action": "Action"
+        }
+      },
+      "recentCustomers": {
+        "title": "New accounts",
+        "description": "Users are loaded from the real users collection.",
+        "action": "All accounts",
+        "createdLabel": "Created"
+      },
+      "categories": {
+        "title": "Categories",
+        "description": "Catalog structure with linked product counts.",
+        "action": "Manage",
+        "itemsLabel": "items"
+      },
+      "orders": {
+        "title": "Orders",
+        "description": "A live order feed will appear here once the project gets a persisted order model.",
+        "emptyTitle": "There is no order source yet",
+        "emptyDescription": "In the current codebase, checkout and cart do not persist orders into a separate collection, so the admin has nothing honest to display. Once an order repository appears, this block can be connected without rebuilding the shell or UI."
+      }
+    },
+    "products": {
+      "eyebrow": "Catalog",
+      "title": "Products and digital books",
+      "description": "The full catalog with direct editing links, pricing, SKU, and availability states.",
+      "newProduct": "New product",
+      "deletedMessage": "Product deleted.",
+      "sectionTitle": "Catalog",
+      "sectionDescription": "Products are currently in the catalog.",
+      "columns": {
+        "product": "Product",
+        "sku": "SKU",
+        "type": "Type",
+        "category": "Category",
+        "price": "Price",
+        "status": "Status",
+        "sortOrder": "Sort order",
+        "action": "Action"
+      }
+    },
+    "categories": {
+      "eyebrow": "Categories",
+      "title": "Catalog categories",
+      "description": "Categories keep an inline editor because there are few fields and the speed of admin work matters more here than a separate page-level form.",
+      "savedMessage": "Category saved.",
+      "newCategoryTitle": "New category",
+      "newCategoryDescription": "Create a new category directly in the working context.",
+      "saveButton": "Save category",
+      "savingButton": "Saving category...",
+      "updateButton": "Update",
+      "deleteButton": "Delete",
+      "deletedMessage": "Category deleted.",
+      "deleteBlockedMessage": "This category cannot be deleted while products still reference it.",
+      "deleteProtectedMessage": "The books category cannot be deleted because it is reserved for book products.",
+      "deleteFailedMessage": "Failed to delete the category.",
+      "deleteDialogTitle": "Delete this category?",
+      "deleteDialogDescription": "The category will be removed from the catalog. Deletion stays blocked when products still reference it or when the category is the reserved books category.",
+      "confirmDeleteButton": "Yes, delete",
+      "cancelDeleteButton": "Cancel",
+      "deleteBlockedHint": "Move products out of this category first",
+      "deleteProtectedHint": "System category reserved for book products",
+      "itemsLabel": "items",
+      "fields": {
+        "key": "Key",
+        "sortOrder": "Sort order",
+        "ruLabel": "RU label",
+        "enLabel": "EN label"
+      },
+      "toggles": {
+        "isActive": "Active",
+        "visibleInShop": "Visible in shop",
+        "visibleInHomeTabs": "Visible in home tabs"
+      }
+    },
+    "customers": {
+      "eyebrow": "Accounts",
+      "title": "User accounts",
+      "description": "Users with quick access to full account editing and admin rights management.",
+      "deletedMessage": "Account deleted.",
+      "sectionTitle": "Accounts list",
+      "sectionDescription": "Total users",
+      "createdLabel": "Created",
+      "columns": {
+        "user": "User",
+        "phone": "Phone",
+        "role": "Role",
+        "created": "Created",
+        "action": "Action"
+      },
+      "form": {
+        "editEyebrow": "Account",
+        "editTitlePrefix": "Editing account",
+        "editDescription": "Full account details, sign-in methods, and administrative rights.",
+        "savedMessage": "Changes saved.",
+        "saveChangesButton": "Save changes",
+        "savingChangesButton": "Saving changes...",
+        "deleteButton": "Delete account",
+        "deleteDialogTitle": "Delete this account?",
+        "deleteDialogDescription": "The user account will be removed together with its profile and saved wishlist data. This action cannot be undone.",
+        "confirmDeleteButton": "Yes, delete",
+        "cancelDeleteButton": "Cancel",
+        "sections": {
+          "profileTitle": "Profile",
+          "profileDescription": "Core account fields used in the profile and authentication.",
+          "accessTitle": "Access and rights",
+          "accessDescription": "Current sign-in methods and administrative permissions for this user.",
+          "metadataTitle": "Technical details",
+          "metadataDescription": "Read-only account metadata for support and admin workflows."
+        },
+        "fields": {
+          "userId": "User ID",
+          "email": "Email",
+          "name": "Name",
+          "phone": "Phone",
+          "avatar": "Avatar",
+          "providers": "Sign-in methods",
+          "createdAt": "Created",
+          "updatedAt": "Updated"
+        },
+        "buttons": {
+          "uploadAvatar": "Choose image",
+          "replaceAvatar": "Replace image",
+          "removeAvatar": "Remove avatar"
+        },
+        "toggles": {
+          "isAdmin": "Administrator"
+        },
+        "helpers": {
+          "avatar": "Upload a profile image. After saving it will be stored in the public R2 bucket.",
+          "emptyAvatar": "No avatar selected yet.",
+          "providers": "Google accounts manage email through Google sign-in. Credentials means email and password sign-in.",
+          "currentAccount": "This is your current admin account. Deletion is disabled from this list.",
+          "currentRoleChange": "You cannot remove administrator rights from your own current account on this screen."
+        },
+        "errorMessages": {
+          "notFound": "Account not found.",
+          "storageUnavailable": "The avatar cannot be uploaded right now because R2 is not configured.",
+          "emailTaken": "This email is already used by another user.",
+          "emailManagedByGoogle": "Accounts signed in with Google must change email through Google.",
+          "cannotDeleteSelf": "You cannot delete your current admin account from this admin panel.",
+          "cannotDemoteSelf": "You cannot remove administrator rights from your own current account.",
+          "lastAdmin": "The last administrator cannot be deleted or demoted.",
+          "saveFailed": "Unable to save the account. Try again.",
+          "deleteFailed": "Unable to delete the account. Try again.",
+          "unexpected": "An unexpected error occurred while updating the account. Try again."
+        }
+      }
+    },
+    "orders": {
+      "eyebrow": "Orders",
+      "title": "Orders",
+      "description": "This section is ready for a real order model, but the current project still does not implement a persisted orders repository.",
+      "sectionTitle": "Orders feed",
+      "sectionDescription": "As soon as checkout starts saving orders into MongoDB, this page will become live.",
+      "emptyTitle": "Nothing honest to show yet",
+      "emptyDescription": "Right now cart and checkout do not create order documents, so the admin does not render fake rows. The next technical step here is an order schema, repository, and order creation after checkout.",
+      "action": "Open accounts"
+    },
+    "errorBoundary": {
+      "title": "Admin error",
+      "genericMessage": "Something went wrong while processing this page or action. Try again.",
+      "payloadTooLargeMessage": "The request is too large. Reduce the number or size of images and files, then try again.",
+      "retryButton": "Retry"
+    },
+    "productForm": {
+      "newTitle": "New product",
+      "newDescription": "Create a product on a separate page with all real catalog fields.",
+      "editTitlePrefix": "Editing",
+      "editDescription": "A dedicated page for editing the product, images, and digital files.",
+      "savedMessage": "Changes saved.",
+      "errorMessages": {
+        "storageUnavailable": "Files cannot be uploaded right now because R2 is not configured.",
+        "saveFailed": "Unable to save the product. Check the data and try again.",
+        "deleteFailed": "Unable to delete the product. Try again.",
+        "unexpected": "An error occurred while saving the product. Try again."
+      },
+      "createButton": "Create product",
+      "creatingButton": "Creating product...",
+      "saveChangesButton": "Save changes",
+      "savingChangesButton": "Saving changes...",
+      "deleteButton": "Delete product",
+      "deleteDialogTitle": "Delete this product?",
+      "deleteDialogDescription": "The product, its details, images, files, and linked references will be removed. This action cannot be undone.",
+      "confirmDeleteButton": "Yes, delete",
+      "cancelDeleteButton": "Cancel",
+      "newEyebrow": "New product",
+      "editEyebrow": "Product editor",
+      "summaryTitle": "Quick summary",
+      "summaryGalleryAssets": "Gallery assets",
+      "summaryDigitalFiles": "Digital files",
+      "galleryCountLabel": "images",
+      "filesCountLabel": "files",
+      "baseSectionTitle": "Product base",
+      "baseSectionDescription": "Core identity, type, category, and product status.",
+      "placementTitle": "Placement",
+      "pricingSectionTitle": "Country pricing",
+      "pricingSectionDescription": "Separate prices and old prices for BY and US.",
+      "localeSectionTitle": "locale",
+      "localeSectionDescription": "Localized product fields, gallery, descriptions, and digital files.",
+      "currentGalleryTitle": "Current gallery",
+      "currentAssetsTitle": "Current digital files",
+      "imagesUploadButton": "Upload images",
+      "assetsUploadButton": "Upload PDF/files",
+      "relatedSectionTitle": "Related products",
+      "relatedSectionDescription": "Choose related products from the list for cross-sell and related products.",
+      "reviewsSectionTitle": "Reviews",
+      "reviewsSectionDescription": "Shared product reviews used across all language versions.",
+      "footerTitle": "Ready to publish?",
+      "footerDescription": "Review the product data and create the product card.",
+      "helpers": {
+        "productId": "Leave empty to generate it automatically.",
+        "slug": "Leave empty to generate it from the EN title and normalize it for URLs.",
+        "sku": "Leave empty to generate it automatically from the product ID.",
+        "relatedProductIds": "Start typing a title, ID, or slug and pick products from the list.",
+        "storyProductId": "Pick the book or product that should supply the title and thumbnail for the story block.",
+        "mediaRule": "The first image is used as the thumbnail. The rest become the gallery.",
+        "optionsRule": "Type a value and press Enter.",
+        "specsRule": "Add specifications as separate fields with a name and a value.",
+        "reviewsRule": "Reviews are shared across all product locales.",
+        "filesRule": "Existing files stay attached. Upload new PDFs to append them."
+      },
+      "buttons": {
+        "addLanguage": "Add language",
+        "addFormat": "Add format",
+        "addSize": "Add size",
+        "addColor": "Add color",
+        "addSpec": "Add specification",
+        "addReview": "Add review",
+        "removeItem": "Remove"
+      },
+      "fields": {
+        "productId": "Product ID",
+        "type": "Type",
+        "category": "Category",
+        "sortOrder": "Sort order",
+        "availability": "Availability",
+        "quantity": "Quantity",
+        "isActive": "Active",
+        "visibleInShop": "Visible in shop",
+        "visibleOnHome": "Visible on homepage",
+        "byPrice": "BY price",
+        "byOldPrice": "BY old price",
+        "usPrice": "US price",
+        "usOldPrice": "US old price",
+        "slug": "Slug",
+        "title": "Title",
+        "shortTitle": "Short title",
+        "shortDescription": "Short description",
+        "thumbnailBackgroundColor": "Thumbnail background color",
+        "subtitle": "Subtitle",
+        "badge": "Badge",
+        "storyLabel": "Story label",
+        "storyProductId": "Story source product",
+        "sku": "SKU",
+        "description": "Description",
+        "languages": "Languages",
+        "formats": "Formats",
+        "sizes": "Sizes",
+        "colors": "Colors",
+        "specs": "Specifications",
+        "reviews": "Reviews",
+        "specLabel": "Specification name",
+        "specValue": "Value",
+        "reviewAuthor": "Name",
+        "reviewText": "Review",
+        "reviewRating": "Rating",
+        "reviewDate": "Date",
+        "deliveryLines": "Delivery lines",
+        "relatedProductIds": "Related product IDs",
+        "thumbnail": "Thumbnail",
+        "gallery": "Gallery"
+      }
+    }
+  }
+}

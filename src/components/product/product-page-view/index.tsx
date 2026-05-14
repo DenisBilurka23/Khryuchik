@@ -10,6 +10,8 @@ import Link from "next/link";
 
 import type { Locale } from "@/i18n/config";
 import { locales } from "@/i18n/config";
+import { getDictionary } from "@/i18n/dictionaries";
+import type { Dictionary } from "@/i18n/types";
 import {
   formatCurrency,
   getLocalizedPath,
@@ -68,15 +70,17 @@ const createProductPageViewModel = ({
     : null,
 });
 
-export const ProductPageView = ({
+export const ProductPageView = async ({
   locale,
   country,
-  dictionary,
   product,
   relatedProducts,
   storyProduct,
 }: ProductPageViewProps) => {
-  void country;
+  const { storefront: dictionary } = (await getDictionary(
+    locale,
+    country,
+  )) as Dictionary;
 
   const { homeHref, shopHref, relatedProductCards, storyProductCard } =
     createProductPageViewModel({

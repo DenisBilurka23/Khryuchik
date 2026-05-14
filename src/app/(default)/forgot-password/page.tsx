@@ -6,12 +6,11 @@ import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import type { ForgotPasswordPageProps } from "@/types/auth-pages";
 
 const ForgotPasswordPage = async ({}: ForgotPasswordPageProps) => {
-  const { dictionary } = await getGuestAuthPageContext(defaultLocale);
+  await getGuestAuthPageContext(defaultLocale);
 
   return (
     <Container maxWidth="lg">
       <ForgotPasswordPageView
-        dictionary={dictionary.forgotPasswordPage}
         locale={defaultLocale}
         loginHref="/login"
       />

@@ -1,18 +1,18 @@
 import type { WishlistItem } from "@/types/wishlist";
-
-import type { FavoritesPageViewProps } from "../types";
+import type { AccountPageDictionary, FavoritesPageLabels } from "@/i18n/types";
+import type { Locale } from "@/i18n/config";
 
 export type ResolvedWishlistItem = WishlistItem & {
   product: NonNullable<WishlistItem["product"]>;
 };
 
 export type FavoritesWishlistGridProps = {
-  locale: FavoritesPageViewProps["locale"];
+  locale: Locale;
   authState: boolean;
-  authCopy: FavoritesPageViewProps["accountDictionary"];
-  guestCopy: FavoritesPageViewProps["storefrontDictionary"]["favoritesPage"];
-  accountDictionary: FavoritesPageViewProps["accountDictionary"];
-  categoryLabels: FavoritesPageViewProps["categoryLabels"];
+  authCopy: AccountPageDictionary;
+  guestCopy: FavoritesPageLabels;
+  accountDictionary: AccountPageDictionary;
+  categoryLabels: Record<string, string>;
   items: ResolvedWishlistItem[];
   onAddToCart: (productId: string) => void;
   onToggleWishlist: (productId: string) => Promise<void>;

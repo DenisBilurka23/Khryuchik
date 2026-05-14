@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useMessages } from "next-intl";
 
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import { Alert, Box, Paper, Stack, Typography } from "@mui/material";
 
+import type { Dictionary } from "@/i18n/types";
 import type { ProductType } from "@/types/catalog";
+import { getAdminProductFormErrorMessage } from "@/server/admin/product-form-state";
 
 import { AdminConfirmSubmitButton } from "../../admin-page-shared";
 import { AdminProductFormHero } from "../form-hero";
@@ -22,13 +25,7 @@ import type { AdminProductFormProps } from "../types";
 const booksCategoryKey = "books";
 
 export const AdminProductForm = ({
-  title,
-  description,
-  submitLabel,
-  pendingSubmitLabel,
   locale,
-  dictionary,
-  sharedDictionary,
   payload,
   categories,
   initialRelatedProductOptions,
@@ -36,13 +33,25 @@ export const AdminProductForm = ({
   selectedStoryProductOption,
   action,
   deleteAction,
-  deleteDialogTitle,
-  deleteDialogDescription,
-  confirmDeleteLabel,
-  cancelDeleteLabel,
   isNew,
-  errorMessage,
+  errorCode,
 }: AdminProductFormProps) => {
+  const { adminPage } = useMessages() as Dictionary;
+  const dictionary = adminPage.productForm;
+  const sharedDictionary = adminPage.shared;
+  const title = isNew
+    ? dictionary.newTitle
+    : `${dictionary.editTitlePrefix}: ${payload.product.productId}`;
+  const description = isNew
+    ? dictionary.newDescription
+    : dictionary.editDescription;
+  const submitLabel = isNew
+    ? dictionary.createButton
+    : dictionary.saveChangesButton;
+  const pendingSubmitLabel = isNew
+    ? dictionary.creatingButton
+    : dictionary.savingChangesButton;
+  const errorMessage = getAdminProductFormErrorMessage(errorCode, dictionary);
   const ruDetails = payload.details.translations.ru;
   const enDetails = payload.details.translations.en;
   const sharedReviews =
@@ -93,10 +102,10 @@ export const AdminProductForm = ({
         deleteLabel={dictionary.deleteButton}
         productId={payload.product.productId}
         deleteAction={deleteAction}
-        deleteDialogTitle={deleteDialogTitle}
-        deleteDialogDescription={deleteDialogDescription}
-        confirmDeleteLabel={confirmDeleteLabel}
-        cancelDeleteLabel={cancelDeleteLabel}
+        deleteDialogTitle={dictionary.deleteDialogTitle}
+        deleteDialogDescription={dictionary.deleteDialogDescription}
+        confirmDeleteLabel={dictionary.confirmDeleteButton}
+        cancelDeleteLabel={dictionary.cancelDeleteButton}
         isNew={isNew}
         locale={locale}
         dictionary={dictionary}

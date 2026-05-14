@@ -4,6 +4,7 @@ import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import { AppBar, Box, Button, Container, Stack, Toolbar } from "@mui/material";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import { Logo } from "../logo";
 import { CartButton } from "./cart-button";
@@ -15,30 +16,30 @@ import styles from "./storefront-header.module.css";
 import type { StorefrontHeaderProps, StorefrontNavItem } from "./types";
 import { UserButton } from "./user-button";
 
-export const StorefrontHeader = ({
+export const StorefrontHeader = async ({
   locale,
   country,
-  dictionary,
   homeHref,
   localizedPaths,
   navigationPaths,
 }: StorefrontHeaderProps) => {
+  const t = await getTranslations({ locale, namespace: "storefront" });
   const navItems: Array<StorefrontNavItem & { icon: ReactNode }> = [
     {
       key: "shop",
-      label: dictionary.nav.shop,
+      label: t("nav.shop"),
       href: navigationPaths?.shop ?? "#shop",
       icon: <StorefrontOutlinedIcon fontSize="small" />,
     },
     {
       key: "story",
-      label: dictionary.nav.story,
+      label: t("nav.story"),
       href: navigationPaths?.story ?? "#story",
       icon: <AutoStoriesOutlinedIcon fontSize="small" />,
     },
     {
       key: "faq",
-      label: dictionary.nav.faq,
+      label: t("nav.faq"),
       href: navigationPaths?.faq ?? "#faq",
       icon: <LocalShippingOutlinedIcon fontSize="small" />,
     },
@@ -73,8 +74,8 @@ export const StorefrontHeader = ({
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <Logo
-                title={dictionary.brand.title}
-                subtitle={dictionary.brand.subtitle}
+                title={t("brand.title")}
+                subtitle={t("brand.subtitle")}
               />
             </Link>
 
@@ -107,20 +108,17 @@ export const StorefrontHeader = ({
                 <CountrySwitcher
                   country={country}
                   locale={locale}
-                  label={dictionary.countrySwitcherLabel}
                   sx={{ minWidth: 92 }}
                 />
 
                 <LocaleSwitcher
                   locale={locale}
-                  label={dictionary.localeSwitcherLabel}
                   localizedPaths={localizedPaths}
                   sx={{ minWidth: 92 }}
                 />
               </Box>
 
               <MobileMenu
-                brand={dictionary.brand}
                 locale={locale}
                 country={country}
                 localizedPaths={localizedPaths}
@@ -130,32 +128,22 @@ export const StorefrontHeader = ({
                   href,
                 }))}
                 cartHref={navigationPaths?.cart ?? "/cart"}
-                cartLabel={dictionary.cartLabel}
-                localeSwitcherLabel={dictionary.localeSwitcherLabel}
-                countrySwitcherLabel={dictionary.countrySwitcherLabel}
                 homeHref={homeHref}
-                accountLabel={dictionary.userMenu.account}
-                signInLabel={dictionary.userMenu.signIn}
                 favoritesHref={navigationPaths?.favorites ?? "/favorites"}
-                favoritesLabel={dictionary.favoritesLabel}
               />
 
               <UserButton
                 locale={locale}
-                accountLabel={dictionary.userMenu.account}
-                signInLabel={dictionary.userMenu.signIn}
                 sx={{ display: { xs: "none", md: "inline-flex" } }}
               />
 
               <FavoritesButton
                 href={navigationPaths?.favorites ?? "/favorites"}
-                label={dictionary.favoritesLabel}
                 sx={{ display: { xs: "none", md: "inline-flex" } }}
               />
 
               <CartButton
                 href={navigationPaths?.cart ?? "/cart"}
-                label={dictionary.cartLabel}
                 className={styles.cartButton}
               />
             </Box>

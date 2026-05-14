@@ -5,8 +5,8 @@ import { cache } from "react";
 import type { Locale } from "@/i18n/config";
 import type { CountryCode } from "@/utils";
 
-import { buildRuntimeDictionary, dictionariesByLocale } from "./runtime-dictionaries";
+import { loadMessages } from "./message-loader";
 
 export const getDictionary = cache(async (locale: Locale, country: CountryCode) =>
-	buildRuntimeDictionary(locale, dictionariesByLocale[locale], country),
+  loadMessages(locale, country),
 );

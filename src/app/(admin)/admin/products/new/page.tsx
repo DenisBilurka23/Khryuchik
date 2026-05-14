@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { AdminProductForm } from "@/components/admin-product-form";
 import { getAdminProductEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
-import { getAdminPageContext } from "@/server/admin/page-context";
-import { getAdminProductFormErrorMessage } from "@/server/admin/product-form-state";
+import { resolveLocale } from "@/server/i18n/request-locale";
 
 import { saveAdminProductAction } from "../../actions";
 
@@ -12,29 +12,28 @@ type NewAdminProductPageProps = {
 };
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const { dictionary } = await getAdminPageContext();
+  const locale = await resolveLocale("admin");
+  const tProductForm = await getTranslations({
+    locale,
+    namespace: "adminPage.productForm",
+  });
 
   return createAdminMetadata(
-    dictionary.productForm.newTitle,
-    dictionary.productForm.newDescription,
+    tProductForm("newTitle"),
+    tProductForm("newDescription"),
+    locale,
   );
 };
 
 const NewAdminProductPage = async ({ searchParams }: NewAdminProductPageProps) => {
   const { error } = await searchParams;
-  const { dictionary, locale } = await getAdminPageContext();
+  const locale = await resolveLocale("admin");
   const editorData = await getAdminProductEditorData(undefined, locale);
 
   return (
     <AdminProductForm
       key={`new:${error ?? "ok"}`}
-      title={dictionary.productForm.newTitle}
-      description={dictionary.productForm.newDescription}
-      submitLabel={dictionary.productForm.createButton}
-      pendingSubmitLabel={dictionary.productForm.creatingButton}
       locale={locale}
-      dictionary={dictionary.productForm}
-      sharedDictionary={dictionary.shared}
       payload={editorData.payload}
       categories={editorData.categories}
       initialRelatedProductOptions={editorData.initialRelatedProductOptions}
@@ -42,7 +41,7 @@ const NewAdminProductPage = async ({ searchParams }: NewAdminProductPageProps) =
       selectedStoryProductOption={editorData.selectedStoryProductOption}
       action={saveAdminProductAction}
       isNew
-      errorMessage={getAdminProductFormErrorMessage(error, dictionary.productForm)}
+      errorCode={error}
     />
   );
 };

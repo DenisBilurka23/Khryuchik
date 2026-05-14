@@ -2,6 +2,9 @@
 
 import { Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "@mui/material";
 import Link from "next/link";
+import { useMessages } from "next-intl";
+
+import type { Dictionary } from "@/i18n/types";
 
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { countryShippingConfig, getLocalizedPath } from "@/utils";
@@ -11,7 +14,8 @@ import styles from "../storefront/storefront.module.css";
 
 import type { CartPageViewProps } from "./types";
 
-export const CartPageView = ({ locale, country, dictionary }: CartPageViewProps) => {
+export const CartPageView = ({ locale, country }: CartPageViewProps) => {
+  const { storefront: dictionary } = useMessages() as Dictionary;
   const { items, subtotal, updateQuantity, removeItem, isLoading, hasStoredItems } =
     useResolvedCart(locale, country);
 

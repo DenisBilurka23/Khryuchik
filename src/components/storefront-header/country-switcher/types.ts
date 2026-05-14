@@ -5,6 +5,6 @@ import type { SxProps, Theme } from "@mui/material/styles";
 export type CountrySwitcherProps = {
   country: CountryCode;
   locale: Locale;
-  label: string;
+  label?: string;
   sx?: SxProps<Theme>;
 };

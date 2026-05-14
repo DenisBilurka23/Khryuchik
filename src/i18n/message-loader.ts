@@ -1,14 +1,41 @@
-import type { Locale } from "@/i18n/config";
 import type { CountryCode } from "@/utils";
-import type { Dictionary, SeedDictionary } from "@/i18n/types";
 
-import { countryStorefrontOverrides } from "./country-overrides";
-import enDictionary from "./locales/en";
-import ruDictionary from "./locales/ru";
+import type { Locale } from "./config";
+import enDictionary from "./messages/en.json";
+import ruDictionary from "./messages/ru.json";
+import type { Dictionary, SeedDictionary, StorefrontDictionary } from "./types";
+
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends Array<infer Item>
+    ? Item[]
+    : T[K] extends object
+      ? DeepPartial<T[K]>
+      : T[K];
+};
+
+type StorefrontDictionaryOverride = DeepPartial<StorefrontDictionary>;
 
 export const dictionariesByLocale: Record<Locale, SeedDictionary> = {
   en: enDictionary,
   ru: ruDictionary,
+};
+
+const storefrontOverrideLoaders: Partial<
+  Record<
+    CountryCode,
+    Partial<Record<Locale, () => Promise<StorefrontDictionaryOverride>>>
+  >
+> = {
+  US: {
+    en: () =>
+      import("./overrides/US/en.json").then(
+        (module) => module.default as StorefrontDictionaryOverride,
+      ),
+    ru: () =>
+      import("./overrides/US/ru.json").then(
+        (module) => module.default as StorefrontDictionaryOverride,
+      ),
+  },
 };
 
 const mergeDeep = (
@@ -49,12 +76,12 @@ const mergeDeep = (
   return output;
 };
 
-export const buildRuntimeDictionary = (
+const buildStorefrontDictionary = async (
   locale: Locale,
   dictionary: SeedDictionary,
   country: CountryCode,
-): Dictionary => {
-  const storefront = {
+) => {
+  const baseStorefront = {
     ...dictionary.storefront,
     booksSection: {
       eyebrow: dictionary.storefront.booksSection.eyebrow,
@@ -72,14 +99,24 @@ export const buildRuntimeDictionary = (
     },
   };
 
+  const overrideLoader = storefrontOverrideLoaders[country]?.[locale];
+  const override = overrideLoader ? await overrideLoader() : undefined;
+
+  return mergeDeep(
+    baseStorefront as unknown as Record<string, unknown>,
+    override as Record<string, unknown> | undefined,
+  ) as Dictionary["storefront"];
+};
+
+export const loadMessages = async (
+  locale: Locale,
+  country: CountryCode,
+): Promise<Dictionary> => {
+  const dictionary = dictionariesByLocale[locale];
+
   return {
     metadata: dictionary.metadata,
-    storefront: mergeDeep(
-      storefront as unknown as Record<string, unknown>,
-      countryStorefrontOverrides[country]?.[locale] as
-        | Record<string, unknown>
-        | undefined,
-    ) as Dictionary["storefront"],
+    storefront: await buildStorefrontDictionary(locale, dictionary, country),
     authPage: dictionary.authPage,
     registerPage: dictionary.registerPage,
     forgotPasswordPage: dictionary.forgotPasswordPage,

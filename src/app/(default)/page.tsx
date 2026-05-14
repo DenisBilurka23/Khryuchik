@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { Storefront } from "@/components/storefront";
 import {
@@ -7,7 +8,6 @@ import {
   getShopProducts,
 } from "@/data/products";
 import { defaultLocale } from "@/i18n/config";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type HomePageProps = {
@@ -15,12 +15,14 @@ type HomePageProps = {
 };
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const country = await getRequestCountry();
-  const dictionary = await getDictionary(defaultLocale, country);
+  const [tMetadata, tBrand] = await Promise.all([
+    getTranslations({ locale: defaultLocale, namespace: "metadata" }),
+    getTranslations({ locale: defaultLocale, namespace: "storefront.brand" }),
+  ]);
 
   return {
-    title: dictionary.metadata.title,
-    description: dictionary.metadata.description,
+    title: tMetadata("title"),
+    description: tMetadata("description"),
     alternates: {
       canonical: "/",
       languages: {
@@ -31,9 +33,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
     openGraph: {
       type: "website",
       locale: defaultLocale,
-      title: dictionary.metadata.title,
-      description: dictionary.metadata.description,
-      siteName: dictionary.storefront.brand.title,
+      title: tMetadata("title"),
+      description: tMetadata("description"),
+      siteName: tBrand("title"),
     },
   };
 };
@@ -41,8 +43,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const HomePage = async ({ searchParams }: HomePageProps) => {
   const { category } = await searchParams;
   const country = await getRequestCountry();
-  const [dictionary, books, shopCategories] = await Promise.all([
-    getDictionary(defaultLocale, country),
+  const [books, shopCategories] = await Promise.all([
     getProductsForPlacement(defaultLocale, country, "home-books"),
     getHomeTabCategories(defaultLocale),
   ]);
@@ -62,7 +63,6 @@ const HomePage = async ({ searchParams }: HomePageProps) => {
     <Storefront
       locale={defaultLocale}
       country={country}
-      dictionary={dictionary.storefront}
       shopCategories={shopCategories}
       books={books}
       shopProducts={shopProducts}

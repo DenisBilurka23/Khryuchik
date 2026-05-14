@@ -14,12 +14,11 @@ const LocalizedResetPasswordPage = async ({ params }: LocalizedResetPasswordPage
     notFound();
   }
 
-  const { dictionary } = await getGuestAuthPageContext(lang);
+  await getGuestAuthPageContext(lang);
 
   return (
     <Container maxWidth="lg">
       <ResetPasswordPageView
-        dictionary={dictionary.resetPasswordPage}
         token={token}
         loginHref={getLocalizedPath(lang, "/login")}
       />

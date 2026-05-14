@@ -1,0 +1,17 @@
+{
+  "hero": {
+    "chips": [
+      "📦 Shipping across the USA and internationally",
+      "🌍 RU / EN website versions",
+      "🎁 Ready-made gift sets"
+    ],
+    "featuredHit": {
+      "price": 9
+    }
+  },
+  "cartPage": {
+    "summary": {
+      "infoText": "PDF books are delivered after payment, while physical products can be shipped across the USA and internationally."
+    }
+  }
+}

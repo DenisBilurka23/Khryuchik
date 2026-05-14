@@ -1,14 +1,38 @@
 import "server-only";
 
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 
-import { defaultLocale, isLocale } from "@/i18n/config";
+import {
+  ADMIN_LOCALE_COOKIE_NAME,
+  LOCALE_HEADER,
+  type Locale,
+  defaultLocale,
+  isLocale,
+} from "@/i18n/config";
 
-const LOCALE_HEADER = "x-khryuchik-locale";
+type LocaleScope = "storefront" | "admin";
 
-export const getRequestLocale = async () => {
-  const requestHeaders = await headers();
-  const requestLocale = requestHeaders.get(LOCALE_HEADER);
+type ResolveLocaleOptions = {
+  requestLocale?: string | null;
+};
 
-  return requestLocale && isLocale(requestLocale) ? requestLocale : defaultLocale;
+const getValidLocale = (value: string | null | undefined): Locale | null =>
+  value && isLocale(value) ? value : null;
+
+export const resolveLocale = async (
+  scope: LocaleScope,
+  options: ResolveLocaleOptions = {},
+) => {
+  const [requestHeaders, cookieStore] = await Promise.all([headers(), cookies()]);
+  const headerLocale = getValidLocale(requestHeaders.get(LOCALE_HEADER));
+  const requestLocale = getValidLocale(options.requestLocale);
+  const adminCookieLocale = getValidLocale(
+    cookieStore.get(ADMIN_LOCALE_COOKIE_NAME)?.value,
+  );
+
+  if (scope === "admin") {
+    return adminCookieLocale ?? headerLocale ?? defaultLocale;
+  }
+
+  return requestLocale ?? headerLocale ?? defaultLocale;
 };

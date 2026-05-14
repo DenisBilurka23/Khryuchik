@@ -8,11 +8,11 @@ import type { LoginPageProps } from "@/types/auth-pages";
 
 const LoginPage = async ({ searchParams }: LoginPageProps) => {
   const { callbackUrl } = await searchParams;
-  const { dictionary } = await getGuestAuthPageContext(defaultLocale);
+  await getGuestAuthPageContext(defaultLocale);
 
   return (
     <Container maxWidth="lg">
-      <AuthPageView dictionary={dictionary.authPage} callbackUrl={callbackUrl ?? "/account"} isGoogleEnabled={isGoogleAuthEnabled} registerHref="/register" forgotPasswordHref="/forgot-password" />
+      <AuthPageView callbackUrl={callbackUrl ?? "/account"} isGoogleEnabled={isGoogleAuthEnabled} registerHref="/register" forgotPasswordHref="/forgot-password" />
     </Container>
   );
 };

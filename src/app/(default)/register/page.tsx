@@ -7,12 +7,11 @@ import type { RegisterPageProps } from "@/types/auth-pages";
 
 const RegisterPage = async ({ searchParams }: RegisterPageProps) => {
   const { callbackUrl } = await searchParams;
-  const { dictionary } = await getGuestAuthPageContext(defaultLocale);
+  await getGuestAuthPageContext(defaultLocale);
 
   return (
     <Container maxWidth="lg">
       <RegisterPageView
-        dictionary={dictionary.registerPage}
         callbackUrl={callbackUrl ?? "/account"}
         loginHref="/login"
       />

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { CartPageView } from "@/components/cart-page-view";
 import { defaultLocale, isLocale, locales } from "@/i18n/config";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedCartPageProps = {
@@ -21,12 +21,11 @@ export const generateMetadata = async ({
     notFound();
   }
 
-  const country = await getRequestCountry();
-  const dictionary = await getDictionary(lang, country);
+  const tStorefront = await getTranslations({ locale: lang, namespace: "storefront" });
 
   return {
-    title: `${dictionary.storefront.cartPage.breadcrumbs.current} | ${dictionary.storefront.brand.title}`,
-    description: dictionary.storefront.cartPage.lead,
+    title: `${tStorefront("cartPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
+    description: tStorefront("cartPage.lead"),
     alternates: {
       canonical: lang === defaultLocale ? "/cart" : `/${lang}/cart`,
       languages: Object.fromEntries(
@@ -39,9 +38,9 @@ export const generateMetadata = async ({
     openGraph: {
       type: "website",
       locale: lang,
-      title: `${dictionary.storefront.cartPage.breadcrumbs.current} | ${dictionary.storefront.brand.title}`,
-      description: dictionary.storefront.cartPage.lead,
-      siteName: dictionary.storefront.brand.title,
+      title: `${tStorefront("cartPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
+      description: tStorefront("cartPage.lead"),
+      siteName: tStorefront("brand.title"),
     },
   };
 };
@@ -54,15 +53,8 @@ const LocalizedCartPage = async ({ params }: LocalizedCartPageProps) => {
   }
 
   const country = await getRequestCountry();
-  const dictionary = await getDictionary(lang, country);
 
-  return (
-    <CartPageView
-      locale={lang}
-      country={country}
-      dictionary={dictionary.storefront}
-    />
-  );
+  return <CartPageView locale={lang} country={country} />;
 };
 
 export default LocalizedCartPage;

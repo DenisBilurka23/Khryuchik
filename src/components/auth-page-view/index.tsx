@@ -2,6 +2,7 @@
 
 import { type SyntheticEvent, useState } from "react";
 import { Stack } from "@mui/material";
+import { useMessages } from "next-intl";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
@@ -11,6 +12,7 @@ import {
   AuthPageShell,
   AuthSectionDivider,
 } from "@/components/auth-page-shared";
+import type { Dictionary } from "@/i18n/types";
 
 import { AuthCredentialsForm } from "./credentials-form";
 import { AuthGoogleSignIn } from "./google-sign-in";
@@ -18,12 +20,12 @@ import { AuthGoogleSignIn } from "./google-sign-in";
 import type { AuthPageViewProps } from "./types";
 
 export const AuthPageView = ({
-  dictionary,
   callbackUrl,
   isGoogleEnabled,
   registerHref,
   forgotPasswordHref,
 }: AuthPageViewProps) => {
+  const { authPage: dictionary } = useMessages() as Dictionary;
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
