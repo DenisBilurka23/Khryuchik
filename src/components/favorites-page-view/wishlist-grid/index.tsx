@@ -12,6 +12,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import { formatCurrency, getLocalizedProductPath } from "@/utils";
@@ -52,14 +53,13 @@ const getAvailabilityColor = (availability: string) => {
 export const FavoritesWishlistGrid = ({
   locale,
   authState,
-  authCopy,
-  guestCopy,
-  accountDictionary,
   categoryLabels,
   items,
   onAddToCart,
   onToggleWishlist,
 }: FavoritesWishlistGridProps) => {
+  const tFavorites = useTranslations("storefront.favoritesPage");
+  const tAccount = useTranslations("accountPage");
   const getCategoryLabel = (categoryKey: string) =>
     categoryLabels[categoryKey] ?? categoryKey;
 
@@ -75,11 +75,11 @@ export const FavoritesWishlistGrid = ({
         >
           <Box>
             <Typography sx={{ fontSize: { xs: 20, sm: 22 }, fontWeight: 800 }}>
-              {authState ? authCopy.favoritesListTitle : guestCopy.listTitle}
+              {authState ? tAccount("favoritesListTitle") : tFavorites("listTitle")}
             </Typography>
             {!authState ? (
               <Typography color="text.secondary" sx={{ mt: 0.5 }}>
-                {guestCopy.guestListText}
+                {tFavorites("guestListText")}
               </Typography>
             ) : null}
           </Box>
@@ -171,7 +171,7 @@ export const FavoritesWishlistGrid = ({
 
                     <Box sx={{ mt: "auto" }}>
                       <Typography color="text.secondary" variant="body2">
-                        {accountDictionary.favoritesPriceLabel}
+                        {tAccount("favoritesPriceLabel")}
                       </Typography>
                       <Typography sx={{ color: "primary.main", fontWeight: 800, fontSize: 22 }}>
                         {formatCurrency(product.price, locale, product.currency)}
@@ -187,12 +187,12 @@ export const FavoritesWishlistGrid = ({
                             onAddToCart(item.productId);
                           }}
                         >
-                          {guestCopy.addToCart}
+                          {tFavorites("addToCart")}
                         </Button>
                         <Stack direction="row" spacing={1.25}>
                           <Link href={detailsHref} style={{ textDecoration: "none", display: "flex", flex: 1 }}>
                             <Button fullWidth variant="outlined" color="inherit" startIcon={<VisibilityOutlinedIcon />} sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}>
-                              {authCopy.favoritesView}
+                              {tAccount("favoritesView")}
                             </Button>
                           </Link>
                           <Button
@@ -216,11 +216,11 @@ export const FavoritesWishlistGrid = ({
                             onAddToCart(item.productId);
                           }}
                         >
-                          {guestCopy.addToCart}
+                          {tFavorites("addToCart")}
                         </Button>
                         <Link href={detailsHref} style={{ textDecoration: "none", display: "flex" }}>
                           <Button fullWidth variant="outlined" color="inherit" sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}>
-                            {guestCopy.view}
+                            {tFavorites("view")}
                           </Button>
                         </Link>
                       </Stack>

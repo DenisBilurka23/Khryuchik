@@ -1,1 +1,0 @@
-export { getAccountSidebarItems } from "./sidebar-items";

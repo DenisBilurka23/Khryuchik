@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Alert, Stack } from "@mui/material";
 
 import { AdminCustomerForm } from "@/components/admin-customer-form";
 import { deleteAdminCustomerAction, saveAdminCustomerAction } from "@/app/(admin)/admin/actions";
-import type { Dictionary } from "@/i18n/types";
+import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminCustomerEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { requireAdminPageAccess } from "@/server/admin/auth";
+import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
 type EditAdminCustomerPageProps = {
@@ -45,12 +46,12 @@ const EditAdminCustomerPage = async ({
     resolveLocale("admin"),
     requireAdminPageAccess("/admin/customers"),
   ]);
+  const country = await getRequestCountry();
   const tCustomerForm = await getTranslations({
     locale,
     namespace: "adminPage.customers.form",
   });
-  const messages = await getMessages({ locale });
-  const { adminPage } = messages as Dictionary;
+	const { adminPage } = await getDictionary(locale, country);
   const customer = await getAdminCustomerEditorData(id);
 
   if (!customer) {

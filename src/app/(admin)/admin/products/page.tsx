@@ -12,7 +12,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 import { DeleteProductButton } from "@/components/admin-products-page-view/delete-product-button";
 import { EditProductButton } from "@/components/admin-products-page-view/edit-product-button";
@@ -23,9 +23,10 @@ import {
   AdminStatusChip,
 } from "@/components/admin-page-shared";
 import { deleteAdminProductAction } from "@/app/(admin)/admin/actions";
-import type { Dictionary } from "@/i18n/types";
+import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminProducts } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
+import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import {
   getAdminAvailabilityLabel,
@@ -53,8 +54,8 @@ type AdminProductsPageProps = {
 const AdminProductsPage = async ({ searchParams }: AdminProductsPageProps) => {
   const { deleted } = await searchParams;
   const locale = await resolveLocale("admin");
-  const messages = await getMessages({ locale });
-  const { adminPage: dictionary } = messages as Dictionary;
+	const country = await getRequestCountry();
+	const { adminPage: dictionary } = await getDictionary(locale, country);
   const products = await getAdminProducts(locale);
   const shared = dictionary.shared;
 

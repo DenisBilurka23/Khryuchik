@@ -1,9 +1,6 @@
 import type { SyntheticEvent } from "react";
 
-import type { AuthPageDictionary } from "@/i18n/types";
-
 export type AuthCredentialsFormProps = {
-  dictionary: AuthPageDictionary;
   email: string;
   password: string;
   errorMessage: string | null;

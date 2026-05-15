@@ -12,7 +12,12 @@ const LoginPage = async ({ searchParams }: LoginPageProps) => {
 
   return (
     <Container maxWidth="lg">
-      <AuthPageView callbackUrl={callbackUrl ?? "/account"} isGoogleEnabled={isGoogleAuthEnabled} registerHref="/register" forgotPasswordHref="/forgot-password" />
+      <AuthPageView
+        callbackUrl={callbackUrl ?? "/account"}
+        isGoogleEnabled={isGoogleAuthEnabled}
+        registerHref="/register"
+        forgotPasswordHref="/forgot-password"
+      />
     </Container>
   );
 };

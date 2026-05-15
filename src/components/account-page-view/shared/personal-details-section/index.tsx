@@ -1,13 +1,13 @@
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { Box, Button, Chip, Grid, Stack, TextField, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { SectionCard } from "../section-card";
 
 import type { PersonalDetailsSectionProps } from "./types";
 
 export const PersonalDetailsSection = ({
-  dictionary,
   firstName,
   lastName,
   email,
@@ -25,6 +25,7 @@ export const PersonalDetailsSection = ({
   onEmailChange,
   onPhoneChange,
 }: PersonalDetailsSectionProps) => {
+  const t = useTranslations("accountPage");
   const action = isEditingProfile ? (
     <Stack direction="row" spacing={1.5}>
       {onCancel ? (
@@ -34,7 +35,7 @@ export const PersonalDetailsSection = ({
           sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
           onClick={onCancel}
         >
-          {dictionary.cancel}
+          {t("cancel")}
         </Button>
       ) : null}
       <Button
@@ -43,7 +44,7 @@ export const PersonalDetailsSection = ({
         onClick={() => void onSave()}
         loading={isSavingProfile}
       >
-        {dictionary.save}
+        {t("save")}
       </Button>
     </Stack>
   ) : (
@@ -54,18 +55,18 @@ export const PersonalDetailsSection = ({
       sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
       onClick={onBeginEdit}
     >
-      {dictionary.editProfile}
+      {t("editProfile")}
     </Button>
   );
 
   return (
-    <SectionCard title={dictionary.personalData} action={action}>
+    <SectionCard title={t("personalData")} action={action}>
       <Box component="form" onSubmit={onSave}>
         <Stack spacing={2} sx={{ mb: 2.5 }}>
           {profileError ? <Chip color="error" label={profileError} /> : null}
           {profileSuccess ? <Chip color="success" label={profileSuccess} /> : null}
           {!isEmailEditable ? (
-            <Typography color="text.secondary">{dictionary.emailManagedByGoogle}</Typography>
+            <Typography color="text.secondary">{t("emailManagedByGoogle")}</Typography>
           ) : null}
         </Stack>
 
@@ -73,7 +74,7 @@ export const PersonalDetailsSection = ({
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={dictionary.firstNameLabel}
+              label={t("firstNameLabel")}
               value={firstName}
               onChange={(event) => onFirstNameChange(event.target.value)}
               disabled={!isEditingProfile}
@@ -82,7 +83,7 @@ export const PersonalDetailsSection = ({
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={dictionary.lastNameLabel}
+              label={t("lastNameLabel")}
               value={lastName}
               onChange={(event) => onLastNameChange(event.target.value)}
               disabled={!isEditingProfile}
@@ -91,7 +92,7 @@ export const PersonalDetailsSection = ({
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={dictionary.emailLabel}
+              label={t("emailLabel")}
               value={email}
               onChange={(event) => onEmailChange(event.target.value.toLowerCase())}
               disabled={!isEditingProfile || !isEmailEditable}
@@ -100,7 +101,7 @@ export const PersonalDetailsSection = ({
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={dictionary.phoneLabel}
+              label={t("phoneLabel")}
               value={phone}
               onChange={(event) => onPhoneChange(event.target.value)}
               disabled={!isEditingProfile}

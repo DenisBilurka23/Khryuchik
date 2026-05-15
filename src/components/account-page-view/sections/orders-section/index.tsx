@@ -1,12 +1,15 @@
 import { Chip, Paper, Stack, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { SectionCard } from "../../shared";
 
 import type { OrdersSectionProps } from "./types";
 
-export const OrdersSection = ({ dictionary, orders }: OrdersSectionProps) => {
+export const OrdersSection = ({ orders }: OrdersSectionProps) => {
+  const t = useTranslations("accountPage");
+
   return (
-    <SectionCard title={dictionary.allOrders}>
+    <SectionCard title={t("allOrders")}>
       <Stack spacing={2}>
         {orders.map((order) => (
           <Paper
@@ -35,7 +38,7 @@ export const OrdersSection = ({ dictionary, orders }: OrdersSectionProps) => {
                 <Chip
                   label={order.status}
                   sx={{
-                    bgcolor: order.status === dictionary.delivered ? "#E6F6EC" : "#FFF3D6",
+                    bgcolor: order.status === t("delivered") ? "#E6F6EC" : "#FFF3D6",
                     fontWeight: 700,
                   }}
                 />

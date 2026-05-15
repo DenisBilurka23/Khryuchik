@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { Button, Stack } from "@mui/material";
 
 import { AdminEmptyState, AdminPageHero, AdminSectionCard } from "@/components/admin-page-shared";
-import type { Dictionary } from "@/i18n/types";
+import { getDictionary } from "@/i18n/dictionaries";
 import { createAdminMetadata } from "@/server/admin/metadata";
+import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -23,8 +24,8 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 const AdminOrdersPage = async () => {
 	const locale = await resolveLocale("admin");
-	const messages = await getMessages({ locale });
-	const { adminPage: dictionary } = messages as Dictionary;
+	const country = await getRequestCountry();
+	const { adminPage: dictionary } = await getDictionary(locale, country);
 
 	return (
 		<Stack gap={3}>

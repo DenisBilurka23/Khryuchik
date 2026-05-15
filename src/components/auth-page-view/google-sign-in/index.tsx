@@ -1,5 +1,6 @@
 import GoogleIcon from "@mui/icons-material/Google";
 import { Button, Stack } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import {
   AuthLinkPrompt,
@@ -10,40 +11,43 @@ import {
 import type { AuthGoogleSignInProps } from "./types";
 
 export const AuthGoogleSignIn = ({
-  dictionary,
   isGoogleEnabled,
   registerHref,
   onGoogleSignIn,
-}: AuthGoogleSignInProps) => (
-  <AuthSectionCard>
-    <Stack spacing={2.5}>
-      <AuthSectionHeader
-        title={dictionary.googleTitle}
-        description={isGoogleEnabled ? dictionary.ready : dictionary.unavailable}
-        icon={<GoogleIcon />}
-        iconBackground="#FCE5EA"
-      />
+}: AuthGoogleSignInProps) => {
+  const t = useTranslations("authPage");
 
-      <Button
-        variant="contained"
-        size="large"
-        startIcon={<GoogleIcon />}
-        onClick={() => {
-          void onGoogleSignIn();
-        }}
-        disabled={!isGoogleEnabled}
-        sx={{ alignSelf: "flex-start" }}
-      >
-        {dictionary.googleButton}
-      </Button>
+  return (
+    <AuthSectionCard>
+      <Stack spacing={2.5}>
+        <AuthSectionHeader
+          title={t("googleTitle")}
+          description={isGoogleEnabled ? t("ready") : t("unavailable")}
+          icon={<GoogleIcon />}
+          iconBackground="#FCE5EA"
+        />
 
-      <AuthLinkPrompt
-        href={registerHref}
-        label={dictionary.registerLinkLabel}
-        prefix={dictionary.registerPrompt}
-      />
-    </Stack>
-  </AuthSectionCard>
-);
+        <Button
+          variant="contained"
+          size="large"
+          startIcon={<GoogleIcon />}
+          onClick={() => {
+            void onGoogleSignIn();
+          }}
+          disabled={!isGoogleEnabled}
+          sx={{ alignSelf: "flex-start" }}
+        >
+          {t("googleButton")}
+        </Button>
+
+        <AuthLinkPrompt
+          href={registerHref}
+          label={t("registerLinkLabel")}
+          prefix={t("registerPrompt")}
+        />
+      </Stack>
+    </AuthSectionCard>
+  );
+};
 
 export type { AuthGoogleSignInProps } from "./types";

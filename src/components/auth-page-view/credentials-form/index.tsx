@@ -1,5 +1,6 @@
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import {
   AuthLinkPrompt,
@@ -10,7 +11,6 @@ import {
 import type { AuthCredentialsFormProps } from "./types";
 
 export const AuthCredentialsForm = ({
-  dictionary,
   email,
   password,
   errorMessage,
@@ -19,57 +19,61 @@ export const AuthCredentialsForm = ({
   onEmailChange,
   onPasswordChange,
   onSubmit,
-}: AuthCredentialsFormProps) => (
-  <AuthSectionCard>
-    <Box component="form" onSubmit={onSubmit}>
-      <Stack spacing={2.5}>
-        <AuthSectionHeader
-          title={dictionary.credentialsTitle}
-          description={dictionary.credentialsLead}
-          icon={<LockOutlinedIcon />}
-          iconBackground="#FFF2D6"
-        />
+}: AuthCredentialsFormProps) => {
+  const t = useTranslations("authPage");
 
-        {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
+  return (
+    <AuthSectionCard>
+      <Box component="form" onSubmit={onSubmit}>
+        <Stack spacing={2.5}>
+          <AuthSectionHeader
+            title={t("credentialsTitle")}
+            description={t("credentialsLead")}
+            icon={<LockOutlinedIcon />}
+            iconBackground="#FFF2D6"
+          />
 
-        <TextField
-          label={dictionary.emailLabel}
-          placeholder={dictionary.emailPlaceholder}
-          type="email"
-          value={email}
-          onChange={(event) => onEmailChange(event.target.value)}
-          autoComplete="email"
-          required
-          fullWidth
-        />
-        <TextField
-          label={dictionary.passwordLabel}
-          placeholder={dictionary.passwordPlaceholder}
-          type="password"
-          value={password}
-          onChange={(event) => onPasswordChange(event.target.value)}
-          autoComplete="current-password"
-          required
-          fullWidth
-        />
+          {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
 
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          loading={isLoading}
-          sx={{ alignSelf: "flex-start" }}
-        >
-          {dictionary.loginButton}
-        </Button>
+          <TextField
+            label={t("emailLabel")}
+            placeholder={t("emailPlaceholder")}
+            type="email"
+            value={email}
+            onChange={(event) => onEmailChange(event.target.value)}
+            autoComplete="email"
+            required
+            fullWidth
+          />
+          <TextField
+            label={t("passwordLabel")}
+            placeholder={t("passwordPlaceholder")}
+            type="password"
+            value={password}
+            onChange={(event) => onPasswordChange(event.target.value)}
+            autoComplete="current-password"
+            required
+            fullWidth
+          />
 
-        <AuthLinkPrompt
-          href={forgotPasswordHref}
-          label={dictionary.forgotPasswordLinkLabel}
-        />
-      </Stack>
-    </Box>
-  </AuthSectionCard>
-);
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            loading={isLoading}
+            sx={{ alignSelf: "flex-start" }}
+          >
+            {t("loginButton")}
+          </Button>
+
+          <AuthLinkPrompt
+            href={forgotPasswordHref}
+            label={t("forgotPasswordLinkLabel")}
+          />
+        </Stack>
+      </Box>
+    </AuthSectionCard>
+  );
+};
 
 export type { AuthCredentialsFormProps } from "./types";

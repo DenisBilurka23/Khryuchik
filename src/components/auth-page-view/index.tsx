@@ -2,7 +2,7 @@
 
 import { type SyntheticEvent, useState } from "react";
 import { Stack } from "@mui/material";
-import { useMessages } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
@@ -12,7 +12,6 @@ import {
   AuthPageShell,
   AuthSectionDivider,
 } from "@/components/auth-page-shared";
-import type { Dictionary } from "@/i18n/types";
 
 import { AuthCredentialsForm } from "./credentials-form";
 import { AuthGoogleSignIn } from "./google-sign-in";
@@ -25,7 +24,7 @@ export const AuthPageView = ({
   registerHref,
   forgotPasswordHref,
 }: AuthPageViewProps) => {
-  const { authPage: dictionary } = useMessages() as Dictionary;
+  const t = useTranslations("authPage");
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,7 +52,7 @@ export const AuthPageView = ({
     setIsCredentialsLoading(false);
 
     if (result?.error) {
-      setErrorMessage(dictionary.invalidCredentials);
+      setErrorMessage(t("invalidCredentials"));
       return;
     }
 
@@ -64,21 +63,20 @@ export const AuthPageView = ({
       return;
     }
 
-    setErrorMessage(dictionary.unexpectedError);
+    setErrorMessage(t("unexpectedError"));
   };
 
   return (
     <AuthPageShell>
       <AuthPageIntro
-        eyebrow={dictionary.eyebrow}
-        title={dictionary.title}
-        lead={dictionary.lead}
-        chips={dictionary.chips}
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        lead={t("lead")}
+        chips={t.raw("chips") as string[]}
       />
 
       <Stack spacing={2.5}>
         <AuthCredentialsForm
-          dictionary={dictionary}
           email={email}
           password={password}
           errorMessage={errorMessage}
@@ -89,10 +87,9 @@ export const AuthPageView = ({
           onSubmit={handleCredentialsSignIn}
         />
 
-        <AuthSectionDivider label={dictionary.dividerLabel} />
+        <AuthSectionDivider label={t("dividerLabel")} />
 
         <AuthGoogleSignIn
-          dictionary={dictionary}
           isGoogleEnabled={isGoogleEnabled}
           registerHref={registerHref}
           onGoogleSignIn={handleGoogleSignIn}

@@ -1,15 +1,18 @@
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { SectionCard } from "../../shared";
 
 import type { AddressesSectionProps } from "./types";
 
-export const AddressesSection = ({ dictionary, addresses }: AddressesSectionProps) => {
+export const AddressesSection = ({ addresses }: AddressesSectionProps) => {
+  const t = useTranslations("accountPage");
+
   return (
     <SectionCard
-      title={dictionary.shippingAddresses}
-      action={<Button variant="contained">{dictionary.addAddress}</Button>}
+      title={t("shippingAddresses")}
+      action={<Button variant="contained">{t("addAddress")}</Button>}
     >
       <Grid container spacing={2}>
         {addresses.map((address) => (

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import { AdminProductForm } from "@/components/admin-product-form";
-import type { Dictionary } from "@/i18n/types";
+import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminProductEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
+import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
 import { saveAdminProductAction } from "../../actions";
@@ -29,8 +30,8 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const NewAdminProductPage = async ({ searchParams }: NewAdminProductPageProps) => {
   const { error } = await searchParams;
   const locale = await resolveLocale("admin");
-  const messages = await getMessages({ locale });
-  const { adminPage } = messages as Dictionary;
+	const country = await getRequestCountry();
+	const { adminPage } = await getDictionary(locale, country);
   const editorData = await getAdminProductEditorData(undefined, locale);
 
   return (

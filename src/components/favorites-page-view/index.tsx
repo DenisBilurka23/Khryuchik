@@ -1,9 +1,7 @@
 "use client";
 
 import { Box, Container, Paper } from "@mui/material";
-import { useMessages } from "next-intl";
-
-import type { Dictionary } from "@/i18n/types";
+import { useTranslations } from "next-intl";
 
 import { useWishlist } from "@/hooks/useWishlist";
 import { getCountLabel } from "@/utils";
@@ -23,17 +21,18 @@ export const FavoritesPageView = ({
   loginHref,
   registerHref,
 }: FavoritesPageViewProps) => {
-  const { storefront: storefrontDictionary, accountPage: accountDictionary } =
-    useMessages() as Dictionary;
+  const tFavorites = useTranslations("storefront.favoritesPage");
   const { addItem } = useCart();
   const { items, ids, isLoading, isAuthenticated, toggleWishlist } = useWishlist();
   const authState = isAuthenticated || initialIsAuthenticated;
   const resolvedItems = items.filter(
     (item): item is ResolvedWishlistItem => Boolean(item.product),
   );
-  const guestCopy = storefrontDictionary.favoritesPage;
-  const authCopy = accountDictionary;
-  const countLabel = getCountLabel(ids.length, locale, guestCopy.itemCount);
+  const countLabel = getCountLabel(
+    ids.length,
+    locale,
+    tFavorites.raw("itemCount") as Parameters<typeof getCountLabel>[2],
+  );
 
   const addAllToCart = () => {
     resolvedItems.forEach((item) => {
@@ -48,8 +47,6 @@ export const FavoritesPageView = ({
     <Container maxWidth="lg" sx={{ py: { xs: 3, md: 6 } }}>
       <FavoritesHero
         locale={locale}
-        guestCopy={guestCopy}
-        authCopy={authCopy}
         authState={authState}
         countLabel={countLabel}
         shopHref={shopHref}
@@ -65,19 +62,11 @@ export const FavoritesPageView = ({
             {locale === "ru" ? "Загружаем избранное..." : "Loading wishlist..."}
           </Paper>
         ) : resolvedItems.length === 0 ? (
-          <FavoritesEmptyState
-            authState={authState}
-            authCopy={authCopy}
-            guestCopy={guestCopy}
-            shopHref={shopHref}
-          />
+          <FavoritesEmptyState authState={authState} shopHref={shopHref} />
         ) : (
           <FavoritesWishlistGrid
             locale={locale}
             authState={authState}
-            authCopy={authCopy}
-            guestCopy={guestCopy}
-            accountDictionary={accountDictionary}
             categoryLabels={categoryLabels}
             items={resolvedItems}
             onAddToCart={(productId: string) => {

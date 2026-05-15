@@ -1,6 +1,7 @@
 import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import { Box, Button, Chip, Grid, Paper, Stack, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { SectionCard } from "../../shared";
 
@@ -8,13 +9,14 @@ import type { FavoritesSectionProps } from "./types";
 
 export const FavoritesSection = ({
   locale,
-  dictionary,
   favorites,
   favoriteSuggestions,
   favoriteCategories,
   favoritesInStockCount,
   favoritesTotal,
 }: FavoritesSectionProps) => {
+  const t = useTranslations("accountPage");
+
   return (
     <Stack spacing={3}>
       <Paper
@@ -38,13 +40,13 @@ export const FavoritesSection = ({
                 color: "primary.main",
               }}
             >
-              {dictionary.favoritesEyebrow}
+              {t("favoritesEyebrow")}
             </Typography>
             <Typography variant="h2" sx={{ mt: 1.5, fontSize: { xs: 30, md: 40 }, fontWeight: 800 }}>
-              {dictionary.favoritesTitle}
+              {t("favoritesTitle")}
             </Typography>
             <Typography color="text.secondary" sx={{ mt: 1.5, maxWidth: 640, lineHeight: 1.8 }}>
-              {dictionary.favoritesLead}
+              {t("favoritesLead")}
             </Typography>
           </Grid>
 
@@ -60,19 +62,19 @@ export const FavoritesSection = ({
             >
               <Stack spacing={1.5}>
                 <Stack direction="row" justifyContent="space-between">
-                  <Typography color="text.secondary">{dictionary.favoritesSavedLabel}</Typography>
+                  <Typography color="text.secondary">{t("favoritesSavedLabel")}</Typography>
                   <Typography sx={{ fontWeight: 800 }}>
                     {favorites.length} {locale === "ru" ? "товара" : "items"}
                   </Typography>
                 </Stack>
                 <Stack direction="row" justifyContent="space-between">
-                  <Typography color="text.secondary">{dictionary.favoritesInStockLabel}</Typography>
+                  <Typography color="text.secondary">{t("favoritesInStockLabel")}</Typography>
                   <Typography sx={{ fontWeight: 800 }}>
                     {favoritesInStockCount} {locale === "ru" ? "товара" : "items"}
                   </Typography>
                 </Stack>
                 <Stack direction="row" justifyContent="space-between">
-                  <Typography color="text.secondary">{dictionary.favoritesTotalLabel}</Typography>
+                  <Typography color="text.secondary">{t("favoritesTotalLabel")}</Typography>
                   <Typography sx={{ fontWeight: 800 }}>{favoritesTotal}</Typography>
                 </Stack>
               </Stack>
@@ -82,15 +84,15 @@ export const FavoritesSection = ({
       </Paper>
 
       <SectionCard
-        title={dictionary.favoritesListTitle}
+        title={t("favoritesListTitle")}
         action={
           <Button variant="contained" sx={{ width: { xs: "100%", sm: "auto" } }}>
-            {dictionary.favoritesAddAllToCart}
+            {t("favoritesAddAllToCart")}
           </Button>
         }
       >
         <Stack direction="row" spacing={1.25} flexWrap="wrap" useFlexGap sx={{ mb: 2.5 }}>
-          <Chip label={dictionary.favoritesFilterAll} sx={{ fontWeight: 700, bgcolor: "#FCE5EA" }} />
+          <Chip label={t("favoritesFilterAll")} sx={{ fontWeight: 700, bgcolor: "#FCE5EA" }} />
           {favoriteCategories.map((category) => (
             <Chip
               key={category}
@@ -204,7 +206,7 @@ export const FavoritesSection = ({
 
                   <Box sx={{ mt: "auto" }}>
                     <Typography color="text.secondary" variant="body2">
-                      {dictionary.favoritesPriceLabel}
+                      {t("favoritesPriceLabel")}
                     </Typography>
                     <Typography sx={{ mt: 0.25, color: "primary.main", fontWeight: 800, fontSize: 22 }}>
                       {item.price}
@@ -216,7 +218,7 @@ export const FavoritesSection = ({
                       {locale === "ru" ? "В корзину" : "Add to cart"}
                     </Button>
                     <Button fullWidth variant="outlined" color="inherit" sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}>
-                      {dictionary.favoritesView}
+                      {t("favoritesView")}
                     </Button>
                   </Stack>
                 </Stack>
@@ -227,8 +229,8 @@ export const FavoritesSection = ({
       </SectionCard>
 
       <SectionCard
-        title={dictionary.favoritesRecommendationsTitle}
-        action={<Button variant="text">{dictionary.favoritesRecommendationsAction}</Button>}
+        title={t("favoritesRecommendationsTitle")}
+        action={<Button variant="text">{t("favoritesRecommendationsAction")}</Button>}
       >
         <Grid container spacing={2}>
           {favoriteSuggestions.map((item) => (
@@ -261,7 +263,7 @@ export const FavoritesSection = ({
                   {item.subtitle}
                 </Typography>
                 <Button variant="text" sx={{ mt: 1.5, px: 0 }} endIcon={<ChevronRightOutlinedIcon />}>
-                  {dictionary.favoritesView}
+                  {t("favoritesView")}
                 </Button>
               </Paper>
             </Grid>

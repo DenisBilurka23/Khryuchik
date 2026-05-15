@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Alert, Box, Checkbox, Stack, TextField } from "@mui/material";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 import { AdminCategoryCard } from "@/components/admin-categories-page-view/category-card";
 import {
@@ -10,9 +10,10 @@ import {
   AdminSectionCard,
 } from "@/components/admin-page-shared";
 import { deleteAdminCategoryAction, saveAdminCategoryAction } from "@/app/(admin)/admin/actions";
-import type { Dictionary } from "@/i18n/types";
+import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminCategories } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
+import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { getAdminCategoryLabel } from "@/utils/admin";
 
@@ -37,11 +38,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const AdminCategoriesPage = async ({ searchParams }: AdminCategoriesPageProps) => {
   const { deleted, error, saved } = await searchParams;
   const locale = await resolveLocale("admin");
-  const [messages, categories] = await Promise.all([
-    getMessages({ locale }),
+  const [country, categories] = await Promise.all([
+	getRequestCountry(),
     getAdminCategories(),
   ]);
-  const { adminPage: dictionary } = messages as Dictionary;
+	const { adminPage: dictionary } = await getDictionary(locale, country);
   const shared = dictionary.shared;
   const labels = dictionary.categories;
 

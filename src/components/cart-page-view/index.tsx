@@ -2,9 +2,7 @@
 
 import { Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "@mui/material";
 import Link from "next/link";
-import { useMessages } from "next-intl";
-
-import type { Dictionary } from "@/i18n/types";
+import { useTranslations } from "next-intl";
 
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { countryShippingConfig, getLocalizedPath } from "@/utils";
@@ -15,7 +13,16 @@ import styles from "../storefront/storefront.module.css";
 import type { CartPageViewProps } from "./types";
 
 export const CartPageView = ({ locale, country }: CartPageViewProps) => {
-  const { storefront: dictionary } = useMessages() as Dictionary;
+  const t = useTranslations("storefront.cartPage");
+  const cartPage = {
+    eyebrow: t("eyebrow"),
+    title: t("title"),
+    lead: t("lead"),
+    breadcrumbs: t.raw("breadcrumbs") as ReturnType<typeof t.raw>,
+    emptyState: t.raw("emptyState") as ReturnType<typeof t.raw>,
+    itemCard: t.raw("itemCard") as ReturnType<typeof t.raw>,
+    summary: t.raw("summary") as ReturnType<typeof t.raw>,
+  };
   const { items, subtotal, updateQuantity, removeItem, isLoading, hasStoredItems } =
     useResolvedCart(locale, country);
 
@@ -60,13 +67,13 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
           <Container maxWidth="lg">
             <Breadcrumbs sx={{ mb: 4 }}>
               <MuiLink component={Link} underline="hover" color="inherit" href={homeHref}>
-                {dictionary.cartPage.breadcrumbs.home}
+                {cartPage.breadcrumbs.home}
               </MuiLink>
               <MuiLink component={Link} underline="hover" color="inherit" href={shopHref}>
-                {dictionary.cartPage.breadcrumbs.shop}
+                {cartPage.breadcrumbs.shop}
               </MuiLink>
               <Typography color="text.primary">
-                {dictionary.cartPage.breadcrumbs.current}
+                {cartPage.breadcrumbs.current}
               </Typography>
             </Breadcrumbs>
 
@@ -89,26 +96,26 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
                   color: "primary.main",
                 }}
               >
-                {dictionary.cartPage.eyebrow}
+                {cartPage.eyebrow}
               </Typography>
 
               <Typography variant="h1" sx={{ mt: 2, fontSize: { xs: 36, md: 56 } }}>
-                {dictionary.cartPage.title}
+                {cartPage.title}
               </Typography>
 
               <Typography
                 color="text.secondary"
                 sx={{ mt: 2, maxWidth: 760, lineHeight: 1.8, fontSize: { xs: 16, md: 18 } }}
               >
-                {dictionary.cartPage.lead}
+                {cartPage.lead}
               </Typography>
             </Box>
 
             {!hasStoredItems && !isLoading ? (
               <EmptyCartState
-                title={dictionary.cartPage.emptyState.title}
-                text={dictionary.cartPage.emptyState.text}
-                actionLabel={dictionary.cartPage.emptyState.action}
+                title={cartPage.emptyState.title}
+                text={cartPage.emptyState.text}
+                actionLabel={cartPage.emptyState.action}
                 actionHref={shopHref}
               />
             ) : isLoading ? (
@@ -131,8 +138,8 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
                         key={item.id}
                         item={item}
                         locale={locale}
-                        variantLabel={dictionary.cartPage.itemCard.variantLabel}
-                        removeLabel={dictionary.cartPage.itemCard.removeLabel}
+                        variantLabel={cartPage.itemCard.variantLabel}
+                        removeLabel={cartPage.itemCard.removeLabel}
                         onIncrease={handleIncrease}
                         onDecrease={handleDecrease}
                         onRemove={handleRemove}
@@ -145,7 +152,7 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
                   <OrderSummaryCard
                     locale={locale}
                     country={country}
-                    labels={dictionary.cartPage.summary}
+                    labels={cartPage.summary}
                     subtotal={subtotal}
                     shipping={shipping}
                     discount={discount}

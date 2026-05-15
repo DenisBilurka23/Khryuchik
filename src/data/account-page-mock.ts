@@ -1,5 +1,4 @@
 import type { Locale } from "@/i18n/config";
-import type { AccountPageDictionary } from "@/i18n/types";
 
 export type AccountOrderMock = {
   id: string;
@@ -50,7 +49,8 @@ export type AccountPageMockData = {
 
 export const getAccountPageMockData = (
   locale: Locale,
-  dictionary: AccountPageDictionary,
+  deliveredLabel: string,
+  inDeliveryLabel: string,
 ): AccountPageMockData => {
   const isRussian = locale === "ru";
 
@@ -59,14 +59,14 @@ export const getAccountPageMockData = (
       {
         id: "#KH-2048",
         date: "25 Mar 2026",
-        status: dictionary.delivered,
+        status: deliveredLabel,
         total: "73 BYN",
         items: isRussian ? "Книга + кружка + наклейки" : "Book + mug + stickers",
       },
       {
         id: "#KH-1984",
         date: "12 Mar 2026",
-        status: dictionary.inDelivery,
+        status: inDeliveryLabel,
         total: "49 BYN",
         items: isRussian ? "Футболка Хрючик" : "Khryuchik T-shirt",
       },

@@ -1,11 +1,10 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
-import { useMessages } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { requestPasswordResetClient } from "@/client-api/auth";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
-import type { Dictionary } from "@/i18n/types";
 import { AuthInputErrorCode } from "@/types/auth";
 
 import { ForgotPasswordForm } from "./form";
@@ -15,11 +14,25 @@ export const ForgotPasswordPageView = ({
   locale,
   loginHref,
 }: ForgotPasswordPageViewProps) => {
-  const { forgotPasswordPage: dictionary } = useMessages() as Dictionary;
+  const t = useTranslations("forgotPasswordPage");
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dictionary = {
+    eyebrow: t("eyebrow"),
+    title: t("title"),
+    lead: t("lead"),
+    chips: t.raw("chips") as string[],
+    emailLabel: t("emailLabel"),
+    emailPlaceholder: t("emailPlaceholder"),
+    submitButton: t("submitButton"),
+    loginPrompt: t("loginPrompt"),
+    loginLinkLabel: t("loginLinkLabel"),
+    successMessage: t("successMessage"),
+    invalidEmail: t("invalidEmail"),
+    unexpectedError: t("unexpectedError"),
+  };
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();

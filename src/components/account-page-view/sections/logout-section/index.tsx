@@ -1,17 +1,20 @@
 import { Button, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { SectionCard } from "../../shared";
 
 import type { LogoutSectionProps } from "./types";
 
-export const LogoutSection = ({ dictionary, onSignOut }: LogoutSectionProps) => {
+export const LogoutSection = ({ onSignOut }: LogoutSectionProps) => {
+  const t = useTranslations("accountPage");
+
   return (
     <SectionCard
-      title={dictionary.signOutTitle}
-      action={<Button variant="contained" onClick={onSignOut}>{dictionary.signOutButton}</Button>}
+      title={t("signOutTitle")}
+      action={<Button variant="contained" onClick={onSignOut}>{t("signOutButton")}</Button>}
     >
       <Typography color="text.secondary" sx={{ lineHeight: 1.8 }}>
-        {dictionary.signOutText}
+        {t("signOutText")}
       </Typography>
     </SectionCard>
   );

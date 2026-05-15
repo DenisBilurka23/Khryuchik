@@ -1,8 +1,8 @@
 import { Box, Container, Grid, Stack, Typography } from "@mui/material";
-import { getMessages } from "next-intl/server";
 
 import type { Locale } from "@/i18n/config";
-import type { Dictionary } from "@/i18n/types";
+import { getDictionary } from "@/i18n/dictionaries";
+import { getRequestCountry } from "@/server/country/request-country";
 
 import styles from "./footer-section.module.css";
 
@@ -11,8 +11,8 @@ export const FooterSection = async ({
 }: {
   locale: Locale;
 }) => {
-  const { storefront: dictionary } =
-    ((await getMessages({ locale })) as Dictionary);
+  const country = await getRequestCountry();
+  const { storefront: dictionary } = await getDictionary(locale, country);
 
   return (
     <Box component="footer" id="faq" className={styles.footer}>

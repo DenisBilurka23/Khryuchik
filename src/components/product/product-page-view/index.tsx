@@ -7,11 +7,11 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { getMessages } from "next-intl/server";
 
+import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import { locales } from "@/i18n/config";
-import type { Dictionary } from "@/i18n/types";
+import { getRequestCountry } from "@/server/country/request-country";
 import {
   formatCurrency,
   getLocalizedPath,
@@ -76,8 +76,8 @@ export const ProductPageView = async ({
   relatedProducts,
   storyProduct,
 }: ProductPageViewProps) => {
-  const { storefront: dictionary } =
-    ((await getMessages({ locale })) as Dictionary);
+  const country = await getRequestCountry();
+  const { storefront: dictionary } = await getDictionary(locale, country);
 
   const { homeHref, shopHref, relatedProductCards, storyProductCard } =
     createProductPageViewModel({

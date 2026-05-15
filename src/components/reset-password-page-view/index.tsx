@@ -1,12 +1,11 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
-import { useMessages } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import { confirmPasswordResetClient } from "@/client-api/auth";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
-import type { Dictionary } from "@/i18n/types";
 import { AuthInputErrorCode, PasswordResetErrorReason } from "@/types/auth";
 
 import { ResetPasswordForm } from "./form";
@@ -16,13 +15,29 @@ export const ResetPasswordPageView = ({
   token,
   loginHref,
 }: ResetPasswordPageViewProps) => {
-  const { resetPasswordPage: dictionary } = useMessages() as Dictionary;
+  const t = useTranslations("resetPasswordPage");
   const router = useRouter();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dictionary = {
+    eyebrow: t("eyebrow"),
+    title: t("title"),
+    lead: t("lead"),
+    passwordLabel: t("passwordLabel"),
+    passwordPlaceholder: t("passwordPlaceholder"),
+    confirmPasswordLabel: t("confirmPasswordLabel"),
+    confirmPasswordPlaceholder: t("confirmPasswordPlaceholder"),
+    submitButton: t("submitButton"),
+    successMessage: t("successMessage"),
+    loginLinkLabel: t("loginLinkLabel"),
+    passwordMismatch: t("passwordMismatch"),
+    passwordTooShort: t("passwordTooShort"),
+    invalidToken: t("invalidToken"),
+    unexpectedError: t("unexpectedError"),
+  };
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();

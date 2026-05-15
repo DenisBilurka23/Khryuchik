@@ -1,6 +1,7 @@
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import { Box, Button, Chip, Grid, Paper, Stack, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { PersonalDetailsSection, SectionCard } from "../../shared";
 
@@ -8,7 +9,6 @@ import type { OverviewSectionProps } from "./types";
 
 export const OverviewSection = ({
   locale,
-  dictionary,
   orders,
   downloads,
   addresses,
@@ -29,10 +29,11 @@ export const OverviewSection = ({
   onEmailChange,
   onPhoneChange,
 }: OverviewSectionProps) => {
+  const t = useTranslations("accountPage");
+
   return (
     <Stack spacing={3}>
       <PersonalDetailsSection
-        dictionary={dictionary}
         firstName={firstName}
         lastName={lastName}
         email={email}
@@ -52,8 +53,8 @@ export const OverviewSection = ({
       />
 
       <SectionCard
-        title={dictionary.recentOrders}
-        action={<Button variant="text">{dictionary.allOrders}</Button>}
+        title={t("recentOrders")}
+        action={<Button variant="text">{t("allOrders")}</Button>}
       >
         <Stack spacing={2}>
           {orders.map((order) => (
@@ -83,7 +84,7 @@ export const OverviewSection = ({
                   <Chip
                     label={order.status}
                     sx={{
-                      bgcolor: order.status === dictionary.delivered ? "#E6F6EC" : "#FFF3D6",
+                      bgcolor: order.status === t("delivered") ? "#E6F6EC" : "#FFF3D6",
                       fontWeight: 700,
                     }}
                   />
@@ -97,7 +98,7 @@ export const OverviewSection = ({
 
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, lg: 6 }}>
-          <SectionCard title={dictionary.downloadedBooks}>
+          <SectionCard title={t("downloadedBooks")}>
             <Stack spacing={2}>
               {downloads.map((item) => (
                 <Paper
@@ -138,7 +139,7 @@ export const OverviewSection = ({
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
-          <SectionCard title={dictionary.shippingAddresses}>
+          <SectionCard title={t("shippingAddresses")}>
             <Stack spacing={2}>
               {addresses.map((address) => (
                 <Paper

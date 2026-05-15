@@ -2,7 +2,14 @@
 
 import { useEffect, useRef, useState, type SyntheticEvent } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
+import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import {
   Box,
   Button,
@@ -14,17 +21,16 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { useMessages } from "next-intl";
+import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 
 import { updateAccountProfileClient } from "@/client-api/account";
 import { getAccountPageMockData } from "@/data/account-page-mock";
-import type { Dictionary } from "@/i18n/types";
-import { getProfileErrorMessage, splitName } from "@/utils/account-page";
+import { splitName } from "@/utils/account-page";
+import { UserOperationErrorReason } from "@/types/users";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
-import { getAccountSidebarItems } from "./model";
 import {
   AddressesSection,
   BooksSection,
@@ -61,7 +67,8 @@ export const AccountPageView = ({
   homeHref,
   user,
 }: AccountPageViewProps) => {
-  const { accountPage: copy } = useMessages() as Dictionary;
+  const t = useTranslations("accountPage");
+  const tabs = t.raw("tabs") as string[];
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -90,12 +97,20 @@ export const AccountPageView = ({
     favorites,
     favoriteSuggestions,
     favoritesTotal,
-  } = getAccountPageMockData(locale, copy);
+  } = getAccountPageMockData(locale, t("delivered"), t("inDelivery"));
   const favoriteCategories = Array.from(new Set(favorites.map((item) => item.category)));
   const favoritesInStockCount = favorites.filter(
     (item) => item.availabilityTone === "in-stock",
   ).length;
-  const sidebarItems = getAccountSidebarItems(copy);
+  const sidebarItems = [
+    { key: "overview" as const, label: tabs[0] ?? t("profile"), icon: <PersonOutlineIcon /> },
+    { key: "orders" as const, label: t("orders"), icon: <ReceiptLongOutlinedIcon /> },
+    { key: "books" as const, label: t("books"), icon: <MenuBookOutlinedIcon /> },
+    { key: "addresses" as const, label: t("addresses"), icon: <LocationOnOutlinedIcon /> },
+    { key: "favorites" as const, label: t("favorites"), icon: <FavoriteBorderIcon /> },
+    { key: "settings" as const, label: t("settings"), icon: <SettingsOutlinedIcon /> },
+    { key: "logout" as const, label: t("logout"), icon: <LogoutOutlinedIcon /> },
+  ];
   const activeSection = getActiveSection(searchParams);
 
   useEffect(() => {
@@ -171,13 +186,13 @@ export const AccountPageView = ({
     const normalizedName = `${firstName.trim()} ${lastName.trim()}`.trim();
 
     if (!normalizedName || !normalizedEmail) {
-      setProfileError(copy.missingFields);
+      setProfileError(t("missingFields"));
       setProfileSuccess(null);
       return;
     }
 
     if (!EMAIL_PATTERN.test(normalizedEmail)) {
-      setProfileError(copy.invalidEmail);
+      setProfileError(t("invalidEmail"));
       setProfileSuccess(null);
       return;
     }
@@ -196,9 +211,23 @@ export const AccountPageView = ({
     setIsSavingProfile(false);
 
     if (!response.ok || !response.data?.user) {
-      setProfileError(
-        getProfileErrorMessage(response.data?.error ?? "unexpected_error", copy),
-      );
+      switch (response.data?.error ?? "unexpected_error") {
+        case "invalid_email":
+          setProfileError(t("invalidEmail"));
+          break;
+        case UserOperationErrorReason.EmailTaken:
+          setProfileError(t("emailTaken"));
+          break;
+        case "missing_fields":
+          setProfileError(t("missingFields"));
+          break;
+        case UserOperationErrorReason.EmailManagedByGoogle:
+          setProfileError(t("emailManagedByGoogle"));
+          break;
+        default:
+          setProfileError(t("unexpectedError"));
+          break;
+      }
       return;
     }
 
@@ -211,7 +240,7 @@ export const AccountPageView = ({
     setAvatarFile(null);
     setAvatarPreviewSrc(response.data.user.image ?? null);
     setIsEditingProfile(false);
-    setProfileSuccess(copy.saved);
+    setProfileSuccess(t("saved"));
 
     await update({
       user: {
@@ -236,16 +265,15 @@ export const AccountPageView = ({
   const renderSection = () => {
     switch (activeSection) {
       case "orders":
-        return <OrdersSection dictionary={copy} orders={orders} />;
+        return <OrdersSection orders={orders} />;
       case "books":
-        return <BooksSection locale={locale} dictionary={copy} downloads={downloads} />;
+        return <BooksSection locale={locale} downloads={downloads} />;
       case "addresses":
-        return <AddressesSection dictionary={copy} addresses={addresses} />;
+        return <AddressesSection addresses={addresses} />;
       case "favorites":
         return (
           <FavoritesSection
             locale={locale}
-            dictionary={copy}
             favorites={favorites}
             favoriteSuggestions={favoriteSuggestions}
             favoriteCategories={favoriteCategories}
@@ -258,7 +286,6 @@ export const AccountPageView = ({
           <SettingsSection
             locale={locale}
             country={country}
-            dictionary={copy}
             firstName={firstName}
             lastName={lastName}
             email={email}
@@ -278,18 +305,12 @@ export const AccountPageView = ({
           />
         );
       case "logout":
-        return (
-          <LogoutSection
-            dictionary={copy}
-            onSignOut={() => signOut({ callbackUrl: homeHref })}
-          />
-        );
+        return <LogoutSection onSignOut={() => signOut({ callbackUrl: homeHref })} />;
       case "overview":
       default:
         return (
           <OverviewSection
             locale={locale}
-            dictionary={copy}
             orders={orders}
             downloads={downloads}
             addresses={addresses}
@@ -329,9 +350,9 @@ export const AccountPageView = ({
                   imageSrc={avatarPreviewSrc}
                   imageAlt={userName}
                   fallbackLabel={userInitial}
-                  changeLabel={copy.changeAvatar}
-                  replaceLabel={copy.replaceAvatar}
-                  emptyLabel={copy.avatarEmptyLabel}
+                  changeLabel={t("changeAvatar")}
+                  replaceLabel={t("replaceAvatar")}
+                  emptyLabel={t("avatarEmptyLabel")}
                   onRequestEditAction={openProfileSettings}
                   onFileSelectAction={handleAvatarSelect}
                 />
@@ -353,7 +374,7 @@ export const AccountPageView = ({
                   onClick={isEditingProfile ? () => void handleProfileSave() : openProfileSettings}
                   loading={isSavingProfile}
                 >
-                  {isEditingProfile ? copy.save : copy.editProfile}
+                  {isEditingProfile ? t("save") : t("editProfile")}
                 </Button>
               </Stack>
             </CardContent>
@@ -386,13 +407,13 @@ export const AccountPageView = ({
                 color: "primary.main",
               }}
             >
-              {copy.account}
+              {t("account")}
             </Typography>
             <Typography variant="h1" sx={{ mt: 1.5, fontSize: { xs: 34, md: 48 } }}>
-              {copy.welcome}
+              {t("welcome")}
             </Typography>
             <Typography color="text.secondary" sx={{ mt: 2, maxWidth: 680, lineHeight: 1.8 }}>
-              {copy.lead}
+              {t("lead")}
             </Typography>
           </Paper>
         </Grid>

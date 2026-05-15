@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Box, Button, Paper, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
-import type { Dictionary } from "@/i18n/types";
+import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminSummaryData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
+import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import {
 	formatAdminDate,
@@ -36,11 +37,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 const AdminDashboardPage = async () => {
 	const locale = await resolveLocale("admin");
-	const [messages, summary] = await Promise.all([
-		getMessages({ locale }),
+	const [country, summary] = await Promise.all([
+		getRequestCountry(),
 		getAdminSummaryData(),
 	]);
-	const { adminPage: dictionary } = messages as Dictionary;
+	const { adminPage: dictionary } = await getDictionary(locale, country);
 	const shared = dictionary.shared;
 
 	const stats = [

@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { Alert, Box, Stack, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 
 import { deleteAdminCustomerAction } from "@/app/(admin)/admin/actions";
 import { DeleteCustomerButton, EditCustomerButton } from "@/components/admin-customers-page-view";
 import { AdminPageHero, AdminSectionCard, AdminStatusChip } from "@/components/admin-page-shared";
-import type { Dictionary } from "@/i18n/types";
+import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminCustomerFormErrorMessage } from "@/server/admin/customer-form-state";
 import { getAdminCustomers } from "@/server/admin/catalog.service";
 import { requireAdminPageAccess } from "@/server/admin/auth";
 import { createAdminMetadata } from "@/server/admin/metadata";
+import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { formatAdminDate } from "@/utils/admin";
 
@@ -37,12 +38,12 @@ const AdminCustomersPage = async ({ searchParams }: AdminCustomersPageProps) => 
 		searchParams,
 		resolveLocale("admin"),
 	]);
-	const [messages, customers, session] = await Promise.all([
-		getMessages({ locale }),
+	const [country, customers, session] = await Promise.all([
+		getRequestCountry(),
 		getAdminCustomers(),
 		requireAdminPageAccess("/admin/customers"),
 	]);
-	const { adminPage: dictionary } = messages as Dictionary;
+	const { adminPage: dictionary } = await getDictionary(locale, country);
 	const shared = dictionary.shared;
 
 	return (

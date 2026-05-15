@@ -10,13 +10,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 import type { FavoritesHeroProps } from "./types";
 
 export const FavoritesHero = ({
-  guestCopy,
-  authCopy,
   authState,
   countLabel,
   shopHref,
@@ -25,6 +24,8 @@ export const FavoritesHero = ({
   onAddAllToCart,
   isAddAllDisabled,
 }: FavoritesHeroProps) => {
+  const tFavorites = useTranslations("storefront.favoritesPage");
+  const tAccount = useTranslations("accountPage");
   const renderGuestActions = () => (
     <>
       <Stack
@@ -44,7 +45,7 @@ export const FavoritesHero = ({
               fullWidth
               sx={{ width: { xs: "100%", sm: "auto" } }}
             >
-              {guestCopy.primaryAction}
+              {tFavorites("primaryAction")}
             </Button>
           </Link>
         </Box>
@@ -65,7 +66,7 @@ export const FavoritesHero = ({
                 width: { xs: "100%", sm: "auto" },
               }}
             >
-              {guestCopy.secondaryAction}
+              {tFavorites("secondaryAction")}
             </Button>
           </Link>
         </Box>
@@ -86,7 +87,7 @@ export const FavoritesHero = ({
             sx={{ mt: 1.5, px: 1.75 }}
             endIcon={<ChevronRightOutlinedIcon />}
           >
-            {guestCopy.continueAction}
+            {tFavorites("continueAction")}
           </Button>
         </Link>
       </Box>
@@ -108,20 +109,20 @@ export const FavoritesHero = ({
         <Grid size={{ xs: 12, md: "grow" }}>
           <Box>
             <Chip
-              label={authState ? authCopy.favoritesEyebrow : guestCopy.eyebrow}
+              label={authState ? tAccount("favoritesEyebrow") : tFavorites("eyebrow")}
               sx={{ bgcolor: "#FCE5EA", fontWeight: 800 }}
             />
             <Typography
               variant="h1"
               sx={{ mt: 2, fontSize: { xs: 36, md: 58 } }}
             >
-              {authState ? authCopy.favoritesTitle : guestCopy.title}
+              {authState ? tAccount("favoritesTitle") : tFavorites("title")}
             </Typography>
             <Typography
               color="text.secondary"
               sx={{ mt: 2, lineHeight: 1.85, fontSize: { xs: 16, md: 18 } }}
             >
-              {authState ? authCopy.favoritesLead : guestCopy.lead}
+              {authState ? tAccount("favoritesLead") : tFavorites("lead")}
             </Typography>
 
             {authState ? (
@@ -141,7 +142,7 @@ export const FavoritesHero = ({
                     disabled={isAddAllDisabled}
                     sx={{ width: { xs: "100%", md: "auto" } }}
                   >
-                    {authCopy.favoritesAddAllToCart}
+                      {tAccount("favoritesAddAllToCart")}
                   </Button>
                 </Box>
               </Stack>
@@ -165,7 +166,7 @@ export const FavoritesHero = ({
             }}
           >
             <Typography color="text.secondary" variant="body2">
-              {authState ? authCopy.favoritesSavedLabel : guestCopy.savedLabel}
+              {authState ? tAccount("favoritesSavedLabel") : tFavorites("savedLabel")}
             </Typography>
             <Typography
               sx={{ mt: 0.25, fontWeight: 800, fontSize: { xs: 22, md: 24 } }}

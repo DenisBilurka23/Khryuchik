@@ -9,9 +9,8 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-import { getMessages } from "next-intl/server";
 
-import type { Dictionary } from "@/i18n/types";
+import { getDictionary } from "@/i18n/dictionaries";
 
 import { CategoryTabs } from "@/components/category-tabs";
 import { getLocalizedProductPath } from "@/utils";
@@ -32,8 +31,7 @@ export const ShopPageView = async ({
   initialCategory,
   initialQuery,
 }: ShopPageViewProps) => {
-  const { storefront: dictionary } =
-    ((await getMessages({ locale })) as Dictionary);
+  const { storefront: dictionary } = await getDictionary(locale, country);
   const initialCategoryParam = initialCategory ?? null;
   const selectedFilter: ShopFilterValue = isShopFilterValue(
     initialCategoryParam,

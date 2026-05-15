@@ -20,7 +20,12 @@ const LocalizedLoginPage = async ({ params, searchParams }: LocalizedLoginPagePr
 
   return (
     <Container maxWidth="lg">
-      <AuthPageView callbackUrl={callbackUrl ?? `/${lang}/account`} isGoogleEnabled={isGoogleAuthEnabled} registerHref={getLocalizedPath(lang, "/register")} forgotPasswordHref={getLocalizedPath(lang, "/forgot-password")} />
+      <AuthPageView
+        callbackUrl={callbackUrl ?? `/${lang}/account`}
+        isGoogleEnabled={isGoogleAuthEnabled}
+        registerHref={getLocalizedPath(lang, "/register")}
+        forgotPasswordHref={getLocalizedPath(lang, "/forgot-password")}
+      />
     </Container>
   );
 };

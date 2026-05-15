@@ -38,10 +38,13 @@ const storefrontOverrideLoaders: Partial<
   },
 };
 
-const mergeDeep = (
-  target: Record<string, unknown>,
-  source?: Record<string, unknown>,
-): Record<string, unknown> => {
+const isPlainObject = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value) && typeof value === "object" && !Array.isArray(value);
+
+const mergeDeep = <T extends Record<string, unknown>>(
+  target: T,
+  source?: DeepPartial<T>,
+): T => {
   if (!source) {
     return target;
   }
@@ -53,24 +56,18 @@ const mergeDeep = (
       continue;
     }
 
-    const targetValue = output[key];
+    const typedKey = key as keyof T;
+    const targetValue = output[typedKey];
 
     if (
-      value &&
-      typeof value === "object" &&
-      !Array.isArray(value) &&
-      targetValue &&
-      typeof targetValue === "object" &&
-      !Array.isArray(targetValue)
+      isPlainObject(value) &&
+      isPlainObject(targetValue)
     ) {
-      output[key] = mergeDeep(
-        targetValue as Record<string, unknown>,
-        value as Record<string, unknown>,
-      );
+      output[typedKey] = mergeDeep(targetValue, value as DeepPartial<typeof targetValue>);
       continue;
     }
 
-    output[key] = value;
+    output[typedKey] = value as T[keyof T];
   }
 
   return output;
@@ -80,7 +77,7 @@ const buildStorefrontDictionary = async (
   locale: Locale,
   dictionary: SeedDictionary,
   country: CountryCode,
-) => {
+): Promise<StorefrontDictionary> => {
   const baseStorefront = {
     ...dictionary.storefront,
     booksSection: {
@@ -102,10 +99,7 @@ const buildStorefrontDictionary = async (
   const overrideLoader = storefrontOverrideLoaders[country]?.[locale];
   const override = overrideLoader ? await overrideLoader() : undefined;
 
-  return mergeDeep(
-    baseStorefront as unknown as Record<string, unknown>,
-    override as Record<string, unknown> | undefined,
-  ) as Dictionary["storefront"];
+  return mergeDeep(baseStorefront, override);
 };
 
 export const loadMessages = async (

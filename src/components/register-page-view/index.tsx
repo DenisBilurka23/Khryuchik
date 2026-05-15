@@ -1,14 +1,13 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
-import { useMessages } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { registerUserClient } from "@/client-api/auth";
 import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
-import type { Dictionary } from "@/i18n/types";
 import { AuthInputErrorCode } from "@/types/auth";
 import { getRegisterErrorMessage } from "@/utils/register-page";
 
@@ -19,7 +18,7 @@ export const RegisterPageView = ({
   callbackUrl,
   loginHref,
 }: RegisterPageViewProps) => {
-  const { registerPage: dictionary } = useMessages() as Dictionary;
+  const t = useTranslations("registerPage");
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -28,6 +27,31 @@ export const RegisterPageView = ({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const dictionary = {
+    eyebrow: t("eyebrow"),
+    title: t("title"),
+    lead: t("lead"),
+    chips: t.raw("chips") as string[],
+    nameLabel: t("nameLabel"),
+    namePlaceholder: t("namePlaceholder"),
+    emailLabel: t("emailLabel"),
+    emailPlaceholder: t("emailPlaceholder"),
+    phoneLabel: t("phoneLabel"),
+    phonePlaceholder: t("phonePlaceholder"),
+    passwordLabel: t("passwordLabel"),
+    passwordPlaceholder: t("passwordPlaceholder"),
+    confirmPasswordLabel: t("confirmPasswordLabel"),
+    confirmPasswordPlaceholder: t("confirmPasswordPlaceholder"),
+    submitButton: t("submitButton"),
+    loginPrompt: t("loginPrompt"),
+    loginLinkLabel: t("loginLinkLabel"),
+    passwordMismatch: t("passwordMismatch"),
+    emailTaken: t("emailTaken"),
+    passwordTooShort: t("passwordTooShort"),
+    invalidEmail: t("invalidEmail"),
+    missingFields: t("missingFields"),
+    unexpectedError: t("unexpectedError"),
+  };
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();

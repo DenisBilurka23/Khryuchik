@@ -1,16 +1,19 @@
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { SectionCard } from "../../shared";
 
 import type { BooksSectionProps } from "./types";
 
-export const BooksSection = ({ locale, dictionary, downloads }: BooksSectionProps) => {
+export const BooksSection = ({ locale, downloads }: BooksSectionProps) => {
+  const t = useTranslations("accountPage");
+
   return (
     <SectionCard
-      title={dictionary.downloadedBooks}
-      action={<Button variant="text">{dictionary.showAll}</Button>}
+      title={t("downloadedBooks")}
+      action={<Button variant="text">{t("showAll")}</Button>}
     >
       <Stack spacing={2}>
         {downloads.map((item) => (

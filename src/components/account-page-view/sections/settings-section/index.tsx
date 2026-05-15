@@ -1,6 +1,7 @@
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { PersonalDetailsSection, SectionCard } from "../../shared";
 import { CountrySwitcher } from "../../../storefront-header/country-switcher";
@@ -11,7 +12,6 @@ import type { SettingsSectionProps } from "./types";
 export const SettingsSection = ({
   locale,
   country,
-  dictionary,
   firstName,
   lastName,
   email,
@@ -29,6 +29,7 @@ export const SettingsSection = ({
   onEmailChange,
   onPhoneChange,
 }: SettingsSectionProps) => {
+  const t = useTranslations("accountPage");
   const localizedAccountPaths = {
     en: "/account",
     ru: "/ru/account",
@@ -37,7 +38,6 @@ export const SettingsSection = ({
   return (
     <Stack spacing={3}>
       <PersonalDetailsSection
-        dictionary={dictionary}
         firstName={firstName}
         lastName={lastName}
         email={email}
@@ -56,7 +56,7 @@ export const SettingsSection = ({
         onPhoneChange={onPhoneChange}
       />
 
-      <SectionCard title={dictionary.languageRegion}>
+      <SectionCard title={t("languageRegion")}>
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6 }}>
             <CountrySwitcher
@@ -76,7 +76,7 @@ export const SettingsSection = ({
       </SectionCard>
 
       <SectionCard
-        title={dictionary.notifications}
+        title={t("notifications")}
         action={
           <Button
             variant="outlined"
@@ -84,7 +84,7 @@ export const SettingsSection = ({
             startIcon={<NotificationsOutlinedIcon />}
             sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
           >
-            {dictionary.notifications}
+            {t("notifications")}
           </Button>
         }
       >
@@ -98,19 +98,19 @@ export const SettingsSection = ({
           }}
         >
           <Typography sx={{ fontWeight: 700 }}>
-            {dictionary.notificationsEmailUpdatesTitle}
+            {t("notificationsEmailUpdatesTitle")}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {dictionary.notificationsEmailUpdatesDescription}
+            {t("notificationsEmailUpdatesDescription")}
           </Typography>
         </Paper>
       </SectionCard>
 
       <SectionCard
-        title={dictionary.security}
+        title={t("security")}
         action={
           <Button variant="contained" startIcon={<SaveOutlinedIcon />}>
-            {dictionary.save}
+            {t("save")}
           </Button>
         }
       >
@@ -118,14 +118,14 @@ export const SettingsSection = ({
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={dictionary.newPasswordLabel}
+              label={t("newPasswordLabel")}
               type="password"
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <TextField
               fullWidth
-              label={dictionary.repeatPasswordLabel}
+              label={t("repeatPasswordLabel")}
               type="password"
             />
           </Grid>

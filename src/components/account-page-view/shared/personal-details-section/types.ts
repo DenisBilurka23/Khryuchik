@@ -1,9 +1,6 @@
 import type { SyntheticEvent } from "react";
 
-import type { AccountPageDictionary } from "@/i18n/types";
-
 export type PersonalDetailsSectionProps = {
-  dictionary: AccountPageDictionary;
   firstName: string;
   lastName: string;
   email: string;
