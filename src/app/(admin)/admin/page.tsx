@@ -46,10 +46,11 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 const AdminDashboardPage = async () => {
   const locale = await resolveLocale("admin");
-  const [summary, tDashboard, tShared] = await Promise.all([
+  const [summary, tDashboard, tShared, tLayout] = await Promise.all([
     getAdminSummaryData(),
     getTranslations({ locale, namespace: "adminPage.dashboard" }),
     getTranslations({ locale, namespace: "adminPage.shared" }),
+    getTranslations({ locale, namespace: "adminPage.layout" }),
   ]);
   const sharedStatus = {
     ordersWired: tShared("status.ordersWired"),
@@ -92,7 +93,7 @@ const AdminDashboardPage = async () => {
         description={tDashboard("description")}
         actions={
           <Button href="/admin/products/new" variant="contained">
-            {tShared("actions.addProduct")}
+            {tLayout("addProduct")}
           </Button>
         }
         aside={
