@@ -1,3 +1,5 @@
+import { COUNTRY_CHANGE_EVENT } from "@/constants/country";
+
 import {
   type CountryCode,
   defaultCountry,
@@ -5,7 +7,7 @@ import {
   isCountryCode,
 } from "./index";
 
-export const COUNTRY_CHANGE_EVENT = "khryuchik-country-change";
+export { COUNTRY_CHANGE_EVENT } from "@/constants/country";
 
 export const getClientCountry = () => {
   if (typeof document === "undefined") {

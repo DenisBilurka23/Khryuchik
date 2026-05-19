@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef } from "react";
+import { useTranslations } from "next-intl";
 
 import { ModalButton } from "@/components/modal-button";
 
@@ -9,18 +10,13 @@ import type { DeleteProductButtonProps } from "./types";
 export const DeleteProductButton = ({
   productId,
   action,
-  label,
-  dialogTitle,
-  dialogDescription,
-  confirmLabel,
-  cancelLabel,
-  tooltip,
-  ariaLabel,
   icon,
   iconOnly = false,
   size = "medium",
 }: DeleteProductButtonProps) => {
+  const tForm = useTranslations("adminPage.productForm");
   const formRef = useRef<HTMLFormElement>(null);
+  const label = tForm("deleteButton");
 
   const handleConfirm = () => {
     const form = formRef.current;
@@ -42,12 +38,12 @@ export const DeleteProductButton = ({
       <ModalButton
         label={label}
         onConfirmAction={handleConfirm}
-        dialogTitle={dialogTitle}
-        dialogDescription={dialogDescription}
-        confirmLabel={confirmLabel}
-        cancelLabel={cancelLabel}
-        tooltip={tooltip}
-        ariaLabel={ariaLabel}
+        dialogTitle={tForm("deleteDialogTitle")}
+        dialogDescription={tForm("deleteDialogDescription")}
+        confirmLabel={tForm("confirmDeleteButton")}
+        cancelLabel={tForm("cancelDeleteButton")}
+        tooltip={label}
+        ariaLabel={label}
         icon={icon}
         iconOnly={iconOnly}
         size={size}

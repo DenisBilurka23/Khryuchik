@@ -10,10 +10,8 @@ import {
   AdminSectionCard,
 } from "@/components/admin-page-shared";
 import { deleteAdminCategoryAction, saveAdminCategoryAction } from "@/app/(admin)/admin/actions";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminCategories } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
-import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { getAdminCategoryLabel } from "@/utils/admin";
 
@@ -38,13 +36,35 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const AdminCategoriesPage = async ({ searchParams }: AdminCategoriesPageProps) => {
   const { deleted, error, saved } = await searchParams;
   const locale = await resolveLocale("admin");
-  const [country, categories] = await Promise.all([
-	getRequestCountry(),
+  const [categories, tCategories] = await Promise.all([
     getAdminCategories(),
+    getTranslations({ locale, namespace: "adminPage.categories" }),
   ]);
-	const { adminPage: dictionary } = await getDictionary(locale, country);
-  const shared = dictionary.shared;
-  const labels = dictionary.categories;
+  const labels = {
+    eyebrow: tCategories("eyebrow"),
+    title: tCategories("title"),
+    description: tCategories("description"),
+    savedMessage: tCategories("savedMessage"),
+    deletedMessage: tCategories("deletedMessage"),
+    deleteBlockedMessage: tCategories("deleteBlockedMessage"),
+    deleteProtectedMessage: tCategories("deleteProtectedMessage"),
+    deleteFailedMessage: tCategories("deleteFailedMessage"),
+    newCategoryTitle: tCategories("newCategoryTitle"),
+    newCategoryDescription: tCategories("newCategoryDescription"),
+    saveButton: tCategories("saveButton"),
+    savingButton: tCategories("savingButton"),
+    fields: {
+      key: tCategories("fields.key"),
+      sortOrder: tCategories("fields.sortOrder"),
+      ruLabel: tCategories("fields.ruLabel"),
+      enLabel: tCategories("fields.enLabel"),
+    },
+    toggles: {
+      isActive: tCategories("toggles.isActive"),
+      visibleInShop: tCategories("toggles.visibleInShop"),
+      visibleInHomeTabs: tCategories("toggles.visibleInHomeTabs"),
+    },
+  };
 
   return (
     <Stack gap={3}>
@@ -87,8 +107,6 @@ const AdminCategoriesPage = async ({ searchParams }: AdminCategoriesPageProps) =
             key={category.key}
             category={category}
             title={getAdminCategoryLabel(category.translations, locale) || category.key}
-            labels={labels}
-            sharedStatus={shared.status}
             saveAction={saveAdminCategoryAction}
             deleteAction={deleteAdminCategoryAction}
           />

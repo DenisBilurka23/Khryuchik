@@ -1,5 +1,6 @@
 import "server-only";
 
+import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryListItem,
@@ -67,8 +68,6 @@ const getPrimaryTitle = (
   translations.en?.title ||
   translations.ru?.title ||
   "—";
-
-const booksCategoryKey = "books";
 
 export const adminCategoryDeleteErrorCodes = {
   InvalidKey: "invalid-key",
@@ -390,7 +389,7 @@ export const deleteAdminCategory = async (key: string) => {
     );
   }
 
-  if (normalizedKey === booksCategoryKey) {
+  if (normalizedKey === BOOKS_CATEGORY_KEY) {
     throw new AdminCategoryDeleteError(adminCategoryDeleteErrorCodes.Protected);
   }
 
@@ -469,7 +468,7 @@ const sanitizeProductPayload = (
   const requestedCategory = payload.product.classification.category.trim();
   const normalizedCategory =
     payload.product.classification.type === "book"
-      ? booksCategoryKey
+      ? BOOKS_CATEGORY_KEY
       : requestedCategory;
 
   if (!productId) {
@@ -486,7 +485,7 @@ const sanitizeProductPayload = (
 
   if (
     payload.product.classification.type === "merch" &&
-    normalizedCategory === booksCategoryKey
+    normalizedCategory === BOOKS_CATEGORY_KEY
   ) {
     throw new Error("Merch products cannot use the books category");
   }

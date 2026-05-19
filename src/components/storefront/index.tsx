@@ -1,7 +1,5 @@
 import { Box } from "@mui/material";
 
-import { getDictionary } from "@/i18n/dictionaries";
-
 import { BookSection } from "../books-section";
 import { HeroSection } from "../hero-section";
 import { NewsletterSection } from "../newsletter-section";
@@ -21,31 +19,28 @@ export const Storefront = async ({
   shopProducts,
   selectedShopCategory,
 }: StorefrontProps) => {
-  const { storefront: dictionary } = await getDictionary(locale, country);
   const { navigationPaths } = createStorefrontHeaderViewModel(locale);
   const { shop: shopHref, cart: cartHref } = navigationPaths;
 
   return (
     <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
       <Box className={styles.pageContent}>
-        <HeroSection locale={locale} country={country} dictionary={dictionary} />
-        <BookSection locale={locale} dictionary={dictionary} books={books} />
+        <HeroSection locale={locale} country={country} />
+        <BookSection locale={locale} books={books} />
         <ShopSection
           locale={locale}
-          dictionary={dictionary}
           categories={shopCategories}
           products={shopProducts}
           selectedFilter={selectedShopCategory}
         />
-        <StorySection dictionary={dictionary} />
+        <StorySection />
         <OrderSection
           locale={locale}
           country={country}
-          dictionary={dictionary}
           shopHref={shopHref}
           cartHref={cartHref}
         />
-        <NewsletterSection dictionary={dictionary} />
+        <NewsletterSection />
       </Box>
     </Box>
   );

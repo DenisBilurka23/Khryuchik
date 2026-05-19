@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { Stack } from "@mui/material";
 
@@ -32,12 +33,12 @@ const mergeOptions = (...groups: AdminProductOption[][]) => {
 
 export const AdminProductRelatedSection = ({
   locale,
-  dictionary,
   payload,
   initialProductOptions,
   selectedProductOptions,
   selectedStoryProductOption,
 }: AdminProductRelatedSectionProps) => {
+  const tForm = useTranslations("adminPage.productForm");
   const initialSelectedOptions = useMemo(
     () =>
       payload.details.relatedProductIds
@@ -101,8 +102,8 @@ export const AdminProductRelatedSection = ({
 
   return (
     <AdminSectionCard
-      title={dictionary.relatedSectionTitle}
-      description={dictionary.relatedSectionDescription}
+      title={tForm("relatedSectionTitle")}
+      description={tForm("relatedSectionDescription")}
     >
       <input
         type="hidden"
@@ -120,9 +121,9 @@ export const AdminProductRelatedSection = ({
           value={selectedStoryOption}
           inputValue={storyInputValue}
           loading={isStoryLoading}
-          label={dictionary.fields.storyProductId}
-          placeholder={dictionary.fields.storyProductId}
-          helperText={dictionary.helpers.storyProductId}
+          label={tForm("fields.storyProductId")}
+          placeholder={tForm("fields.storyProductId")}
+          helperText={tForm("helpers.storyProductId")}
           onChangeAction={(_, value) => {
             setSelectedStoryOption(Array.isArray(value) ? null : value);
           }}
@@ -138,9 +139,9 @@ export const AdminProductRelatedSection = ({
           value={selectedOptions}
           inputValue={inputValue}
           loading={isLoading}
-          label={dictionary.fields.relatedProductIds}
-          placeholder={dictionary.fields.relatedProductIds}
-          helperText={dictionary.helpers.relatedProductIds}
+          label={tForm("fields.relatedProductIds")}
+          placeholder={tForm("fields.relatedProductIds")}
+          helperText={tForm("helpers.relatedProductIds")}
           onChangeAction={(_, value) => {
             setSelectedOptions(Array.isArray(value) ? value : []);
           }}

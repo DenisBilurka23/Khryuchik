@@ -21,7 +21,6 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
     breadcrumbs: t.raw("breadcrumbs") as ReturnType<typeof t.raw>,
     emptyState: t.raw("emptyState") as ReturnType<typeof t.raw>,
     itemCard: t.raw("itemCard") as ReturnType<typeof t.raw>,
-    summary: t.raw("summary") as ReturnType<typeof t.raw>,
   };
   const { items, subtotal, updateQuantity, removeItem, isLoading, hasStoredItems } =
     useResolvedCart(locale, country);
@@ -152,7 +151,6 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
                   <OrderSummaryCard
                     locale={locale}
                     country={country}
-                    labels={cartPage.summary}
                     subtotal={subtotal}
                     shipping={shipping}
                     discount={discount}

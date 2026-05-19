@@ -1,5 +1,6 @@
 import Link from "next/link";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
+import { getTranslations } from "next-intl/server";
 import {
   AppBar,
   Avatar,
@@ -13,8 +14,6 @@ import {
 } from "@mui/material";
 
 import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
-import { getDictionary } from "@/i18n/dictionaries";
-import { getRequestCountry } from "@/server/country/request-country";
 import { createAdminNavItems } from "@/utils/admin";
 
 import { AdminLocaleSwitcher } from "./locale-switcher";
@@ -27,9 +26,17 @@ export const AdminLayoutShell = async ({
   locale,
   children,
 }: AdminLayoutShellProps) => {
-  const country = await getRequestCountry();
-  const { adminPage: dictionary } = await getDictionary(locale, country);
-  const navItems = createAdminNavItems(dictionary.nav);
+  const [tLayout, tNav] = await Promise.all([
+    getTranslations({ locale, namespace: "adminPage.layout" }),
+    getTranslations({ locale, namespace: "adminPage.nav" }),
+  ]);
+  const navItems = createAdminNavItems({
+    dashboard: tNav("dashboard"),
+    products: tNav("products"),
+    categories: tNav("categories"),
+    customers: tNav("customers"),
+    orders: tNav("orders"),
+  });
 
   return (
     <StorefrontThemeProvider>
@@ -51,10 +58,10 @@ export const AdminLayoutShell = async ({
               <Stack direction="row" spacing={1} alignItems="center">
                 <AdminLocaleSwitcher
                   locale={locale}
-                  label={dictionary.layout.languageSwitcherLabel}
+                  label={tLayout("languageSwitcherLabel")}
                 />
                 <Button href="/admin/products/new" variant="contained" startIcon={<AddOutlinedIcon />}>
-                  {dictionary.layout.addProduct}
+                  {tLayout("addProduct")}
                 </Button>
                 <Link
                   href={profileHref}
@@ -108,7 +115,7 @@ export const AdminLayoutShell = async ({
                 <Box>
                   <Typography sx={{ fontWeight: 800, fontSize: 20 }}>Хрючик</Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {dictionary.layout.brandSubtitle}
+                    {tLayout("brandSubtitle")}
                   </Typography>
                 </Box>
               </Stack>

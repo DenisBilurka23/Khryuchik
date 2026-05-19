@@ -25,24 +25,23 @@ export type ProductGalleryProps = {
 
 export type ProductInfoProps = {
   locale: Locale;
-  labels: ProductPageLabels;
-  wishlistAriaLabel: string;
   product: ProductDetails;
 };
 
 export type ProductTabsProps = {
-  labels: ProductPageLabels;
+  labels: ProductPageLabels["tabs"];
   product: ProductDetails;
 };
 
 export type StoryConnectionCardProps = {
   product: StoryProductCardViewModel;
+  titleTemplate: string;
   description: string;
-  labels: ProductPageLabels;
+  actionLabel: string;
 };
 
 export type RelatedProductsProps = {
-  labels: ProductPageLabels;
+  title: string;
   relatedProducts: RelatedProductCardViewModel[];
 };
 

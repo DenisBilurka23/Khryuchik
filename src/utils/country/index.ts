@@ -1,25 +1,23 @@
+import {
+  COUNTRY_COOKIE_NAME,
+  COUNTRY_HEADER,
+  countries,
+  defaultCountry,
+  geoCountryHeaderNames,
+} from "@/constants/country";
 import type { Locale } from "@/i18n/config";
 
 export type CountryCode = "BY" | "US";
 
 export type CurrencyCode = "BYN" | "USD";
 
-export const geoCountryHeaderNames = [
-  "x-vercel-ip-country",
-  "cf-ipcountry",
-  "cloudfront-viewer-country",
-  "x-country-code",
-  "x-country",
-  "x-geo-country",
-] as const;
-
-export const countries = ["BY", "US"] as const;
-
-export const defaultCountry: CountryCode = "US";
-
-export const COUNTRY_COOKIE_NAME = "khryuchik-country";
-
-export const COUNTRY_HEADER = "x-khryuchik-country";
+export {
+  COUNTRY_COOKIE_NAME,
+  COUNTRY_HEADER,
+  countries,
+  defaultCountry,
+  geoCountryHeaderNames,
+};
 
 export const isCountryCode = (value: string | null | undefined): value is CountryCode =>
   Boolean(value && countries.includes(value as CountryCode));

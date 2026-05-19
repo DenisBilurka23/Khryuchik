@@ -1,16 +1,18 @@
 import { Box, TextField } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { AdminSectionCard } from "../../../admin-page-shared";
 import type { AdminProductPricingSectionProps } from "./types";
 
 export const AdminProductPricingSection = ({
-  dictionary,
   payload,
 }: AdminProductPricingSectionProps) => {
+  const tForm = useTranslations("adminPage.productForm");
+
   return (
     <AdminSectionCard
-      title={dictionary.pricingSectionTitle}
-      description={dictionary.pricingSectionDescription}
+      title={tForm("pricingSectionTitle")}
+      description={tForm("pricingSectionDescription")}
     >
       <input type="hidden" name="pricing.BY.currency" value="BYN" />
       <input type="hidden" name="pricing.US.currency" value="USD" />
@@ -25,25 +27,25 @@ export const AdminProductPricingSection = ({
         }}
       >
         <TextField
-          label={dictionary.fields.byPrice}
+          label={tForm("fields.byPrice")}
           name="pricing.BY.price"
           type="number"
           defaultValue={payload.product.pricing.BY?.price ?? ""}
         />
         <TextField
-          label={dictionary.fields.byOldPrice}
+          label={tForm("fields.byOldPrice")}
           name="pricing.BY.oldPrice"
           type="number"
           defaultValue={payload.product.pricing.BY?.oldPrice ?? ""}
         />
         <TextField
-          label={dictionary.fields.usPrice}
+          label={tForm("fields.usPrice")}
           name="pricing.US.price"
           type="number"
           defaultValue={payload.product.pricing.US?.price ?? ""}
         />
         <TextField
-          label={dictionary.fields.usOldPrice}
+          label={tForm("fields.usOldPrice")}
           name="pricing.US.oldPrice"
           type="number"
           defaultValue={payload.product.pricing.US?.oldPrice ?? ""}

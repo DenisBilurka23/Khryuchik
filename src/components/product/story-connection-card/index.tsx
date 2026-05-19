@@ -6,8 +6,9 @@ import type { StoryConnectionCardProps } from "../types";
 
 export const StoryConnectionCard = ({
   product,
+  titleTemplate,
   description,
-  labels,
+  actionLabel,
 }: StoryConnectionCardProps) => {
   return (
     <Paper
@@ -42,7 +43,7 @@ export const StoryConnectionCard = ({
 
         <Box sx={{ flex: 1 }}>
           <Typography sx={{ fontSize: 22, fontWeight: 800 }}>
-            {labels.storyConnection.title.replace("{title}", product.title)}
+            {titleTemplate.replace("{title}", product.title)}
           </Typography>
           <Typography color="text.secondary" sx={{ mt: 1.5, lineHeight: 1.8 }}>
             {description}
@@ -51,7 +52,7 @@ export const StoryConnectionCard = ({
 
         <Link href={product.href} style={{ textDecoration: "none", color: "inherit" }}>
           <Button component="span" variant="contained">
-            {labels.actions.viewBook}
+            {actionLabel}
           </Button>
         </Link>
       </Stack>

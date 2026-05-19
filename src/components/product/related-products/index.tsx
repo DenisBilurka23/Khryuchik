@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import type { RelatedProductsProps } from "../types";
 
-export const RelatedProducts = ({ labels, relatedProducts }: RelatedProductsProps) => {
+export const RelatedProducts = ({ title, relatedProducts }: RelatedProductsProps) => {
   if (relatedProducts.length === 0) {
     return null;
   }
@@ -11,7 +11,7 @@ export const RelatedProducts = ({ labels, relatedProducts }: RelatedProductsProp
   return (
     <Box sx={{ mt: 8 }}>
       <Typography variant="h2" sx={{ fontSize: { xs: 30, md: 42 }, mb: 4 }}>
-        {labels.relatedTitle}
+        {title}
       </Typography>
 
       <Grid container spacing={3}>

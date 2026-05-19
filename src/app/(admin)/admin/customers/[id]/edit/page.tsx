@@ -5,11 +5,9 @@ import { Alert, Stack } from "@mui/material";
 
 import { AdminCustomerForm } from "@/components/admin-customer-form";
 import { deleteAdminCustomerAction, saveAdminCustomerAction } from "@/app/(admin)/admin/actions";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminCustomerEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { requireAdminPageAccess } from "@/server/admin/auth";
-import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
 type EditAdminCustomerPageProps = {
@@ -46,12 +44,10 @@ const EditAdminCustomerPage = async ({
     resolveLocale("admin"),
     requireAdminPageAccess("/admin/customers"),
   ]);
-  const country = await getRequestCountry();
   const tCustomerForm = await getTranslations({
     locale,
     namespace: "adminPage.customers.form",
   });
-	const { adminPage } = await getDictionary(locale, country);
   const customer = await getAdminCustomerEditorData(id);
 
   if (!customer) {
@@ -64,8 +60,6 @@ const EditAdminCustomerPage = async ({
       <AdminCustomerForm
         customer={customer}
         locale={locale}
-        dictionary={adminPage.customers.form}
-        sharedDictionary={adminPage.shared}
         action={saveAdminCustomerAction}
         deleteAction={deleteAdminCustomerAction}
         errorCode={error}

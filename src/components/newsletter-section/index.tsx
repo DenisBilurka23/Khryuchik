@@ -7,11 +7,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { getTranslations } from "next-intl/server";
 
 import styles from "./newsletter-section.module.css";
 import type { NewsletterSectionProps } from "./types";
 
-export const NewsletterSection = ({ dictionary }: NewsletterSectionProps) => {
+export const NewsletterSection = async ({}: NewsletterSectionProps) => {
+  const t = await getTranslations("storefront.newsletter");
+
   return (
     <Box className={styles.section}>
       <Container maxWidth="lg">
@@ -22,19 +25,17 @@ export const NewsletterSection = ({ dictionary }: NewsletterSectionProps) => {
         >
           <Grid container spacing={4} alignItems="center">
             <Grid size={{ xs: 12, md: 8 }}>
-              <Typography className={styles.eyebrow}>
-                {dictionary.newsletter.eyebrow}
-              </Typography>
+              <Typography className={styles.eyebrow}>{t("eyebrow")}</Typography>
               <Typography
                 variant="h2"
                 sx={{ mt: 2, fontSize: { xs: 30, md: 42 } }}
               >
-                {dictionary.newsletter.title}
+                {t("title")}
               </Typography>
               <Typography
                 sx={{ mt: 2, color: "rgba(255,255,255,0.75)", lineHeight: 1.8 }}
               >
-                {dictionary.newsletter.text}
+                {t("text")}
               </Typography>
             </Grid>
 
@@ -42,11 +43,11 @@ export const NewsletterSection = ({ dictionary }: NewsletterSectionProps) => {
               <Paper elevation={0} className={styles.formCard} sx={{ p: 2 }}>
                 <TextField
                   fullWidth
-                  placeholder={dictionary.newsletter.emailPlaceholder}
+                  placeholder={t("emailPlaceholder")}
                   variant="outlined"
                 />
                 <Button fullWidth variant="contained" sx={{ mt: 2 }}>
-                  {dictionary.newsletter.buttonLabel}
+                  {t("buttonLabel")}
                 </Button>
               </Paper>
             </Grid>

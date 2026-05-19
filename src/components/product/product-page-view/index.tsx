@@ -7,11 +7,9 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
-import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
-import { locales } from "@/i18n/config";
-import { getRequestCountry } from "@/server/country/request-country";
 import {
   formatCurrency,
   getLocalizedPath,
@@ -28,25 +26,15 @@ import type { ProductPageViewProps } from "../types";
 
 const createProductPageViewModel = ({
   locale,
-  product,
   relatedProducts,
   storyProduct,
 }: {
   locale: Locale;
-  product: ProductPageViewProps["product"];
   relatedProducts: ProductPageViewProps["relatedProducts"];
   storyProduct: ProductPageViewProps["storyProduct"];
 }) => ({
   homeHref: getLocalizedPath(locale, "/"),
   shopHref: getLocalizedPath(locale, "/shop"),
-  localizedPaths: Object.fromEntries(
-    locales.map((targetLocale) => [
-      targetLocale,
-      targetLocale === "en"
-        ? `/products/${product.slug}`
-        : `/${targetLocale}/products/${product.slug}`,
-    ]),
-  ) as Record<Locale, string>,
   relatedProductCards: relatedProducts.map((relatedProduct) => ({
     id: relatedProduct.id,
     href: getLocalizedProductPath(locale, relatedProduct.slug),
@@ -76,13 +64,31 @@ export const ProductPageView = async ({
   relatedProducts,
   storyProduct,
 }: ProductPageViewProps) => {
-  const country = await getRequestCountry();
-  const { storefront: dictionary } = await getDictionary(locale, country);
+  const tProductPage = await getTranslations({
+    locale,
+    namespace: "storefront.productPage",
+  });
+  const labels = {
+    breadcrumbs: {
+      home: tProductPage("breadcrumbs.home"),
+      shop: tProductPage("breadcrumbs.shop"),
+    },
+    tabs: {
+      description: tProductPage("tabs.description"),
+      specs: tProductPage("tabs.specs"),
+      delivery: tProductPage("tabs.delivery"),
+      reviews: tProductPage("tabs.reviews"),
+    },
+    relatedTitle: tProductPage("relatedTitle"),
+    storyConnection: {
+      title: tProductPage("storyConnection.title"),
+      description: tProductPage("storyConnection.description"),
+    },
+  };
 
   const { homeHref, shopHref, relatedProductCards, storyProductCard } =
     createProductPageViewModel({
       locale,
-      product,
       relatedProducts,
       storyProduct,
     });
@@ -98,7 +104,7 @@ export const ProductPageView = async ({
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 <MuiLink underline="hover" color="inherit" component="span">
-                  {dictionary.productPage.breadcrumbs.home}
+                  {labels.breadcrumbs.home}
                 </MuiLink>
               </Link>
               <Link
@@ -106,7 +112,7 @@ export const ProductPageView = async ({
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 <MuiLink underline="hover" color="inherit" component="span">
-                  {dictionary.productPage.breadcrumbs.shop}
+                  {labels.breadcrumbs.shop}
                 </MuiLink>
               </Link>
               <Typography color="text.primary">{product.title}</Typography>
@@ -120,8 +126,6 @@ export const ProductPageView = async ({
               <Grid size={{ xs: 12, md: 6 }}>
                 <ProductInfo
                   locale={locale}
-                  labels={dictionary.productPage}
-                  wishlistAriaLabel={dictionary.shopSection.wishlistAriaLabel}
                   product={product}
                 />
               </Grid>
@@ -130,14 +134,15 @@ export const ProductPageView = async ({
             {storyProductCard ? (
               <StoryConnectionCard
                 product={storyProductCard}
-                description={dictionary.productPage.storyConnection.description}
-                labels={dictionary.productPage}
+                titleTemplate={labels.storyConnection.title}
+                description={labels.storyConnection.description}
+                actionLabel={tProductPage("actions.viewBook")}
               />
             ) : null}
-            <ProductTabs labels={dictionary.productPage} product={product} />
+            <ProductTabs labels={labels.tabs} product={product} />
             {relatedProductCards.length > 0 ? (
               <RelatedProducts
-                labels={dictionary.productPage}
+                title={labels.relatedTitle}
                 relatedProducts={relatedProductCards}
               />
             ) : null}

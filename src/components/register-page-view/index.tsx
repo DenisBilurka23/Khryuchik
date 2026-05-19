@@ -9,7 +9,7 @@ import { registerUserClient } from "@/client-api/auth";
 import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
 import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
 import { AuthInputErrorCode } from "@/types/auth";
-import { getRegisterErrorMessage } from "@/utils/register-page";
+import { UserOperationErrorReason } from "@/types/users";
 
 import { RegisterForm } from "./form";
 import type { RegisterPageViewProps } from "./types";
@@ -27,37 +27,12 @@ export const RegisterPageView = ({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const dictionary = {
-    eyebrow: t("eyebrow"),
-    title: t("title"),
-    lead: t("lead"),
-    chips: t.raw("chips") as string[],
-    nameLabel: t("nameLabel"),
-    namePlaceholder: t("namePlaceholder"),
-    emailLabel: t("emailLabel"),
-    emailPlaceholder: t("emailPlaceholder"),
-    phoneLabel: t("phoneLabel"),
-    phonePlaceholder: t("phonePlaceholder"),
-    passwordLabel: t("passwordLabel"),
-    passwordPlaceholder: t("passwordPlaceholder"),
-    confirmPasswordLabel: t("confirmPasswordLabel"),
-    confirmPasswordPlaceholder: t("confirmPasswordPlaceholder"),
-    submitButton: t("submitButton"),
-    loginPrompt: t("loginPrompt"),
-    loginLinkLabel: t("loginLinkLabel"),
-    passwordMismatch: t("passwordMismatch"),
-    emailTaken: t("emailTaken"),
-    passwordTooShort: t("passwordTooShort"),
-    invalidEmail: t("invalidEmail"),
-    missingFields: t("missingFields"),
-    unexpectedError: t("unexpectedError"),
-  };
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (password !== confirmPassword) {
-      setErrorMessage(dictionary.passwordMismatch);
+      setErrorMessage(t("passwordMismatch"));
       return;
     }
 
@@ -67,10 +42,23 @@ export const RegisterPageView = ({
     const response = await registerUserClient({ name, email, phone, password });
 
     if (!response.ok) {
-      const data = response.data;
-      setErrorMessage(
-        getRegisterErrorMessage(data?.error ?? AuthInputErrorCode.UnexpectedError, dictionary),
-      );
+      switch (response.data?.error ?? AuthInputErrorCode.UnexpectedError) {
+        case UserOperationErrorReason.EmailTaken:
+          setErrorMessage(t("emailTaken"));
+          break;
+        case AuthInputErrorCode.PasswordTooShort:
+          setErrorMessage(t("passwordTooShort"));
+          break;
+        case AuthInputErrorCode.InvalidEmail:
+          setErrorMessage(t("invalidEmail"));
+          break;
+        case AuthInputErrorCode.MissingFields:
+          setErrorMessage(t("missingFields"));
+          break;
+        default:
+          setErrorMessage(t("unexpectedError"));
+          break;
+      }
       setIsSubmitting(false);
       return;
     }
@@ -98,14 +86,13 @@ export const RegisterPageView = ({
   return (
     <AuthPageShell>
       <AuthPageIntro
-        eyebrow={dictionary.eyebrow}
-        title={dictionary.title}
-        lead={dictionary.lead}
-        chips={dictionary.chips}
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        lead={t("lead")}
+        chips={t.raw("chips") as string[]}
       />
 
       <RegisterForm
-        dictionary={dictionary}
         name={name}
         email={email}
         phone={phone}

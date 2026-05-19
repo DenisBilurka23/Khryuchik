@@ -1,4 +1,5 @@
 import { Box, Stack, TextField } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { AdminSectionCard, AdminStatusChip } from "../../../admin-page-shared";
 import { AdminFileUploadField } from "../../file-upload-field";
@@ -14,22 +15,23 @@ const stringifyLines = (value: string[] | undefined) =>
 
 export const AdminProductLocaleSection = ({
   locale,
-  dictionary,
   translation,
   details,
 }: AdminProductLocaleSectionProps) => {
+  const tForm = useTranslations("adminPage.productForm");
+
   return (
     <AdminSectionCard
-      title={`${locale.toUpperCase()} ${dictionary.localeSectionTitle}`}
-      description={dictionary.localeSectionDescription}
+      title={`${locale.toUpperCase()} ${tForm("localeSectionTitle")}`}
+      description={tForm("localeSectionDescription")}
       action={
         <Stack direction="row" gap={1} flexWrap="wrap">
           <AdminStatusChip
-            label={`${details.images.length} ${dictionary.galleryCountLabel}`}
+            label={`${details.images.length} ${tForm("galleryCountLabel")}`}
             tone="info"
           />
           <AdminStatusChip
-            label={`${details.digitalAssets?.length ?? 0} ${dictionary.filesCountLabel}`}
+            label={`${details.digitalAssets?.length ?? 0} ${tForm("filesCountLabel")}`}
             tone="warning"
           />
         </Stack>
@@ -63,40 +65,40 @@ export const AdminProductLocaleSection = ({
             value={stringifyJson(details.digitalAssets)}
           />
           <TextField
-            label={dictionary.fields.title}
+            label={tForm("fields.title")}
             name={`${locale}.title`}
             defaultValue={translation.title}
             required
           />
           <TextField
-            label={dictionary.fields.shortTitle}
+            label={tForm("fields.shortTitle")}
             name={`${locale}.shortTitle`}
             defaultValue={translation.shortTitle ?? ""}
           />
           <TextField
-            label={dictionary.fields.shortDescription}
+            label={tForm("fields.shortDescription")}
             name={`${locale}.shortDescription`}
             defaultValue={translation.shortDescription}
             required
           />
           <TextField
-            label={dictionary.fields.thumbnailBackgroundColor}
+            label={tForm("fields.thumbnailBackgroundColor")}
             name={`${locale}.thumbnailBackgroundColor`}
             defaultValue={translation.thumbnailBackgroundColor ?? ""}
           />
           <TextField
-            label={dictionary.fields.subtitle}
+            label={tForm("fields.subtitle")}
             name={`${locale}.subtitle`}
             defaultValue={details.subtitle}
             required
           />
           <TextField
-            label={dictionary.fields.badge}
+            label={tForm("fields.badge")}
             name={`${locale}.badge`}
             defaultValue={details.badge ?? ""}
           />
           <TextField
-            label={dictionary.fields.storyLabel}
+            label={tForm("fields.storyLabel")}
             name={`${locale}.storyLabel`}
             defaultValue={details.storyLabel ?? ""}
           />
@@ -114,7 +116,7 @@ export const AdminProductLocaleSection = ({
           }}
         >
           <TextField
-            label={dictionary.fields.description}
+            label={tForm("fields.description")}
             name={`${locale}.description`}
             defaultValue={details.description}
             multiline
@@ -122,7 +124,7 @@ export const AdminProductLocaleSection = ({
             fullWidth
           />
           <TextField
-            label={dictionary.fields.deliveryLines}
+            label={tForm("fields.deliveryLines")}
             name={`${locale}.deliveryLines`}
             defaultValue={stringifyLines(details.delivery)}
             multiline
@@ -146,18 +148,18 @@ export const AdminProductLocaleSection = ({
             name={`gallery${locale.toUpperCase()}`}
             existingImagesInputName={`${locale}.imagesJson`}
             imageOrderInputName={`${locale}.imagesOrderJson`}
-            buttonLabel={`${dictionary.imagesUploadButton} ${locale.toUpperCase()}`}
-            helperText={dictionary.helpers.mediaRule}
-            removeButtonLabel={dictionary.buttons.removeItem}
-            thumbnailLabel={dictionary.fields.thumbnail}
-            galleryLabel={dictionary.fields.gallery}
+            buttonLabel={`${tForm("imagesUploadButton")} ${locale.toUpperCase()}`}
+            helperText={tForm("helpers.mediaRule")}
+            removeButtonLabel={tForm("buttons.removeItem")}
+            thumbnailLabel={tForm("fields.thumbnail")}
+            galleryLabel={tForm("fields.gallery")}
             existingImages={details.images}
           />
 
           <AdminFileUploadField
             name={`digitalAssets${locale.toUpperCase()}`}
-            buttonLabel={`${dictionary.assetsUploadButton} ${locale.toUpperCase()}`}
-            helperText={dictionary.helpers.filesRule}
+            buttonLabel={`${tForm("assetsUploadButton")} ${locale.toUpperCase()}`}
+            helperText={tForm("helpers.filesRule")}
             existingFiles={details.digitalAssets ?? []}
           />
         </Box>
@@ -174,31 +176,31 @@ export const AdminProductLocaleSection = ({
         >
           <AdminOptionsField
             name={`${locale}.languagesJson`}
-            title={dictionary.fields.languages}
-            helperText={dictionary.helpers.optionsRule}
+            title={tForm("fields.languages")}
+            helperText={tForm("helpers.optionsRule")}
             initialOptions={details.languages ?? []}
-            itemLabel={dictionary.fields.languages}
+            itemLabel={tForm("fields.languages")}
           />
           <AdminOptionsField
             name={`${locale}.formatsJson`}
-            title={dictionary.fields.formats}
-            helperText={dictionary.helpers.optionsRule}
+            title={tForm("fields.formats")}
+            helperText={tForm("helpers.optionsRule")}
             initialOptions={details.formats ?? []}
-            itemLabel={dictionary.fields.formats}
+            itemLabel={tForm("fields.formats")}
           />
           <AdminOptionsField
             name={`${locale}.sizesJson`}
-            title={dictionary.fields.sizes}
-            helperText={dictionary.helpers.optionsRule}
+            title={tForm("fields.sizes")}
+            helperText={tForm("helpers.optionsRule")}
             initialOptions={details.sizes ?? []}
-            itemLabel={dictionary.fields.sizes}
+            itemLabel={tForm("fields.sizes")}
           />
           <AdminOptionsField
             name={`${locale}.colorsJson`}
-            title={dictionary.fields.colors}
-            helperText={dictionary.helpers.optionsRule}
+            title={tForm("fields.colors")}
+            helperText={tForm("helpers.optionsRule")}
             initialOptions={details.colors ?? []}
-            itemLabel={dictionary.fields.colors}
+            itemLabel={tForm("fields.colors")}
           />
         </Box>
 
@@ -211,13 +213,13 @@ export const AdminProductLocaleSection = ({
         >
           <AdminSpecsField
             name={`${locale}.specsJson`}
-            title={dictionary.fields.specs}
-            helperText={dictionary.helpers.specsRule}
+            title={tForm("fields.specs")}
+            helperText={tForm("helpers.specsRule")}
             initialSpecs={details.specs}
-            labelTitle={dictionary.fields.specLabel}
-            valueTitle={dictionary.fields.specValue}
-            addButtonLabel={dictionary.buttons.addSpec}
-            removeButtonLabel={dictionary.buttons.removeItem}
+            labelTitle={tForm("fields.specLabel")}
+            valueTitle={tForm("fields.specValue")}
+            addButtonLabel={tForm("buttons.addSpec")}
+            removeButtonLabel={tForm("buttons.removeItem")}
           />
         </Box>
       </Stack>

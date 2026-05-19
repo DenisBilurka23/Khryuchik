@@ -1,5 +1,4 @@
 import type { Locale } from "@/i18n/config";
-import type { CartPageLabels } from "@/i18n/types";
 import type { CountryCode } from "@/utils";
 import type { CartItem, CartSelections, StoredCartItem } from "@/types/cart";
 
@@ -21,7 +20,6 @@ export type CartItemInput = {
 export type OrderSummaryCardProps = {
   locale: Locale;
   country: CountryCode;
-  labels: CartPageLabels["summary"];
   subtotal: number;
   shipping: number;
   discount: number;

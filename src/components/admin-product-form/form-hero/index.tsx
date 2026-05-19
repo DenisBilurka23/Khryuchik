@@ -1,5 +1,6 @@
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { Button, Paper, Stack, Tooltip, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { DeleteProductButton } from "@/components/admin-products-page-view/delete-product-button";
 
@@ -13,21 +14,10 @@ import {
 import type { AdminProductFormHeroProps } from "./types";
 
 export const AdminProductFormHero = ({
-  title,
-  description,
-  submitLabel,
-  pendingSubmitLabel,
-  deleteLabel,
   productId,
   deleteAction,
-  deleteDialogTitle,
-  deleteDialogDescription,
-  confirmDeleteLabel,
-  cancelDeleteLabel,
   isNew,
   locale,
-  dictionary,
-  sharedDictionary,
   categories,
   selectedType,
   selectedCategory,
@@ -42,34 +32,40 @@ export const AdminProductFormHero = ({
         {},
       locale,
     ) || selectedCategory;
+  const tForm = useTranslations("adminPage.productForm");
+  const tShared = useTranslations("adminPage.shared");
+  const productTypeLabels = {
+    book: tShared("status.productTypes.book"),
+    merch: tShared("status.productTypes.merch"),
+  };
+  const title = isNew ? tForm("newTitle") : `${tForm("editTitlePrefix")}: ${productId}`;
+  const description = isNew ? tForm("newDescription") : tForm("editDescription");
+  const submitLabel = isNew ? tForm("createButton") : tForm("saveChangesButton");
+  const pendingSubmitLabel = isNew
+    ? tForm("creatingButton")
+    : tForm("savingChangesButton");
 
   return (
     <AdminPageHero
-      eyebrow={isNew ? dictionary.newEyebrow : dictionary.editEyebrow}
+      eyebrow={isNew ? tForm("newEyebrow") : tForm("editEyebrow")}
       title={title}
       description={description}
       actions={
         <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
-          <Tooltip title={sharedDictionary.actions.backToProducts}>
+          <Tooltip title={tShared("actions.backToProducts")}>
             <Button
               href="/admin/products"
               variant="outlined"
               color="inherit"
               sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
             >
-              {sharedDictionary.actions.backToProducts}
+              {tShared("actions.backToProducts")}
             </Button>
           </Tooltip>
-          {!isNew && deleteLabel && productId && deleteAction && deleteDialogTitle && deleteDialogDescription && confirmDeleteLabel && cancelDeleteLabel ? (
+          {!isNew && productId && deleteAction ? (
             <DeleteProductButton
               productId={productId}
-              label={deleteLabel}
               action={deleteAction}
-              dialogTitle={deleteDialogTitle}
-              dialogDescription={deleteDialogDescription}
-              confirmLabel={confirmDeleteLabel}
-              cancelLabel={cancelDeleteLabel}
-              tooltip={deleteLabel}
             />
           ) : null}
           <Tooltip title={isSubmitting ? pendingSubmitLabel ?? submitLabel : submitLabel}>
@@ -99,31 +95,28 @@ export const AdminProductFormHero = ({
         >
           <Stack gap={1.5}>
             <Typography color="text.secondary" variant="body2">
-              {dictionary.summaryTitle}
+              {tForm("summaryTitle")}
             </Typography>
             <Stack direction="row" gap={1} flexWrap="wrap">
               <AdminStatusChip
-                label={getAdminProductTypeLabel(
-                  selectedType,
-                  sharedDictionary.status.productTypes,
-                )}
+                label={getAdminProductTypeLabel(selectedType, productTypeLabels)}
                 tone="info"
               />
               <AdminStatusChip label={categoryLabel} tone="accent" />
               <AdminStatusChip
                 label={
                   isActive
-                    ? sharedDictionary.status.active
-                    : sharedDictionary.status.hidden
+                    ? tShared("status.active")
+                    : tShared("status.hidden")
                 }
                 tone={isActive ? "success" : "neutral"}
               />
             </Stack>
             <Typography variant="body2" color="text.secondary">
-              {dictionary.summaryGalleryAssets}: {totalImages}
+              {tForm("summaryGalleryAssets")}: {totalImages}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {dictionary.summaryDigitalFiles}: {totalAssets}
+              {tForm("summaryDigitalFiles")}: {totalAssets}
             </Typography>
           </Stack>
         </Paper>

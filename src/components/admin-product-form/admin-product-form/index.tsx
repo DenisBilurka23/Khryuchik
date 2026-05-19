@@ -1,31 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import { Alert, Box, Paper, Stack, Typography } from "@mui/material";
 
+import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
+import { AdminProductFormErrorCode } from "@/server/admin/product-form-state";
 import type { ProductType } from "@/types/catalog";
-import { getAdminProductFormErrorMessage } from "@/server/admin/product-form-state";
 
-import { AdminConfirmSubmitButton } from "../../admin-page-shared";
+import { AdminConfirmSubmitButton, AdminSectionCard } from "../../admin-page-shared";
+import { AdminReviewsField } from "../reviews-field";
 import { AdminProductFormHero } from "../form-hero";
 import {
   AdminProductBaseSection,
   AdminProductLocaleSection,
   AdminProductPricingSection,
   AdminProductRelatedSection,
-  AdminProductReviewsSection,
 } from "../sections";
 import type { AdminProductFormProps } from "../types";
 
-const booksCategoryKey = "books";
-
 export const AdminProductForm = ({
   locale,
-  dictionary,
-  sharedDictionary,
   payload,
   categories,
   initialRelatedProductOptions,
@@ -36,19 +34,27 @@ export const AdminProductForm = ({
   isNew,
   errorCode,
 }: AdminProductFormProps) => {
-  const title = isNew
-    ? dictionary.newTitle
-    : `${dictionary.editTitlePrefix}: ${payload.product.productId}`;
-  const description = isNew
-    ? dictionary.newDescription
-    : dictionary.editDescription;
+  const tForm = useTranslations("adminPage.productForm");
   const submitLabel = isNew
-    ? dictionary.createButton
-    : dictionary.saveChangesButton;
+    ? tForm("createButton")
+    : tForm("saveChangesButton");
   const pendingSubmitLabel = isNew
-    ? dictionary.creatingButton
-    : dictionary.savingChangesButton;
-  const errorMessage = getAdminProductFormErrorMessage(errorCode, dictionary);
+    ? tForm("creatingButton")
+    : tForm("savingChangesButton");
+  const errorMessage = (() => {
+    switch (errorCode) {
+      case AdminProductFormErrorCode.StorageUnavailable:
+        return tForm("errorMessages.storageUnavailable");
+      case AdminProductFormErrorCode.SaveFailed:
+        return tForm("errorMessages.saveFailed");
+      case AdminProductFormErrorCode.DeleteFailed:
+        return tForm("errorMessages.deleteFailed");
+      case AdminProductFormErrorCode.Unexpected:
+        return tForm("errorMessages.unexpected");
+      default:
+        return undefined;
+    }
+  })();
   const ruDetails = payload.details.translations.ru;
   const enDetails = payload.details.translations.en;
   const sharedReviews =
@@ -58,7 +64,7 @@ export const AdminProductForm = ({
     (ruDetails.digitalAssets?.length ?? 0) +
     (enDetails.digitalAssets?.length ?? 0);
   const merchCategories = categories.filter(
-    (category) => category.key !== booksCategoryKey,
+    (category) => category.key !== BOOKS_CATEGORY_KEY,
   );
   const firstMerchCategoryKey = merchCategories[0]?.key ?? "";
   const [selectedType, setSelectedType] = useState(
@@ -67,23 +73,23 @@ export const AdminProductForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(
     payload.product.classification.type === "book"
-      ? booksCategoryKey
+      ? BOOKS_CATEGORY_KEY
       : payload.product.classification.category,
   );
 
   const effectiveCategory =
-    selectedType === "book" ? booksCategoryKey : selectedCategory;
+    selectedType === "book" ? BOOKS_CATEGORY_KEY : selectedCategory;
 
   const handleTypeChange = (nextType: ProductType) => {
     setSelectedType(nextType);
 
     if (nextType === "book") {
-      setSelectedCategory(booksCategoryKey);
+      setSelectedCategory(BOOKS_CATEGORY_KEY);
       return;
     }
 
     setSelectedCategory((currentCategory) =>
-      currentCategory && currentCategory !== booksCategoryKey
+      currentCategory && currentCategory !== BOOKS_CATEGORY_KEY
         ? currentCategory
         : firstMerchCategoryKey,
     );
@@ -92,21 +98,10 @@ export const AdminProductForm = ({
   return (
     <Stack gap={3}>
       <AdminProductFormHero
-        title={title}
-        description={description}
-        submitLabel={submitLabel}
-        pendingSubmitLabel={pendingSubmitLabel}
-        deleteLabel={dictionary.deleteButton}
         productId={payload.product.productId}
         deleteAction={deleteAction}
-        deleteDialogTitle={dictionary.deleteDialogTitle}
-        deleteDialogDescription={dictionary.deleteDialogDescription}
-        confirmDeleteLabel={dictionary.confirmDeleteButton}
-        cancelDeleteLabel={dictionary.cancelDeleteButton}
         isNew={isNew}
         locale={locale}
-        dictionary={dictionary}
-        sharedDictionary={sharedDictionary}
         categories={categories}
         selectedType={selectedType}
         selectedCategory={effectiveCategory}
@@ -122,8 +117,6 @@ export const AdminProductForm = ({
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
 
           <AdminProductBaseSection
-            dictionary={dictionary}
-            sharedDictionary={sharedDictionary}
             payload={payload}
             categories={categories}
             locale={locale}
@@ -135,26 +128,32 @@ export const AdminProductForm = ({
             onCategoryChange={setSelectedCategory}
           />
 
-          <AdminProductPricingSection dictionary={dictionary} payload={payload} />
+          <AdminProductPricingSection payload={payload} />
 
           {(["ru", "en"] as const).map((translationLocale) => (
             <AdminProductLocaleSection
               key={translationLocale}
               locale={translationLocale}
-              dictionary={dictionary}
               translation={payload.product.translations[translationLocale]}
               details={payload.details.translations[translationLocale]}
             />
           ))}
 
-          <AdminProductReviewsSection
-            dictionary={dictionary}
-            initialReviews={sharedReviews}
-          />
+          <AdminSectionCard title={tForm("reviewsSectionTitle")}>
+            <AdminReviewsField
+              name="reviewsJson"
+              initialReviews={sharedReviews}
+              authorLabel={tForm("fields.reviewAuthor")}
+              reviewLabel={tForm("fields.reviewText")}
+              ratingLabel={tForm("fields.reviewRating")}
+              dateLabel={tForm("fields.reviewDate")}
+              addButtonLabel={tForm("buttons.addReview")}
+              removeButtonLabel={tForm("buttons.removeItem")}
+            />
+          </AdminSectionCard>
 
           <AdminProductRelatedSection
             locale={locale}
-            dictionary={dictionary}
             payload={payload}
             initialProductOptions={initialRelatedProductOptions}
             selectedProductOptions={selectedRelatedProductOptions}
@@ -195,34 +194,34 @@ export const AdminProductForm = ({
                 </Box>
                 <Box>
                   <Typography variant="h6" fontWeight={800} sx={{ mb: 0.5 }}>
-                    {dictionary.footerTitle}
+                    {tForm("footerTitle")}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {dictionary.footerDescription}
+                    {tForm("footerDescription")}
                   </Typography>
                 </Box>
               </Stack>
 
               <Box
-              sx={{
-                display: "flex",
-                justifyContent: { xs: "stretch", md: "flex-end" },
-                width: { xs: "100%", md: "auto" },
-              }}
-            >
-              <AdminConfirmSubmitButton
-                variant="contained"
-                startIcon={<SaveOutlinedIcon />}
-                label={submitLabel}
-                pendingLabel={pendingSubmitLabel}
                 sx={{
+                  display: "flex",
+                  justifyContent: { xs: "stretch", md: "flex-end" },
                   width: { xs: "100%", md: "auto" },
-                  minWidth: { md: 256 },
-                  minHeight: 56,
-                  px: { md: 4 },
-                  borderRadius: "20px",
                 }}
-              />
+              >
+                <AdminConfirmSubmitButton
+                  variant="contained"
+                  startIcon={<SaveOutlinedIcon />}
+                  label={submitLabel}
+                  pendingLabel={pendingSubmitLabel}
+                  sx={{
+                    width: { xs: "100%", md: "auto" },
+                    minWidth: { md: 256 },
+                    minHeight: 56,
+                    px: { md: 4 },
+                    borderRadius: "20px",
+                  }}
+                />
               </Box>
             </Stack>
           </Paper>

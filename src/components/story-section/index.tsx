@@ -7,11 +7,17 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { getTranslations } from "next-intl/server";
 
+import type { StorefrontDictionary } from "@/i18n/types";
 import styles from "./story-section.module.css";
 import type { StorySectionProps } from "./types";
 
-export const StorySection = ({ dictionary }: StorySectionProps) => {
+export const StorySection = async ({}: StorySectionProps) => {
+  const t = await getTranslations("storefront.storySection");
+  const features =
+    t.raw("features") as StorefrontDictionary["storySection"]["features"];
+
   return (
     <Box component="section" id="story" className={styles.section}>
       <Container maxWidth="lg">
@@ -22,30 +28,28 @@ export const StorySection = ({ dictionary }: StorySectionProps) => {
               className={styles.storyCard}
               sx={{ p: { xs: 4, md: 5 } }}
             >
-              <Typography className={styles.eyebrow}>
-                {dictionary.storySection.eyebrow}
-              </Typography>
+              <Typography className={styles.eyebrow}>{t("eyebrow")}</Typography>
               <Typography
                 variant="h2"
                 sx={{ mt: 2, fontSize: { xs: 32, md: 42 } }}
               >
-                {dictionary.storySection.title}
+                {t("title")}
               </Typography>
               <Typography
                 color="text.secondary"
                 sx={{ mt: 3, maxWidth: 620, lineHeight: 1.8 }}
               >
-                {dictionary.storySection.text}
+                {t("text")}
               </Typography>
               <Button variant="contained" className={styles.actionButton}>
-                {dictionary.storySection.actionLabel}
+                {t("actionLabel")}
               </Button>
             </Paper>
           </Grid>
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Stack spacing={3}>
-              {dictionary.storySection.features.map((feature) => (
+              {features.map((feature) => (
                 <Paper
                   key={feature.title}
                   elevation={0}

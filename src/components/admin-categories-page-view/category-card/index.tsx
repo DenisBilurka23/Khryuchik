@@ -1,9 +1,11 @@
 "use client";
 
 import { useRef } from "react";
+import { useTranslations } from "next-intl";
 
 import { Box, Checkbox, Stack, TextField } from "@mui/material";
 
+import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import { ModalButton } from "@/components/modal-button";
 import {
   AdminCheckboxField,
@@ -17,14 +19,42 @@ import type { AdminCategoryCardProps } from "./types";
 export const AdminCategoryCard = ({
   category,
   title,
-  labels,
-  sharedStatus,
-  saveAction, 
+  saveAction,
   deleteAction,
 }: AdminCategoryCardProps) => {
+  const tCategories = useTranslations("adminPage.categories");
+  const tShared = useTranslations("adminPage.shared");
   const deleteFormRef = useRef<HTMLFormElement>(null);
-  const deletionDisabled = category.itemsCount > 0 || category.key === "books";
-  const deleteBlockedReason = category.key === "books"
+  const sharedStatus = {
+    active: tShared("status.active"),
+    hidden: tShared("status.hidden"),
+    homeTabs: tShared("status.homeTabs"),
+    shopOnly: tShared("status.shopOnly"),
+  };
+  const labels = {
+    itemsLabel: tCategories("itemsLabel"),
+    deleteProtectedHint: tCategories("deleteProtectedHint"),
+    deleteBlockedHint: tCategories("deleteBlockedHint"),
+    deleteButton: tCategories("deleteButton"),
+    deleteDialogTitle: tCategories("deleteDialogTitle"),
+    deleteDialogDescription: tCategories("deleteDialogDescription"),
+    confirmDeleteButton: tCategories("confirmDeleteButton"),
+    cancelDeleteButton: tCategories("cancelDeleteButton"),
+    updateButton: tCategories("updateButton"),
+    fields: {
+      key: tCategories("fields.key"),
+      sortOrder: tCategories("fields.sortOrder"),
+      ruLabel: tCategories("fields.ruLabel"),
+      enLabel: tCategories("fields.enLabel"),
+    },
+    toggles: {
+      isActive: tCategories("toggles.isActive"),
+      visibleInShop: tCategories("toggles.visibleInShop"),
+      visibleInHomeTabs: tCategories("toggles.visibleInHomeTabs"),
+    },
+  };
+  const deletionDisabled = category.itemsCount > 0 || category.key === BOOKS_CATEGORY_KEY;
+  const deleteBlockedReason = category.key === BOOKS_CATEGORY_KEY
     ? labels.deleteProtectedHint
     : category.itemsCount > 0
       ? `${labels.deleteBlockedHint}: ${category.itemsCount} ${labels.itemsLabel}`

@@ -1,8 +1,9 @@
+import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import type { CategoryDocument } from "@/types/catalog";
 
 export const categorySeedDocuments: CategoryDocument[] = [
   {
-    key: "books",
+    key: BOOKS_CATEGORY_KEY,
     isActive: true,
     visibleInShop: true,
     visibleInHomeTabs: false,

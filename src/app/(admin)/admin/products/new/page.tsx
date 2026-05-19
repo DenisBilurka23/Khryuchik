@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { AdminProductForm } from "@/components/admin-product-form";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminProductEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
-import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
 import { saveAdminProductAction } from "../../actions";
@@ -30,16 +28,12 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const NewAdminProductPage = async ({ searchParams }: NewAdminProductPageProps) => {
   const { error } = await searchParams;
   const locale = await resolveLocale("admin");
-	const country = await getRequestCountry();
-	const { adminPage } = await getDictionary(locale, country);
   const editorData = await getAdminProductEditorData(undefined, locale);
 
   return (
     <AdminProductForm
       key={`new:${error ?? "ok"}`}
       locale={locale}
-      dictionary={adminPage.productForm}
-      sharedDictionary={adminPage.shared}
       payload={editorData.payload}
       categories={editorData.categories}
       initialRelatedProductOptions={editorData.initialRelatedProductOptions}

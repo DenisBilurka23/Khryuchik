@@ -1,72 +1,36 @@
 "use client";
 
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
-
+import { useTranslations } from "next-intl";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { formatCurrency, getCountLabel, getCountryCurrency } from "@/utils";
 
-import type {
-  HomeCartSummaryProps,
-  HomeCartSummaryViewModelParams,
-} from "./types";
+import type { HomeCartSummaryProps } from "./types";
 import styles from "../order-section.module.css";
-
-const createHomeCartSummaryViewModel = ({
-  locale,
-  country,
-  items,
-  totalCount,
-  subtotal,
-  labels,
-}: HomeCartSummaryViewModelParams) => {
-  const previewItems = items.slice(0, 4);
-  const hiddenItemsCount = Math.max(items.length - previewItems.length, 0);
-
-  return {
-    hasItems: totalCount > 0,
-    helperText: labels.helperText,
-    itemCountLabel: getCountLabel(totalCount, locale, labels.itemCount),
-    previewItems,
-    hiddenItemsCount,
-    shouldStretchRow: previewItems.length === 4 && hiddenItemsCount > 0,
-    formattedSubtotal: formatCurrency(
-      subtotal,
-      locale,
-      getCountryCurrency(country),
-    ),
-  };
-};
 
 export const HomeCartSummary = ({
   locale,
   country,
-  cartTitle,
-  totalLabel,
-  shopLabel,
-  cartLabel,
-  summaryLabels,
   shopHref,
   cartHref,
 }: HomeCartSummaryProps) => {
+  const tStorefront = useTranslations("storefront");
+  const tOrder = useTranslations("storefront.orderSection");
+  const itemCountLabels = tOrder.raw("cartSummary.itemCount");
   const { items, totalCount, subtotal, hasStoredItems } = useResolvedCart(
     locale,
     country,
   );
-  const {
-    helperText,
-    itemCountLabel,
-    previewItems,
-    hiddenItemsCount,
-    shouldStretchRow,
-    formattedSubtotal,
-  } = createHomeCartSummaryViewModel({
-    locale,
-    country,
-    items,
-    totalCount,
+  const helperText = tOrder("cartSummary.helperText");
+  const itemCountLabel = getCountLabel(totalCount, locale, itemCountLabels);
+  const previewItems = items.slice(0, 4);
+  const hiddenItemsCount = Math.max(items.length - previewItems.length, 0);
+  const shouldStretchRow = previewItems.length === 4 && hiddenItemsCount > 0;
+  const formattedSubtotal = formatCurrency(
     subtotal,
-    labels: summaryLabels,
-  });
+    locale,
+    getCountryCurrency(country),
+  );
   const shouldShowItems = hasStoredItems && items.length > 0;
 
   return (
@@ -80,7 +44,7 @@ export const HomeCartSummary = ({
           variant="h2"
           sx={{ mt: 0, mb: 2.5, fontSize: { xs: 32, md: 42 } }}
         >
-          {cartTitle}
+          {tOrder("cartTitle")}
         </Typography>
         <Typography className={styles.summaryHelperText}>
           {helperText}
@@ -121,7 +85,7 @@ export const HomeCartSummary = ({
             </Stack>
 
             <Typography className={styles.summaryTotal}>
-              {totalLabel}: {formattedSubtotal}
+              {tOrder("totalLabel")}: {formattedSubtotal}
             </Typography>
           </Box>
         ) : null}
@@ -129,7 +93,7 @@ export const HomeCartSummary = ({
 
       <Stack spacing={2} className={styles.summaryActions}>
         <Button variant="contained" href={shopHref}>
-          {shopLabel}
+          {tStorefront("nav.shop")}
         </Button>
         <Button
           variant="outlined"
@@ -137,7 +101,7 @@ export const HomeCartSummary = ({
           href={cartHref}
           className={styles.emailButton}
         >
-          {cartLabel}
+          {tStorefront("cartLabel")}
         </Button>
       </Stack>
     </Paper>

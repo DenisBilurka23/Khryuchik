@@ -22,28 +22,12 @@ export const ResetPasswordPageView = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const dictionary = {
-    eyebrow: t("eyebrow"),
-    title: t("title"),
-    lead: t("lead"),
-    passwordLabel: t("passwordLabel"),
-    passwordPlaceholder: t("passwordPlaceholder"),
-    confirmPasswordLabel: t("confirmPasswordLabel"),
-    confirmPasswordPlaceholder: t("confirmPasswordPlaceholder"),
-    submitButton: t("submitButton"),
-    successMessage: t("successMessage"),
-    loginLinkLabel: t("loginLinkLabel"),
-    passwordMismatch: t("passwordMismatch"),
-    passwordTooShort: t("passwordTooShort"),
-    invalidToken: t("invalidToken"),
-    unexpectedError: t("unexpectedError"),
-  };
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (password !== confirmPassword) {
-      setErrorMessage(dictionary.passwordMismatch);
+      setErrorMessage(t("passwordMismatch"));
       return;
     }
 
@@ -59,18 +43,18 @@ export const ResetPasswordPageView = ({
     if (!response.ok) {
       switch (data?.error) {
         case AuthInputErrorCode.PasswordTooShort:
-          setErrorMessage(dictionary.passwordTooShort);
+          setErrorMessage(t("passwordTooShort"));
           return;
         case PasswordResetErrorReason.InvalidToken:
-          setErrorMessage(dictionary.invalidToken);
+          setErrorMessage(t("invalidToken"));
           return;
         default:
-          setErrorMessage(dictionary.unexpectedError);
+          setErrorMessage(t("unexpectedError"));
           return;
       }
     }
 
-    setSuccessMessage(dictionary.successMessage);
+    setSuccessMessage(t("successMessage"));
     setTimeout(() => {
       router.push(loginHref);
       router.refresh();
@@ -80,13 +64,12 @@ export const ResetPasswordPageView = ({
   return (
     <AuthPageShell>
       <AuthPageIntro
-        eyebrow={dictionary.eyebrow}
-        title={dictionary.title}
-        lead={dictionary.lead}
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        lead={t("lead")}
       />
 
       <ResetPasswordForm
-        dictionary={dictionary}
         password={password}
         confirmPassword={confirmPassword}
         errorMessage={errorMessage}

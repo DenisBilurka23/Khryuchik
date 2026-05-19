@@ -39,10 +39,10 @@ export const ProductTabs = ({ labels, product }: ProductTabsProps) => {
         scrollButtons="auto"
         sx={{ px: 2, borderBottom: "1px solid #F0DFC8", bgcolor: "#fff" }}
       >
-        <Tab label={labels.tabs.description} />
-        <Tab label={labels.tabs.specs} />
-        <Tab label={labels.tabs.delivery} />
-        <Tab label={labels.tabs.reviews} />
+        <Tab label={labels.description} />
+        <Tab label={labels.specs} />
+        <Tab label={labels.delivery} />
+        <Tab label={labels.reviews} />
       </Tabs>
 
       <Box sx={{ p: { xs: 3, md: 4 } }}>

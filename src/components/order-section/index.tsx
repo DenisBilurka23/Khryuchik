@@ -5,18 +5,20 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
+import { getTranslations } from "next-intl/server";
 
 import { HomeCartSummary } from "./home-cart-summary";
 import styles from "./order-section.module.css";
 import type { OrderSectionProps } from "./types";
 
-export const OrderSection = ({
+export const OrderSection = async ({
   locale,
   country,
-  dictionary,
   shopHref,
   cartHref,
 }: OrderSectionProps) => {
+  const tOrder = await getTranslations({ locale, namespace: "storefront.orderSection" });
+
   return (
     <Box component="section" id="order" className={styles.section}>
       <Container maxWidth="lg">
@@ -27,20 +29,18 @@ export const OrderSection = ({
               className={styles.contentCard}
               sx={{ p: { xs: 3, md: 4 } }}
             >
-              <Typography className={styles.eyebrow}>
-                {dictionary.orderSection.eyebrow}
-              </Typography>
+              <Typography className={styles.eyebrow}>{tOrder("eyebrow")}</Typography>
               <Typography
                 variant="h2"
                 sx={{ mt: 2, fontSize: { xs: 32, md: 42 } }}
               >
-                {dictionary.orderSection.title}
+                {tOrder("title")}
               </Typography>
               <Typography
                 color="text.secondary"
                 sx={{ mt: 2.5, lineHeight: 1.8 }}
               >
-                {dictionary.orderSection.lead}
+                {tOrder("lead")}
               </Typography>
             </Paper>
           </Grid>
@@ -49,11 +49,6 @@ export const OrderSection = ({
             <HomeCartSummary
               locale={locale}
               country={country}
-              cartTitle={dictionary.orderSection.cartTitle}
-              totalLabel={dictionary.orderSection.totalLabel}
-              shopLabel={dictionary.nav.shop}
-              cartLabel={dictionary.cartLabel}
-              summaryLabels={dictionary.orderSection.cartSummary}
               shopHref={shopHref}
               cartHref={cartHref}
             />

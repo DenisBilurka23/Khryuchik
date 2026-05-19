@@ -1,20 +1,23 @@
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 import { formatCurrency, getCountryCurrency } from "@/utils";
+import type { CartPageLabels } from "@/i18n/types";
 
 import type { OrderSummaryCardProps } from "../types";
 
 export const OrderSummaryCard = ({
   locale,
   country,
-  labels,
   subtotal,
   shipping,
   discount,
   continueShoppingHref,
 }: OrderSummaryCardProps) => {
+  const t = useTranslations("storefront.cartPage");
+  const labels = t.raw("summary") as CartPageLabels["summary"];
   const total = subtotal + shipping - discount;
 
   return (

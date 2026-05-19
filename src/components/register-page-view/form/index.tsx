@@ -1,5 +1,6 @@
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import {
   AuthLinkPrompt,
@@ -10,7 +11,6 @@ import {
 import type { RegisterFormProps } from "./types";
 
 export const RegisterForm = ({
-  dictionary,
   name,
   email,
   phone,
@@ -25,85 +25,89 @@ export const RegisterForm = ({
   onPasswordChange,
   onConfirmPasswordChange,
   onSubmit,
-}: RegisterFormProps) => (
-  <AuthSectionCard>
-    <Box component="form" onSubmit={onSubmit}>
-      <Stack spacing={2.5}>
-        <AuthSectionHeader
-          title={dictionary.submitButton}
-          icon={<BadgeOutlinedIcon />}
-          iconBackground="#FCE5EA"
-        />
+}: RegisterFormProps) => {
+  const t = useTranslations("registerPage");
 
-        {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
+  return (
+    <AuthSectionCard>
+      <Box component="form" onSubmit={onSubmit}>
+        <Stack spacing={2.5}>
+          <AuthSectionHeader
+            title={t("submitButton")}
+            icon={<BadgeOutlinedIcon />}
+            iconBackground="#FCE5EA"
+          />
 
-        <TextField
-          label={dictionary.nameLabel}
-          placeholder={dictionary.namePlaceholder}
-          value={name}
-          onChange={(event) => onNameChange(event.target.value)}
-          autoComplete="name"
-          required
-          fullWidth
-        />
-        <TextField
-          label={dictionary.emailLabel}
-          placeholder={dictionary.emailPlaceholder}
-          type="email"
-          value={email}
-          onChange={(event) => onEmailChange(event.target.value)}
-          autoComplete="email"
-          required
-          fullWidth
-        />
-        <TextField
-          label={dictionary.phoneLabel}
-          placeholder={dictionary.phonePlaceholder}
-          value={phone}
-          onChange={(event) => onPhoneChange(event.target.value)}
-          autoComplete="tel"
-          required
-          fullWidth
-        />
-        <TextField
-          label={dictionary.passwordLabel}
-          placeholder={dictionary.passwordPlaceholder}
-          type="password"
-          value={password}
-          onChange={(event) => onPasswordChange(event.target.value)}
-          autoComplete="new-password"
-          required
-          fullWidth
-        />
-        <TextField
-          label={dictionary.confirmPasswordLabel}
-          placeholder={dictionary.confirmPasswordPlaceholder}
-          type="password"
-          value={confirmPassword}
-          onChange={(event) => onConfirmPasswordChange(event.target.value)}
-          autoComplete="new-password"
-          required
-          fullWidth
-        />
+          {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
 
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          loading={isSubmitting}
-          sx={{ alignSelf: "flex-start" }}
-        >
-          {dictionary.submitButton}
-        </Button>
+          <TextField
+            label={t("nameLabel")}
+            placeholder={t("namePlaceholder")}
+            value={name}
+            onChange={(event) => onNameChange(event.target.value)}
+            autoComplete="name"
+            required
+            fullWidth
+          />
+          <TextField
+            label={t("emailLabel")}
+            placeholder={t("emailPlaceholder")}
+            type="email"
+            value={email}
+            onChange={(event) => onEmailChange(event.target.value)}
+            autoComplete="email"
+            required
+            fullWidth
+          />
+          <TextField
+            label={t("phoneLabel")}
+            placeholder={t("phonePlaceholder")}
+            value={phone}
+            onChange={(event) => onPhoneChange(event.target.value)}
+            autoComplete="tel"
+            required
+            fullWidth
+          />
+          <TextField
+            label={t("passwordLabel")}
+            placeholder={t("passwordPlaceholder")}
+            type="password"
+            value={password}
+            onChange={(event) => onPasswordChange(event.target.value)}
+            autoComplete="new-password"
+            required
+            fullWidth
+          />
+          <TextField
+            label={t("confirmPasswordLabel")}
+            placeholder={t("confirmPasswordPlaceholder")}
+            type="password"
+            value={confirmPassword}
+            onChange={(event) => onConfirmPasswordChange(event.target.value)}
+            autoComplete="new-password"
+            required
+            fullWidth
+          />
 
-        <AuthLinkPrompt
-          href={loginHref}
-          label={dictionary.loginLinkLabel}
-          prefix={dictionary.loginPrompt}
-        />
-      </Stack>
-    </Box>
-  </AuthSectionCard>
-);
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            loading={isSubmitting}
+            sx={{ alignSelf: "flex-start" }}
+          >
+            {t("submitButton")}
+          </Button>
+
+          <AuthLinkPrompt
+            href={loginHref}
+            label={t("loginLinkLabel")}
+            prefix={t("loginPrompt")}
+          />
+        </Stack>
+      </Box>
+    </AuthSectionCard>
+  );
+};
 
 export type { RegisterFormProps } from "./types";

@@ -3,10 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { Alert, Stack } from "@mui/material";
 
 import { AdminProductForm } from "@/components/admin-product-form";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminProductEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
-import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
 import { deleteAdminProductAction, saveAdminProductAction } from "../../../actions";
@@ -42,12 +40,10 @@ const EditAdminProductPage = async ({
   const { id } = await params;
   const { saved, error } = await searchParams;
   const locale = await resolveLocale("admin");
-  const country = await getRequestCountry();
   const tProductForm = await getTranslations({
     locale,
     namespace: "adminPage.productForm",
   });
-	const { adminPage } = await getDictionary(locale, country);
   const editorData = await getAdminProductEditorData(id, locale);
 
   return (
@@ -56,8 +52,6 @@ const EditAdminProductPage = async ({
       <AdminProductForm
         key={`${id}:${saved ?? "0"}:${error ?? "ok"}`}
         locale={locale}
-        dictionary={adminPage.productForm}
-        sharedDictionary={adminPage.shared}
         payload={editorData.payload}
         categories={editorData.categories}
         initialRelatedProductOptions={editorData.initialRelatedProductOptions}

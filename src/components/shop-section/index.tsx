@@ -1,4 +1,5 @@
 import { Box, Container, Grid } from "@mui/material";
+import { getTranslations } from "next-intl/server";
 
 import { CategoryTabs } from "../category-tabs";
 import { createCategoryTabOptions } from "@/utils/category-tabs";
@@ -8,13 +9,13 @@ import { getLocalizedPath, getLocalizedProductPath } from "@/utils";
 import styles from "./shop-section.module.css";
 import type { ShopSectionProps } from "./types";
 
-export const ShopSection = ({
+export const ShopSection = async ({
   locale,
   categories,
   products,
-  dictionary,
   selectedFilter,
 }: ShopSectionProps) => {
+  const t = await getTranslations({ locale, namespace: "storefront.shopSection" });
   const defaultFilterValue = categories[0]?.key;
   const filterOptions = createCategoryTabOptions({
     categories,
@@ -25,9 +26,9 @@ export const ShopSection = ({
     <Box component="section" id="shop" className={styles.section}>
       <Container maxWidth="lg">
         <SectionHeading
-          eyebrow={dictionary.shopSection.eyebrow}
-          title={dictionary.shopSection.title}
-          actionLabel={dictionary.shopSection.actionLabel}
+          eyebrow={t("eyebrow")}
+          title={t("title")}
+          actionLabel={t("actionLabel")}
           actionHref={getLocalizedPath(locale, "/shop")}
         />
 
@@ -45,8 +46,8 @@ export const ShopSection = ({
               <ProductCard
                 product={product}
                 locale={locale}
-                addToCart={dictionary.shopSection.addToCart}
-                wishlistAriaLabel={dictionary.shopSection.wishlistAriaLabel}
+                addToCart={t("addToCart")}
+                wishlistAriaLabel={t("wishlistAriaLabel")}
                 detailsHref={getLocalizedProductPath(locale, product.slug)}
               />
             </Grid>

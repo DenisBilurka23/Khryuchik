@@ -1,5 +1,6 @@
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import {
   AuthLinkPrompt,
@@ -10,7 +11,6 @@ import {
 import type { ResetPasswordFormProps } from "./types";
 
 export const ResetPasswordForm = ({
-  dictionary,
   password,
   confirmPassword,
   errorMessage,
@@ -20,54 +20,58 @@ export const ResetPasswordForm = ({
   onPasswordChange,
   onConfirmPasswordChange,
   onSubmit,
-}: ResetPasswordFormProps) => (
-  <AuthSectionCard>
-    <Box component="form" onSubmit={onSubmit}>
-      <Stack spacing={2.5}>
-        <AuthSectionHeader
-          title={dictionary.submitButton}
-          icon={<LockResetOutlinedIcon />}
-          iconBackground="#FFF2D6"
-        />
+}: ResetPasswordFormProps) => {
+  const t = useTranslations("resetPasswordPage");
 
-        {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-        {successMessage ? <Alert severity="success">{successMessage}</Alert> : null}
+  return (
+    <AuthSectionCard>
+      <Box component="form" onSubmit={onSubmit}>
+        <Stack spacing={2.5}>
+          <AuthSectionHeader
+            title={t("submitButton")}
+            icon={<LockResetOutlinedIcon />}
+            iconBackground="#FFF2D6"
+          />
 
-        <TextField
-          label={dictionary.passwordLabel}
-          placeholder={dictionary.passwordPlaceholder}
-          type="password"
-          value={password}
-          onChange={(event) => onPasswordChange(event.target.value)}
-          autoComplete="new-password"
-          required
-          fullWidth
-        />
-        <TextField
-          label={dictionary.confirmPasswordLabel}
-          placeholder={dictionary.confirmPasswordPlaceholder}
-          type="password"
-          value={confirmPassword}
-          onChange={(event) => onConfirmPasswordChange(event.target.value)}
-          autoComplete="new-password"
-          required
-          fullWidth
-        />
+          {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
+          {successMessage ? <Alert severity="success">{successMessage}</Alert> : null}
 
-        <Button
-          type="submit"
-          variant="contained"
-          size="large"
-          loading={isSubmitting}
-          sx={{ alignSelf: "flex-start" }}
-        >
-          {dictionary.submitButton}
-        </Button>
+          <TextField
+            label={t("passwordLabel")}
+            placeholder={t("passwordPlaceholder")}
+            type="password"
+            value={password}
+            onChange={(event) => onPasswordChange(event.target.value)}
+            autoComplete="new-password"
+            required
+            fullWidth
+          />
+          <TextField
+            label={t("confirmPasswordLabel")}
+            placeholder={t("confirmPasswordPlaceholder")}
+            type="password"
+            value={confirmPassword}
+            onChange={(event) => onConfirmPasswordChange(event.target.value)}
+            autoComplete="new-password"
+            required
+            fullWidth
+          />
 
-        <AuthLinkPrompt href={loginHref} label={dictionary.loginLinkLabel} />
-      </Stack>
-    </Box>
-  </AuthSectionCard>
-);
+          <Button
+            type="submit"
+            variant="contained"
+            size="large"
+            loading={isSubmitting}
+            sx={{ alignSelf: "flex-start" }}
+          >
+            {t("submitButton")}
+          </Button>
+
+          <AuthLinkPrompt href={loginHref} label={t("loginLinkLabel")} />
+        </Stack>
+      </Box>
+    </AuthSectionCard>
+  );
+};
 
 export type { ResetPasswordFormProps } from "./types";

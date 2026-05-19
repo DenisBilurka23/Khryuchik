@@ -14,7 +14,7 @@ export const isShopFilterValue = (
 export const createShopPageViewModel = ({
   locale,
   country,
-  dictionary,
+  allFilterLabel,
   categories,
   products,
   selectedFilter,
@@ -25,7 +25,7 @@ export const createShopPageViewModel = ({
   const filters = [
     {
       value: "all",
-      label: dictionary.shopPage.filters.all,
+      label: allFilterLabel,
     },
     ...categories.map((category) => ({
       value: category.key,

@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useTranslations } from "next-intl";
 
 import { useWishlist } from "@/hooks/useWishlist";
 import { formatCurrency } from "@/utils";
@@ -23,10 +24,10 @@ import type { ProductInfoProps } from "../types";
 
 export const ProductInfo = ({
   locale,
-  labels,
-  wishlistAriaLabel,
   product,
 }: ProductInfoProps) => {
+  const tProductPage = useTranslations("storefront.productPage");
+  const tShopSection = useTranslations("storefront.shopSection");
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
@@ -75,7 +76,7 @@ export const ProductInfo = ({
           {product.title}
         </Typography>
         <IconButton
-          aria-label={`${wishlistAriaLabel}: ${product.title}`}
+          aria-label={`${tShopSection("wishlistAriaLabel")}: ${product.title}`}
           color={isWishlisted ? "primary" : "default"}
           onClick={() => {
             void toggleWishlist(product.productId);
@@ -123,7 +124,7 @@ export const ProductInfo = ({
         {product.languages?.length ? (
           <TextField
             select
-            label={labels.selectors.language}
+            label={tProductPage("selectors.language")}
             value={language}
             onChange={(event) => setLanguage(event.target.value)}
             fullWidth
@@ -139,7 +140,7 @@ export const ProductInfo = ({
         {product.formats?.length ? (
           <TextField
             select
-            label={labels.selectors.format}
+            label={tProductPage("selectors.format")}
             value={format}
             onChange={(event) => setFormat(event.target.value)}
             fullWidth
@@ -155,7 +156,7 @@ export const ProductInfo = ({
         {product.sizes?.length ? (
           <TextField
             select
-            label={labels.selectors.size}
+            label={tProductPage("selectors.size")}
             value={size}
             onChange={(event) => setSize(event.target.value)}
             fullWidth
@@ -171,7 +172,7 @@ export const ProductInfo = ({
         {product.colors?.length ? (
           <TextField
             select
-            label={labels.selectors.color}
+            label={tProductPage("selectors.color")}
             value={color}
             onChange={(event) => setColor(event.target.value)}
             fullWidth
@@ -185,7 +186,7 @@ export const ProductInfo = ({
         ) : null}
 
         <TextField
-          label={labels.selectors.quantity}
+          label={tProductPage("selectors.quantity")}
           type="number"
           value={quantity}
           onChange={(event) =>
@@ -208,7 +209,7 @@ export const ProductInfo = ({
           sx={{ flex: 1 }}
           onClick={handleAddToCart}
         >
-          {labels.actions.addToCart}
+          {tProductPage("actions.addToCart")}
         </Button>
         <Button
           variant="outlined"
@@ -216,7 +217,7 @@ export const ProductInfo = ({
           size="large"
           sx={{ flex: 1, borderColor: "#E8D6BF", bgcolor: "#fff" }}
         >
-          {labels.actions.buyNow}
+          {tProductPage("actions.buyNow")}
         </Button>
       </Stack>
 
@@ -224,16 +225,16 @@ export const ProductInfo = ({
 
       <Stack spacing={1.5}>
         <Typography variant="body2" color="text.secondary">
-          {labels.details.sku}: {product.sku}
+          {tProductPage("details.sku")}: {product.sku}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {labels.details.securePayment}
+          {tProductPage("details.securePayment")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {labels.details.shipping}
+          {tProductPage("details.shipping")}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {labels.details.languageSupport}
+          {tProductPage("details.languageSupport")}
         </Typography>
       </Stack>
     </Box>

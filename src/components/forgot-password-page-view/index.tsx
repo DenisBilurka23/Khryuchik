@@ -19,20 +19,6 @@ export const ForgotPasswordPageView = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const dictionary = {
-    eyebrow: t("eyebrow"),
-    title: t("title"),
-    lead: t("lead"),
-    chips: t.raw("chips") as string[],
-    emailLabel: t("emailLabel"),
-    emailPlaceholder: t("emailPlaceholder"),
-    submitButton: t("submitButton"),
-    loginPrompt: t("loginPrompt"),
-    loginLinkLabel: t("loginLinkLabel"),
-    successMessage: t("successMessage"),
-    invalidEmail: t("invalidEmail"),
-    unexpectedError: t("unexpectedError"),
-  };
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -48,26 +34,25 @@ export const ForgotPasswordPageView = ({
     if (!response.ok) {
       setErrorMessage(
         data?.error === AuthInputErrorCode.InvalidEmail
-          ? dictionary.invalidEmail
-          : dictionary.unexpectedError,
+          ? t("invalidEmail")
+          : t("unexpectedError"),
       );
       return;
     }
 
-    setSuccessMessage(dictionary.successMessage);
+    setSuccessMessage(t("successMessage"));
   };
 
   return (
     <AuthPageShell>
       <AuthPageIntro
-        eyebrow={dictionary.eyebrow}
-        title={dictionary.title}
-        lead={dictionary.lead}
-        chips={dictionary.chips}
+        eyebrow={t("eyebrow")}
+        title={t("title")}
+        lead={t("lead")}
+        chips={t.raw("chips") as string[]}
       />
 
       <ForgotPasswordForm
-        dictionary={dictionary}
         email={email}
         errorMessage={errorMessage}
         successMessage={successMessage}

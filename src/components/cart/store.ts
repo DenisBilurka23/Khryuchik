@@ -2,11 +2,11 @@
 
 import { useSyncExternalStore } from "react";
 
+import { CART_STORAGE_KEY } from "@/constants/cart";
 import { isStoredCartItem } from "@/types/cart-guards";
 import type { StoredCartItem } from "@/types/cart";
 import type { CartItemInput, CartSnapshot, CartState } from "./types";
 
-const STORAGE_KEY = "khryuchik-cart";
 const emptyState: CartState = { items: [] };
 const emptySnapshot: CartSnapshot = {
   items: [],
@@ -33,7 +33,7 @@ const refreshSnapshot = () => {
   snapshot = buildSnapshot(state);
 };
 
-const parseJson = <T,>(rawValue: string): T | null => {
+const parseJson = <T>(rawValue: string): T | null => {
   try {
     return JSON.parse(rawValue) as T;
   } catch {
@@ -46,7 +46,7 @@ const readStateFromStorage = (): CartState => {
     return emptyState;
   }
 
-  const rawValue = window.localStorage.getItem(STORAGE_KEY);
+  const rawValue = window.localStorage.getItem(CART_STORAGE_KEY);
 
   if (!rawValue) {
     return emptyState;
@@ -69,7 +69,7 @@ const persistState = () => {
   }
 
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
+    window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(state.items));
   } catch {
     // Ignore persistence failures and keep in-memory cart working.
   }
@@ -102,7 +102,11 @@ const buildCartItemId = (
     .join("|")}`;
 };
 
-const createCartItem = ({ quantity = 1, productId, selections }: CartItemInput): StoredCartItem => ({
+const createCartItem = ({
+  quantity = 1,
+  productId,
+  selections,
+}: CartItemInput): StoredCartItem => ({
   id: buildCartItemId(productId, selections),
   productId,
   quantity,
@@ -118,7 +122,7 @@ const setCartState = (nextState: CartState) => {
 };
 
 const handleStorage = (event: StorageEvent) => {
-  if (event.key !== STORAGE_KEY) {
+  if (event.key !== CART_STORAGE_KEY) {
     return;
   }
 
@@ -210,7 +214,11 @@ export const clearCart = () => {
 };
 
 export const useCart = () => {
-  const snapshot = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const snapshot = useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    getServerSnapshot,
+  );
 
   return {
     ...snapshot,

@@ -5,7 +5,6 @@ export {
 	AdminProductLocaleSection,
 	AdminProductPricingSection,
 	AdminProductRelatedSection,
-	AdminProductReviewsSection,
 } from "./sections";
 export { AdminFileUploadField } from "./file-upload-field";
 export { AdminImageUploadField } from "./image-upload-field";
@@ -27,9 +26,6 @@ export type {
 export type {
 	AdminProductRelatedSectionProps,
 } from "./sections/related-section";
-export type {
-	AdminProductReviewsSectionProps,
-} from "./sections/reviews-section";
 export type { AdminFileUploadFieldProps } from "./file-upload-field";
 export type { AdminImageUploadFieldProps, PreviewImage } from "./image-upload-field";
 export type { AdminOptionsFieldProps } from "./options-field";

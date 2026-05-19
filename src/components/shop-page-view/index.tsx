@@ -9,8 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
-
-import { getDictionary } from "@/i18n/dictionaries";
+import { getTranslations } from "next-intl/server";
 
 import { CategoryTabs } from "@/components/category-tabs";
 import { getLocalizedProductPath } from "@/utils";
@@ -31,7 +30,10 @@ export const ShopPageView = async ({
   initialCategory,
   initialQuery,
 }: ShopPageViewProps) => {
-  const { storefront: dictionary } = await getDictionary(locale, country);
+  const [tShopPage, tShopSection] = await Promise.all([
+    getTranslations({ locale, namespace: "storefront.shopPage" }),
+    getTranslations({ locale, namespace: "storefront.shopSection" }),
+  ]);
   const initialCategoryParam = initialCategory ?? null;
   const selectedFilter: ShopFilterValue = isShopFilterValue(
     initialCategoryParam,
@@ -44,7 +46,7 @@ export const ShopPageView = async ({
     createShopPageViewModel({
       locale,
       country,
-      dictionary,
+      allFilterLabel: tShopPage("filters.all"),
       categories,
       products,
       selectedFilter,
@@ -59,11 +61,11 @@ export const ShopPageView = async ({
             <Breadcrumbs sx={{ mb: 4 }}>
               <Link href={homeHref}>
                 <MuiLink component="span" underline="hover" color="inherit">
-                  {dictionary.shopPage.breadcrumbs.home}
+                  {tShopPage("breadcrumbs.home")}
                 </MuiLink>
               </Link>
               <Typography color="text.primary">
-                {dictionary.shopPage.breadcrumbs.current}
+                {tShopPage("breadcrumbs.current")}
               </Typography>
             </Breadcrumbs>
 
@@ -85,14 +87,14 @@ export const ShopPageView = async ({
                   color: "primary.main",
                 }}
               >
-                {dictionary.shopPage.eyebrow}
+                {tShopPage("eyebrow")}
               </Typography>
 
               <Typography
                 variant="h1"
                 sx={{ mt: 2, fontSize: { xs: 38, md: 58 }, maxWidth: 800 }}
               >
-                {dictionary.shopPage.title}
+                {tShopPage("title")}
               </Typography>
 
               <Typography
@@ -104,7 +106,7 @@ export const ShopPageView = async ({
                   fontSize: { xs: 16, md: 18 },
                 }}
               >
-                {dictionary.shopPage.lead}
+                {tShopPage("lead")}
               </Typography>
             </Box>
 
@@ -124,12 +126,12 @@ export const ShopPageView = async ({
 
               <ShopSearchField
                 initialValue={search}
-                placeholder={dictionary.shopPage.searchPlaceholder}
+                placeholder={tShopPage("searchPlaceholder")}
               />
             </Stack>
 
             <Typography color="text.secondary" sx={{ mb: 3 }}>
-              {dictionary.shopPage.resultsLabel}: {filteredProducts.length}
+              {tShopPage("resultsLabel")}: {filteredProducts.length}
             </Typography>
 
             <Grid container spacing={3}>
@@ -138,8 +140,8 @@ export const ShopPageView = async ({
                   <ProductCard
                     product={product}
                     locale={locale}
-                    addToCart={dictionary.shopSection.addToCart}
-                    wishlistAriaLabel={dictionary.shopSection.wishlistAriaLabel}
+                    addToCart={tShopSection("addToCart")}
+                    wishlistAriaLabel={tShopSection("wishlistAriaLabel")}
                     detailsHref={getLocalizedProductPath(locale, product.slug)}
                   />
                 </Grid>
@@ -158,14 +160,14 @@ export const ShopPageView = async ({
                 }}
               >
                 <Typography sx={{ fontSize: 22, fontWeight: 800 }}>
-                  {dictionary.shopPage.emptyTitle}
+                  {tShopPage("emptyTitle")}
                 </Typography>
                 <Typography color="text.secondary" sx={{ mt: 1.5 }}>
-                  {dictionary.shopPage.emptyText}
+                  {tShopPage("emptyText")}
                 </Typography>
                 <Link href={shopHref}>
                   <Button variant="contained" component="span" sx={{ mt: 3 }}>
-                    {dictionary.shopPage.resetFilters}
+                    {tShopPage("resetFilters")}
                   </Button>
                 </Link>
               </Box>
@@ -173,7 +175,7 @@ export const ShopPageView = async ({
           </Container>
         </Box>
 
-        <NewsletterSection dictionary={dictionary} />
+        <NewsletterSection />
       </Box>
     </Box>
   );

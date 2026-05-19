@@ -1,10 +1,10 @@
 import {
   GUEST_WISHLIST_CHANGE_EVENT,
   GUEST_WISHLIST_STORAGE_KEY,
-  type GuestWishlistItem,
-} from "@/types/wishlist";
+} from "@/constants/wishlist";
+import type { GuestWishlistItem } from "@/types/wishlist";
 
-export { GUEST_WISHLIST_CHANGE_EVENT } from "@/types/wishlist";
+export { GUEST_WISHLIST_CHANGE_EVENT } from "@/constants/wishlist";
 
 const isGuestWishlistItem = (value: unknown): value is GuestWishlistItem => {
   if (!value || typeof value !== "object") {

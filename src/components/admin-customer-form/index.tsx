@@ -1,5 +1,6 @@
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import { getTranslations } from "next-intl/server";
 import {
   Alert,
   Avatar,
@@ -21,34 +22,66 @@ import {
   AdminSectionCard,
   AdminStatusChip,
 } from "@/components/admin-page-shared";
-import { getAdminCustomerFormErrorMessage } from "@/server/admin/customer-form-state";
+import { AdminCustomerFormErrorCode } from "@/server/admin/customer-form-state";
 import { formatAdminDate, getAdminAuthProviderLabel } from "@/utils/admin";
 
 import { AdminCustomerAvatarUploadField } from "./avatar-upload-field";
 import type { AdminCustomerFormProps } from "./types";
 
-export const AdminCustomerForm = ({
+export const AdminCustomerForm = async ({
   customer,
   locale,
-  dictionary,
-  sharedDictionary,
   action,
   deleteAction,
   errorCode,
   isCurrentUser = false,
 }: AdminCustomerFormProps) => {
-  const errorMessage = getAdminCustomerFormErrorMessage(errorCode, dictionary);
+  const [tForm, tShared, tAuthProviders] = await Promise.all([
+    getTranslations({ locale, namespace: "adminPage.customers.form" }),
+    getTranslations({ locale, namespace: "adminPage.shared" }),
+    getTranslations({ locale, namespace: "adminPage.shared.status.authProviders" }),
+  ]);
+  const errorMessage = (() => {
+    switch (errorCode) {
+      case AdminCustomerFormErrorCode.NotFound:
+        return tForm("errorMessages.notFound");
+      case AdminCustomerFormErrorCode.StorageUnavailable:
+        return tForm("errorMessages.storageUnavailable");
+      case AdminCustomerFormErrorCode.EmailTaken:
+        return tForm("errorMessages.emailTaken");
+      case AdminCustomerFormErrorCode.EmailManagedByGoogle:
+        return tForm("errorMessages.emailManagedByGoogle");
+      case AdminCustomerFormErrorCode.CannotDeleteSelf:
+        return tForm("errorMessages.cannotDeleteSelf");
+      case AdminCustomerFormErrorCode.CannotDemoteSelf:
+        return tForm("errorMessages.cannotDemoteSelf");
+      case AdminCustomerFormErrorCode.LastAdmin:
+        return tForm("errorMessages.lastAdmin");
+      case AdminCustomerFormErrorCode.SaveFailed:
+        return tForm("errorMessages.saveFailed");
+      case AdminCustomerFormErrorCode.DeleteFailed:
+        return tForm("errorMessages.deleteFailed");
+      case AdminCustomerFormErrorCode.Unexpected:
+        return tForm("errorMessages.unexpected");
+      default:
+        return undefined;
+    }
+  })();
   const title = customer.name || customer.email;
+  const authProviderLabels = {
+    google: tAuthProviders("google"),
+    credentials: tAuthProviders("credentials"),
+  };
 
   return (
     <Stack gap={3}>
       {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-      {isCurrentUser ? <Alert severity="info">{dictionary.helpers.currentAccount}</Alert> : null}
+      {isCurrentUser ? <Alert severity="info">{tForm("helpers.currentAccount")}</Alert> : null}
 
       <AdminPageHero
-        eyebrow={dictionary.editEyebrow}
-        title={`${dictionary.editTitlePrefix}: ${title}`}
-        description={dictionary.editDescription}
+        eyebrow={tForm("editEyebrow")}
+        title={`${tForm("editTitlePrefix")}: ${title}`}
+        description={tForm("editDescription")}
         actions={
           <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
             <Button
@@ -57,16 +90,11 @@ export const AdminCustomerForm = ({
               color="inherit"
               sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
             >
-              {sharedDictionary.actions.viewAccounts}
+              {tShared("actions.viewAccounts")}
             </Button>
             <DeleteCustomerButton
               userId={customer.id}
-              label={dictionary.deleteButton}
               action={deleteAction}
-              dialogTitle={dictionary.deleteDialogTitle}
-              dialogDescription={dictionary.deleteDialogDescription}
-              confirmLabel={dictionary.confirmDeleteButton}
-              cancelLabel={dictionary.cancelDeleteButton}
               source="edit"
               disabled={isCurrentUser}
               icon={<DeleteOutlineOutlinedIcon key="delete-customer-button" />}
@@ -75,8 +103,8 @@ export const AdminCustomerForm = ({
               form="admin-customer-form"
               variant="contained"
               startIcon={<SaveOutlinedIcon />}
-              label={dictionary.saveChangesButton}
-              pendingLabel={dictionary.savingChangesButton}
+              label={tForm("saveChangesButton")}
+              pendingLabel={tForm("savingChangesButton")}
             />
           </Stack>
         }
@@ -103,22 +131,22 @@ export const AdminCustomerForm = ({
               </Stack>
               <Stack direction="row" gap={1} flexWrap="wrap">
                 <AdminStatusChip
-                  label={customer.isAdmin ? sharedDictionary.status.admin : sharedDictionary.status.user}
+                  label={customer.isAdmin ? tShared("status.admin") : tShared("status.user")}
                   tone={customer.isAdmin ? "accent" : "neutral"}
                 />
                 {customer.authProviders.map((provider) => (
                   <AdminStatusChip
                     key={provider}
-                    label={getAdminAuthProviderLabel(provider, sharedDictionary.status.authProviders)}
+                    label={getAdminAuthProviderLabel(provider, authProviderLabels)}
                     tone={provider === "google" ? "info" : "warning"}
                   />
                 ))}
               </Stack>
               <Typography variant="body2" color="text.secondary">
-                {dictionary.fields.createdAt}: {formatAdminDate(customer.createdAt, locale)}
+                {tForm("fields.createdAt")}: {formatAdminDate(customer.createdAt, locale)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {dictionary.fields.updatedAt}: {formatAdminDate(customer.updatedAt, locale)}
+                {tForm("fields.updatedAt")}: {formatAdminDate(customer.updatedAt, locale)}
               </Typography>
             </Stack>
           </Paper>
@@ -131,8 +159,8 @@ export const AdminCustomerForm = ({
 
         <Stack gap={3}>
           <AdminSectionCard
-            title={dictionary.sections.profileTitle}
-            description={dictionary.sections.profileDescription}
+            title={tForm("sections.profileTitle")}
+            description={tForm("sections.profileDescription")}
           >
             <Box
               sx={{
@@ -155,12 +183,12 @@ export const AdminCustomerForm = ({
                   <AdminCustomerAvatarUploadField
                     name="avatar"
                     removeInputName="removeAvatar"
-                    label={dictionary.fields.avatar}
-                    helperText={dictionary.helpers.avatar}
-                    buttonLabel={dictionary.buttons.uploadAvatar}
-                    replaceButtonLabel={dictionary.buttons.replaceAvatar}
-                    removeButtonLabel={dictionary.buttons.removeAvatar}
-                    emptyLabel={dictionary.helpers.emptyAvatar}
+                    label={tForm("fields.avatar")}
+                    helperText={tForm("helpers.avatar")}
+                    buttonLabel={tForm("buttons.uploadAvatar")}
+                    replaceButtonLabel={tForm("buttons.replaceAvatar")}
+                    removeButtonLabel={tForm("buttons.removeAvatar")}
+                    emptyLabel={tForm("helpers.emptyAvatar")}
                     currentImageSrc={customer.image ?? null}
                     currentImageAlt={title}
                   />
@@ -177,7 +205,7 @@ export const AdminCustomerForm = ({
                     <Grid size={{ xs: 12, md: 6 }}>
                       <TextField
                         fullWidth
-                        label={dictionary.fields.userId}
+                        label={tForm("fields.userId")}
                         defaultValue={customer.id}
                         slotProps={{ input: { readOnly: true } }}
                       />
@@ -187,7 +215,7 @@ export const AdminCustomerForm = ({
                         fullWidth
                         name="email"
                         type="email"
-                        label={dictionary.fields.email}
+                        label={tForm("fields.email")}
                         defaultValue={customer.email}
                         required
                       />
@@ -196,7 +224,7 @@ export const AdminCustomerForm = ({
                       <TextField
                         fullWidth
                         name="name"
-                        label={dictionary.fields.name}
+                        label={tForm("fields.name")}
                         defaultValue={customer.name}
                         required
                       />
@@ -205,7 +233,7 @@ export const AdminCustomerForm = ({
                       <TextField
                         fullWidth
                         name="phone"
-                        label={dictionary.fields.phone}
+                        label={tForm("fields.phone")}
                         defaultValue={customer.phone}
                       />
                     </Grid>
@@ -216,48 +244,48 @@ export const AdminCustomerForm = ({
           </AdminSectionCard>
 
           <AdminSectionCard
-            title={dictionary.sections.accessTitle}
-            description={dictionary.sections.accessDescription}
+            title={tForm("sections.accessTitle")}
+            description={tForm("sections.accessDescription")}
           >
             <Stack gap={2}>
               <Stack gap={1}>
-                <Typography fontWeight={700}>{dictionary.fields.providers}</Typography>
+                <Typography fontWeight={700}>{tForm("fields.providers")}</Typography>
                 <Stack direction="row" gap={1} flexWrap="wrap">
                   {customer.authProviders.map((provider) => (
                     <AdminStatusChip
                       key={provider}
-                      label={getAdminAuthProviderLabel(provider, sharedDictionary.status.authProviders)}
+                      label={getAdminAuthProviderLabel(provider, authProviderLabels)}
                       tone={provider === "google" ? "info" : "warning"}
                     />
                   ))}
                 </Stack>
                 <Typography variant="body2" color="text.secondary">
-                  {dictionary.helpers.providers}
+                  {tForm("helpers.providers")}
                 </Typography>
               </Stack>
 
               <AdminCheckboxField
-                label={dictionary.toggles.isAdmin}
+                label={tForm("toggles.isAdmin")}
                 control={<Checkbox name="isAdmin" defaultChecked={customer.isAdmin} />}
               />
 
               {isCurrentUser ? (
                 <Typography variant="body2" color="text.secondary">
-                  {dictionary.helpers.currentRoleChange}
+                  {tForm("helpers.currentRoleChange")}
                 </Typography>
               ) : null}
             </Stack>
           </AdminSectionCard>
 
           <AdminSectionCard
-            title={dictionary.sections.metadataTitle}
-            description={dictionary.sections.metadataDescription}
+            title={tForm("sections.metadataTitle")}
+            description={tForm("sections.metadataDescription")}
           >
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
-                  label={dictionary.fields.createdAt}
+                  label={tForm("fields.createdAt")}
                   defaultValue={formatAdminDate(customer.createdAt, locale)}
                   slotProps={{ input: { readOnly: true } }}
                 />
@@ -265,7 +293,7 @@ export const AdminCustomerForm = ({
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
                   fullWidth
-                  label={dictionary.fields.updatedAt}
+                  label={tForm("fields.updatedAt")}
                   defaultValue={formatAdminDate(customer.updatedAt, locale)}
                   slotProps={{ input: { readOnly: true } }}
                 />

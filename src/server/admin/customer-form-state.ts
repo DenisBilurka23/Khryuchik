@@ -1,4 +1,15 @@
-import type { AdminPageDictionary } from "@/i18n/types";
+type AdminCustomerFormErrorMessages = {
+  notFound: string;
+  storageUnavailable: string;
+  emailTaken: string;
+  emailManagedByGoogle: string;
+  cannotDeleteSelf: string;
+  cannotDemoteSelf: string;
+  lastAdmin: string;
+  saveFailed: string;
+  deleteFailed: string;
+  unexpected: string;
+};
 
 export enum AdminCustomerFormErrorCode {
   NotFound = "not-found",
@@ -15,29 +26,29 @@ export enum AdminCustomerFormErrorCode {
 
 export const getAdminCustomerFormErrorMessage = (
   error: string | undefined,
-  dictionary: AdminPageDictionary["customers"]["form"],
+  messages: AdminCustomerFormErrorMessages,
 ) => {
   switch (error) {
     case AdminCustomerFormErrorCode.NotFound:
-      return dictionary.errorMessages.notFound;
+      return messages.notFound;
     case AdminCustomerFormErrorCode.StorageUnavailable:
-      return dictionary.errorMessages.storageUnavailable;
+      return messages.storageUnavailable;
     case AdminCustomerFormErrorCode.EmailTaken:
-      return dictionary.errorMessages.emailTaken;
+      return messages.emailTaken;
     case AdminCustomerFormErrorCode.EmailManagedByGoogle:
-      return dictionary.errorMessages.emailManagedByGoogle;
+      return messages.emailManagedByGoogle;
     case AdminCustomerFormErrorCode.CannotDeleteSelf:
-      return dictionary.errorMessages.cannotDeleteSelf;
+      return messages.cannotDeleteSelf;
     case AdminCustomerFormErrorCode.CannotDemoteSelf:
-      return dictionary.errorMessages.cannotDemoteSelf;
+      return messages.cannotDemoteSelf;
     case AdminCustomerFormErrorCode.LastAdmin:
-      return dictionary.errorMessages.lastAdmin;
+      return messages.lastAdmin;
     case AdminCustomerFormErrorCode.SaveFailed:
-      return dictionary.errorMessages.saveFailed;
+      return messages.saveFailed;
     case AdminCustomerFormErrorCode.DeleteFailed:
-      return dictionary.errorMessages.deleteFailed;
+      return messages.deleteFailed;
     case AdminCustomerFormErrorCode.Unexpected:
-      return dictionary.errorMessages.unexpected;
+      return messages.unexpected;
     default:
       return undefined;
   }

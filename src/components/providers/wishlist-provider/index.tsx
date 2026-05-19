@@ -16,6 +16,7 @@ import {
   removeFromWishlist,
   resolveGuestWishlist,
 } from "@/client-api/wishlist";
+import { GUEST_WISHLIST_CHANGE_EVENT } from "@/constants/wishlist";
 import { WishlistContext } from "@/hooks/useWishlist";
 import { defaultLocale, type Locale, locales } from "@/i18n/config";
 import type {
@@ -25,7 +26,6 @@ import type {
 } from "@/types/wishlist";
 import {
   getGuestWishlist,
-  GUEST_WISHLIST_CHANGE_EVENT,
   toggleGuestWishlist,
 } from "@/utils/wishlist";
 

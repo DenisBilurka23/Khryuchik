@@ -1,9 +1,6 @@
 import type { SyntheticEvent } from "react";
 
-import type { RegisterPageDictionary } from "@/i18n/types";
-
 export type RegisterFormProps = {
-  dictionary: RegisterPageDictionary;
   name: string;
   email: string;
   phone: string;

@@ -1,15 +1,13 @@
 import { Box, Checkbox, MenuItem, TextField, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 
+import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import { getAdminCategoryLabel } from "@/utils/admin";
 
 import { AdminCheckboxField, AdminSectionCard } from "../../../admin-page-shared";
 import type { AdminProductBaseSectionProps } from "./types";
 
-const booksCategoryKey = "books";
-
 export const AdminProductBaseSection = ({
-  dictionary,
-  sharedDictionary,
   payload,
   locale,
   isNew,
@@ -19,10 +17,13 @@ export const AdminProductBaseSection = ({
   onTypeChange,
   onCategoryChange,
 }: AdminProductBaseSectionProps) => {
+  const tForm = useTranslations("adminPage.productForm");
+  const tShared = useTranslations("adminPage.shared");
+
   return (
     <AdminSectionCard
-      title={dictionary.baseSectionTitle}
-      description={dictionary.baseSectionDescription}
+      title={tForm("baseSectionTitle")}
+      description={tForm("baseSectionDescription")}
     >
       <Box
         sx={{
@@ -35,44 +36,44 @@ export const AdminProductBaseSection = ({
         }}
       >
         <TextField
-          label={dictionary.fields.productId}
+          label={tForm("fields.productId")}
           name="productId"
           defaultValue={payload.product.productId}
-          helperText={dictionary.helpers.productId}
+          helperText={tForm("helpers.productId")}
           slotProps={{ input: { readOnly: !isNew } }}
         />
         <TextField
-          label={dictionary.fields.slug}
+          label={tForm("fields.slug")}
           name="slug"
           defaultValue={payload.product.slug}
-          helperText={dictionary.helpers.slug}
+          helperText={tForm("helpers.slug")}
         />
         <TextField
-          label={dictionary.fields.sku}
+          label={tForm("fields.sku")}
           name="sku"
           defaultValue={payload.details.sku}
-          helperText={dictionary.helpers.sku}
+          helperText={tForm("helpers.sku")}
         />
         <TextField
           select
-          label={dictionary.fields.type}
+          label={tForm("fields.type")}
           name="type"
           value={selectedType}
           onChange={(event) => onTypeChange(event.target.value as typeof selectedType)}
         >
           <MenuItem value="book">
-            {sharedDictionary.status.productTypes.book}
+            {tShared("status.productTypes.book")}
           </MenuItem>
           <MenuItem value="merch">
-            {sharedDictionary.status.productTypes.merch}
+            {tShared("status.productTypes.merch")}
           </MenuItem>
         </TextField>
         {selectedType === "book" ? (
-          <input type="hidden" name="category" value={booksCategoryKey} />
+          <input type="hidden" name="category" value={BOOKS_CATEGORY_KEY} />
         ) : (
           <TextField
             select
-            label={dictionary.fields.category}
+            label={tForm("fields.category")}
             name="category"
             value={selectedCategory}
             onChange={(event) => onCategoryChange(event.target.value)}
@@ -86,32 +87,32 @@ export const AdminProductBaseSection = ({
           </TextField>
         )}
         <TextField
-          label={dictionary.fields.sortOrder}
+          label={tForm("fields.sortOrder")}
           name="sortOrder"
           type="number"
           defaultValue={payload.product.merchandising.sortOrder}
         />
         <TextField
           select
-          label={dictionary.fields.availability}
+          label={tForm("fields.availability")}
           name="availability"
           defaultValue={payload.product.inventory.availability}
         >
           <MenuItem value="in_stock">
-            {sharedDictionary.status.availability.in_stock}
+            {tShared("status.availability.in_stock")}
           </MenuItem>
           <MenuItem value="out_of_stock">
-            {sharedDictionary.status.availability.out_of_stock}
+            {tShared("status.availability.out_of_stock")}
           </MenuItem>
           <MenuItem value="preorder">
-            {sharedDictionary.status.availability.preorder}
+            {tShared("status.availability.preorder")}
           </MenuItem>
           <MenuItem value="made_to_order">
-            {sharedDictionary.status.availability.made_to_order}
+            {tShared("status.availability.made_to_order")}
           </MenuItem>
         </TextField>
         <TextField
-          label={dictionary.fields.quantity}
+          label={tForm("fields.quantity")}
           name="quantity"
           type="number"
           defaultValue={payload.product.inventory.quantity ?? ""}
@@ -121,7 +122,7 @@ export const AdminProductBaseSection = ({
         variant="subtitle2"
         sx={{ mt: 2.5, mb: 1, fontWeight: 700, color: "text.secondary" }}
       >
-        {dictionary.placementTitle}
+        {tForm("placementTitle")}
       </Typography>
       <Box
         sx={{
@@ -140,7 +141,7 @@ export const AdminProductBaseSection = ({
               defaultChecked={payload.product.status.isActive}
             />
           }
-          label={dictionary.fields.isActive}
+          label={tForm("fields.isActive")}
         />
         <AdminCheckboxField
           control={
@@ -149,7 +150,7 @@ export const AdminProductBaseSection = ({
               defaultChecked={payload.product.status.visibleInShop}
             />
           }
-          label={dictionary.fields.visibleInShop}
+          label={tForm("fields.visibleInShop")}
         />
         <AdminCheckboxField
           control={
@@ -158,7 +159,7 @@ export const AdminProductBaseSection = ({
               defaultChecked={payload.product.status.visibleOnHome}
             />
           }
-          label={dictionary.fields.visibleOnHome}
+          label={tForm("fields.visibleOnHome")}
         />
       </Box>
     </AdminSectionCard>

@@ -1,10 +1,24 @@
+import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import type { Locale } from "@/i18n/config";
-import type { AdminPageDictionary } from "@/i18n/types";
 import type { AdminNavItem, AdminProductPayload } from "@/types/admin";
 import type { ProductDetailTranslation, ProductTranslation } from "@/types/catalog";
 
+type AdminNavLabels = Record<
+  "dashboard" | "products" | "categories" | "customers" | "orders",
+  string
+>;
+
+type AdminAvailabilityLabels = Record<
+  "in_stock" | "out_of_stock" | "preorder" | "made_to_order",
+  string
+>;
+
+type AdminProductTypeLabels = Record<"book" | "merch", string>;
+
+type AdminAuthProviderLabels = Record<"google" | "credentials", string>;
+
 export const createAdminNavItems = (
-  labels: AdminPageDictionary["nav"],
+  labels: AdminNavLabels,
 ): AdminNavItem[] => [
   { key: "dashboard", label: labels.dashboard, href: "/admin" },
   { key: "products", label: labels.products, href: "/admin/products" },
@@ -21,18 +35,18 @@ export const formatAdminDate = (value: string, locale: Locale) =>
   }).format(new Date(value));
 
 export const getAdminAvailabilityLabel = (
-  availability: keyof AdminPageDictionary["shared"]["status"]["availability"],
-  labels: AdminPageDictionary["shared"]["status"]["availability"],
+  availability: keyof AdminAvailabilityLabels,
+  labels: AdminAvailabilityLabels,
 ) => labels[availability];
 
 export const getAdminProductTypeLabel = (
-  type: keyof AdminPageDictionary["shared"]["status"]["productTypes"],
-  labels: AdminPageDictionary["shared"]["status"]["productTypes"],
+  type: keyof AdminProductTypeLabels,
+  labels: AdminProductTypeLabels,
 ) => labels[type];
 
 export const getAdminAuthProviderLabel = (
-  provider: keyof AdminPageDictionary["shared"]["status"]["authProviders"] | string,
-  labels: AdminPageDictionary["shared"]["status"]["authProviders"],
+  provider: keyof AdminAuthProviderLabels | string,
+  labels: AdminAuthProviderLabels,
 ) => {
   if (provider === "google" || provider === "credentials") {
     return labels[provider];
@@ -123,7 +137,7 @@ export const createEmptyAdminProductPayload = (): AdminProductPayload => ({
     slug: "",
     classification: {
       type: "book",
-      category: "books",
+      category: BOOKS_CATEGORY_KEY,
     },
     status: {
       isActive: true,

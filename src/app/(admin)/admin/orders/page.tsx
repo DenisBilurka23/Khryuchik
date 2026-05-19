@@ -3,9 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Button, Stack } from "@mui/material";
 
 import { AdminEmptyState, AdminPageHero, AdminSectionCard } from "@/components/admin-page-shared";
-import { getDictionary } from "@/i18n/dictionaries";
 import { createAdminMetadata } from "@/server/admin/metadata";
-import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -24,15 +22,17 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 const AdminOrdersPage = async () => {
 	const locale = await resolveLocale("admin");
-	const country = await getRequestCountry();
-	const { adminPage: dictionary } = await getDictionary(locale, country);
+	const tOrders = await getTranslations({
+		locale,
+		namespace: "adminPage.orders",
+	});
 
 	return (
 		<Stack gap={3}>
-			<AdminPageHero eyebrow={dictionary.orders.eyebrow} title={dictionary.orders.title} description={dictionary.orders.description} />
+			<AdminPageHero eyebrow={tOrders("eyebrow")} title={tOrders("title")} description={tOrders("description")} />
 
-			<AdminSectionCard title={dictionary.orders.sectionTitle} description={dictionary.orders.sectionDescription}>
-				<AdminEmptyState title={dictionary.orders.emptyTitle} description={dictionary.orders.emptyDescription} action={<Button href="/admin/customers" variant="outlined">{dictionary.orders.action}</Button>} />
+			<AdminSectionCard title={tOrders("sectionTitle")} description={tOrders("sectionDescription")}>
+				<AdminEmptyState title={tOrders("emptyTitle")} description={tOrders("emptyDescription")} action={<Button href="/admin/customers" variant="outlined">{tOrders("action")}</Button>} />
 			</AdminSectionCard>
 		</Stack>
 	);

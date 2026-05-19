@@ -6,12 +6,10 @@ import { getTranslations } from "next-intl/server";
 import { deleteAdminCustomerAction } from "@/app/(admin)/admin/actions";
 import { DeleteCustomerButton, EditCustomerButton } from "@/components/admin-customers-page-view";
 import { AdminPageHero, AdminSectionCard, AdminStatusChip } from "@/components/admin-page-shared";
-import { getDictionary } from "@/i18n/dictionaries";
 import { getAdminCustomerFormErrorMessage } from "@/server/admin/customer-form-state";
 import { getAdminCustomers } from "@/server/admin/catalog.service";
 import { requireAdminPageAccess } from "@/server/admin/auth";
 import { createAdminMetadata } from "@/server/admin/metadata";
-import { getRequestCountry } from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { formatAdminDate } from "@/utils/admin";
 
@@ -38,31 +36,51 @@ const AdminCustomersPage = async ({ searchParams }: AdminCustomersPageProps) => 
 		searchParams,
 		resolveLocale("admin"),
 	]);
-	const [country, customers, session] = await Promise.all([
-		getRequestCountry(),
+	const [customers, session, tCustomers, tCustomerForm, tShared] = await Promise.all([
 		getAdminCustomers(),
 		requireAdminPageAccess("/admin/customers"),
+		getTranslations({ locale, namespace: "adminPage.customers" }),
+		getTranslations({ locale, namespace: "adminPage.customers.form" }),
+		getTranslations({ locale, namespace: "adminPage.shared" }),
 	]);
-	const { adminPage: dictionary } = await getDictionary(locale, country);
-	const shared = dictionary.shared;
+	const sharedStatus = {
+		admin: tShared("status.admin"),
+		user: tShared("status.user"),
+	};
+	const sharedPlaceholders = {
+		noName: tShared("placeholders.noName"),
+		emptyValue: tShared("placeholders.emptyValue"),
+	};
+	const customerFormErrorMessages = {
+		notFound: tCustomerForm("errorMessages.notFound"),
+		storageUnavailable: tCustomerForm("errorMessages.storageUnavailable"),
+		emailTaken: tCustomerForm("errorMessages.emailTaken"),
+		emailManagedByGoogle: tCustomerForm("errorMessages.emailManagedByGoogle"),
+		cannotDeleteSelf: tCustomerForm("errorMessages.cannotDeleteSelf"),
+		cannotDemoteSelf: tCustomerForm("errorMessages.cannotDemoteSelf"),
+		lastAdmin: tCustomerForm("errorMessages.lastAdmin"),
+		saveFailed: tCustomerForm("errorMessages.saveFailed"),
+		deleteFailed: tCustomerForm("errorMessages.deleteFailed"),
+		unexpected: tCustomerForm("errorMessages.unexpected"),
+	};
 
 	return (
 		<Stack gap={3}>
-			<AdminPageHero eyebrow={dictionary.customers.eyebrow} title={dictionary.customers.title} description={dictionary.customers.description} />
+			<AdminPageHero eyebrow={tCustomers("eyebrow")} title={tCustomers("title")} description={tCustomers("description")} />
 
-			{deleted === "1" ? <Alert severity="success">{dictionary.customers.deletedMessage}</Alert> : null}
-			{error ? <Alert severity="error">{getAdminCustomerFormErrorMessage(error, dictionary.customers.form)}</Alert> : null}
+			{deleted === "1" ? <Alert severity="success">{tCustomers("deletedMessage")}</Alert> : null}
+			{error ? <Alert severity="error">{getAdminCustomerFormErrorMessage(error, customerFormErrorMessages)}</Alert> : null}
 
-			<AdminSectionCard title={dictionary.customers.sectionTitle} description={`${dictionary.customers.sectionDescription}: ${customers.length}`}>
+			<AdminSectionCard title={tCustomers("sectionTitle")} description={`${tCustomers("sectionDescription")}: ${customers.length}`}>
 				<Box sx={{ overflowX: "auto" }}>
 					<Table>
 						<TableHead>
 							<TableRow>
-								<TableCell>{dictionary.customers.columns.user}</TableCell>
-								<TableCell>{dictionary.customers.columns.phone}</TableCell>
-								<TableCell>{dictionary.customers.columns.role}</TableCell>
-								<TableCell>{dictionary.customers.columns.created}</TableCell>
-								<TableCell align="right">{dictionary.customers.columns.action}</TableCell>
+								<TableCell>{tCustomers("columns.user")}</TableCell>
+								<TableCell>{tCustomers("columns.phone")}</TableCell>
+								<TableCell>{tCustomers("columns.role")}</TableCell>
+								<TableCell>{tCustomers("columns.created")}</TableCell>
+								<TableCell align="right">{tCustomers("columns.action")}</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -70,34 +88,26 @@ const AdminCustomersPage = async ({ searchParams }: AdminCustomersPageProps) => 
 								<TableRow key={customer.id} hover>
 									<TableCell>
 										<Stack gap={0.5}>
-											<Typography fontWeight={700}>{customer.name || shared.placeholders.noName}</Typography>
+											<Typography fontWeight={700}>{customer.name || sharedPlaceholders.noName}</Typography>
 											<Typography variant="body2" color="text.secondary">{customer.email}</Typography>
 										</Stack>
 									</TableCell>
-									<TableCell>{customer.phone || shared.placeholders.emptyValue}</TableCell>
+									<TableCell>{customer.phone || sharedPlaceholders.emptyValue}</TableCell>
 									<TableCell>
-										<AdminStatusChip label={customer.isAdmin ? shared.status.admin : shared.status.user} tone={customer.isAdmin ? "accent" : "neutral"} />
+										<AdminStatusChip label={customer.isAdmin ? sharedStatus.admin : sharedStatus.user} tone={customer.isAdmin ? "accent" : "neutral"} />
 									</TableCell>
 									<TableCell>{formatAdminDate(customer.createdAt, locale)}</TableCell>
 									<TableCell align="right">
 										<Stack direction="row" gap={0.5} justifyContent="flex-end">
 											<EditCustomerButton
 												href={`/admin/customers/${customer.id}/edit`}
-												label={shared.actions.edit}
 												size="small"
 											/>
 											<DeleteCustomerButton
 												userId={customer.id}
-												label={dictionary.customers.form.deleteButton}
 												action={deleteAdminCustomerAction}
-												dialogTitle={dictionary.customers.form.deleteDialogTitle}
-												dialogDescription={dictionary.customers.form.deleteDialogDescription}
-												confirmLabel={dictionary.customers.form.confirmDeleteButton}
-												cancelLabel={dictionary.customers.form.cancelDeleteButton}
 												icon={<DeleteOutlineOutlinedIcon key="delete-customer-icon" />}
 												iconOnly
-												tooltip={dictionary.customers.form.deleteButton}
-												ariaLabel={dictionary.customers.form.deleteButton}
 												size="small"
 												disabled={session.user.id === customer.id}
 											/>

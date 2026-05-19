@@ -8,15 +8,31 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
-import { getCountryCurrency } from "@/utils";
+import type { StorefrontDictionary } from "@/i18n/types";
+import {
+  formatCurrency,
+  getCountryCurrency,
+  getLocalizedPath,
+  promoBackgrounds,
+} from "@/utils";
 
 import { InfoChip } from "../info-chip";
-import { formatCurrency, getLocalizedPath, promoBackgrounds } from "@/utils";
 import styles from "./hero-section.module.css";
 import type { HeroSectionProps } from "./types";
 
-export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) => {
+export const HeroSection = async ({ locale, country }: HeroSectionProps) => {
+  const t = await getTranslations({ locale, namespace: "storefront.hero" });
+  const chips = t.raw("chips") as StorefrontDictionary["hero"]["chips"];
+  const featuredHit = t.raw(
+    "featuredHit",
+  ) as StorefrontDictionary["hero"]["featuredHit"];
+  const character = t.raw(
+    "character",
+  ) as StorefrontDictionary["hero"]["character"];
+  const newBook = t.raw("newBook") as StorefrontDictionary["hero"]["newBook"];
+  const promos = t.raw("promos") as StorefrontDictionary["hero"]["promos"];
   const homeHref = getLocalizedPath(locale, "/");
 
   return (
@@ -25,14 +41,14 @@ export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) =
         <Grid container spacing={6} alignItems="center">
           <Grid size={{ xs: 12, md: 6 }}>
             <Paper elevation={0} className={styles.badge} sx={{ mb: 3 }}>
-              <Typography variant="body2">{dictionary.hero.badge}</Typography>
+              <Typography variant="body2">{t("badge")}</Typography>
             </Paper>
 
             <Typography
               variant="h1"
               sx={{ maxWidth: 680, fontSize: { xs: 42, md: 64 } }}
             >
-              {dictionary.hero.title}
+              {t("title")}
             </Typography>
 
             <Typography
@@ -45,7 +61,7 @@ export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) =
                 fontSize: { xs: 16, md: 18 },
               }}
             >
-              {dictionary.hero.lead}
+              {t("lead")}
             </Typography>
 
             <Stack
@@ -58,7 +74,7 @@ export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) =
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 <Button component="span" variant="contained" size="large">
-                  {dictionary.hero.primaryAction}
+                  {t("primaryAction")}
                 </Button>
               </Link>
               <Link
@@ -72,7 +88,7 @@ export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) =
                   size="large"
                   className={styles.secondaryButton}
                 >
-                  {dictionary.hero.secondaryAction}
+                  {t("secondaryAction")}
                 </Button>
               </Link>
             </Stack>
@@ -84,7 +100,7 @@ export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) =
               flexWrap="wrap"
               sx={{ mt: 4 }}
             >
-              {dictionary.hero.chips.map((chip) => (
+              {chips.map((chip) => (
                 <InfoChip key={chip} text={chip} />
               ))}
             </Stack>
@@ -98,14 +114,14 @@ export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) =
                 sx={{ display: { xs: "none", md: "block" } }}
               >
                 <Typography variant="caption" color="text.secondary">
-                  {dictionary.hero.featuredHit.label}
+                  {featuredHit.label}
                 </Typography>
                 <Typography sx={{ mt: 0.5, fontWeight: 700 }}>
-                  {dictionary.hero.featuredHit.title}
+                  {featuredHit.title}
                 </Typography>
                 <Typography variant="body2" sx={{ color: "primary.main" }}>
                   {formatCurrency(
-                    dictionary.hero.featuredHit.price,
+                    featuredHit.price,
                     locale,
                     getCountryCurrency(country),
                   )}
@@ -123,7 +139,7 @@ export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) =
                       color="text.secondary"
                       sx={{ mb: 2 }}
                     >
-                      {dictionary.hero.character.eyebrow}
+                      {character.eyebrow}
                     </Typography>
                     <Stack
                       direction="row"
@@ -135,15 +151,15 @@ export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) =
                         <Typography
                           sx={{ fontSize: { xs: 64, md: 96 }, lineHeight: 1 }}
                         >
-                          {dictionary.hero.character.emoji}
+                          {character.emoji}
                         </Typography>
                         <Typography
                           sx={{ mt: 1, fontSize: 32, fontWeight: 800 }}
                         >
-                          {dictionary.hero.character.title}
+                          {character.title}
                         </Typography>
                         <Typography color="text.secondary">
-                          {dictionary.hero.character.subtitle}
+                          {character.subtitle}
                         </Typography>
                       </Box>
 
@@ -154,16 +170,16 @@ export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) =
                       >
                         <Box className={styles.newBookInner}>
                           <Typography sx={{ fontSize: 48 }}>
-                            {dictionary.hero.newBook.emoji}
+                            {newBook.emoji}
                           </Typography>
                           <Typography
                             variant="body2"
                             sx={{ mt: 1.5, fontWeight: 700 }}
                           >
-                            {dictionary.hero.newBook.label}
+                            {newBook.label}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            {dictionary.hero.newBook.title}
+                            {newBook.title}
                           </Typography>
                         </Box>
                       </Paper>
@@ -171,7 +187,7 @@ export const HeroSection = ({ locale, country, dictionary }: HeroSectionProps) =
                   </Box>
 
                   <Grid container spacing={2}>
-                    {dictionary.hero.promos.map((promo, index) => (
+                    {promos.map((promo, index) => (
                       <Grid key={promo.title} size={{ xs: 12, md: 6 }}>
                         <Paper
                           elevation={0}

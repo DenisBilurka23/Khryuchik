@@ -1,5 +1,1 @@
-import type { StorefrontDictionary } from "@/i18n/types";
-
-export type NewsletterSectionProps = {
-  dictionary: StorefrontDictionary;
-};
+export type NewsletterSectionProps = Record<string, never>;
