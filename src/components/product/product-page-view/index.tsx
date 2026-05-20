@@ -81,7 +81,9 @@ export const ProductPageView = async ({
     },
     relatedTitle: tProductPage("relatedTitle"),
     storyConnection: {
-      title: tProductPage("storyConnection.title"),
+      title: tProductPage("storyConnection.title", {
+        storyTitle: storyProduct?.title ?? "",
+      }),
       description: tProductPage("storyConnection.description"),
     },
   };

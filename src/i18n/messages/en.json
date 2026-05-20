@@ -200,7 +200,7 @@
       },
       "relatedTitle": "Build your own Khryuchik bundle",
       "storyConnection": {
-        "title": "This product was inspired by the story '{title}'",
+        "title": "This product was inspired by the story '{storyTitle}'",
         "description": "Add the book to your purchase and create a cozy Khryuchik gift set."
       }
     },

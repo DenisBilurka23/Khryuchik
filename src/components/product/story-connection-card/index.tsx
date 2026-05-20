@@ -43,7 +43,7 @@ export const StoryConnectionCard = ({
 
         <Box sx={{ flex: 1 }}>
           <Typography sx={{ fontSize: 22, fontWeight: 800 }}>
-            {titleTemplate.replace("{title}", product.title)}
+            {titleTemplate}
           </Typography>
           <Typography color="text.secondary" sx={{ mt: 1.5, lineHeight: 1.8 }}>
             {description}
