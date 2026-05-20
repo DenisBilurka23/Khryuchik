@@ -33,17 +33,25 @@ const getImageCardStyles = ({
   overflow: "hidden",
 });
 
+const statusToneColor = {
+  info: "#1F2937",
+  success: "#1F8A4C",
+  error: "#B23B3B",
+} as const;
+
 export const ImageCard = ({
   image,
   index,
   thumbnailLabel,
   galleryLabel,
   removeButtonLabel,
-  onRemove,
+  onRemoveAction,
   isDragging = false,
   isOverlay = false,
   dragHandleListeners,
   dragHandleAttributes,
+  statusLabel,
+  statusTone,
 }: ImageCardProps) => {
   return (
     <Paper
@@ -62,7 +70,7 @@ export const ImageCard = ({
           {index === 0 ? thumbnailLabel : `${galleryLabel} ${index}`}
         </Typography>
         <Box className={styles.actions}>
-          {!isOverlay && onRemove ? (
+          {!isOverlay && onRemoveAction ? (
             <IconButton
               type="button"
               size="small"
@@ -72,7 +80,7 @@ export const ImageCard = ({
               }}
               onClick={(event) => {
                 event.stopPropagation();
-                onRemove();
+                onRemoveAction();
               }}
               className={styles.removeButton}
             >
@@ -105,6 +113,19 @@ export const ImageCard = ({
           image.emoji ?? "🖼️"
         )}
       </Box>
+      {statusLabel ? (
+        <Typography
+          variant="caption"
+          sx={{
+            display: "block",
+            mt: 0.75,
+            fontWeight: 600,
+            color: statusTone ? statusToneColor[statusTone] : "text.secondary",
+          }}
+        >
+          {statusLabel}
+        </Typography>
+      ) : null}
     </Paper>
   );
 };

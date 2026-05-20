@@ -5,7 +5,7 @@ export { SortableImageCard } from "./sortable-image-card";
 export type {
   AdminImageUploadFieldProps,
   ImageCardProps,
-  OrderedImageFieldEntry,
+  ImageUploadStatus,
   OrderedImageFieldItem,
   PreviewImage,
 } from "./types";

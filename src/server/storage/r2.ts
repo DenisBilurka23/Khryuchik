@@ -5,6 +5,7 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const {
   R2_ACCOUNT_ID,
@@ -15,6 +16,10 @@ const {
   R2_BUCKET_PRIVATE,
   R2_PUBLIC_BASE_URL,
 } = process.env;
+
+export type R2BucketKind = "public" | "private";
+
+const PRESIGNED_PUT_EXPIRES_IN_SECONDS = 60 * 10;
 
 export const isR2Configured = Boolean(
   R2_ACCOUNT_ID &&
@@ -54,6 +59,39 @@ const buildPublicUrl = (objectKey: string) => {
   }
 
   return `${R2_PUBLIC_BASE_URL.replace(/\/$/, "")}/${objectKey}`;
+};
+
+const getBucketName = (bucket: R2BucketKind) =>
+  bucket === "public" ? R2_BUCKET_PUBLIC : R2_BUCKET_PRIVATE;
+
+export const buildPublicObjectUrl = (objectKey: string) =>
+  buildPublicUrl(objectKey);
+
+export const createPresignedPutUrl = async ({
+  bucket,
+  objectKey,
+  contentType,
+}: {
+  bucket: R2BucketKind;
+  objectKey: string;
+  contentType?: string;
+}) => {
+  const client = getR2Client();
+  const command = new PutObjectCommand({
+    Bucket: getBucketName(bucket),
+    Key: objectKey,
+    ContentType: contentType || undefined,
+  });
+
+  const uploadUrl = await getSignedUrl(client, command, {
+    expiresIn: PRESIGNED_PUT_EXPIRES_IN_SECONDS,
+  });
+
+  return {
+    objectKey,
+    uploadUrl,
+    expiresInSeconds: PRESIGNED_PUT_EXPIRES_IN_SECONDS,
+  };
 };
 
 export const uploadPublicObject = async ({

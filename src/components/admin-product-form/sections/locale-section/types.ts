@@ -5,4 +5,5 @@ export type AdminProductLocaleSectionProps = {
   locale: Locale;
   translation: ProductTranslation;
   details: ProductDetailTranslation;
+  productId?: string;
 };

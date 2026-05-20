@@ -20,47 +20,46 @@ import {
 } from "@dnd-kit/sortable";
 import { Box, Button, Stack, Typography } from "@mui/material";
 
-import type { ProductImage } from "@/types/product-details";
+import { requestAdminProductGalleryUploadUrls } from "@/client-api/admin";
 
+import {
+  buildImagesJsonValue,
+  getStatusLabel,
+  mapExistingImages,
+} from "../helpers";
 import { ImageCard } from "../image-card";
 import { SortableImageCard } from "../sortable-image-card";
 import styles from "../styles.module.css";
+import {
+  uploadDirectToR2,
+  useAdminProductUploadRegistry,
+} from "../../upload-registry";
 import type {
   AdminImageUploadFieldProps,
-  OrderedImageFieldEntry,
+  ImageUploadStatus,
   OrderedImageFieldItem,
 } from "../types";
 
-const mapExistingImages = (existingImages: ProductImage[]): OrderedImageFieldItem[] =>
-  existingImages.map((image) => ({
-    id: image.id,
-    kind: "existing",
-    src: image.src,
-    alt: image.alt ?? image.id,
-    emoji: image.emoji,
-    bgColor: image.bgColor,
-    existingImage: image,
-  }));
-
 export const AdminImageUploadField = ({
-  name,
-  existingImagesInputName,
-  imageOrderInputName,
+  imagesJsonInputName,
+  locale,
+  productId,
   buttonLabel,
   helperText,
   removeButtonLabel,
   thumbnailLabel,
   galleryLabel,
   existingImages,
+  statusLabels,
 }: AdminImageUploadFieldProps) => {
-  const [orderedImages, setOrderedImages] = useState<OrderedImageFieldItem[]>(() =>
-    mapExistingImages(existingImages),
+  const [orderedImages, setOrderedImages] = useState<OrderedImageFieldItem[]>(
+    () => mapExistingImages(existingImages),
   );
   const [activeImageId, setActiveImageId] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement | null>(null);
   const orderedImagesRef = useRef<OrderedImageFieldItem[]>(orderedImages);
-  const fileEntriesRef = useRef<Array<{ id: string; file: File }>>([]);
   const previewUrlsRef = useRef<string[]>([]);
+  const hiddenInputRef = useRef<HTMLInputElement | null>(null);
+  const { register } = useAdminProductUploadRegistry();
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -77,41 +76,27 @@ export const AdminImageUploadField = ({
     });
   });
 
-  const syncInputFiles = (
-    nextOrderedImages: OrderedImageFieldItem[],
-    nextFileEntries: Array<{ id: string; file: File }>,
-  ) => {
-    if (!inputRef.current) {
-      return;
+  const syncHiddenInput = (items: OrderedImageFieldItem[]) => {
+    if (hiddenInputRef.current) {
+      hiddenInputRef.current.value = buildImagesJsonValue(items);
     }
-
-    const fileById = new Map(
-      nextFileEntries.map((entry) => [entry.id, entry.file]),
-    );
-    const dataTransfer = new DataTransfer();
-
-    nextOrderedImages
-      .filter((image) => image.kind === "new")
-      .forEach((image) => {
-        const file = fileById.get(image.id);
-
-        if (file) {
-          dataTransfer.items.add(file);
-        }
-      });
-
-    inputRef.current.files = dataTransfer.files;
   };
 
-  const updateImagesState = (
-    nextOrderedImages: OrderedImageFieldItem[],
-    nextFileEntries: Array<{ id: string; file: File }>,
-  ) => {
+  const updateImagesState = (nextOrderedImages: OrderedImageFieldItem[]) => {
     orderedImagesRef.current = nextOrderedImages;
-    fileEntriesRef.current = nextFileEntries;
     setOrderedImages(nextOrderedImages);
-    syncInputFiles(nextOrderedImages, nextFileEntries);
+    syncHiddenInput(nextOrderedImages);
   };
+
+  const patchImageById = useEffectEvent(
+    (imageId: string, patch: Partial<OrderedImageFieldItem>) => {
+      const nextOrderedImages = orderedImagesRef.current.map((image) =>
+        image.id === imageId ? { ...image, ...patch } : image,
+      );
+
+      updateImagesState(nextOrderedImages);
+    },
+  );
 
   useEffect(() => {
     return () => {
@@ -127,6 +112,86 @@ export const AdminImageUploadField = ({
     };
   }, [activeImageId]);
 
+  useEffect(() => {
+    const runUploads = async () => {
+      const pendingItems = orderedImagesRef.current.filter(
+        (item) =>
+          item.kind === "new" &&
+          item.file &&
+          (item.status === "pending" || item.status === "error"),
+      );
+
+      if (pendingItems.length === 0) {
+        return;
+      }
+
+      pendingItems.forEach((item) => {
+        patchImageById(item.id, {
+          status: "uploading",
+          progress: 0,
+          errorMessage: undefined,
+        });
+      });
+
+      const presignResponse = await requestAdminProductGalleryUploadUrls({
+        locale,
+        productId,
+        files: pendingItems.map((item) => ({
+          fileName: item.file!.name,
+          contentType: item.file!.type || "application/octet-stream",
+        })),
+      });
+
+      if (!presignResponse.ok || !presignResponse.data?.items) {
+        pendingItems.forEach((item) => {
+          patchImageById(item.id, { status: "error" });
+        });
+
+        throw new Error("Failed to obtain upload URLs");
+      }
+
+      const plans = presignResponse.data.items;
+
+      await Promise.all(
+        plans.map(async (plan, index) => {
+          const item = pendingItems[index];
+
+          if (!item?.file) {
+            return;
+          }
+
+          try {
+            await uploadDirectToR2({
+              uploadUrl: plan.uploadUrl,
+              file: item.file,
+              contentType: plan.contentType,
+              onProgress: (progress) => {
+                patchImageById(item.id, { progress });
+              },
+            });
+
+            patchImageById(item.id, {
+              status: "uploaded",
+              progress: 1,
+              uploadedImage: plan.image,
+            });
+          } catch (uploadError) {
+            patchImageById(item.id, {
+              status: "error",
+              errorMessage:
+                uploadError instanceof Error
+                  ? uploadError.message
+                  : "upload_failed",
+            });
+            throw uploadError;
+          }
+        }),
+      );
+    };
+
+    return register(runUploads);
+  }, [locale, productId, register]);
+
   const moveImage = (sourceId: string, targetId: string) => {
     if (sourceId === targetId) {
       return;
@@ -140,8 +205,7 @@ export const AdminImageUploadField = ({
       return;
     }
 
-    const nextOrderedImages = arrayMove(currentImages, sourceIndex, targetIndex);
-    updateImagesState(nextOrderedImages, fileEntriesRef.current);
+    updateImagesState(arrayMove(currentImages, sourceIndex, targetIndex));
   };
 
   const handleDragStart = ({ active }: DragStartEvent) => {
@@ -161,7 +225,9 @@ export const AdminImageUploadField = ({
     : null;
 
   const removeImage = (imageId: string) => {
-    const imageToRemove = orderedImagesRef.current.find((image) => image.id === imageId);
+    const imageToRemove = orderedImagesRef.current.find(
+      (image) => image.id === imageId,
+    );
 
     if (!imageToRemove) {
       return;
@@ -169,32 +235,30 @@ export const AdminImageUploadField = ({
 
     if (imageToRemove.kind === "new" && imageToRemove.src) {
       URL.revokeObjectURL(imageToRemove.src);
-      previewUrlsRef.current = previewUrlsRef.current.filter((url) => url !== imageToRemove.src);
+      previewUrlsRef.current = previewUrlsRef.current.filter(
+        (url) => url !== imageToRemove.src,
+      );
     }
 
-    const nextOrderedImages = orderedImagesRef.current.filter((image) => image.id !== imageId);
-    const nextFileEntries = fileEntriesRef.current.filter((entry) => entry.id !== imageId);
+    const nextOrderedImages = orderedImagesRef.current.filter(
+      (image) => image.id !== imageId,
+    );
 
     if (activeImageId === imageId) {
       setActiveImageId(null);
     }
 
-    updateImagesState(nextOrderedImages, nextFileEntries);
+    updateImagesState(nextOrderedImages);
   };
-
-  const existingImagesValue = JSON.stringify(
-    orderedImages
-      .filter((image) => image.kind === "existing")
-      .map((image) => image.existingImage),
-  );
-  const imageOrderValue = JSON.stringify(
-    orderedImages.map<OrderedImageFieldEntry>(({ id, kind }) => ({ id, kind })),
-  );
 
   return (
     <Stack gap={1.5}>
-      <input type="hidden" name={existingImagesInputName} value={existingImagesValue} />
-      <input type="hidden" name={imageOrderInputName} value={imageOrderValue} />
+      <input
+        ref={hiddenInputRef}
+        type="hidden"
+        name={imagesJsonInputName}
+        defaultValue={buildImagesJsonValue(orderedImages)}
+      />
 
       <Typography variant="body2" color="text.secondary">
         {helperText}
@@ -202,7 +266,7 @@ export const AdminImageUploadField = ({
 
       {orderedImages.length > 0 ? (
         <DndContext
-          id={`${imageOrderInputName}-dnd-context`}
+          id={`${imagesJsonInputName}-dnd-context`}
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragStart={handleDragStart}
@@ -211,21 +275,30 @@ export const AdminImageUploadField = ({
             setActiveImageId(null);
           }}
         >
-          <SortableContext items={orderedImages.map((image) => image.id)} strategy={rectSortingStrategy}>
+          <SortableContext
+            items={orderedImages.map((image) => image.id)}
+            strategy={rectSortingStrategy}
+          >
             <Box className={styles.grid}>
-              {orderedImages.map((image, index) => (
-                <SortableImageCard
-                  key={image.id}
-                  image={image}
-                  index={index}
-                  thumbnailLabel={thumbnailLabel}
-                  galleryLabel={galleryLabel}
-                  removeButtonLabel={removeButtonLabel}
-                  onRemove={() => {
-                    removeImage(image.id);
-                  }}
-                />
-              ))}
+              {orderedImages.map((image, index) => {
+                const status = getStatusLabel(image, statusLabels);
+
+                return (
+                  <SortableImageCard
+                    key={image.id}
+                    image={image}
+                    index={index}
+                    thumbnailLabel={thumbnailLabel}
+                    galleryLabel={galleryLabel}
+                    removeButtonLabel={removeButtonLabel}
+                    statusLabel={status?.label}
+                    statusTone={status?.tone}
+                    onRemoveAction={() => {
+                      removeImage(image.id);
+                    }}
+                  />
+                );
+              })}
             </Box>
           </SortableContext>
 
@@ -234,7 +307,9 @@ export const AdminImageUploadField = ({
               <Box className={styles.overlay}>
                 <ImageCard
                   image={activeImage}
-                  index={orderedImages.findIndex((image) => image.id === activeImage.id)}
+                  index={orderedImages.findIndex(
+                    (image) => image.id === activeImage.id,
+                  )}
                   thumbnailLabel={thumbnailLabel}
                   galleryLabel={galleryLabel}
                   isDragging
@@ -249,10 +324,8 @@ export const AdminImageUploadField = ({
       <Button component="label" variant="outlined" sx={{ alignSelf: "flex-start" }}>
         {buttonLabel}
         <input
-          ref={inputRef}
           hidden
           type="file"
-          name={name}
           accept="image/*"
           multiple
           onClick={(event) => {
@@ -265,32 +338,26 @@ export const AdminImageUploadField = ({
               return;
             }
 
-            const nextFileEntries = selectedFiles.map((file) => {
-              const id = crypto.randomUUID();
-              const previewUrl = URL.createObjectURL(file);
+            const nextItems = selectedFiles.map<OrderedImageFieldItem>(
+              (file) => {
+                const id = crypto.randomUUID();
+                const previewUrl = URL.createObjectURL(file);
 
-              previewUrlsRef.current.push(previewUrl);
+                previewUrlsRef.current.push(previewUrl);
 
-              return {
-                id,
-                file,
-                previewUrl,
-              };
-            });
-            const nextOrderedImages = [
-              ...orderedImagesRef.current,
-              ...nextFileEntries.map<OrderedImageFieldItem>((entry) => ({
-                id: entry.id,
-                kind: "new",
-                src: entry.previewUrl,
-                alt: entry.file.name,
-              })),
-            ];
+                return {
+                  id,
+                  kind: "new",
+                  src: previewUrl,
+                  alt: file.name,
+                  file,
+                  status: "pending" satisfies ImageUploadStatus,
+                  progress: 0,
+                };
+              },
+            );
 
-            updateImagesState(nextOrderedImages, [
-              ...fileEntriesRef.current,
-              ...nextFileEntries.map(({ id, file }) => ({ id, file })),
-            ]);
+            updateImagesState([...orderedImagesRef.current, ...nextItems]);
           }}
         />
       </Button>

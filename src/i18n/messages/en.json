@@ -705,7 +705,14 @@
         "storageUnavailable": "Files cannot be uploaded right now because R2 is not configured.",
         "saveFailed": "Unable to save the product. Check the data and try again.",
         "deleteFailed": "Unable to delete the product. Try again.",
-        "unexpected": "An error occurred while saving the product. Try again."
+        "unexpected": "An error occurred while saving the product. Try again.",
+        "uploadFailed": "Some files failed to upload. Check the highlighted items and try again."
+      },
+      "uploadStatus": {
+        "pending": "Queued",
+        "uploading": "Uploading",
+        "uploaded": "Uploaded",
+        "error": "Upload failed"
       },
       "createButton": "Create product",
       "creatingButton": "Creating product...",

@@ -13,7 +13,9 @@ export const SortableImageCard = ({
   thumbnailLabel,
   galleryLabel,
   removeButtonLabel,
-  onRemove,
+  onRemoveAction,
+  statusLabel,
+  statusTone,
 }: ImageCardProps) => {
   const {
     attributes,
@@ -40,10 +42,12 @@ export const SortableImageCard = ({
         thumbnailLabel={thumbnailLabel}
         galleryLabel={galleryLabel}
         removeButtonLabel={removeButtonLabel}
-        onRemove={onRemove}
+        onRemoveAction={onRemoveAction}
         isDragging={isDragging}
         dragHandleAttributes={attributes}
         dragHandleListeners={listeners}
+        statusLabel={statusLabel}
+        statusTone={statusTone}
       />
     </Box>
   );

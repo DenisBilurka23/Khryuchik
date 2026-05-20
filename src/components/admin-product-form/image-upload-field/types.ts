@@ -3,19 +3,28 @@ import type {
   DraggableSyntheticListeners,
 } from "@dnd-kit/core";
 
+import type { Locale } from "@/i18n/config";
 import type { ProductImage } from "@/types/product-details";
 
 export type AdminImageUploadFieldProps = {
-  name: string;
-  existingImagesInputName: string;
-  imageOrderInputName: string;
+  imagesJsonInputName: string;
+  locale: Locale;
+  productId?: string;
   buttonLabel: string;
   helperText: string;
   removeButtonLabel: string;
   thumbnailLabel: string;
   galleryLabel: string;
   existingImages: ProductImage[];
+  statusLabels: {
+    pending: string;
+    uploading: string;
+    uploaded: string;
+    error: string;
+  };
 };
+
+export type ImageUploadStatus = "pending" | "uploading" | "uploaded" | "error";
 
 export type PreviewImage = {
   id: string;
@@ -28,11 +37,11 @@ export type PreviewImage = {
 export type OrderedImageFieldItem = PreviewImage & {
   kind: "existing" | "new";
   existingImage?: ProductImage;
-};
-
-export type OrderedImageFieldEntry = {
-  id: string;
-  kind: OrderedImageFieldItem["kind"];
+  file?: File;
+  status?: ImageUploadStatus;
+  progress?: number;
+  uploadedImage?: ProductImage;
+  errorMessage?: string;
 };
 
 export type ImageCardProps = {
@@ -41,9 +50,11 @@ export type ImageCardProps = {
   thumbnailLabel: string;
   galleryLabel: string;
   removeButtonLabel?: string;
-  onRemove?: () => void;
+  onRemoveAction?: () => void;
   isDragging?: boolean;
   isOverlay?: boolean;
   dragHandleListeners?: DraggableSyntheticListeners;
   dragHandleAttributes?: DraggableAttributes;
+  statusLabel?: string;
+  statusTone?: "info" | "success" | "error";
 };

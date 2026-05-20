@@ -27,18 +27,10 @@ import { populateAdminProductIdentifiers } from "@/server/admin/product-identifi
 import { requireAdminApiAccess } from "@/server/admin/auth";
 import {
   deleteUserAvatarObject,
-  uploadBookFiles,
-  uploadProductGalleryFiles,
   uploadUserAvatarFile,
 } from "@/server/storage/r2-assets.service";
 import { isR2Configured } from "@/server/storage/r2";
 import { UserOperationErrorReason } from "@/types/users";
-import type { ProductImage } from "@/types/product-details";
-
-type ImageOrderEntry = {
-  id: string;
-  kind: "existing" | "new";
-};
 
 const isUploadedFile = (
   entry: FormDataEntryValue | null | undefined,
@@ -59,88 +51,6 @@ const requireAdmin = async () => {
   }
 
   return session;
-};
-
-const getUploadedFiles = (formData: FormData, key: string) =>
-  formData.getAll(key).filter((entry): entry is File => isUploadedFile(entry));
-
-const parseImageOrder = (
-  formData: FormData,
-  key: string,
-): ImageOrderEntry[] => {
-  const value = formData.get(key);
-
-  if (typeof value !== "string" || !value.trim()) {
-    return [];
-  }
-
-  try {
-    const parsed = JSON.parse(value) as unknown;
-
-    if (!Array.isArray(parsed)) {
-      return [];
-    }
-
-    return parsed.filter((entry): entry is ImageOrderEntry => {
-      if (!entry || typeof entry !== "object") {
-        return false;
-      }
-
-      const candidate = entry as Partial<ImageOrderEntry>;
-
-      return (
-        typeof candidate.id === "string" &&
-        (candidate.kind === "existing" || candidate.kind === "new")
-      );
-    });
-  } catch {
-    return [];
-  }
-};
-
-const mergeOrderedImages = ({
-  existingImages,
-  uploadedImages,
-  imageOrder,
-}: {
-  existingImages: ProductImage[];
-  uploadedImages: ProductImage[];
-  imageOrder: ImageOrderEntry[];
-}) => {
-  if (imageOrder.length === 0) {
-    return [...existingImages, ...uploadedImages];
-  }
-
-  const existingImagesById = new Map(
-    existingImages.map((image) => [image.id, image]),
-  );
-  const remainingUploadedImages = [...uploadedImages];
-  const orderedImages: ProductImage[] = [];
-
-  imageOrder.forEach((entry) => {
-    if (entry.kind === "existing") {
-      const existingImage = existingImagesById.get(entry.id);
-
-      if (existingImage) {
-        orderedImages.push(existingImage);
-        existingImagesById.delete(entry.id);
-      }
-
-      return;
-    }
-
-    const nextUploadedImage = remainingUploadedImages.shift();
-
-    if (nextUploadedImage) {
-      orderedImages.push(nextUploadedImage);
-    }
-  });
-
-  return [
-    ...orderedImages,
-    ...existingImagesById.values(),
-    ...remainingUploadedImages,
-  ];
 };
 
 const getAdminProductErrorRedirectPath = (
@@ -272,68 +182,10 @@ export const saveAdminProductAction = async (formData: FormData) => {
     payload = parseAdminProductFormData(formData);
     payload = await populateAdminProductIdentifiers(payload);
 
-    for (const locale of locales) {
-      const galleryFiles = getUploadedFiles(
-        formData,
-        `gallery${locale.toUpperCase()}`,
-      );
-      const assetFiles = getUploadedFiles(
-        formData,
-        `digitalAssets${locale.toUpperCase()}`,
-      );
-      const imageOrder = parseImageOrder(formData, `${locale}.imagesOrderJson`);
+    await saveAdminProduct(payload);
 
-      if (
-        (galleryFiles.length > 0 || assetFiles.length > 0) &&
-        !isR2Configured
-      ) {
-        console.error("Admin product save failed: R2 is not configured", {
-          productId: payload.product.productId,
-          locale,
-          galleryFiles: galleryFiles.length,
-          assetFiles: assetFiles.length,
-        });
-
-        errorCode = AdminProductFormErrorCode.StorageUnavailable;
-        break;
-      }
-
-      let uploadedImages: ProductImage[] = [];
-
-      if (galleryFiles.length > 0) {
-        uploadedImages = await uploadProductGalleryFiles({
-          productId: payload.product.productId,
-          locale,
-          files: galleryFiles,
-        });
-      }
-
-      payload.details.translations[locale].images = mergeOrderedImages({
-        existingImages: payload.details.translations[locale].images,
-        uploadedImages,
-        imageOrder,
-      });
-
-      if (assetFiles.length > 0) {
-        const uploadedAssets = await uploadBookFiles({
-          productId: payload.product.productId,
-          locale,
-          files: assetFiles,
-        });
-
-        payload.details.translations[locale].digitalAssets = [
-          ...(payload.details.translations[locale].digitalAssets ?? []),
-          ...uploadedAssets,
-        ];
-      }
-    }
-
-    if (!errorCode) {
-      await saveAdminProduct(payload);
-
-      revalidateProductDependentPaths(payload.product.slug);
-      redirectPath = `/admin/products/${payload.product.productId}/edit?saved=1`;
-    }
+    revalidateProductDependentPaths(payload.product.slug);
+    redirectPath = `/admin/products/${payload.product.productId}/edit?saved=1`;
   } catch (error) {
     console.error("Admin product save failed", error);
     errorCode = AdminProductFormErrorCode.SaveFailed;

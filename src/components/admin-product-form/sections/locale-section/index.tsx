@@ -8,8 +8,6 @@ import { AdminOptionsField } from "../../options-field";
 import { AdminSpecsField } from "../../specs-field";
 import type { AdminProductLocaleSectionProps } from "./types";
 
-const stringifyJson = (value: unknown) => JSON.stringify(value ?? [], null, 2);
-
 const stringifyLines = (value: string[] | undefined) =>
   (value ?? []).join("\n");
 
@@ -17,8 +15,15 @@ export const AdminProductLocaleSection = ({
   locale,
   translation,
   details,
+  productId,
 }: AdminProductLocaleSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
+  const uploadStatusLabels = {
+    pending: tForm("uploadStatus.pending"),
+    uploading: tForm("uploadStatus.uploading"),
+    uploaded: tForm("uploadStatus.uploaded"),
+    error: tForm("uploadStatus.error"),
+  };
 
   return (
     <AdminSectionCard
@@ -58,11 +63,6 @@ export const AdminProductLocaleSection = ({
             type="hidden"
             name={`${locale}.detailOldPrice`}
             value={details.oldPrice ?? ""}
-          />
-          <input
-            type="hidden"
-            name={`${locale}.digitalAssetsJson`}
-            value={stringifyJson(details.digitalAssets)}
           />
           <TextField
             label={tForm("fields.title")}
@@ -145,22 +145,26 @@ export const AdminProductLocaleSection = ({
           }}
         >
           <AdminImageUploadField
-            name={`gallery${locale.toUpperCase()}`}
-            existingImagesInputName={`${locale}.imagesJson`}
-            imageOrderInputName={`${locale}.imagesOrderJson`}
+            imagesJsonInputName={`${locale}.imagesJson`}
+            locale={locale}
+            productId={productId}
             buttonLabel={`${tForm("imagesUploadButton")} ${locale.toUpperCase()}`}
             helperText={tForm("helpers.mediaRule")}
             removeButtonLabel={tForm("buttons.removeItem")}
             thumbnailLabel={tForm("fields.thumbnail")}
             galleryLabel={tForm("fields.gallery")}
             existingImages={details.images}
+            statusLabels={uploadStatusLabels}
           />
 
           <AdminFileUploadField
-            name={`digitalAssets${locale.toUpperCase()}`}
+            assetsJsonInputName={`${locale}.digitalAssetsJson`}
+            locale={locale}
+            productId={productId}
             buttonLabel={`${tForm("assetsUploadButton")} ${locale.toUpperCase()}`}
             helperText={tForm("helpers.filesRule")}
             existingFiles={details.digitalAssets ?? []}
+            statusLabels={uploadStatusLabels}
           />
         </Box>
 

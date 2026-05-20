@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
@@ -20,9 +20,13 @@ import {
   AdminProductPricingSection,
   AdminProductRelatedSection,
 } from "../sections";
+import {
+  AdminProductUploadRegistryProvider,
+  useAdminProductUploadRegistry,
+} from "../upload-registry";
 import type { AdminProductFormProps } from "../types";
 
-export const AdminProductForm = ({
+const AdminProductFormInner = ({
   locale,
   payload,
   categories,
@@ -35,6 +39,11 @@ export const AdminProductForm = ({
   errorCode,
 }: AdminProductFormProps) => {
   const tForm = useTranslations("adminPage.productForm");
+  const { runAll } = useAdminProductUploadRegistry();
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const [uploadErrorMessage, setUploadErrorMessage] = useState<string | null>(
+    null,
+  );
   const submitLabel = isNew
     ? tForm("createButton")
     : tForm("saveChangesButton");
@@ -42,6 +51,10 @@ export const AdminProductForm = ({
     ? tForm("creatingButton")
     : tForm("savingChangesButton");
   const errorMessage = (() => {
+    if (uploadErrorMessage) {
+      return uploadErrorMessage;
+    }
+
     switch (errorCode) {
       case AdminProductFormErrorCode.StorageUnavailable:
         return tForm("errorMessages.storageUnavailable");
@@ -95,6 +108,25 @@ export const AdminProductForm = ({
     );
   };
 
+  const formAction = async (formData: FormData) => {
+    setUploadErrorMessage(null);
+
+    try {
+      await runAll();
+    } catch (uploadError) {
+      console.error("Admin product upload failed", uploadError);
+      setIsSubmitting(false);
+      setUploadErrorMessage(tForm("errorMessages.uploadFailed"));
+      return;
+    }
+
+    const finalFormData = formRef.current
+      ? new FormData(formRef.current)
+      : formData;
+
+    await action(finalFormData);
+  };
+
   return (
     <Stack gap={3}>
       <AdminProductFormHero
@@ -111,7 +143,12 @@ export const AdminProductForm = ({
         isSubmitting={isSubmitting}
       />
 
-      <form id="admin-product-form" action={action} onSubmit={() => setIsSubmitting(true)}>
+      <form
+        id="admin-product-form"
+        ref={formRef}
+        action={formAction}
+        onSubmit={() => setIsSubmitting(true)}
+      >
         <input type="hidden" name="formMode" value={isNew ? "new" : "edit"} />
         <Stack gap={3}>
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
@@ -136,6 +173,7 @@ export const AdminProductForm = ({
               locale={translationLocale}
               translation={payload.product.translations[translationLocale]}
               details={payload.details.translations[translationLocale]}
+              productId={isNew ? undefined : payload.product.productId}
             />
           ))}
 
@@ -230,5 +268,11 @@ export const AdminProductForm = ({
     </Stack>
   );
 };
+
+export const AdminProductForm = (props: AdminProductFormProps) => (
+  <AdminProductUploadRegistryProvider>
+    <AdminProductFormInner {...props} />
+  </AdminProductUploadRegistryProvider>
+);
 
 export type { AdminProductFormProps } from "../types";
