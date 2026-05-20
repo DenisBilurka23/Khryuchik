@@ -2,8 +2,10 @@ import {
   Box,
   Breadcrumbs,
   Container,
+  Divider,
   Grid,
   Link as MuiLink,
+  Stack,
   Typography,
 } from "@mui/material";
 import Link from "next/link";
@@ -123,6 +125,21 @@ export const ProductPageView = async ({
             <Grid container spacing={5} alignItems="flex-start">
               <Grid size={{ xs: 12, md: 6 }}>
                 <ProductGallery images={product.images} />
+                <Divider sx={{ my: 3 }} />
+                <Stack spacing={1.5}>
+                  <Typography variant="body2" color="text.secondary">
+                    {tProductPage("details.sku")}: {product.sku}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {tProductPage("details.securePayment")}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {tProductPage("details.shipping")}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {tProductPage("details.languageSupport")}
+                  </Typography>
+                </Stack>
               </Grid>
 
               <Grid size={{ xs: 12, md: 6 }}>

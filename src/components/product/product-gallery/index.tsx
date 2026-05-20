@@ -14,7 +14,7 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
       <Paper
         elevation={0}
         sx={{
-          height: { xs: 360, md: 520 },
+          aspectRatio: "5 / 3",
           borderRadius: "32px",
           border: "1px solid #F0DFC8",
           bgcolor: activeImage?.bgColor || "#FFF8F0",
@@ -30,7 +30,7 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
             component="img"
             src={activeImage.src}
             alt={activeImage.alt ?? activeImage.id}
-            sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+            sx={{ width: "100%", height: "100%", objectFit: "contain" }}
           />
         ) : (
           activeImage?.emoji
@@ -56,6 +56,7 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
                 justifyContent: "center",
                 fontSize: 36,
                 cursor: "pointer",
+                overflow: "hidden",
                 transition: "all .2s ease",
               }}
             >

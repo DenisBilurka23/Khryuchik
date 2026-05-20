@@ -8,7 +8,6 @@ import {
   Box,
   Button,
   Chip,
-  Divider,
   IconButton,
   MenuItem,
   Stack,
@@ -22,10 +21,7 @@ import { formatCurrency } from "@/utils";
 import { useCart } from "../../cart/store";
 import type { ProductInfoProps } from "../types";
 
-export const ProductInfo = ({
-  locale,
-  product,
-}: ProductInfoProps) => {
+export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
   const tProductPage = useTranslations("storefront.productPage");
   const tShopSection = useTranslations("storefront.shopSection");
   const { addItem } = useCart();
@@ -56,7 +52,11 @@ export const ProductInfo = ({
       {hasMetaChips ? (
         <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
           {product.badge ? (
-            <Chip label={product.badge} color="secondary" sx={{ fontWeight: 700 }} />
+            <Chip
+              label={product.badge}
+              color="secondary"
+              sx={{ fontWeight: 700 }}
+            />
           ) : null}
           {product.storyLabel ? (
             <Chip
@@ -68,7 +68,12 @@ export const ProductInfo = ({
         </Stack>
       ) : null}
 
-      <Stack direction="row" spacing={1.5} alignItems="flex-start" sx={{ mt: 2 }}>
+      <Stack
+        direction="row"
+        spacing={1.5}
+        alignItems="flex-start"
+        sx={{ mt: 2 }}
+      >
         <Typography
           variant="h3"
           sx={{ flex: 1, fontSize: { xs: 32, md: 40 }, fontWeight: 800 }}
@@ -95,12 +100,17 @@ export const ProductInfo = ({
         </IconButton>
       </Stack>
 
-      <Typography color="text.secondary" sx={{ mt: 1, fontSize: 18, lineHeight: 1.7 }}>
+      <Typography
+        color="text.secondary"
+        sx={{ mt: 1, fontSize: 18, lineHeight: 1.7 }}
+      >
         {product.subtitle}
       </Typography>
 
       <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 3 }}>
-        <Typography sx={{ fontSize: 32, fontWeight: 800, color: "primary.main" }}>
+        <Typography
+          sx={{ fontSize: 32, fontWeight: 800, color: "primary.main" }}
+        >
           {formatCurrency(product.price, locale, product.currency)}
         </Typography>
         {product.oldPrice ? (
@@ -219,23 +229,6 @@ export const ProductInfo = ({
         >
           {tProductPage("actions.buyNow")}
         </Button>
-      </Stack>
-
-      <Divider sx={{ my: 4 }} />
-
-      <Stack spacing={1.5}>
-        <Typography variant="body2" color="text.secondary">
-          {tProductPage("details.sku")}: {product.sku}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {tProductPage("details.securePayment")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {tProductPage("details.shipping")}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {tProductPage("details.languageSupport")}
-        </Typography>
       </Stack>
     </Box>
   );
