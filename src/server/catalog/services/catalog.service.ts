@@ -4,7 +4,7 @@ import { cache } from "react";
 
 import type { Locale } from "@/i18n/config";
 import type { CountryCode } from "@/utils";
-import type { ProductPlacement } from "@/types/catalog";
+import type { ProductDocument, ProductPlacement } from "@/types/catalog";
 import type { CartItem, StoredCartItem } from "@/types/cart";
 import type { ProductOption } from "@/types/product-details";
 
@@ -21,6 +21,15 @@ import {
   findShopVisibleProducts,
 } from "../repositories/products.repository";
 import { findProductDetailsByProductId } from "../repositories/product-details.repository";
+
+const localizeProductSummaries = (
+  products: ProductDocument[],
+  locale: Locale,
+  country: CountryCode,
+ ) =>
+  products
+    .map((product) => localizeProductSummary(product, locale, country))
+    .filter(isLocalizedProductSummary);
 
 const getProductSummaryBySlug = cache(
   async (locale: Locale, country: CountryCode, slug: string) => {
@@ -46,9 +55,7 @@ export const getProductsForPlacement = cache(
   ) => {
     const products = await findProductsForPlacement(placement, options);
 
-    return products
-      .map((product) => localizeProductSummary(product, locale, country))
-      .filter(isLocalizedProductSummary);
+    return localizeProductSummaries(products, locale, country);
   },
 );
 
@@ -63,9 +70,7 @@ export const getShopProducts = cache(
   ) => {
     const products = await findShopVisibleProducts(options);
 
-    return products
-      .map((product) => localizeProductSummary(product, locale, country))
-      .filter(isLocalizedProductSummary);
+    return localizeProductSummaries(products, locale, country);
   },
 );
 
@@ -75,12 +80,8 @@ export const getProductSummariesByIds = async (
   productIds: string[],
 ) => {
   const products = await findActiveProductsByIds(productIds);
-  const productsById = new Map(
-    products
-      .map((product) => localizeProductSummary(product, locale, country))
-      .filter(isLocalizedProductSummary)
-      .map((product) => [product.id, product]),
-  );
+  const summaries = localizeProductSummaries(products, locale, country);
+  const productsById = new Map(summaries.map((product) => [product.id, product]));
 
   return productIds
     .map((productId) => productsById.get(productId) ?? null)

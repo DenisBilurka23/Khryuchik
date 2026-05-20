@@ -1,7 +1,7 @@
 import "server-only";
 
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
-import { defaultLocale, type Locale } from "@/i18n/config";
+import { defaultLocale, locales, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryListItem,
   AdminCategoryUpsertInput,
@@ -17,7 +17,10 @@ import type {
   CategoryDocument,
   CategoryTranslation,
   ProductDetailDocument,
+  ProductDetailTranslation,
+  ProductTranslation,
 } from "@/types/catalog";
+import type { CurrencyCode } from "@/utils";
 
 import {
   buildUniqueValue,
@@ -490,6 +493,11 @@ const sanitizeProductPayload = (
     throw new Error("Merch products cannot use the books category");
   }
 
+  const localeCurrency: Record<Locale, CurrencyCode> = {
+    ru: "BYN",
+    en: "USD",
+  };
+
   const nextPayload: AdminProductPayload = {
     product: {
       ...payload.product,
@@ -502,26 +510,23 @@ const sanitizeProductPayload = (
         ...payload.product.merchandising,
       },
       slug,
-      translations: {
-        ru: {
-          ...payload.product.translations.ru,
-          title: payload.product.translations.ru.title.trim(),
-          shortTitle:
-            payload.product.translations.ru.shortTitle?.trim() || undefined,
-          shortDescription:
-            payload.product.translations.ru.shortDescription.trim(),
-          currency: "BYN",
-        },
-        en: {
-          ...payload.product.translations.en,
-          title: payload.product.translations.en.title.trim(),
-          shortTitle:
-            payload.product.translations.en.shortTitle?.trim() || undefined,
-          shortDescription:
-            payload.product.translations.en.shortDescription.trim(),
-          currency: "USD",
-        },
-      },
+      translations: Object.fromEntries(
+        locales.map((locale) => {
+          const translation = payload.product.translations[locale];
+          const image = payload.details.translations[locale].images[0];
+          return [
+            locale,
+            {
+              ...translation,
+              title: translation.title.trim(),
+              shortTitle: translation.shortTitle?.trim() || undefined,
+              shortDescription: translation.shortDescription.trim(),
+              currency: localeCurrency[locale],
+              thumbnail: image,
+            },
+          ];
+        })
+      ) as Record<Locale, ProductTranslation>,
       pricing: {
         BY: {
           ...payload.product.pricing.BY,
@@ -541,32 +546,28 @@ const sanitizeProductPayload = (
       sku,
       storyProductId: payload.details.storyProductId?.trim() || undefined,
       relatedProductIds: payload.details.relatedProductIds.filter(Boolean),
-      translations: {
-        ru: {
-          ...payload.details.translations.ru,
-          subtitle: payload.details.translations.ru.subtitle.trim(),
-          badge: payload.details.translations.ru.badge?.trim() || undefined,
-          storyLabel:
-            payload.details.translations.ru.storyLabel?.trim() || undefined,
-          description: payload.details.translations.ru.description.trim(),
-        },
-        en: {
-          ...payload.details.translations.en,
-          subtitle: payload.details.translations.en.subtitle.trim(),
-          badge: payload.details.translations.en.badge?.trim() || undefined,
-          storyLabel:
-            payload.details.translations.en.storyLabel?.trim() || undefined,
-          description: payload.details.translations.en.description.trim(),
-        },
-      },
+      translations: Object.fromEntries(
+        locales.map((locale) => {
+          const t = payload.details.translations[locale];
+          return [
+            locale,
+            {
+              ...t,
+              subtitle: t.subtitle.trim(),
+              badge: t.badge?.trim() || undefined,
+              storyLabel: t.storyLabel?.trim() || undefined,
+              description: t.description.trim(),
+            },
+          ];
+        })
+      ) as Record<Locale, ProductDetailTranslation>,
     },
   };
 
   if (
-    !nextPayload.product.translations.ru.title ||
-    !nextPayload.product.translations.en.title
+    locales.some((locale) => !nextPayload.product.translations[locale].title)
   ) {
-    throw new Error("Product title is required for RU and EN locales");
+    throw new Error("Product title is required for all locales");
   }
 
   return nextPayload;

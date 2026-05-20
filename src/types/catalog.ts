@@ -68,6 +68,7 @@ export type ProductTranslation = {
   price: number;
   currency: CurrencyCode;
   emoji: string;
+  thumbnail?: ProductImage;
   thumbnailBackgroundColor?: string;
   lang?: string;
 };

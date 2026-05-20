@@ -147,6 +147,7 @@ const buildProductDocument = (productId: string): ProductDocument => ({
         (book) => book.slug === productId,
       );
       const details = getRequiredProductDetails(locale, productId);
+      const thumbnail = details.images[0];
 
       return [
         locale,
@@ -160,6 +161,7 @@ const buildProductDocument = (productId: string): ProductDocument => ({
           price: details.price,
           currency: "BYN" as const,
           emoji: bookItem?.emoji ?? details.images[0]?.emoji ?? "📦",
+          ...(thumbnail ? { thumbnail } : {}),
           thumbnailBackgroundColor: details.images[0]?.bgColor,
           lang: bookItem?.lang,
         },

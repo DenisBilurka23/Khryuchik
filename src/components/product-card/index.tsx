@@ -20,6 +20,8 @@ export const ProductCard = ({
   wishlistAriaLabel,
   detailsHref,
 }: ProductCardProps) => {
+  const thumbnail = product.thumbnail;
+
   return (
     <Card className={styles.card}>
       <CardContent sx={{ p: 2.5 }}>
@@ -32,10 +34,20 @@ export const ProductCard = ({
             sx={{
               color: "inherit",
               display: "flex",
-              bgcolor: product.thumbnailBackgroundColor ?? undefined,
+              bgcolor:
+                thumbnail?.bgColor ?? product.thumbnailBackgroundColor ?? undefined,
             }}
           >
-            {product.emoji}
+            {thumbnail?.src ? (
+              <Box
+                component="img"
+                src={thumbnail.src}
+                alt={thumbnail.alt ?? product.title}
+                className={styles.previewImage}
+              />
+            ) : (
+              thumbnail?.emoji ?? product.emoji
+            )}
           </Box>
         </Link>
 

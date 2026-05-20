@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Card,
   CardContent,
@@ -16,15 +17,30 @@ export const BookCard = ({
   detailsButton,
   buyButton,
 }: BookCardProps) => {
+  const thumbnail = book.thumbnail;
+
   return (
     <Card className={styles.card}>
       <CardContent sx={{ p: 3 }}>
         <Link
           href={detailsHref}
           className={styles.cover}
-          style={{ textDecoration: "none", color: "inherit" }}
+          style={{
+            textDecoration: "none",
+            color: "inherit",
+            backgroundColor: thumbnail?.bgColor ?? undefined,
+          }}
         >
-          {book.emoji}
+          {thumbnail?.src ? (
+            <Box
+              component="img"
+              src={thumbnail.src}
+              alt={thumbnail.alt ?? book.title}
+              className={styles.coverImage}
+            />
+          ) : (
+            thumbnail?.emoji ?? book.emoji
+          )}
         </Link>
 
         <Typography
