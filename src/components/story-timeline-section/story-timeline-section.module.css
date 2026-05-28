@@ -1,0 +1,192 @@
+.section {
+  padding: 80px 0;
+}
+
+.header {
+  max-width: 720px;
+  margin-bottom: 40px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 13px;
+  font-weight: 700;
+  color: #d96c82;
+}
+
+.timeline {
+  margin: 8px 24px 48px;
+  padding: 32px 0 16px;
+}
+
+.rail {
+  position: relative;
+  height: 4px;
+  background: rgba(39, 39, 42, 0.08);
+  border-radius: 4px;
+}
+
+.railFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background: #d96c82;
+  border-radius: 4px;
+  transition: width 0.35s ease;
+}
+
+.node {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.nodeDot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid rgba(39, 39, 42, 0.2);
+  transition: all 0.25s ease;
+}
+
+.nodePassed .nodeDot,
+.nodeActive .nodeDot {
+  background: #d96c82;
+  border-color: #d96c82;
+}
+
+.nodeActive .nodeDot {
+  width: 24px;
+  height: 24px;
+  box-shadow: 0 0 0 6px rgba(217, 108, 130, 0.18);
+}
+
+.nodeTravel.nodePassed .nodeDot {
+  background: #c08148;
+  border-color: #c08148;
+}
+
+.nodeTravel.nodeActive .nodeDot {
+  background: #c08148;
+  border-color: #c08148;
+  box-shadow: 0 0 0 6px rgba(192, 129, 72, 0.18);
+}
+
+.nodeAge {
+  position: absolute;
+  top: 28px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #71717a;
+  white-space: nowrap;
+}
+
+.nodeActive .nodeAge {
+  color: #d96c82;
+}
+
+.nodeTravel.nodeActive .nodeAge {
+  color: #c08148;
+}
+
+.detail {
+  border: 1px solid rgba(39, 39, 42, 0.08);
+  border-radius: 28px;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.chip {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.chipSmall {
+  background: #fbe2e7;
+  color: #b94e64;
+}
+
+.chipTravel {
+  background: #f3e3cf;
+  color: #c08148;
+}
+
+.bookWrap {
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+}
+
+.book {
+  width: 240px;
+  min-height: 300px;
+  border-radius: 8px 16px 16px 8px;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow:
+    -8px 0 0 -4px rgba(0, 0, 0, 0.06),
+    -2px 6px 28px rgba(39, 39, 42, 0.18);
+}
+
+.bookSmall {
+  background: linear-gradient(160deg, #fbe2e7, #f4b8c4);
+}
+
+.bookTravel {
+  background: linear-gradient(160deg, #f3e3cf, #e4b58a);
+}
+
+.bookSeries {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: rgba(39, 39, 42, 0.55);
+  margin-bottom: 12px;
+}
+
+.bookTitle {
+  font-family: var(--font-display, var(--font-display-fallback)), serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #27272a;
+}
+
+.bookPig {
+  font-size: 64px;
+  text-align: center;
+  margin-top: auto;
+}
+
+@media (max-width: 900px) {
+  .detailGrid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .timeline {
+    margin: 8px 8px 40px;
+  }
+}

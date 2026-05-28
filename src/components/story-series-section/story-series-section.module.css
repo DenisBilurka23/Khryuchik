@@ -1,0 +1,91 @@
+.section {
+  padding: 40px 0 80px;
+}
+
+.header {
+  max-width: 720px;
+  margin-bottom: 40px;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 13px;
+  font-weight: 700;
+  color: #d96c82;
+}
+
+.card {
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(39, 39, 42, 0.08);
+  background: #fff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(39, 39, 42, 0.1);
+}
+
+.art {
+  height: 200px;
+  display: grid;
+  place-items: center;
+}
+
+.cardPink .art {
+  background: linear-gradient(160deg, #fde8ed, #f6c6d2);
+}
+
+.cardAmber .art {
+  background: linear-gradient(160deg, #f5e3cf, #e4b58a);
+}
+
+.body {
+  padding: 28px 32px 32px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #d96c82;
+}
+
+.cardAmber .label {
+  color: #c08148;
+}
+
+.age {
+  font-size: 12px;
+  background: #fff8f0;
+  padding: 5px 10px;
+  border-radius: 999px;
+  color: #71717a;
+  font-weight: 500;
+}
+
+.foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 18px;
+  margin-top: auto;
+  border-top: 1px solid rgba(39, 39, 42, 0.08);
+}
+
+.count {
+  font-size: 13px;
+  color: #9a8f86;
+  font-weight: 500;
+}

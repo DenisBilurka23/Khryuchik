@@ -221,6 +221,144 @@
         "current": "Shop"
       }
     },
+    "storyPage": {
+      "lead": "Khryuchik's story — the journey of a hero who grows up alongside the reader, from the first fairy tales to the big roads.",
+      "timeline": {
+        "eyebrow": "The hero's path",
+        "title": "Khryuchik grows up alongside the reader",
+        "lead": "Move the marker to walk through the series by age — from the earliest fairy tales to stories about the big roads.",
+        "seriesLabels": {
+          "small": "Khryuchik when he was little",
+          "travel": "Khryuchik's travels"
+        },
+        "ctaLabel": "Open \"{book}\"",
+        "chapters": [
+          {
+            "age": "3+",
+            "year": "Chapter 1",
+            "title": "First discoveries",
+            "series": "small",
+            "blurb": "Family, house rules, and the first \"I can do it myself\". Little Khryuchik learns to make friends, share, and say thank you.",
+            "book": "Khryuchik and friends",
+            "tags": ["Family", "Kindness", "First step"]
+          },
+          {
+            "age": "5+",
+            "year": "Chapter 2",
+            "title": "Winter outside the window",
+            "series": "small",
+            "blurb": "Snow, grandma's pies, and a lost mitten. A story about caring for those nearby and about small miracles.",
+            "book": "Khryuchik in winter",
+            "tags": ["Care", "Family", "Wonder"]
+          },
+          {
+            "age": "6+",
+            "year": "Chapter 3",
+            "title": "Summer at the cottage",
+            "series": "small",
+            "blurb": "Garden beds, a bicycle, a new friend across the fence. Khryuchik learns to take responsibility for what he started.",
+            "book": "Khryuchik at the cottage",
+            "tags": ["Responsibility", "Summer", "Friendship"]
+          },
+          {
+            "age": "8+",
+            "year": "Chapter 4",
+            "title": "The big move",
+            "series": "travel",
+            "blurb": "A new school, an unfamiliar city, and a silence that feels scary to break. The first real \"I'll try anyway\".",
+            "book": "Khryuchik on the road",
+            "tags": ["Courage", "Change"]
+          },
+          {
+            "age": "10+",
+            "year": "Chapter 5",
+            "title": "The road to the sea",
+            "series": "travel",
+            "blurb": "A train, a ferry, and a salty wind. A story about a dream you reach on your own, even when it's frightening.",
+            "book": "Journey to the south",
+            "tags": ["Dream", "Persistence"]
+          },
+          {
+            "age": "12+",
+            "year": "Chapter 6",
+            "title": "His own path",
+            "series": "travel",
+            "blurb": "Khryuchik grows up: choices, mistakes, conversations until dawn. A book about how everyone has their own road.",
+            "book": "Where stories live",
+            "tags": ["Growing up", "Choice"]
+          }
+        ]
+      },
+      "series": {
+        "eyebrow": "Two series",
+        "title": "One hero — two roads",
+        "lead": "Each series is its own age and mood. You can start with either one, but it's more rewarding to go in order and grow up together with Khryuchik.",
+        "openLabel": "Open the series",
+        "items": [
+          {
+            "tone": "pink",
+            "label": "Series 1",
+            "name": "Khryuchik when he was little",
+            "age": "3 — 7 years",
+            "desc": "Warm family stories, humor, first discoveries, and the big feelings of a little piglet. Books to read aloud — and to live through together.",
+            "themes": ["Family", "Friendship", "Kindness", "Humor"],
+            "count": "4 books"
+          },
+          {
+            "tone": "amber",
+            "label": "Series 2",
+            "name": "Khryuchik's travels",
+            "age": "8 — 12+ years",
+            "desc": "Change, roads, new countries, and the search for oneself. The stories are based on the author's real impressions — so they smell of the sea, the train, and a real morning.",
+            "themes": ["Dream", "The road", "Courage", "Growing up"],
+            "count": "3 books · and more to come"
+          }
+        ]
+      },
+      "values": {
+        "eyebrow": "What's inside",
+        "title": "Six simple things the stories teach",
+        "lead": "These aren't lectures. It's what Khryuchik does himself — and the reader quietly does after him.",
+        "items": [
+          {
+            "title": "Initiative",
+            "text": "Khryuchik doesn't wait for things to sort themselves out. He tries, asks, takes a step."
+          },
+          {
+            "title": "Persistence",
+            "text": "Didn't work — try again. Out of strength — rest and try once more."
+          },
+          {
+            "title": "Responsibility",
+            "text": "If you started it — see it through. If you promised — show up."
+          },
+          {
+            "title": "Kindness",
+            "text": "Small kind acts add up to a big life — that's the central plot of the series."
+          },
+          {
+            "title": "Optimism",
+            "text": "There's light in any story. Sometimes you just have to be the first to notice it."
+          },
+          {
+            "title": "Action",
+            "text": "Khryuchik's main lesson: between \"I want\" and \"I did it\" lies \"I tried\"."
+          }
+        ]
+      },
+      "author": {
+        "eyebrow": "The author's voice",
+        "title": "\"I write about places and feelings I lived through myself.\"",
+        "name": "Yulia Bilurka",
+        "role": "author",
+        "emoji": "✍️",
+        "paragraphs": [
+          "Many of the cities, trains, and morning kitchens in the books are real. The author pours her experience of moving, travelling, and growing up into stories where Khryuchik lives through the same things — only funnier and a little braver than we do.",
+          "That's why \"Khryuchik's travels\" can be read as a guide to emotions: the fear of the new, the thrill of the first sea, the silence of an unfamiliar apartment — it's all there."
+        ],
+        "actionLabel": "Write to the author"
+      }
+    },
     "cartPage": {
       "eyebrow": "Cart",
       "title": "Your cozy Khryuchik order",
@@ -266,30 +404,15 @@
       "sections": [
         {
           "title": "Sections",
-          "items": [
-            "Books",
-            "Shop",
-            "Khryuchik story",
-            "Gift bundles"
-          ]
+          "items": ["Books", "Shop", "Khryuchik story", "Gift bundles"]
         },
         {
           "title": "For customers",
-          "items": [
-            "Shipping and payment",
-            "Returns",
-            "FAQ",
-            "Contacts"
-          ]
+          "items": ["Shipping and payment", "Returns", "FAQ", "Contacts"]
         },
         {
           "title": "Socials",
-          "items": [
-            "Instagram",
-            "TikTok",
-            "Telegram",
-            "Email"
-          ]
+          "items": ["Instagram", "TikTok", "Telegram", "Email"]
         }
       ]
     }
@@ -315,21 +438,13 @@
     "unavailable": "Google sign-in is not configured yet. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to enable it.",
     "ready": "OAuth is ready for sign-in.",
     "dividerLabel": "or",
-    "chips": [
-      "Orders",
-      "Books",
-      "Addresses"
-    ]
+    "chips": ["Orders", "Books", "Addresses"]
   },
   "registerPage": {
     "eyebrow": "Registration",
     "title": "Create your Khryuchik account",
     "lead": "Register with email and password to keep your profile, contact phone, delivery details, and future order history in one place.",
-    "chips": [
-      "Email login",
-      "Phone contact",
-      "Future orders"
-    ],
+    "chips": ["Email login", "Phone contact", "Future orders"],
     "nameLabel": "Full name",
     "namePlaceholder": "Anna Peterson",
     "emailLabel": "Email",
@@ -354,11 +469,7 @@
     "eyebrow": "Password reset",
     "title": "Reset your password",
     "lead": "Enter your email and we will prepare a password reset link for your Khryuchik account.",
-    "chips": [
-      "Email recovery",
-      "30 minute token",
-      "Safe reset"
-    ],
+    "chips": ["Email recovery", "30 minute token", "Safe reset"],
     "emailLabel": "Email",
     "emailPlaceholder": "name@example.com",
     "submitButton": "Send reset link",
@@ -445,13 +556,7 @@
     "favoritesRecommendationsAction": "View all",
     "signOutTitle": "Sign out of account",
     "signOutText": "You can safely sign out here. Later we can add device sessions, order sync, and saved cart merge on login.",
-    "tabs": [
-      "Overview",
-      "Orders",
-      "Books",
-      "Addresses",
-      "Settings"
-    ]
+    "tabs": ["Overview", "Orders", "Books", "Addresses", "Settings"]
   },
   "adminPage": {
     "layout": {

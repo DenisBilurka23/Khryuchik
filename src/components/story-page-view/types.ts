@@ -1,5 +1,5 @@
 import type { Locale } from "@/i18n/config";
 
-export type NewsletterSectionProps = {
+export type StoryPageViewProps = {
   locale: Locale;
 };

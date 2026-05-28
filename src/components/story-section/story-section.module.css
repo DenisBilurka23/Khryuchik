@@ -6,6 +6,8 @@
   border-radius: 32px;
   background: #fce5ea;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .eyebrow {
@@ -17,13 +19,15 @@
 }
 
 .actionButton {
-  margin-top: 32px;
+  margin-top: auto;
+  align-self: flex-start;
   background: #fff;
   color: #18181b;
 }
 
 .actionButton:hover {
-  background: #fff;
+  background: #d96c82;
+  color: #fff;
 }
 
 .featureCard {

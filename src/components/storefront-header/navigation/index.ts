@@ -18,7 +18,7 @@ export const createStorefrontHeaderViewModel = (
     ) as Record<Locale, string>,
     navigationPaths: {
       shop: getLocalizedPath(locale, "/shop"),
-      story: `${homeHref}#story`,
+      story: getLocalizedPath(locale, "/story"),
       faq: `${homeHref}#faq`,
       favorites: getLocalizedPath(locale, "/favorites"),
       cart: getLocalizedPath(locale, "/cart"),

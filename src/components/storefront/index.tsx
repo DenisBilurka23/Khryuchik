@@ -33,14 +33,14 @@ export const Storefront = async ({
           products={shopProducts}
           selectedFilter={selectedShopCategory}
         />
-        <StorySection />
+        <StorySection locale={locale} />
         <OrderSection
           locale={locale}
           country={country}
           shopHref={shopHref}
           cartHref={cartHref}
         />
-        <NewsletterSection />
+        <NewsletterSection locale={locale} />
       </Box>
     </Box>
   );

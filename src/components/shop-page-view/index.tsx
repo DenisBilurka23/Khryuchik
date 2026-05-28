@@ -175,7 +175,7 @@ export const ShopPageView = async ({
           </Container>
         </Box>
 
-        <NewsletterSection />
+        <NewsletterSection locale={locale} />
       </Box>
     </Box>
   );

@@ -129,6 +129,66 @@ export type CartPageLabels = {
   };
 };
 
+export type StoryChapter = {
+  age: string;
+  year: string;
+  title: string;
+  series: string;
+  blurb: string;
+  book: string;
+  tags: string[];
+};
+
+export type StorySeriesItem = {
+  tone: string;
+  label: string;
+  name: string;
+  age: string;
+  desc: string;
+  themes: string[];
+  count: string;
+};
+
+export type StoryPageLabels = {
+  lead: string;
+  timeline: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    seriesLabels: {
+      small: string;
+      travel: string;
+    };
+    ctaLabel: string;
+    chapters: StoryChapter[];
+  };
+  series: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    openLabel: string;
+    items: StorySeriesItem[];
+  };
+  values: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    items: Array<{
+      title: string;
+      text: string;
+    }>;
+  };
+  author: {
+    eyebrow: string;
+    title: string;
+    name: string;
+    role: string;
+    emoji: string;
+    paragraphs: string[];
+    actionLabel: string;
+  };
+};
+
 export type StorefrontFooterSection = {
   title: string;
   items: string[];
@@ -256,6 +316,7 @@ export type StorefrontDictionary = {
   };
   productPage: ProductPageLabels;
   shopPage: ShopPageLabels;
+  storyPage: StoryPageLabels;
   cartPage: CartPageLabels;
   newsletter: {
     eyebrow: string;

@@ -7,16 +7,23 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import type { StorefrontDictionary } from "@/i18n/types";
+import { getLocalizedPath } from "@/utils";
 import styles from "./story-section.module.css";
 import type { StorySectionProps } from "./types";
 
-export const StorySection = async ({}: StorySectionProps) => {
-  const t = await getTranslations("storefront.storySection");
-  const features =
-    t.raw("features") as StorefrontDictionary["storySection"]["features"];
+export const StorySection = async ({ locale }: StorySectionProps) => {
+  const t = await getTranslations({
+    locale,
+    namespace: "storefront.storySection",
+  });
+  const features = t.raw(
+    "features",
+  ) as StorefrontDictionary["storySection"]["features"];
+  const storyHref = getLocalizedPath(locale, "/story");
 
   return (
     <Box component="section" id="story" className={styles.section}>
@@ -37,13 +44,22 @@ export const StorySection = async ({}: StorySectionProps) => {
               </Typography>
               <Typography
                 color="text.secondary"
-                sx={{ mt: 3, maxWidth: 620, lineHeight: 1.8 }}
+                sx={{ mt: 3, mb: 4, maxWidth: 620, lineHeight: 1.8 }}
               >
                 {t("text")}
               </Typography>
-              <Button variant="contained" className={styles.actionButton}>
-                {t("actionLabel")}
-              </Button>
+              <Link
+                href={storyHref}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Button
+                  component="span"
+                  variant="contained"
+                  className={styles.actionButton}
+                >
+                  {t("actionLabel")}
+                </Button>
+              </Link>
             </Paper>
           </Grid>
 

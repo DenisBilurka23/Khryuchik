@@ -12,8 +12,11 @@ import { getTranslations } from "next-intl/server";
 import styles from "./newsletter-section.module.css";
 import type { NewsletterSectionProps } from "./types";
 
-export const NewsletterSection = async ({}: NewsletterSectionProps) => {
-  const t = await getTranslations("storefront.newsletter");
+export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
+  const t = await getTranslations({
+    locale,
+    namespace: "storefront.newsletter",
+  });
 
   return (
     <Box className={styles.section}>

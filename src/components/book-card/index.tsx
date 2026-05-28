@@ -21,7 +21,9 @@ export const BookCard = ({
 
   return (
     <Card className={styles.card}>
-      <CardContent sx={{ p: 3 }}>
+      <CardContent
+        sx={{ p: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}
+      >
         <Link
           href={detailsHref}
           className={styles.cover}
@@ -74,7 +76,7 @@ export const BookCard = ({
           {book.shortDescription}
         </Typography>
 
-        <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
+        <Stack direction="row" spacing={1.5} sx={{ mt: "auto", pt: 3 }}>
           <Link
             href={detailsHref}
             style={{ textDecoration: "none", color: "inherit" }}
