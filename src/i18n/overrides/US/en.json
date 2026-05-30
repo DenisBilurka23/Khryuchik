@@ -13,5 +13,97 @@
     "summary": {
       "infoText": "PDF books are delivered after payment, while physical products can be shipped across the USA and internationally."
     }
+  },
+  "deliveryPage": {
+    "hero": {
+      "mapCity": "New York"
+    },
+    "payment": {
+      "eyebrow": "How payment works",
+      "title": "Pay online · Stripe",
+      "short": "Secure card payment via Stripe",
+      "desc": "For US orders, payment is taken online at checkout — through the secure Stripe payment gateway. As soon as the payment succeeds, we prepare your parcel for dispatch.",
+      "badge": "Stripe · Visa · Mastercard · Apple Pay",
+      "stripe": {
+        "secureLabel": "Secure",
+        "totalLabel": "Total",
+        "totalValue": "$32.50",
+        "cardLabel": "Card number",
+        "cardMask": "4242 4242 4242 ••••",
+        "cardBrand": "VISA",
+        "expLabel": "MM / YY",
+        "exp": "12 / 28",
+        "cvcLabel": "CVC",
+        "cvc": "•••",
+        "payLabel": "Pay $32.50"
+      }
+    },
+    "methods": {
+      "titlePrefix": "United States:",
+      "titleAccent": "how it ships",
+      "items": [
+        {
+          "icon": "post",
+          "name": "USPS Ground Advantage",
+          "meta": "5–8 business days",
+          "price": "from $7.99",
+          "note": "Tracked delivery to any US address. Most affordable option."
+        },
+        {
+          "icon": "courier",
+          "name": "USPS Priority Mail",
+          "meta": "2–3 business days",
+          "price": "from $12.99",
+          "note": "Faster tracked shipping with insurance up to $100 included."
+        },
+        {
+          "icon": "pickup",
+          "name": "Free shipping over $60",
+          "meta": "USPS Ground",
+          "price": "$0",
+          "note": "Free Ground Advantage shipping on all orders above $60."
+        }
+      ]
+    },
+    "steps": {
+      "items": [
+        {
+          "title": "Choose books",
+          "desc": "Add titles to your cart and proceed to checkout."
+        },
+        {
+          "title": "Enter shipping address",
+          "desc": "We ship to all 50 states, including Alaska & Hawaii."
+        },
+        {
+          "title": "Pay online",
+          "desc": "Secure card payment via Stripe — no account required."
+        },
+        {
+          "title": "Get a tracking number",
+          "desc": "We ship within 1–2 business days and email tracking."
+        }
+      ]
+    },
+    "faq": {
+      "items": [
+        {
+          "q": "Is the payment secure?",
+          "a": "Yes. All payments are processed by Stripe, a PCI-DSS Level 1 certified provider. We never see or store your card details."
+        },
+        {
+          "q": "Do you ship outside the US?",
+          "a": "Right now we ship within the United States only. International (Canada, EU) is coming soon — sign up to be notified."
+        },
+        {
+          "q": "What about returns?",
+          "a": "If a book arrives damaged, email us within 14 days with a photo — we'll send a replacement or refund the order in full."
+        }
+      ]
+    },
+    "finalCta": {
+      "titleSuffix": "and heading to you in the United States.",
+      "sub": "Secure checkout with Stripe"
+    }
   }
 }

@@ -7,8 +7,6 @@ import type { StorefrontHeaderViewModel } from "./types";
 export const createStorefrontHeaderViewModel = (
   locale: Locale,
 ): StorefrontHeaderViewModel => {
-  const homeHref = getLocalizedPath(locale, "/");
-
   return {
     localizedPaths: Object.fromEntries(
       locales.map((targetLocale) => [
@@ -19,7 +17,7 @@ export const createStorefrontHeaderViewModel = (
     navigationPaths: {
       shop: getLocalizedPath(locale, "/shop"),
       story: getLocalizedPath(locale, "/story"),
-      faq: `${homeHref}#faq`,
+      faq: getLocalizedPath(locale, "/delivery"),
       favorites: getLocalizedPath(locale, "/favorites"),
       cart: getLocalizedPath(locale, "/cart"),
     },

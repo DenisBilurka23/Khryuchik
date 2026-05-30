@@ -1,3 +1,5 @@
+import type { CountryCode } from "@/utils/country";
+
 export type SeedStorefrontBook = {
   slug: string;
   title: string;
@@ -189,6 +191,108 @@ export type StoryPageLabels = {
   };
 };
 
+export type DeliveryRegionOptionLabels = {
+  flag: string;
+  country: string;
+  subtitle: string;
+};
+
+export type DeliveryReceiptCardLabels = {
+  type: string;
+  num: string;
+  rows: Array<{ label: string; value: string }>;
+  totalLabel: string;
+  totalValue: string;
+  stamp: {
+    line1: string;
+    line2: string;
+  };
+};
+
+export type DeliveryStripeCardLabels = {
+  secureLabel: string;
+  totalLabel: string;
+  totalValue: string;
+  cardLabel: string;
+  cardMask: string;
+  cardBrand: string;
+  expLabel: string;
+  exp: string;
+  cvcLabel: string;
+  cvc: string;
+  payLabel: string;
+};
+
+export type DeliveryMethodIcon = "post" | "courier" | "pickup" | "card";
+
+export type DeliveryMethodItem = {
+  icon: string;
+  name: string;
+  meta: string;
+  price: string;
+  note: string;
+};
+
+export type DeliveryStepItem = {
+  title: string;
+  desc: string;
+};
+
+export type DeliveryFaqItem = {
+  q: string;
+  a: string;
+};
+
+export type DeliveryPageLabels = {
+  hero: {
+    eyebrow: string;
+    title: {
+      lines: string[];
+      accent: string;
+    };
+    toggleAriaLabel: string;
+    options: Record<CountryCode, DeliveryRegionOptionLabels>;
+    mapBadgeLabel: string;
+    mapCity: string;
+  };
+  payment: {
+    eyebrow: string;
+    title: string;
+    short: string;
+    desc: string;
+    badge: string;
+    receipt?: DeliveryReceiptCardLabels;
+    stripe?: DeliveryStripeCardLabels;
+  };
+  methods: {
+    eyebrow: string;
+    titlePrefix: string;
+    titleAccent: string;
+    sub: string;
+    items: DeliveryMethodItem[];
+  };
+  steps: {
+    eyebrow: string;
+    titlePrefix: string;
+    titleAccent: string;
+    items: DeliveryStepItem[];
+  };
+  faq: {
+    eyebrow: string;
+    titlePrefix: string;
+    titleAccent: string;
+    items: DeliveryFaqItem[];
+  };
+  finalCta: {
+    eyebrow: string;
+    titlePrefix: string;
+    titleAccent: string;
+    titleSuffix: string;
+    action: string;
+    sub: string;
+  };
+};
+
 export type StorefrontFooterSection = {
   title: string;
   items: string[];
@@ -317,6 +421,7 @@ export type StorefrontDictionary = {
   productPage: ProductPageLabels;
   shopPage: ShopPageLabels;
   storyPage: StoryPageLabels;
+  deliveryPage: DeliveryPageLabels;
   cartPage: CartPageLabels;
   newsletter: {
     eyebrow: string;
