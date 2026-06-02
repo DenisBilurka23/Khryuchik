@@ -174,6 +174,7 @@ export const resolveCartItems = async (
         price: summary.price,
         currency: summary.currency,
         emoji: summary.emoji,
+        thumbnail: summary.thumbnail,
         thumbnailBackgroundColor: summary.thumbnailBackgroundColor,
         quantity: item.quantity,
         variant: buildVariantLabel(

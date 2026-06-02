@@ -131,6 +131,92 @@ export type CartPageLabels = {
   };
 };
 
+export type CheckoutPaymentMethodLabel = {
+  title: string;
+  description: string;
+};
+
+export type CheckoutPageLabels = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  breadcrumbs: {
+    home: string;
+    cart: string;
+    current: string;
+  };
+  contactTitle: string;
+  shippingTitle: string;
+  paymentTitle: string;
+  summaryTitle: string;
+  fields: {
+    name: string;
+    email: string;
+    phone: string;
+    line1: string;
+    line2: string;
+    city: string;
+    region: string;
+    postalCode: string;
+    notes: string;
+  };
+  paymentMethods: {
+    stripe: CheckoutPaymentMethodLabel;
+    cod: CheckoutPaymentMethodLabel;
+    telegram_transfer: CheckoutPaymentMethodLabel;
+  };
+  summary: {
+    itemsLabel: string;
+    shippingLabel: string;
+    freeShipping: string;
+    totalLabel: string;
+  };
+  submit: {
+    stripe: string;
+    cod: string;
+    telegram_transfer: string;
+    loading: string;
+  };
+  errors: {
+    generic: string;
+    emptyCart: string;
+    invalidPayload: string;
+    invalidEmail: string;
+    paymentFailed: string;
+    unsupportedMethod: string;
+  };
+  fieldErrors: {
+    required: string;
+    invalidEmail: string;
+  };
+  emptyState: {
+    title: string;
+    text: string;
+    action: string;
+  };
+};
+
+export type CheckoutResultLabels = {
+  success: {
+    title: string;
+    text: string;
+    orderLabel: string;
+    backToShop: string;
+  };
+  cancel: {
+    title: string;
+    text: string;
+    backToCart: string;
+  };
+  confirmation: {
+    title: string;
+    codText: string;
+    telegramText: string;
+    orderLabel: string;
+    backToShop: string;
+  };
+};
+
 export type StoryChapter = {
   age: string;
   year: string;
@@ -423,6 +509,8 @@ export type StorefrontDictionary = {
   storyPage: StoryPageLabels;
   deliveryPage: DeliveryPageLabels;
   cartPage: CartPageLabels;
+  checkoutPage: CheckoutPageLabels;
+  checkoutResult: CheckoutResultLabels;
   newsletter: {
     eyebrow: string;
     title: string;
@@ -817,6 +905,18 @@ export type AdminPageDictionary = {
     emptyTitle: string;
     emptyDescription: string;
     action: string;
+    columns: {
+      order: string;
+      createdAt: string;
+      customer: string;
+      country: string;
+      total: string;
+      payment: string;
+      status: string;
+    };
+    paymentMethodLabels: Record<string, string>;
+    paymentStatusLabels: Record<string, string>;
+    statusLabels: Record<string, string>;
   };
   errorBoundary: {
     title: string;

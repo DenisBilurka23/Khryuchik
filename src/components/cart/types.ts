@@ -24,6 +24,7 @@ export type OrderSummaryCardProps = {
   shipping: number;
   discount: number;
   continueShoppingHref: string;
+  checkoutHref: string;
 };
 
 export type EmptyCartStateProps = {

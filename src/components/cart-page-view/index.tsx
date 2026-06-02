@@ -27,6 +27,7 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
 
   const homeHref = getLocalizedPath(locale, "/");
   const shopHref = getLocalizedPath(locale, "/shop");
+  const checkoutHref = getLocalizedPath(locale, "/checkout");
 
   const handleIncrease = (id: string) => {
     const item = items.find((entry) => entry.id === id);
@@ -155,6 +156,7 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
                     shipping={shipping}
                     discount={discount}
                     continueShoppingHref={shopHref}
+                    checkoutHref={checkoutHref}
                   />
                 </Grid>
               </Grid>

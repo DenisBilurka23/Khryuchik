@@ -516,6 +516,94 @@
         "infoText": "PDF books are delivered after payment, while physical products can be shipped across Belarus and internationally."
       }
     },
+    "checkoutPage": {
+      "eyebrow": "Checkout",
+      "title": "One last step",
+      "lead": "Tell us where to send the parcel and how you'd like to pay.",
+      "breadcrumbs": {
+        "home": "Home",
+        "cart": "Cart",
+        "current": "Checkout"
+      },
+      "contactTitle": "Contact details",
+      "shippingTitle": "Shipping address",
+      "paymentTitle": "Payment method",
+      "summaryTitle": "Your order",
+      "fields": {
+        "name": "Full name",
+        "email": "Email",
+        "phone": "Phone",
+        "line1": "Street, building",
+        "line2": "Apartment, entrance (optional)",
+        "city": "City",
+        "region": "Region (optional)",
+        "postalCode": "Postal code",
+        "notes": "Order notes (optional)"
+      },
+      "paymentMethods": {
+        "stripe": {
+          "title": "Card · Stripe",
+          "description": "Pay securely with Visa, Mastercard, or Apple Pay."
+        },
+        "cod": {
+          "title": "Cash on delivery",
+          "description": "Pay at the post office when you pick up the parcel."
+        },
+        "telegram_transfer": {
+          "title": "Transfer to card · Telegram",
+          "description": "We'll send you bank details in Telegram once you place the order."
+        }
+      },
+      "summary": {
+        "itemsLabel": "Items",
+        "shippingLabel": "Shipping",
+        "freeShipping": "Free",
+        "totalLabel": "Total"
+      },
+      "submit": {
+        "stripe": "Pay with card",
+        "cod": "Place order",
+        "telegram_transfer": "Continue in Telegram",
+        "loading": "Processing…"
+      },
+      "errors": {
+        "generic": "Something went wrong. Please try again.",
+        "emptyCart": "Your cart is empty.",
+        "invalidPayload": "Please fill in all required fields.",
+        "invalidEmail": "Please enter a valid email address.",
+        "paymentFailed": "Payment provider could not process the request. Please try again.",
+        "unsupportedMethod": "This payment method isn't available for the selected country."
+      },
+      "fieldErrors": {
+        "required": "Required field",
+        "invalidEmail": "Enter a valid email address"
+      },
+      "emptyState": {
+        "title": "Your cart is empty",
+        "text": "Add a few items before placing an order.",
+        "action": "Go to the shop"
+      }
+    },
+    "checkoutResult": {
+      "success": {
+        "title": "Payment received",
+        "text": "Thank you! We've started preparing your parcel and will email tracking details once it ships.",
+        "orderLabel": "Order",
+        "backToShop": "Back to the shop"
+      },
+      "cancel": {
+        "title": "Payment cancelled",
+        "text": "No worries — your cart is still here. You can review the order and try again whenever you're ready.",
+        "backToCart": "Back to the cart"
+      },
+      "confirmation": {
+        "title": "Order placed",
+        "codText": "Pay at the post office when you collect the parcel. We'll email tracking once it ships.",
+        "telegramText": "We've received your order and will reach out in Telegram shortly with the transfer details.",
+        "orderLabel": "Order",
+        "backToShop": "Back to the shop"
+      }
+    },
     "newsletter": {
       "eyebrow": "Newsletter",
       "title": "Get updates on new books and Khryuchik collections",
@@ -911,12 +999,39 @@
     "orders": {
       "eyebrow": "Orders",
       "title": "Orders",
-      "description": "This section is ready for a real order model, but the current project still does not implement a persisted orders repository.",
-      "sectionTitle": "Orders feed",
-      "sectionDescription": "As soon as checkout starts saving orders into MongoDB, this page will become live.",
-      "emptyTitle": "Nothing honest to show yet",
-      "emptyDescription": "Right now cart and checkout do not create order documents, so the admin does not render fake rows. The next technical step here is an order schema, repository, and order creation after checkout.",
-      "action": "Open accounts"
+      "description": "Live feed of customer orders persisted in MongoDB.",
+      "sectionTitle": "Order feed",
+      "sectionDescription": "Latest orders submitted through checkout — newest first.",
+      "emptyTitle": "No orders yet",
+      "emptyDescription": "Once a customer completes checkout, the order will appear here.",
+      "action": "Open checkout",
+      "columns": {
+        "order": "Order",
+        "createdAt": "Date",
+        "customer": "Customer",
+        "country": "Country",
+        "total": "Total",
+        "payment": "Payment",
+        "status": "Status"
+      },
+      "paymentMethodLabels": {
+        "stripe": "Card · Stripe",
+        "cod": "Cash on delivery",
+        "telegram_transfer": "Transfer · Telegram"
+      },
+      "paymentStatusLabels": {
+        "pending": "Pending",
+        "paid": "Paid",
+        "failed": "Failed",
+        "cod_pending": "Pay on delivery"
+      },
+      "statusLabels": {
+        "new": "New",
+        "processing": "Processing",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      }
     },
     "errorBoundary": {
       "title": "Admin error",

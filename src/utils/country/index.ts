@@ -11,6 +11,8 @@ export type CountryCode = "BY" | "US";
 
 export type CurrencyCode = "BYN" | "USD";
 
+export type PaymentMethod = "stripe" | "cod" | "telegram_transfer";
+
 export {
   COUNTRY_COOKIE_NAME,
   COUNTRY_HEADER,
@@ -45,18 +47,39 @@ export const countryShippingConfig: Record<
     shippingPrice: number;
   }
 > = {
+  // Shipping pricing is not finalised yet — keep at 0 so totals stay clean
+  // until the real rates are wired in.
   BY: {
     freeShippingThreshold: 80,
-    shippingPrice: 8,
+    shippingPrice: 0,
   },
   US: {
     freeShippingThreshold: 35,
-    shippingPrice: 6,
+    shippingPrice: 0,
   },
 };
 
 export const getCountryCurrency = (country: CountryCode) =>
   countryCurrencies[country];
+
+// New countries default to Stripe; only regions where Stripe is unavailable
+// (e.g. BY) opt into alternative methods explicitly.
+const defaultPaymentMethods: PaymentMethod[] = ["stripe"];
+
+const countryPaymentMethods: Partial<Record<CountryCode, PaymentMethod[]>> = {
+  US: defaultPaymentMethods,
+  BY: ["cod", "telegram_transfer"],
+};
+
+export const getCountryPaymentMethods = (
+  country: CountryCode,
+): PaymentMethod[] =>
+  countryPaymentMethods[country] ?? defaultPaymentMethods;
+
+export const isPaymentMethodAvailable = (
+  country: CountryCode,
+  method: PaymentMethod,
+): boolean => getCountryPaymentMethods(country).includes(method);
 
 export const getCountryFromGeoCode = (value: string | null | undefined) => {
   if (!value) {

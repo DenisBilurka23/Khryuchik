@@ -15,6 +15,7 @@ export const OrderSummaryCard = ({
   shipping,
   discount,
   continueShoppingHref,
+  checkoutHref,
 }: OrderSummaryCardProps) => {
   const t = useTranslations("storefront.cartPage");
   const labels = t.raw("summary") as CartPageLabels["summary"];
@@ -52,23 +53,14 @@ export const OrderSummaryCard = ({
             </Typography>
           </Stack>
 
-          <Stack direction="row" justifyContent="space-between">
-            <Typography color="text.secondary">{labels.shippingLabel}</Typography>
-            <Typography>
-              {shipping === 0
-                ? labels.freeShipping
-                : formatCurrency(shipping, locale, getCountryCurrency(country))}
-            </Typography>
-          </Stack>
-
-          <Stack direction="row" justifyContent="space-between">
-            <Typography color="text.secondary">{labels.discountLabel}</Typography>
-            <Typography>
-              {discount > 0
-                ? `-${formatCurrency(discount, locale, getCountryCurrency(country))}`
-                : formatCurrency(0, locale, getCountryCurrency(country))}
-            </Typography>
-          </Stack>
+          {discount > 0 ? (
+            <Stack direction="row" justifyContent="space-between">
+              <Typography color="text.secondary">{labels.discountLabel}</Typography>
+              <Typography>
+                {`-${formatCurrency(discount, locale, getCountryCurrency(country))}`}
+              </Typography>
+            </Stack>
+          ) : null}
         </Stack>
 
         <Divider sx={{ my: 3 }} />
@@ -82,9 +74,20 @@ export const OrderSummaryCard = ({
           </Typography>
         </Stack>
 
-        <Button fullWidth variant="contained" size="large" sx={{ mt: 3 }}>
-          {labels.checkoutButton}
-        </Button>
+        <Link
+          href={checkoutHref}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Button
+            component="span"
+            fullWidth
+            variant="contained"
+            size="large"
+            sx={{ mt: 3 }}
+          >
+            {labels.checkoutButton}
+          </Button>
+        </Link>
 
         <Link
           href={continueShoppingHref}
@@ -113,16 +116,13 @@ export const OrderSummaryCard = ({
         >
           <Stack direction="row" spacing={1.5} alignItems="flex-start">
             <LocalOfferOutlinedIcon fontSize="small" sx={{ mt: "2px" }} />
-            <Box>
-              <Typography sx={{ fontWeight: 700 }}>{labels.infoTitle}</Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5, lineHeight: 1.7 }}
-              >
-                {labels.infoText}
-              </Typography>
-            </Box>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ lineHeight: 1.7 }}
+            >
+              {labels.infoText}
+            </Typography>
           </Stack>
         </Box>
       </CardContent>

@@ -1,0 +1,79 @@
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
+
+import { CheckoutPageView } from "@/components/checkout-page-view";
+import type { CheckoutInitialCustomer } from "@/components/checkout-page-view/types";
+import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import { getServerAuthSession } from "@/server/auth/config";
+import { getRequestCountry } from "@/server/country/request-country";
+
+type LocalizedCheckoutPageProps = {
+  params: Promise<{ lang: string }>;
+};
+
+export const generateStaticParams = () => locales.map((lang) => ({ lang }));
+
+export const generateMetadata = async ({
+  params,
+}: LocalizedCheckoutPageProps): Promise<Metadata> => {
+  const { lang } = await params;
+
+  if (!isLocale(lang)) {
+    notFound();
+  }
+
+  const tStorefront = await getTranslations({
+    locale: lang,
+    namespace: "storefront",
+  });
+
+  return {
+    title: `${tStorefront("checkoutPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
+    description: tStorefront("checkoutPage.lead"),
+    alternates: {
+      canonical: lang === defaultLocale ? "/checkout" : `/${lang}/checkout`,
+      languages: Object.fromEntries(
+        locales.map((locale) => [
+          locale,
+          locale === defaultLocale ? "/checkout" : `/${locale}/checkout`,
+        ]),
+      ),
+    },
+  };
+};
+
+const initialCustomerFromSession = (
+  session: Awaited<ReturnType<typeof getServerAuthSession>>,
+): CheckoutInitialCustomer | undefined => {
+  const user = session?.user;
+  if (!user) return undefined;
+  return {
+    name: user.name ?? undefined,
+    email: user.email ?? undefined,
+    phone: user.phone || undefined,
+  };
+};
+
+const LocalizedCheckoutPage = async ({ params }: LocalizedCheckoutPageProps) => {
+  const { lang } = await params;
+
+  if (!isLocale(lang)) {
+    notFound();
+  }
+
+  const [country, session] = await Promise.all([
+    getRequestCountry(),
+    getServerAuthSession(),
+  ]);
+
+  return (
+    <CheckoutPageView
+      locale={lang}
+      country={country}
+      initialCustomer={initialCustomerFromSession(session)}
+    />
+  );
+};
+
+export default LocalizedCheckoutPage;

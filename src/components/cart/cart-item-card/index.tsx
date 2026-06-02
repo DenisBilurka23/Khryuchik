@@ -36,15 +36,32 @@ export const CartItemCard = ({
                 minWidth: { sm: 140 },
                 height: 140,
                 borderRadius: "24px",
-                bgcolor: item.thumbnailBackgroundColor || "#FFF8F0",
+                bgcolor:
+                  item.thumbnail?.bgColor ||
+                  item.thumbnailBackgroundColor ||
+                  "#FFF8F0",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 56,
+                overflow: "hidden",
                 cursor: "pointer",
               }}
             >
-              {item.emoji}
+              {item.thumbnail?.src ? (
+                <Box
+                  component="img"
+                  src={item.thumbnail.src}
+                  alt={item.thumbnail.alt ?? item.title}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                  }}
+                />
+              ) : (
+                (item.thumbnail?.emoji ?? item.emoji)
+              )}
             </Box>
           </Link>
 

@@ -1,41 +1,144 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Button, Stack } from "@mui/material";
+import {
+  Button,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
 
-import { AdminEmptyState, AdminPageHero, AdminSectionCard } from "@/components/admin-page-shared";
+import {
+  AdminEmptyState,
+  AdminPageHero,
+  AdminSectionCard,
+} from "@/components/admin-page-shared";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
+import { findOrders } from "@/server/orders/repositories/orders.repository";
+import type { AdminPageDictionary } from "@/i18n/types";
+import { formatCurrency, formatOrderNumber } from "@/utils";
+
+type OrderColumns = AdminPageDictionary["orders"]["columns"];
 
 export const generateMetadata = async (): Promise<Metadata> => {
-	const locale = await resolveLocale("admin");
-	const tOrders = await getTranslations({
-		locale,
-		namespace: "adminPage.orders",
-	});
+  const locale = await resolveLocale("admin");
+  const tOrders = await getTranslations({
+    locale,
+    namespace: "adminPage.orders",
+  });
 
-	return createAdminMetadata(
-		tOrders("title"),
-		tOrders("description"),
-		locale,
-	);
+  return createAdminMetadata(
+    tOrders("title"),
+    tOrders("description"),
+    locale,
+  );
 };
 
 const AdminOrdersPage = async () => {
-	const locale = await resolveLocale("admin");
-	const tOrders = await getTranslations({
-		locale,
-		namespace: "adminPage.orders",
-	});
+  const locale = await resolveLocale("admin");
+  const tOrders = await getTranslations({
+    locale,
+    namespace: "adminPage.orders",
+  });
+  const orders = await findOrders();
 
-	return (
-		<Stack gap={3}>
-			<AdminPageHero eyebrow={tOrders("eyebrow")} title={tOrders("title")} description={tOrders("description")} />
+  const columns = tOrders.raw("columns") as OrderColumns;
+  const paymentMethodLabels = tOrders.raw(
+    "paymentMethodLabels",
+  ) as Record<string, string>;
+  const paymentStatusLabels = tOrders.raw(
+    "paymentStatusLabels",
+  ) as Record<string, string>;
+  const statusLabels = tOrders.raw("statusLabels") as Record<string, string>;
 
-			<AdminSectionCard title={tOrders("sectionTitle")} description={tOrders("sectionDescription")}>
-				<AdminEmptyState title={tOrders("emptyTitle")} description={tOrders("emptyDescription")} action={<Button href="/admin/customers" variant="outlined">{tOrders("action")}</Button>} />
-			</AdminSectionCard>
-		</Stack>
-	);
+  return (
+    <Stack gap={3}>
+      <AdminPageHero
+        eyebrow={tOrders("eyebrow")}
+        title={tOrders("title")}
+        description={tOrders("description")}
+      />
+
+      <AdminSectionCard
+        title={tOrders("sectionTitle")}
+        description={tOrders("sectionDescription")}
+      >
+        {orders.length === 0 ? (
+          <AdminEmptyState
+            title={tOrders("emptyTitle")}
+            description={tOrders("emptyDescription")}
+            action={
+              <Button href="/checkout" variant="outlined">
+                {tOrders("action")}
+              </Button>
+            }
+          />
+        ) : (
+          <TableContainer>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>{columns.order}</TableCell>
+                  <TableCell>{columns.createdAt}</TableCell>
+                  <TableCell>{columns.customer}</TableCell>
+                  <TableCell>{columns.country}</TableCell>
+                  <TableCell align="right">{columns.total}</TableCell>
+                  <TableCell>{columns.payment}</TableCell>
+                  <TableCell>{columns.status}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {orders.map((order) => (
+                  <TableRow key={order.id} hover>
+                    <TableCell>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        {formatOrderNumber(order.id)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      {new Date(order.createdAt).toLocaleDateString(locale)}
+                    </TableCell>
+                    <TableCell>
+                      <Stack>
+                        <Typography>{order.customer.name}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {order.customer.email ?? order.customer.phone ?? ""}
+                        </Typography>
+                      </Stack>
+                    </TableCell>
+                    <TableCell>{order.country}</TableCell>
+                    <TableCell align="right">
+                      {formatCurrency(order.total, locale, order.currency)}
+                    </TableCell>
+                    <TableCell>
+                      <Stack>
+                        <Typography variant="body2">
+                          {paymentMethodLabels[order.payment.method] ??
+                            order.payment.method}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {paymentStatusLabels[order.payment.status] ??
+                            order.payment.status}
+                        </Typography>
+                      </Stack>
+                    </TableCell>
+                    <TableCell>
+                      {statusLabels[order.status] ?? order.status}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+      </AdminSectionCard>
+    </Stack>
+  );
 };
 
 export default AdminOrdersPage;

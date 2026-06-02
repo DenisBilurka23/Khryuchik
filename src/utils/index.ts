@@ -15,10 +15,12 @@ export {
   getCountryFromCookieHeader,
   getCountryFromGeoCode,
   getCountryFromGeoHeaders,
+  getCountryPaymentMethods,
   isCountryCode,
+  isPaymentMethodAvailable,
 } from "./country";
 
-export type { CountryCode, CurrencyCode } from "./country";
+export type { CountryCode, CurrencyCode, PaymentMethod } from "./country";
 
 export const localeLabels: Record<Locale, string> = {
   ru: "RU",
@@ -69,6 +71,9 @@ export const formatCurrency = (
 
 export const getLocalizedPath = (locale: Locale, path: string) =>
   locale === "en" ? path : `/${locale}${path}`;
+
+export const formatOrderNumber = (orderId?: string): string | null =>
+  orderId ? `#${orderId.slice(0, 8).toUpperCase()}` : null;
 
 export const getLocalizedProductPath = (locale: Locale, slug: string) =>
   getLocalizedPath(locale, `/products/${slug}`);

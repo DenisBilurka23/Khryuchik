@@ -1,5 +1,7 @@
 import type { CurrencyCode } from "@/utils";
 
+import type { ProductImage } from "./product-details";
+
 export type CartSelections = {
   language?: string;
   format?: string;
@@ -22,6 +24,7 @@ export type CartItem = {
   price: number;
   currency: CurrencyCode;
   emoji: string;
+  thumbnail?: ProductImage;
   thumbnailBackgroundColor?: string;
   quantity: number;
   variant?: string;
