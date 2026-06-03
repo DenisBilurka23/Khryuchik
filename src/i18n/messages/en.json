@@ -386,7 +386,7 @@
         "eyebrow": "How payment works",
         "title": "Cash on delivery",
         "short": "You pay at the post office on pickup",
-        "desc": "We ship the printed book across Belarus cash on delivery or by card transfer — after confirming the order in Telegram. The digital edition is sent after we get in touch and receive the transfer.",
+        "desc": "We ship the printed book across Belarus cash on delivery or by card transfer — after confirming the order with our team. The digital edition is sent once we reach out and receive the transfer.",
         "badge": "No prepayment",
         "receipt": {
           "type": "Pickup receipt",
@@ -421,7 +421,7 @@
             "name": "Card transfer",
             "meta": "After ordering",
             "price": "No fee",
-            "note": "Transfer to our card after confirming the order in Telegram — a handy alternative to cash on delivery."
+            "note": "Transfer to our card after confirming the order with our team — a handy alternative to cash on delivery."
           },
           {
             "icon": "pickup",
@@ -550,8 +550,8 @@
           "description": "Pay at the post office when you pick up the parcel."
         },
         "telegram_transfer": {
-          "title": "Transfer to card · Telegram",
-          "description": "We'll send you bank details in Telegram once you place the order."
+          "title": "Bank transfer",
+          "description": "We'll reach out using the contact details you provide to share transfer info and confirm the order."
         }
       },
       "summary": {
@@ -563,7 +563,7 @@
       "submit": {
         "stripe": "Pay with card",
         "cod": "Place order",
-        "telegram_transfer": "Continue in Telegram",
+        "telegram_transfer": "Place order",
         "loading": "Processing…"
       },
       "errors": {
@@ -599,7 +599,7 @@
       "confirmation": {
         "title": "Order placed",
         "codText": "Pay at the post office when you collect the parcel. We'll email tracking once it ships.",
-        "telegramText": "We've received your order and will reach out in Telegram shortly with the transfer details.",
+        "telegramText": "We've received your order and will reach out shortly using the contact details you provided.",
         "orderLabel": "Order",
         "backToShop": "Back to the shop"
       }
@@ -1017,7 +1017,7 @@
       "paymentMethodLabels": {
         "stripe": "Card · Stripe",
         "cod": "Cash on delivery",
-        "telegram_transfer": "Transfer · Telegram"
+        "telegram_transfer": "Bank transfer"
       },
       "paymentStatusLabels": {
         "pending": "Pending",

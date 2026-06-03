@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
 import { insertOrder } from "@/server/orders/repositories/orders.repository";
+import { notifyAdminNewOrder } from "@/server/payments/telegram";
 import type {
   CreateOrderInput,
   OrderDocument,
@@ -106,5 +107,11 @@ export const createOrder = async (
     notes: input.notes,
   };
 
-  return insertOrder(order);
+  const saved = await insertOrder(order);
+
+  // Fire-and-forget admin notification — never block the customer or fail
+  // the order if Telegram is misconfigured or unreachable.
+  void notifyAdminNewOrder(saved);
+
+  return saved;
 };

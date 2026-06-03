@@ -7,6 +7,7 @@ import {
   updateOrderPayment,
 } from "@/server/orders/repositories/orders.repository";
 import { verifyStripeWebhook } from "@/server/payments/stripe";
+import { notifyAdminOrderPaid } from "@/server/payments/telegram";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -41,6 +42,12 @@ const handleCheckoutCompleted = async (session: Stripe.Checkout.Session) => {
     stripePaymentIntentId: paymentIntent,
     paidAt: new Date().toISOString(),
   });
+
+  // Re-fetch so the notification reflects the updated payment status.
+  const updated = await findOrderById(orderId);
+  if (updated) {
+    void notifyAdminOrderPaid(updated);
+  }
 };
 
 export const POST = async (request: NextRequest) => {
