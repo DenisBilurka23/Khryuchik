@@ -664,15 +664,10 @@ export type AccountPageDictionary = {
   favoritesTitle: string;
   favoritesLead: string;
   favoritesSavedLabel: string;
-  favoritesInStockLabel: string;
-  favoritesTotalLabel: string;
   favoritesListTitle: string;
   favoritesAddAllToCart: string;
-  favoritesFilterAll: string;
   favoritesPriceLabel: string;
   favoritesView: string;
-  favoritesRecommendationsTitle: string;
-  favoritesRecommendationsAction: string;
   signOutTitle: string;
   signOutText: string;
   tabs: string[];

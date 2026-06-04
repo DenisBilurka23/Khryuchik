@@ -65,6 +65,7 @@ export const AccountPageView = ({
   locale,
   country,
   homeHref,
+  favoriteCategoryLabels,
   user,
   orders,
 }: AccountPageViewProps) => {
@@ -94,14 +95,7 @@ export const AccountPageView = ({
   const {
     downloads,
     addresses,
-    favorites,
-    favoriteSuggestions,
-    favoritesTotal,
-  } = getAccountPageMockData(locale, t("delivered"), t("inDelivery"));
-  const favoriteCategories = Array.from(new Set(favorites.map((item) => item.category)));
-  const favoritesInStockCount = favorites.filter(
-    (item) => item.availabilityTone === "in-stock",
-  ).length;
+  } = getAccountPageMockData(locale);
   const sidebarItems = [
     { key: "overview" as const, label: tabs[0] ?? t("profile"), icon: <PersonOutlineIcon /> },
     { key: "orders" as const, label: t("orders"), icon: <ReceiptLongOutlinedIcon /> },
@@ -274,11 +268,7 @@ export const AccountPageView = ({
         return (
           <FavoritesSection
             locale={locale}
-            favorites={favorites}
-            favoriteSuggestions={favoriteSuggestions}
-            favoriteCategories={favoriteCategories}
-            favoritesInStockCount={favoritesInStockCount}
-            favoritesTotal={favoritesTotal}
+            categoryLabels={favoriteCategoryLabels}
           />
         );
       case "settings":

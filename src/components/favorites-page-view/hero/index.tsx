@@ -169,7 +169,7 @@ export const FavoritesHero = ({
               {authState ? tAccount("favoritesSavedLabel") : tFavorites("savedLabel")}
             </Typography>
             <Typography
-              sx={{ mt: 0.25, fontWeight: 800, fontSize: { xs: 22, md: 24 } }}
+              sx={{ mt: 0.25, fontWeight: 800, fontSize: { xs: 18, md: 20 } }}
             >
               {countLabel}
             </Typography>

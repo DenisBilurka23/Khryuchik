@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { Container } from "@mui/material";
 
 import { AccountPageView } from "@/components/account-page-view";
+import { getShopCategories } from "@/data/products";
 import { isLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
@@ -23,7 +24,7 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
     redirect(`/${lang}/login?callbackUrl=${encodeURIComponent(`/${lang}/account`)}`);
   }
 
-  const [country, user, rawOrders] = await Promise.all([
+  const [country, user, rawOrders, categories] = await Promise.all([
     getRequestCountry(),
     session.user.id
       ? getAccountUserById(session.user.id)
@@ -34,6 +35,7 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
       session.user.id || undefined,
       session.user.email ?? undefined,
     ),
+    getShopCategories(lang),
   ]);
   const orders = rawOrders.map((order) => toAccountOrder(order, lang));
 
@@ -43,6 +45,9 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
         locale={lang}
         country={country}
         homeHref={lang === "en" ? "/" : `/${lang}`}
+        favoriteCategoryLabels={Object.fromEntries(
+          categories.map((category) => [category.key, category.label]),
+        )}
         user={user ?? session.user ?? {}}
         orders={orders}
       />

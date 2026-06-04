@@ -20,6 +20,7 @@ export const FavoritesPageView = ({
   shopHref,
   loginHref,
   registerHref,
+  embedded = false,
 }: FavoritesPageViewProps) => {
   const tFavorites = useTranslations("storefront.favoritesPage");
   const { addItem } = useCart();
@@ -43,8 +44,8 @@ export const FavoritesPageView = ({
     });
   };
 
-  return (
-    <Container maxWidth="lg" sx={{ py: { xs: 3, md: 6 } }}>
+  const content = (
+    <>
       <FavoritesHero
         locale={locale}
         authState={authState}
@@ -76,6 +77,16 @@ export const FavoritesPageView = ({
           />
         )}
       </Box>
+    </>
+  );
+
+  if (embedded) {
+    return <Box>{content}</Box>;
+  }
+
+  return (
+    <Container maxWidth="lg" sx={{ py: { xs: 3, md: 6 } }}>
+      {content}
     </Container>
   );
 };

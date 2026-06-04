@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { Container } from "@mui/material";
 
 import { AccountPageView } from "@/components/account-page-view";
+import { getShopCategories } from "@/data/products";
 import { defaultLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
@@ -16,7 +17,7 @@ const AccountPage = async () => {
     redirect("/login?callbackUrl=%2Faccount");
   }
 
-  const [country, user, rawOrders] = await Promise.all([
+  const [country, user, rawOrders, categories] = await Promise.all([
     getRequestCountry(),
     session.user.id
       ? getAccountUserById(session.user.id)
@@ -27,6 +28,7 @@ const AccountPage = async () => {
       session.user.id || undefined,
       session.user.email ?? undefined,
     ),
+    getShopCategories(defaultLocale),
   ]);
   const orders = rawOrders.map((order) => toAccountOrder(order, defaultLocale));
 
@@ -36,6 +38,9 @@ const AccountPage = async () => {
         locale={defaultLocale}
         country={country}
         homeHref="/"
+        favoriteCategoryLabels={Object.fromEntries(
+          categories.map((category) => [category.key, category.label]),
+        )}
         user={user ?? session.user ?? {}}
         orders={orders}
       />

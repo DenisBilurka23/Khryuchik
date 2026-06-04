@@ -7,4 +7,5 @@ export type FavoritesPageViewProps = {
   shopHref: string;
   loginHref: string;
   registerHref: string;
+  embedded?: boolean;
 };
