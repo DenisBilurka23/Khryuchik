@@ -1,12 +1,24 @@
 import { Chip, Paper, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
+import { customerOrderStatusColors } from "@/constants/order";
+
 import { SectionCard } from "../../shared";
 
 import type { OrdersSectionProps } from "./types";
 
-export const OrdersSection = ({ orders }: OrdersSectionProps) => {
+export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
   const t = useTranslations("accountPage");
+  const tStatus = useTranslations("accountPage.orderStatuses");
+  const tEmpty = useTranslations("accountPage");
+
+  if (orders.length === 0) {
+    return (
+      <SectionCard title={t("allOrders")}>
+        <Typography color="text.secondary">{tEmpty("noOrders")}</Typography>
+      </SectionCard>
+    );
+  }
 
   return (
     <SectionCard title={t("allOrders")}>
@@ -28,17 +40,17 @@ export const OrdersSection = ({ orders }: OrdersSectionProps) => {
               spacing={2}
             >
               <Stack spacing={0.75}>
-                <Typography sx={{ fontWeight: 800 }}>{order.id}</Typography>
+                <Typography sx={{ fontWeight: 800 }}>{order.number}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {order.date}
+                  {new Date(order.createdAt).toLocaleDateString(locale)}
                 </Typography>
-                <Typography>{order.items}</Typography>
+                <Typography>{order.itemsSummary}</Typography>
               </Stack>
               <Stack alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1.25}>
                 <Chip
-                  label={order.status}
+                  label={tStatus(order.status)}
                   sx={{
-                    bgcolor: order.status === t("delivered") ? "#E6F6EC" : "#FFF3D6",
+                    bgcolor: customerOrderStatusColors[order.status],
                     fontWeight: 700,
                   }}
                 />

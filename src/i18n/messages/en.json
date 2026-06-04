@@ -739,6 +739,14 @@
     "unexpectedError": "Unable to save your profile right now. Try again in a moment.",
     "addAddress": "Add address",
     "allOrders": "All orders",
+    "noOrders": "You don't have any orders yet. Your first order will appear here.",
+    "orderStatuses": {
+      "pending": "Awaiting confirmation",
+      "confirmed": "Preparing for shipment",
+      "shipped": "In transit",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
     "showAll": "Show all",
     "removeAll": "Clear",
     "signOutButton": "Sign out",
@@ -788,6 +796,7 @@
     "shared": {
       "actions": {
         "edit": "Edit",
+        "view": "View",
         "update": "Update",
         "manage": "Manage",
         "backToProducts": "Back to products",
@@ -937,6 +946,30 @@
         "created": "Created",
         "action": "Action"
       },
+      "view": {
+        "eyebrow": "Account",
+        "title": "Account",
+        "description": "Account details and order history.",
+        "backToList": "All accounts",
+        "editAction": "Edit",
+        "profileTitle": "Profile",
+        "profileDescription": "Main account details.",
+        "fields": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "role": "Role",
+          "createdAt": "Created"
+        },
+        "roles": {
+          "admin": "Administrator",
+          "user": "User"
+        },
+        "ordersTitle": "User orders",
+        "ordersDescription": "Total orders",
+        "noOrdersTitle": "No orders yet",
+        "noOrdersDescription": "This user hasn't placed any orders yet."
+      },
       "form": {
         "editEyebrow": "Account",
         "editTitlePrefix": "Editing account",
@@ -1031,6 +1064,13 @@
         "shipped": "Shipped",
         "delivered": "Delivered",
         "cancelled": "Cancelled"
+      },
+      "delete": {
+        "button": "Delete order",
+        "dialogTitle": "Delete this order?",
+        "dialogDescription": "The order will be removed from the database permanently. This action cannot be undone.",
+        "confirmLabel": "Delete",
+        "cancelLabel": "Cancel"
       }
     },
     "errorBoundary": {

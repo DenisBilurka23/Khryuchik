@@ -748,6 +748,14 @@
     "unexpectedError": "Сейчас не удалось сохранить профиль. Попробуйте ещё раз чуть позже.",
     "addAddress": "Добавить адрес",
     "allOrders": "Все заказы",
+    "noOrders": "У вас пока нет заказов. Когда оформите первый — он появится здесь.",
+    "orderStatuses": {
+      "pending": "Ожидает подтверждения",
+      "confirmed": "Готовится к отправке",
+      "shipped": "В доставке",
+      "delivered": "Доставлен",
+      "cancelled": "Отменён"
+    },
     "showAll": "Показать все",
     "removeAll": "Очистить",
     "signOutButton": "Выйти",
@@ -797,6 +805,7 @@
     "shared": {
       "actions": {
         "edit": "Редактировать",
+        "view": "Просмотреть",
         "update": "Обновить",
         "manage": "Управление",
         "backToProducts": "К списку товаров",
@@ -946,6 +955,30 @@
         "created": "Создан",
         "action": "Действие"
       },
+      "view": {
+        "eyebrow": "Аккаунт",
+        "title": "Аккаунт",
+        "description": "Информация об аккаунте и его заказы.",
+        "backToList": "Все аккаунты",
+        "editAction": "Редактировать",
+        "profileTitle": "Профиль",
+        "profileDescription": "Основные данные аккаунта.",
+        "fields": {
+          "name": "Имя",
+          "email": "Email",
+          "phone": "Телефон",
+          "role": "Роль",
+          "createdAt": "Создан"
+        },
+        "roles": {
+          "admin": "Администратор",
+          "user": "Пользователь"
+        },
+        "ordersTitle": "Заказы пользователя",
+        "ordersDescription": "Всего заказов",
+        "noOrdersTitle": "Заказов пока нет",
+        "noOrdersDescription": "У пользователя пока не было оформленных заказов."
+      },
       "form": {
         "editEyebrow": "Аккаунт",
         "editTitlePrefix": "Редактирование аккаунта",
@@ -1040,6 +1073,13 @@
         "shipped": "Отправлен",
         "delivered": "Доставлен",
         "cancelled": "Отменён"
+      },
+      "delete": {
+        "button": "Удалить заказ",
+        "dialogTitle": "Удалить заказ?",
+        "dialogDescription": "Заказ будет окончательно удалён из базы. Это действие нельзя отменить.",
+        "confirmLabel": "Удалить",
+        "cancelLabel": "Отмена"
       }
     },
     "errorBoundary": {

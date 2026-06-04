@@ -1,5 +1,3 @@
-import "server-only";
-
 import type { Locale } from "@/i18n/config";
 import type { CategoryDocument, LocalizedCategory } from "@/types/catalog";
 

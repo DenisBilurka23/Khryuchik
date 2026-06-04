@@ -3,11 +3,7 @@ import "server-only";
 import { cache } from "react";
 
 import type { Locale } from "@/i18n/config";
-
-import {
-  isLocalizedCategory,
-  localizeCategory,
-} from "../mappers/category.mapper";
+import { isLocalizedCategory, localizeCategory } from "@/utils";
 import {
   findHomeTabCategories,
   findShopVisibleCategories,

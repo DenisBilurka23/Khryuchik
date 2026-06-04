@@ -4,7 +4,7 @@ import { Alert, Box, Stack, Table, TableBody, TableCell, TableHead, TableRow, Ty
 import { getTranslations } from "next-intl/server";
 
 import { deleteAdminCustomerAction } from "@/app/(admin)/admin/actions";
-import { DeleteCustomerButton, EditCustomerButton } from "@/components/admin-customers-page-view";
+import { DeleteCustomerButton, EditCustomerButton, ViewCustomerButton } from "@/components/admin-customers-page-view";
 import { AdminPageHero, AdminSectionCard, AdminStatusChip } from "@/components/admin-page-shared";
 import { getAdminCustomerFormErrorMessage } from "@/server/admin/customer-form-state";
 import { getAdminCustomers } from "@/server/admin/catalog.service";
@@ -99,6 +99,10 @@ const AdminCustomersPage = async ({ searchParams }: AdminCustomersPageProps) => 
 									<TableCell>{formatAdminDate(customer.createdAt, locale)}</TableCell>
 									<TableCell align="right">
 										<Stack direction="row" gap={0.5} justifyContent="flex-end">
+											<ViewCustomerButton
+												href={`/admin/customers/${customer.id}`}
+												size="small"
+											/>
 											<EditCustomerButton
 												href={`/admin/customers/${customer.id}/edit`}
 												size="small"

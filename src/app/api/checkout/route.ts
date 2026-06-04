@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
+import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import {
   createStripeCheckoutSession,
@@ -112,7 +113,11 @@ export const POST = async (request: NextRequest) => {
     typeof payload.locale === "string" && isLocale(payload.locale)
       ? payload.locale
       : defaultLocale;
-  const country = await getRequestCountry();
+  const [country, session] = await Promise.all([
+    getRequestCountry(),
+    getServerAuthSession(),
+  ]);
+  const userId = session?.user?.id || undefined;
 
   const items = Array.isArray(payload.items)
     ? payload.items.filter(isStoredCartItem)
@@ -146,6 +151,7 @@ export const POST = async (request: NextRequest) => {
       customer,
       shippingAddress,
       paymentMethod,
+      userId,
       notes:
         typeof payload.notes === "string" && payload.notes.length > 0
           ? payload.notes

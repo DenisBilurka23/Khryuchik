@@ -89,6 +89,7 @@ export const createOrder = async (
   const order: OrderDocument = {
     id: randomUUID(),
     createdAt: new Date().toISOString(),
+    userId: input.userId,
     locale,
     country,
     currency: getCountryCurrency(country),

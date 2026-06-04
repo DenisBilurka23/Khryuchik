@@ -3,16 +3,15 @@ import "server-only";
 import { cache } from "react";
 
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/utils";
-import type { ProductDocument, ProductPlacement } from "@/types/catalog";
-import type { CartItem, StoredCartItem } from "@/types/cart";
-import type { ProductOption } from "@/types/product-details";
-
 import {
   isLocalizedProductSummary,
   localizeProductSummary,
   toProductDetails,
-} from "../mappers/product.mapper";
+  type CountryCode,
+} from "@/utils";
+import type { ProductDocument, ProductPlacement } from "@/types/catalog";
+import type { CartItem, StoredCartItem } from "@/types/cart";
+import type { ProductOption } from "@/types/product-details";
 import {
   findActiveProductBySlug,
   findActiveProductsByIds,

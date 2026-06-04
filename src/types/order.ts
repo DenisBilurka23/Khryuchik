@@ -1,6 +1,10 @@
 import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
-import type { CountryCode, CurrencyCode, PaymentMethod } from "@/utils";
+import type {
+  CountryCode,
+  CurrencyCode,
+  PaymentMethod,
+} from "@/utils/country";
 
 export type OrderItem = {
   productId: string;
@@ -36,12 +40,15 @@ export type OrderPaymentStatus =
   | "failed"
   | "cod_pending";
 
-export type OrderStatus =
-  | "new"
-  | "processing"
-  | "shipped"
-  | "delivered"
-  | "cancelled";
+export const ORDER_STATUSES = [
+  "new",
+  "processing",
+  "shipped",
+  "delivered",
+  "cancelled",
+] as const;
+
+export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
 export type OrderPaymentInfo = {
   method: PaymentMethod;
@@ -54,6 +61,7 @@ export type OrderPaymentInfo = {
 export type OrderDocument = {
   id: string;
   createdAt: string;
+  userId?: string;
   locale: Locale;
   country: CountryCode;
   currency: CurrencyCode;
@@ -69,6 +77,22 @@ export type OrderDocument = {
   notes?: string;
 };
 
+export type CustomerOrderStatus =
+  | "pending"
+  | "confirmed"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
+
+export type AccountOrder = {
+  id: string;
+  number: string;
+  createdAt: string;
+  itemsSummary: string;
+  total: string;
+  status: CustomerOrderStatus;
+};
+
 export type CreateOrderInput = {
   locale: Locale;
   country: CountryCode;
@@ -76,5 +100,6 @@ export type CreateOrderInput = {
   customer: OrderCustomer;
   shippingAddress: OrderShippingAddress;
   paymentMethod: PaymentMethod;
+  userId?: string;
   notes?: string;
 };

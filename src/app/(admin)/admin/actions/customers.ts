@@ -3,34 +3,19 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { locales } from "@/i18n/config";
 import {
-  AdminCategoryDeleteError,
-  adminCategoryDeleteErrorCodes,
-  deleteAdminCategory,
   deleteAdminCustomer,
-  deleteAdminProduct,
-  saveAdminCategory,
   saveAdminCustomer,
-  saveAdminProduct,
 } from "@/server/admin/catalog.service";
 import { AdminCustomerFormErrorCode } from "@/server/admin/customer-form-state";
-import {
-  parseAdminCategoryFormData,
-  parseAdminProductFormData,
-} from "@/server/admin/form-data";
-import {
-  AdminProductFormErrorCode,
-  AdminProductFormMode,
-} from "@/server/admin/product-form-state";
-import { populateAdminProductIdentifiers } from "@/server/admin/product-identifiers";
-import { requireAdminApiAccess } from "@/server/admin/auth";
 import {
   deleteUserAvatarObject,
   uploadUserAvatarFile,
 } from "@/server/storage/r2-assets.service";
 import { isR2Configured } from "@/server/storage/r2";
 import { UserOperationErrorReason } from "@/types/users";
+
+import { requireAdmin } from "./shared";
 
 const isUploadedFile = (
   entry: FormDataEntryValue | null | undefined,
@@ -42,35 +27,6 @@ const isUploadedFile = (
   entry.size > 0 &&
   "arrayBuffer" in entry &&
   typeof entry.arrayBuffer === "function";
-
-const requireAdmin = async () => {
-  const session = await requireAdminApiAccess();
-
-  if (!session) {
-    redirect("/login?callbackUrl=%2Fadmin");
-  }
-
-  return session;
-};
-
-const getAdminProductErrorRedirectPath = (
-  formData: FormData,
-  errorCode: AdminProductFormErrorCode,
-) => {
-  const rawFormMode = formData.get("formMode");
-  const formMode =
-    rawFormMode === AdminProductFormMode.Edit
-      ? AdminProductFormMode.Edit
-      : AdminProductFormMode.New;
-  const rawProductId = formData.get("productId");
-  const productId = typeof rawProductId === "string" ? rawProductId.trim() : "";
-
-  if (formMode === AdminProductFormMode.Edit && productId) {
-    return `/admin/products/${productId}/edit?error=${errorCode}`;
-  }
-
-  return `/admin/products/new?error=${errorCode}`;
-};
 
 const getAdminCustomerErrorRedirectPath = (
   formData: FormData,
@@ -88,140 +44,9 @@ const getAdminCustomerErrorRedirectPath = (
   return `/admin/customers?error=${errorCode}`;
 };
 
-const revalidateCategoryDependentPaths = () => {
-  revalidatePath("/admin");
-  revalidatePath("/admin/categories");
-  revalidatePath("/");
-  revalidatePath("/shop");
-  revalidatePath("/favorites");
-
-  for (const locale of locales) {
-    if (locale === "en") {
-      continue;
-    }
-
-    revalidatePath(`/${locale}`);
-    revalidatePath(`/${locale}/shop`);
-    revalidatePath(`/${locale}/favorites`);
-  }
-};
-
-const revalidateProductDependentPaths = (productSlug?: string) => {
-  revalidatePath("/admin");
-  revalidatePath("/admin/products");
-  revalidatePath("/");
-  revalidatePath("/shop");
-  revalidatePath("/favorites");
-
-  if (productSlug) {
-    revalidatePath(`/products/${productSlug}`);
-  }
-
-  for (const locale of locales) {
-    if (locale === "en") {
-      continue;
-    }
-
-    revalidatePath(`/${locale}`);
-    revalidatePath(`/${locale}/shop`);
-    revalidatePath(`/${locale}/favorites`);
-
-    if (productSlug) {
-      revalidatePath(`/${locale}/products/${productSlug}`);
-    }
-  }
-};
-
 const revalidateCustomerDependentPaths = () => {
   revalidatePath("/admin");
   revalidatePath("/admin/customers");
-};
-
-export const saveAdminCategoryAction = async (formData: FormData) => {
-  await requireAdmin();
-
-  const input = parseAdminCategoryFormData(formData);
-
-  await saveAdminCategory(input);
-
-  revalidateCategoryDependentPaths();
-  redirect("/admin/categories?saved=1");
-};
-
-export const deleteAdminCategoryAction = async (formData: FormData) => {
-  await requireAdmin();
-
-  const key = formData.get("key");
-  const normalizedKey = typeof key === "string" ? key.trim() : "";
-
-  try {
-    await deleteAdminCategory(normalizedKey);
-  } catch (error) {
-    if (error instanceof AdminCategoryDeleteError) {
-      redirect(`/admin/categories?error=${error.code}`);
-    }
-
-    console.error("Admin category delete failed", error);
-    redirect(
-      `/admin/categories?error=${adminCategoryDeleteErrorCodes.InvalidKey}`,
-    );
-  }
-
-  revalidateCategoryDependentPaths();
-  redirect("/admin/categories?deleted=1");
-};
-
-export const saveAdminProductAction = async (formData: FormData) => {
-  await requireAdmin();
-
-  let payload: ReturnType<typeof parseAdminProductFormData> | undefined;
-  let errorCode: AdminProductFormErrorCode | undefined;
-  let redirectPath: string | undefined;
-
-  try {
-    payload = parseAdminProductFormData(formData);
-    payload = await populateAdminProductIdentifiers(payload);
-
-    await saveAdminProduct(payload);
-
-    revalidateProductDependentPaths(payload.product.slug);
-    redirectPath = `/admin/products/${payload.product.productId}/edit?saved=1`;
-  } catch (error) {
-    console.error("Admin product save failed", error);
-    errorCode = AdminProductFormErrorCode.SaveFailed;
-  }
-
-  redirect(
-    redirectPath ??
-      getAdminProductErrorRedirectPath(
-        formData,
-        errorCode ?? AdminProductFormErrorCode.Unexpected,
-      ),
-  );
-};
-
-export const deleteAdminProductAction = async (formData: FormData) => {
-  await requireAdmin();
-
-  const rawProductId = formData.get("productId");
-  const productId = typeof rawProductId === "string" ? rawProductId.trim() : "";
-  let deletedProductSlug: string | undefined;
-
-  try {
-    const deletedProduct = await deleteAdminProduct(productId);
-    deletedProductSlug = deletedProduct.slug;
-  } catch (error) {
-    console.error("Admin product delete failed", error);
-    redirect(
-      getAdminProductErrorRedirectPath(
-        formData,
-        AdminProductFormErrorCode.DeleteFailed,
-      ),
-    );
-  }
-
-  revalidateProductDependentPaths(deletedProductSlug);
-  redirect("/admin/products?deleted=1");
 };
 
 export const saveAdminCustomerAction = async (formData: FormData) => {

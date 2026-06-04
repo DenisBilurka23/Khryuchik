@@ -1,14 +1,12 @@
-import "server-only";
-
 import type { Locale } from "@/i18n/config";
-import { defaultCountry } from "@/utils";
-import type { CountryCode } from "@/utils";
 import type {
   LocalizedProductSummary,
   ProductDetailDocument,
   ProductDocument,
 } from "@/types/catalog";
 import type { ProductDetails } from "@/types/product-details";
+
+import { defaultCountry, type CountryCode } from "./country";
 
 const localizeDeliveryCopy = (
   delivery: string[],
@@ -30,10 +28,16 @@ const localizeDeliveryCopy = (
 
     return item
       .replaceAll("across Belarus", "across the USA")
-      .replaceAll("across Belarus and internationally", "across the USA and internationally")
+      .replaceAll(
+        "across Belarus and internationally",
+        "across the USA and internationally",
+      )
       .replaceAll("ships across Belarus", "ships across the USA")
       .replaceAll("Shipping across Belarus", "Shipping across the USA")
-      .replaceAll("Printed edition ships across Belarus", "Printed edition ships across the USA");
+      .replaceAll(
+        "Printed edition ships across Belarus",
+        "Printed edition ships across the USA",
+      );
   });
 };
 

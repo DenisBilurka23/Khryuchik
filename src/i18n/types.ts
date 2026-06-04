@@ -638,6 +638,14 @@ export type AccountPageDictionary = {
   unexpectedError: string;
   addAddress: string;
   allOrders: string;
+  noOrders: string;
+  orderStatuses: {
+    pending: string;
+    confirmed: string;
+    shipped: string;
+    delivered: string;
+    cancelled: string;
+  };
   showAll: string;
   removeAll: string;
   signOutButton: string;
@@ -688,6 +696,7 @@ export type AdminPageDictionary = {
   shared: {
     actions: {
       edit: string;
+      view: string;
       update: string;
       manage: string;
       backToProducts: string;
@@ -837,6 +846,30 @@ export type AdminPageDictionary = {
       created: string;
       action: string;
     };
+    view: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      backToList: string;
+      editAction: string;
+      profileTitle: string;
+      profileDescription: string;
+      fields: {
+        name: string;
+        email: string;
+        phone: string;
+        role: string;
+        createdAt: string;
+      };
+      roles: {
+        admin: string;
+        user: string;
+      };
+      ordersTitle: string;
+      ordersDescription: string;
+      noOrdersTitle: string;
+      noOrdersDescription: string;
+    };
     form: {
       editEyebrow: string;
       editTitlePrefix: string;
@@ -917,6 +950,13 @@ export type AdminPageDictionary = {
     paymentMethodLabels: Record<string, string>;
     paymentStatusLabels: Record<string, string>;
     statusLabels: Record<string, string>;
+    delete: {
+      button: string;
+      dialogTitle: string;
+      dialogDescription: string;
+      confirmLabel: string;
+      cancelLabel: string;
+    };
   };
   errorBoundary: {
     title: string;

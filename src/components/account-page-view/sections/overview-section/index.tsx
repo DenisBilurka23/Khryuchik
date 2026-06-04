@@ -3,6 +3,8 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import { Box, Button, Chip, Grid, Paper, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
+import { customerOrderStatusColors } from "@/constants/order";
+
 import { PersonalDetailsSection, SectionCard } from "../../shared";
 
 import type { OverviewSectionProps } from "./types";
@@ -30,6 +32,7 @@ export const OverviewSection = ({
   onPhoneChange,
 }: OverviewSectionProps) => {
   const t = useTranslations("accountPage");
+  const tStatus = useTranslations("accountPage.orderStatuses");
 
   return (
     <Stack spacing={3}>
@@ -74,17 +77,17 @@ export const OverviewSection = ({
                 spacing={2}
               >
                 <Box>
-                  <Typography sx={{ fontWeight: 800 }}>{order.id}</Typography>
+                  <Typography sx={{ fontWeight: 800 }}>{order.number}</Typography>
                   <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    {order.date}
+                    {new Date(order.createdAt).toLocaleDateString(locale)}
                   </Typography>
-                  <Typography sx={{ mt: 1.25 }}>{order.items}</Typography>
+                  <Typography sx={{ mt: 1.25 }}>{order.itemsSummary}</Typography>
                 </Box>
                 <Stack alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1}>
                   <Chip
-                    label={order.status}
+                    label={tStatus(order.status)}
                     sx={{
-                      bgcolor: order.status === t("delivered") ? "#E6F6EC" : "#FFF3D6",
+                      bgcolor: customerOrderStatusColors[order.status],
                       fontWeight: 700,
                     }}
                   />

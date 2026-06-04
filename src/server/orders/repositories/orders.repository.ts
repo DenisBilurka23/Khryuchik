@@ -46,6 +46,37 @@ export type FindOrdersOptions = {
   limit?: number;
 };
 
+export const findOrdersForUser = async (
+  userId: string | undefined,
+  email: string | undefined,
+  options: FindOrdersOptions = {},
+): Promise<OrderDocument[]> => {
+  const conditions: Record<string, unknown>[] = [];
+
+  if (userId) {
+    conditions.push({ userId });
+  }
+  if (email) {
+    conditions.push({ "customer.email": email });
+  }
+
+  if (conditions.length === 0) {
+    return [];
+  }
+
+  const collection = await getOrdersCollection();
+  const { limit = 50 } = options;
+
+  return collection
+    .find(
+      conditions.length === 1 ? conditions[0] : { $or: conditions },
+      { projection: { _id: 0 } },
+    )
+    .sort({ createdAt: -1 })
+    .limit(limit)
+    .toArray();
+};
+
 export const findOrders = async (
   options: FindOrdersOptions = {},
 ): Promise<OrderDocument[]> => {
@@ -86,4 +117,10 @@ export const updateOrderStatus = async (
   const collection = await getOrdersCollection();
 
   await collection.updateOne({ id }, { $set: { status } });
+};
+
+export const deleteOrder = async (id: string): Promise<void> => {
+  const collection = await getOrdersCollection();
+
+  await collection.deleteOne({ id });
 };

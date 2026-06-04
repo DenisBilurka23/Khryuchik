@@ -66,6 +66,7 @@ export const AccountPageView = ({
   country,
   homeHref,
   user,
+  orders,
 }: AccountPageViewProps) => {
   const t = useTranslations("accountPage");
   const tabs = t.raw("tabs") as string[];
@@ -91,7 +92,6 @@ export const AccountPageView = ({
   const userInitial = userName.charAt(0).toUpperCase();
   const isEmailEditable = !(profileUser.authProviders ?? []).includes("google");
   const {
-    orders,
     downloads,
     addresses,
     favorites,
@@ -265,7 +265,7 @@ export const AccountPageView = ({
   const renderSection = () => {
     switch (activeSection) {
       case "orders":
-        return <OrdersSection orders={orders} />;
+        return <OrdersSection locale={locale} orders={orders} />;
       case "books":
         return <BooksSection locale={locale} downloads={downloads} />;
       case "addresses":

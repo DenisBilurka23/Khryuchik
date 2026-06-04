@@ -12,6 +12,13 @@ import {
   Typography,
 } from "@mui/material";
 
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+
+import { deleteAdminOrderAction } from "@/app/(admin)/admin/actions";
+import {
+  AdminOrderDeleteButton,
+  AdminOrderStatusSelect,
+} from "@/components/admin-orders-page-view";
 import {
   AdminEmptyState,
   AdminPageHero,
@@ -54,7 +61,6 @@ const AdminOrdersPage = async () => {
   const paymentStatusLabels = tOrders.raw(
     "paymentStatusLabels",
   ) as Record<string, string>;
-  const statusLabels = tOrders.raw("statusLabels") as Record<string, string>;
 
   return (
     <Stack gap={3}>
@@ -90,6 +96,7 @@ const AdminOrdersPage = async () => {
                   <TableCell align="right">{columns.total}</TableCell>
                   <TableCell>{columns.payment}</TableCell>
                   <TableCell>{columns.status}</TableCell>
+                  <TableCell align="right" />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -128,7 +135,19 @@ const AdminOrdersPage = async () => {
                       </Stack>
                     </TableCell>
                     <TableCell>
-                      {statusLabels[order.status] ?? order.status}
+                      <AdminOrderStatusSelect
+                        orderId={order.id}
+                        currentStatus={order.status}
+                      />
+                    </TableCell>
+                    <TableCell align="right">
+                      <AdminOrderDeleteButton
+                        orderId={order.id}
+                        action={deleteAdminOrderAction}
+                        icon={
+                          <DeleteOutlineOutlinedIcon key="delete-order-icon" />
+                        }
+                      />
                     </TableCell>
                   </TableRow>
                 ))}

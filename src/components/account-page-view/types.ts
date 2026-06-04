@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/utils";
+import type { AccountOrder } from "@/types/order";
 import type { AuthProvider } from "@/types/users";
+import type { CountryCode } from "@/utils";
 
 export type AccountPageUser = {
   id?: string;
@@ -18,6 +19,7 @@ export type AccountPageViewProps = {
   country: CountryCode;
   homeHref: string;
   user: AccountPageUser;
+  orders: AccountOrder[];
 };
 
 export type SectionKey =

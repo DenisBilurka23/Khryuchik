@@ -3,13 +3,13 @@ import type { SyntheticEvent } from "react";
 import type {
   AccountAddressMock,
   AccountDownloadMock,
-  AccountOrderMock,
 } from "@/data/account-page-mock";
 import type { Locale } from "@/i18n/config";
+import type { AccountOrder } from "@/types/order";
 
 export type OverviewSectionProps = {
   locale: Locale;
-  orders: AccountOrderMock[];
+  orders: AccountOrder[];
   downloads: AccountDownloadMock[];
   addresses: AccountAddressMock[];
   firstName: string;

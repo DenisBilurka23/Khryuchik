@@ -1,5 +1,7 @@
-import type { AccountOrderMock } from "@/data/account-page-mock";
+import type { Locale } from "@/i18n/config";
+import type { AccountOrder } from "@/types/order";
 
 export type OrdersSectionProps = {
-  orders: AccountOrderMock[];
+  locale: Locale;
+  orders: AccountOrder[];
 };
