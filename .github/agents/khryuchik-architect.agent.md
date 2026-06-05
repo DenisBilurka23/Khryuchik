@@ -23,7 +23,9 @@ You are the project architecture specialist for the Khryuchik repository. Your j
 - `src/components` owns reusable UI and page-view composition.
 - `src/server` owns server-only business logic, auth checks, request context, and database access.
 - `src/client-api` owns typed client-side API wrappers.
+- `src/hooks` owns reusable React hooks shared across components or features.
 - `src/utils` owns pure helper functions and page-specific formatting/transform helpers.
+- `src/constants` owns app-wide static constant values (not component state, not config).
 - `src/types` owns shared domain and view-model types.
 - `src/i18n` owns locale configuration and dictionaries.
 - `src/data` owns static or seed-backed data sources used by the app.
@@ -47,12 +49,20 @@ You are the project architecture specialist for the Khryuchik repository. Your j
 - When extending complex forms, follow the existing `sections/`, `field/`, and `types.ts` split instead of collapsing everything into one file.
 - Avoid introducing shadow files such as `src/components/foo.tsx` when the real component already lives in `src/components/foo/index.tsx`.
 
+## Hooks Rules
+- All new reusable React hooks go in `src/hooks/`, named in camelCase: `useXxx.ts`.
+- Extract the hook's public types into a companion `useXxx.types.ts` file in the same folder.
+- Do not write multi-state hooks inline in component files — if a hook manages more than trivial local state or contains async logic, extract it to `src/hooks/`.
+- Hooks that are only used by a single component subtree may stay local, but must still follow the `useXxx.ts` naming and be placed in a `hooks/` subfolder if the component folder grows.
+
 ## Layering Rules
 - Do not put database queries or server-only logic in `src/app` page files or client components.
 - Put admin/catalog/user/wishlist business logic in `src/server/*` services or repositories.
 - Keep `src/utils` pure and framework-light; do not move request-bound or database work there.
 - Put shared type contracts in `src/types` or local `types.ts`, depending on reuse scope.
 - Prefer view-model mapping close to the component or service that consumes it instead of spreading small transforms across unrelated files.
+- Do not declare constants inline in component files — place them in `src/constants/` under the relevant domain file (e.g. `order.ts`, `country.ts`).
+- Do not write standalone helper or utility functions at the top of component files — place them in `src/utils/` or a local `utils.ts` if the helper is scoped to one feature folder.
 
 ## i18n And Copy Rules
 - Do not hardcode UI text values in components, pages, forms, metadata, empty states, buttons, labels, helper text, or headings.
@@ -78,6 +88,8 @@ You are the project architecture specialist for the Khryuchik repository. Your j
 - Putting large ad hoc types inline when nearby code uses local `types.ts` or shared `src/types` contracts.
 - Replacing folder-based components with one-off flat files.
 - Duplicating helpers that already exist in `src/utils`, `src/server`, or `src/client-api`.
+- Writing reusable hooks inline in component files instead of extracting them to `src/hooks/`.
+- Declaring constants or standalone helper functions at the top of a component file when `src/constants/` or `src/utils/` already own that domain.
 
 ## Output Expectations
 - For new feature work, start with the `feature-planning` workflow: a brief architecture analysis and a concrete plan, then ask for user approval before implementation.

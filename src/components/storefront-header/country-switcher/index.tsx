@@ -7,7 +7,11 @@ import { useRouter } from "next/navigation";
 
 import { updateCountryPreferenceClient } from "@/client-api/country";
 import { setClientCountry } from "@/utils/country/client";
-import { countries, countryLabels } from "@/utils";
+import {
+  countries,
+  getCountryDisplayName,
+  getCountryShortLabel,
+} from "@/utils";
 
 import { HeaderSelect } from "../header-select";
 
@@ -71,9 +75,10 @@ export const CountrySwitcher = ({
       disabled={isPending}
       options={countries.map((targetCountry) => ({
         value: targetCountry,
-        label: countryLabels[locale][targetCountry],
+        label: getCountryDisplayName(locale, targetCountry),
+        selectedLabel: getCountryShortLabel(targetCountry),
       }))}
-      onChange={(value) => {
+      onChangeAction={(value) => {
         if (value === "BY" || value === "US") {
           void updateCountry(value);
         }

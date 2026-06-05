@@ -1,19 +1,31 @@
-import { PATCH } from "@/client-api";
+import { PATCH, POST } from "@/client-api";
+
+import type { UserShippingAddress, UserShippingAddressInput } from "@/types/users";
 
 type ErrorResponse = {
   error?: string;
 };
 
+type AccountClientUser = {
+  id: string;
+  email: string;
+  name: string;
+  phone: string;
+  authProviders: Array<"google" | "credentials">;
+  image?: string | null;
+  shippingAddresses: UserShippingAddress[];
+  selectedShippingAddressId: string | null;
+};
+
 type UpdateAccountProfileResponse = ErrorResponse & {
   ok?: boolean;
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-    phone: string;
-    authProviders: Array<"google" | "credentials">;
-    image?: string | null;
-  };
+  user?: AccountClientUser;
+};
+
+type UpdateAccountAddressesResponse = ErrorResponse & {
+  ok?: boolean;
+  user?: AccountClientUser;
+  address?: UserShippingAddress;
 };
 
 export const updateAccountProfileClient = async (payload: {
@@ -36,3 +48,10 @@ export const updateAccountProfileClient = async (payload: {
 
   return PATCH<UpdateAccountProfileResponse>("/api/account/profile", body);
 };
+
+export const addAccountAddressClient = async (
+  payload: UserShippingAddressInput,
+) => POST<UpdateAccountAddressesResponse>("/api/account/addresses", payload);
+
+export const selectAccountAddressClient = async (addressId: string) =>
+  PATCH<UpdateAccountAddressesResponse>("/api/account/addresses", { addressId });

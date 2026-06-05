@@ -6,24 +6,36 @@ export {
   COUNTRY_HEADER,
   countries,
   countryCurrencies,
-  countryLabels,
   countryShippingConfig,
   defaultCountry,
   geoCountryHeaderNames,
+  getCountryDisplayName,
   getCountryCurrency,
   getCountryFromCookieHeader,
   getCountryFromGeoCode,
   getCountryFromGeoHeaders,
   getCountryPaymentMethods,
+  getCountryShortLabel,
   isCountryCode,
   isPaymentMethodAvailable,
 } from "./country";
 
 export type { CountryCode, CurrencyCode, PaymentMethod } from "./country";
 
-export const localeLabels: Record<Locale, string> = {
-  ru: "RU",
-  en: "EN",
+export const getLocaleShortLabel = (locale: Locale) =>
+  locale.toUpperCase();
+
+export const getLocaleDisplayName = (
+  locale: Locale,
+  displayLocale: Locale,
+) => {
+  const displayName = new Intl.DisplayNames([displayLocale], {
+    type: "language",
+  }).of(locale);
+
+  return displayName
+    ? displayName.charAt(0).toUpperCase() + displayName.slice(1)
+    : getLocaleShortLabel(locale);
 };
 
 export const promoBackgrounds = ["#FFF0C9", "#DDF3E8"];

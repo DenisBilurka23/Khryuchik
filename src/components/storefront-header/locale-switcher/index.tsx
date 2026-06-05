@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { defaultLocale, locales } from "@/i18n/config";
-import { localeLabels } from "@/utils";
+import { getLocaleDisplayName, getLocaleShortLabel } from "@/utils";
 
 import { HeaderSelect } from "../header-select";
 
@@ -57,13 +57,12 @@ export const LocaleSwitcher = (props: LocaleSwitcherProps) => {
         <LanguageOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
       }
       disabled={isPending}
-      options={(
-        Object.keys(localeLabels) as Array<keyof typeof localeLabels>
-      ).map((targetLocale) => ({
+      options={locales.map((targetLocale) => ({
         value: targetLocale,
-        label: localeLabels[targetLocale],
+        label: getLocaleDisplayName(targetLocale, locale),
+        selectedLabel: getLocaleShortLabel(targetLocale),
       }))}
-      onChange={(value) => {
+      onChangeAction={(value) => {
         if (value !== locale && (value === "ru" || value === "en")) {
           const nextSearchParams = new URLSearchParams(searchParams.toString());
           const callbackUrl = nextSearchParams.get("callbackUrl");

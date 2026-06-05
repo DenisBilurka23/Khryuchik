@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type SyntheticEvent } from "react";
+import { useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
@@ -17,19 +17,16 @@ import {
   CardContent,
   Grid,
   List,
-  Stack,
   Paper,
+  Stack,
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
-import { updateAccountProfileClient } from "@/client-api/account";
 import { getAccountPageMockData } from "@/data/account-page-mock";
-import { splitName } from "@/utils/account-page";
-import { UserOperationErrorReason } from "@/types/users";
-import { EMAIL_PATTERN } from "@/utils/validation";
+import type { UserShippingAddress } from "@/types/users";
 
 import {
   AddressesSection,
@@ -41,6 +38,7 @@ import {
   SettingsSection,
 } from "./sections";
 import { AccountAvatarUploadField, SidebarItem } from "./shared";
+import { useProfileEditor } from "@/hooks/useProfileEditor";
 import type { AccountPageViewProps, SectionKey } from "./types";
 
 const accountSectionKeys: SectionKey[] = [
@@ -74,28 +72,37 @@ export const AccountPageView = ({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { update } = useSession();
-  const [profileUser, setProfileUser] = useState(user);
-  const { firstName: initialFirstName, lastName: initialLastName } = splitName(user.name);
-  const [firstName, setFirstName] = useState(initialFirstName);
-  const [lastName, setLastName] = useState(initialLastName);
-  const [email, setEmail] = useState(user.email ?? "");
-  const [phone, setPhone] = useState(user.phone ?? "");
-  const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [isSavingProfile, setIsSavingProfile] = useState(false);
-  const [profileError, setProfileError] = useState<string | null>(null);
-  const [profileSuccess, setProfileSuccess] = useState<string | null>(null);
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
-  const [avatarPreviewSrc, setAvatarPreviewSrc] = useState(user.image ?? null);
-  const avatarPreviewUrlRef = useRef<string | null>(null);
-  const userName = profileUser.name || (locale === "ru" ? "Пользователь" : "User");
-  const userEmail = profileUser.email || "email@example.com";
-  const userInitial = userName.charAt(0).toUpperCase();
-  const isEmailEditable = !(profileUser.authProviders ?? []).includes("google");
+
   const {
-    downloads,
-    addresses,
-  } = getAccountPageMockData(locale);
+    avatarPreviewSrc,
+    userName,
+    userEmail,
+    userInitial,
+    isEditingProfile,
+    isSavingProfile,
+    beginProfileEditing,
+    handleAvatarSelect,
+    handleProfileSave,
+    profileEditorState,
+  } = useProfileEditor(user, locale);
+
+  const [shippingAddresses, setShippingAddresses] = useState(
+    user.shippingAddresses ?? [],
+  );
+  const [selectedShippingAddressId, setSelectedShippingAddressId] = useState(
+    user.selectedShippingAddressId ?? user.shippingAddresses?.[0]?.id ?? null,
+  );
+
+  const { downloads } = getAccountPageMockData(locale);
+  const activeSection = getActiveSection(searchParams);
+
+  const overviewAddresses = [...shippingAddresses].sort((left, right) => {
+    const leftSelected = left.id === selectedShippingAddressId ? 1 : 0;
+    const rightSelected = right.id === selectedShippingAddressId ? 1 : 0;
+
+    return rightSelected - leftSelected;
+  });
+
   const sidebarItems = [
     { key: "overview" as const, label: tabs[0] ?? t("profile"), icon: <PersonOutlineIcon /> },
     { key: "orders" as const, label: t("orders"), icon: <ReceiptLongOutlinedIcon /> },
@@ -105,28 +112,6 @@ export const AccountPageView = ({
     { key: "settings" as const, label: t("settings"), icon: <SettingsOutlinedIcon /> },
     { key: "logout" as const, label: t("logout"), icon: <LogoutOutlinedIcon /> },
   ];
-  const activeSection = getActiveSection(searchParams);
-
-  useEffect(() => {
-    return () => {
-      if (avatarPreviewUrlRef.current) {
-        URL.revokeObjectURL(avatarPreviewUrlRef.current);
-      }
-    };
-  }, []);
-
-  const clearAvatarPreviewUrl = () => {
-    if (avatarPreviewUrlRef.current) {
-      URL.revokeObjectURL(avatarPreviewUrlRef.current);
-      avatarPreviewUrlRef.current = null;
-    }
-  };
-
-  const beginProfileEditing = () => {
-    setIsEditingProfile(true);
-    setProfileError(null);
-    setProfileSuccess(null);
-  };
 
   const replaceSection = (nextSection: SectionKey) => {
     const nextSearchParams = new URLSearchParams(searchParams.toString());
@@ -149,111 +134,20 @@ export const AccountPageView = ({
     beginProfileEditing();
   };
 
-  const cancelProfileEditing = () => {
-    const { firstName: nextFirstName, lastName: nextLastName } = splitName(profileUser.name);
-
-    setFirstName(nextFirstName);
-    setLastName(nextLastName);
-    setEmail(profileUser.email ?? "");
-    setPhone(profileUser.phone ?? "");
-    clearAvatarPreviewUrl();
-    setAvatarFile(null);
-    setAvatarPreviewSrc(profileUser.image ?? null);
-    setIsEditingProfile(false);
-    setProfileError(null);
-    setProfileSuccess(null);
-  };
-
-  const handleAvatarSelect = (file: File) => {
-    clearAvatarPreviewUrl();
-
-    const nextPreviewUrl = URL.createObjectURL(file);
-    avatarPreviewUrlRef.current = nextPreviewUrl;
-    setAvatarFile(file);
-    setAvatarPreviewSrc(nextPreviewUrl);
-  };
-
-  const handleProfileSave = async (event?: SyntheticEvent) => {
-    event?.preventDefault();
-
-    const normalizedEmail = email.trim().toLowerCase();
-    const normalizedName = `${firstName.trim()} ${lastName.trim()}`.trim();
-
-    if (!normalizedName || !normalizedEmail) {
-      setProfileError(t("missingFields"));
-      setProfileSuccess(null);
-      return;
-    }
-
-    if (!EMAIL_PATTERN.test(normalizedEmail)) {
-      setProfileError(t("invalidEmail"));
-      setProfileSuccess(null);
-      return;
-    }
-
-    setIsSavingProfile(true);
-    setProfileError(null);
-    setProfileSuccess(null);
-
-    const response = await updateAccountProfileClient({
-      name: normalizedName,
-      email: normalizedEmail,
-      phone,
-      avatar: avatarFile,
-    });
-
-    setIsSavingProfile(false);
-
-    if (!response.ok || !response.data?.user) {
-      switch (response.data?.error ?? "unexpected_error") {
-        case "invalid_email":
-          setProfileError(t("invalidEmail"));
-          break;
-        case UserOperationErrorReason.EmailTaken:
-          setProfileError(t("emailTaken"));
-          break;
-        case "missing_fields":
-          setProfileError(t("missingFields"));
-          break;
-        case UserOperationErrorReason.EmailManagedByGoogle:
-          setProfileError(t("emailManagedByGoogle"));
-          break;
-        default:
-          setProfileError(t("unexpectedError"));
-          break;
-      }
-      return;
-    }
-
-    setProfileUser(response.data.user);
-    setFirstName(splitName(response.data.user.name).firstName);
-    setLastName(splitName(response.data.user.name).lastName);
-    setEmail(response.data.user.email);
-    setPhone(response.data.user.phone);
-    clearAvatarPreviewUrl();
-    setAvatarFile(null);
-    setAvatarPreviewSrc(response.data.user.image ?? null);
-    setIsEditingProfile(false);
-    setProfileSuccess(t("saved"));
-
-    await update({
-      user: {
-        id: response.data.user.id,
-        name: response.data.user.name,
-        email: response.data.user.email,
-        phone: response.data.user.phone,
-        authProviders: response.data.user.authProviders,
-        image: response.data.user.image ?? null,
-      },
-    });
-  };
-
   const handleSidebarClick = (key: SectionKey) => {
     if (key === activeSection) {
       return;
     }
 
     replaceSection(key);
+  };
+
+  const handleAddressesChange = (
+    addresses: UserShippingAddress[],
+    selectedId: string | null,
+  ) => {
+    setShippingAddresses(addresses);
+    setSelectedShippingAddressId(selectedId);
   };
 
   const renderSection = () => {
@@ -263,7 +157,17 @@ export const AccountPageView = ({
       case "books":
         return <BooksSection locale={locale} downloads={downloads} />;
       case "addresses":
-        return <AddressesSection addresses={addresses} />;
+        return (
+          <AddressesSection
+            locale={locale}
+            country={country}
+            initialAddresses={user.shippingAddresses ?? []}
+            initialSelectedId={
+              user.selectedShippingAddressId ?? user.shippingAddresses?.[0]?.id ?? null
+            }
+            onAddressesChange={handleAddressesChange}
+          />
+        );
       case "favorites":
         return (
           <FavoritesSection
@@ -276,22 +180,7 @@ export const AccountPageView = ({
           <SettingsSection
             locale={locale}
             country={country}
-            firstName={firstName}
-            lastName={lastName}
-            email={email}
-            phone={phone}
-            isEditingProfile={isEditingProfile}
-            isSavingProfile={isSavingProfile}
-            isEmailEditable={isEmailEditable}
-            profileError={profileError}
-            profileSuccess={profileSuccess}
-            onBeginEdit={beginProfileEditing}
-            onCancel={cancelProfileEditing}
-            onSave={() => handleProfileSave()}
-            onFirstNameChange={setFirstName}
-            onLastNameChange={setLastName}
-            onEmailChange={setEmail}
-            onPhoneChange={setPhone}
+            profileEditor={profileEditorState}
           />
         );
       case "logout":
@@ -303,23 +192,9 @@ export const AccountPageView = ({
             locale={locale}
             orders={orders}
             downloads={downloads}
-            addresses={addresses}
-            firstName={firstName}
-            lastName={lastName}
-            email={email}
-            phone={phone}
-            isEditingProfile={isEditingProfile}
-            isSavingProfile={isSavingProfile}
-            isEmailEditable={isEmailEditable}
-            profileError={profileError}
-            profileSuccess={profileSuccess}
-            onBeginEdit={beginProfileEditing}
-            onCancel={cancelProfileEditing}
-            onSave={handleProfileSave}
-            onFirstNameChange={setFirstName}
-            onLastNameChange={setLastName}
-            onEmailChange={setEmail}
-            onPhoneChange={setPhone}
+            addresses={overviewAddresses}
+            selectedShippingAddressId={selectedShippingAddressId}
+            profileEditor={profileEditorState}
           />
         );
     }

@@ -12,22 +12,7 @@ import type { SettingsSectionProps } from "./types";
 export const SettingsSection = ({
   locale,
   country,
-  firstName,
-  lastName,
-  email,
-  phone,
-  isEditingProfile,
-  isSavingProfile,
-  isEmailEditable,
-  profileError,
-  profileSuccess,
-  onBeginEdit,
-  onCancel,
-  onSave,
-  onFirstNameChange,
-  onLastNameChange,
-  onEmailChange,
-  onPhoneChange,
+  profileEditor,
 }: SettingsSectionProps) => {
   const t = useTranslations("accountPage");
   const localizedAccountPaths = {
@@ -37,24 +22,7 @@ export const SettingsSection = ({
 
   return (
     <Stack spacing={3}>
-      <PersonalDetailsSection
-        firstName={firstName}
-        lastName={lastName}
-        email={email}
-        phone={phone}
-        isEditingProfile={isEditingProfile}
-        isSavingProfile={isSavingProfile}
-        isEmailEditable={isEmailEditable}
-        profileError={profileError}
-        profileSuccess={profileSuccess}
-        onBeginEdit={onBeginEdit}
-        onCancel={onCancel}
-        onSave={onSave}
-        onFirstNameChange={onFirstNameChange}
-        onLastNameChange={onLastNameChange}
-        onEmailChange={onEmailChange}
-        onPhoneChange={onPhoneChange}
-      />
+      <PersonalDetailsSection {...profileEditor} />
 
       <SectionCard title={t("languageRegion")}>
         <Grid container spacing={2}>

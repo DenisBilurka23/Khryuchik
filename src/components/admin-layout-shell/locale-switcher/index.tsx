@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { updateAdminLocalePreferenceClient } from "@/client-api/admin-locale";
 import { locales } from "@/i18n/config";
-import { localeLabels } from "@/utils";
+import { getLocaleDisplayName, getLocaleShortLabel } from "@/utils";
 import { HeaderSelect } from "@/components/storefront-header/header-select";
 
 import type { AdminLocaleSwitcherProps } from "./types";
@@ -24,8 +24,12 @@ export const AdminLocaleSwitcher = ({
   }, [locale]);
 
   const options = useMemo(
-    () => locales.map((item) => ({ value: item, label: localeLabels[item] })),
-    [],
+    () => locales.map((item) => ({
+      value: item,
+      label: getLocaleDisplayName(item, selectedLocale),
+      selectedLabel: getLocaleShortLabel(item),
+    })),
+    [selectedLocale],
   );
 
   const handleChange = async (nextLocale: string) => {
@@ -67,7 +71,7 @@ export const AdminLocaleSwitcher = ({
       value={selectedLocale}
       label={label}
       options={options}
-      onChange={(value) => {
+      onChangeAction={(value) => {
         void handleChange(value);
       }}
       disabled={isPending}

@@ -637,6 +637,19 @@ export type AccountPageDictionary = {
   emailManagedByGoogle: string;
   unexpectedError: string;
   addAddress: string;
+  currentAddress: string;
+  makeCurrent: string;
+  noAddressesYet: string;
+  addressTitleLabel: string;
+  addressLine1Label: string;
+  addressLine2Label: string;
+  addressCityLabel: string;
+  addressRegionLabel: string;
+  addressPostalCodeLabel: string;
+  addressCountryLabel: string;
+  addressMissingFields: string;
+  addressInvalidCountry: string;
+  addressNotFound: string;
   allOrders: string;
   noOrders: string;
   orderStatuses: {

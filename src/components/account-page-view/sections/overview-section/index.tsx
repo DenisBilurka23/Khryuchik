@@ -4,6 +4,10 @@ import { Box, Button, Chip, Grid, Paper, Stack, Typography } from "@mui/material
 import { useTranslations } from "next-intl";
 
 import { customerOrderStatusColors } from "@/constants/order";
+import {
+  getUserShippingAddressLines,
+  getUserShippingAddressTitle,
+} from "@/utils/account-page";
 
 import { PersonalDetailsSection, SectionCard } from "../../shared";
 
@@ -14,46 +18,15 @@ export const OverviewSection = ({
   orders,
   downloads,
   addresses,
-  firstName,
-  lastName,
-  email,
-  phone,
-  isEditingProfile,
-  isSavingProfile,
-  isEmailEditable,
-  profileError,
-  profileSuccess,
-  onBeginEdit,
-  onCancel,
-  onSave,
-  onFirstNameChange,
-  onLastNameChange,
-  onEmailChange,
-  onPhoneChange,
+  selectedShippingAddressId,
+  profileEditor,
 }: OverviewSectionProps) => {
   const t = useTranslations("accountPage");
   const tStatus = useTranslations("accountPage.orderStatuses");
 
   return (
     <Stack spacing={3}>
-      <PersonalDetailsSection
-        firstName={firstName}
-        lastName={lastName}
-        email={email}
-        phone={phone}
-        isEditingProfile={isEditingProfile}
-        isSavingProfile={isSavingProfile}
-        isEmailEditable={isEmailEditable}
-        profileError={profileError}
-        profileSuccess={profileSuccess}
-        onBeginEdit={onBeginEdit}
-        onCancel={onCancel}
-        onSave={onSave}
-        onFirstNameChange={onFirstNameChange}
-        onLastNameChange={onLastNameChange}
-        onEmailChange={onEmailChange}
-        onPhoneChange={onPhoneChange}
-      />
+      <PersonalDetailsSection {...profileEditor} />
 
       <SectionCard
         title={t("recentOrders")}
@@ -144,9 +117,8 @@ export const OverviewSection = ({
         <Grid size={{ xs: 12, lg: 6 }}>
           <SectionCard title={t("shippingAddresses")}>
             <Stack spacing={2}>
-              {addresses.map((address) => (
+              {addresses.length === 0 ? (
                 <Paper
-                  key={address.title}
                   elevation={0}
                   sx={{
                     p: 2.25,
@@ -155,21 +127,57 @@ export const OverviewSection = ({
                     bgcolor: "#fff",
                   }}
                 >
-                  <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                    <LocationOnOutlinedIcon />
-                    <Box>
-                      <Typography sx={{ fontWeight: 700 }}>{address.title}</Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, lineHeight: 1.8 }}>
-                        {address.line1}
-                        <br />
-                        {address.line2}
-                        <br />
-                        {address.line3}
-                      </Typography>
-                    </Box>
-                  </Stack>
+                  <Typography color="text.secondary">{t("noAddressesYet")}</Typography>
                 </Paper>
-              ))}
+              ) : null}
+
+              {addresses.map((address) => {
+                const isCurrent = address.id === selectedShippingAddressId;
+                const lines = getUserShippingAddressLines(address, locale);
+
+                return (
+                  <Paper
+                    key={address.id}
+                    elevation={0}
+                    sx={{
+                      p: 2.25,
+                      borderRadius: "22px",
+                      border: isCurrent ? "1px solid #D9876C" : "1px solid #F0DFC8",
+                      bgcolor: "#fff",
+                    }}
+                  >
+                    <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                      <LocationOnOutlinedIcon />
+                      <Box sx={{ flex: 1 }}>
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="flex-start"
+                          spacing={1}
+                        >
+                          <Typography sx={{ fontWeight: 700 }}>
+                            {getUserShippingAddressTitle(address)}
+                          </Typography>
+                          {isCurrent ? (
+                            <Chip label={t("currentAddress")} color="primary" size="small" />
+                          ) : null}
+                        </Stack>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mt: 0.5, lineHeight: 1.8 }}
+                        >
+                          {lines.map((line) => (
+                            <Box key={line} component="span" display="block">
+                              {line}
+                            </Box>
+                          ))}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Paper>
+                );
+              })}
             </Stack>
           </SectionCard>
         </Grid>

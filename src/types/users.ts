@@ -1,11 +1,16 @@
 import type { ObjectId } from "mongodb";
 
+import type { CountryCode } from "@/utils";
+
 export type AuthProvider = "google" | "credentials";
 
 export enum UserOperationErrorReason {
   NotFound = "not_found",
   EmailTaken = "email_taken",
   EmailManagedByGoogle = "email_managed_by_google",
+  MissingFields = "missing_fields",
+  InvalidCountry = "invalid_country",
+  AddressNotFound = "address_not_found",
   CannotDemoteSelf = "cannot_demote_self",
   CannotDeleteSelf = "cannot_delete_self",
   LastAdmin = "last_admin",
@@ -15,6 +20,19 @@ export type WishlistEntryDocument = {
   productId: string;
   addedAt: Date;
 };
+
+export type UserShippingAddress = {
+  id: string;
+  title: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  region?: string;
+  postalCode?: string;
+  country: CountryCode;
+};
+
+export type UserShippingAddressInput = Omit<UserShippingAddress, "id">;
 
 export type UserDocument = {
   _id?: ObjectId;
@@ -26,6 +44,8 @@ export type UserDocument = {
   avatarObjectKey?: string | null;
   passwordHash?: string | null;
   authProviders: AuthProvider[];
+  shippingAddresses?: UserShippingAddress[];
+  selectedShippingAddressId?: string | null;
   wishlist?: WishlistEntryDocument[];
   createdAt: Date;
   updatedAt: Date;
@@ -39,6 +59,8 @@ export type SafeAuthUser = {
   isAdmin: boolean;
   authProviders: AuthProvider[];
   image?: string | null;
+  shippingAddresses: UserShippingAddress[];
+  selectedShippingAddressId: string | null;
 };
 
 export type RegisterUserInput = {

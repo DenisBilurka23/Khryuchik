@@ -14,12 +14,16 @@ import type {
   UpdateAdminUserInput,
   UpdateUserProfileInput,
   UserDocument,
+  UserShippingAddressInput,
 } from "@/types/users";
 import { UserOperationErrorReason } from "@/types/users";
+import { isCountryCode } from "@/utils";
+import { normalizeShippingAddressInput } from "@/utils/account-page";
 
 import {
   addCredentialsToExistingUser,
   addGoogleToExistingUser,
+  addUserShippingAddress,
   countAdminUsers,
   countUsers,
   createCredentialsUser,
@@ -28,6 +32,7 @@ import {
   findAllUsers,
   findUserByEmail,
   findUserById,
+  setSelectedUserShippingAddress,
   setUserAdminByEmail,
   setUserPasswordHash,
   toCredentialsAuthUser,
@@ -209,6 +214,8 @@ export const getAccountUserByEmail = async (email: string) => {
     isAdmin: Boolean(user.isAdmin),
     image: user.image ?? null,
     authProviders: user.authProviders,
+    shippingAddresses: user.shippingAddresses ?? [],
+    selectedShippingAddressId: user.selectedShippingAddressId ?? null,
   } satisfies SafeAuthUser;
 };
 
@@ -231,6 +238,8 @@ export const getAccountUserById = async (userId: string) => {
     isAdmin: Boolean(user.isAdmin),
     image: user.image ?? null,
     authProviders: user.authProviders,
+    shippingAddresses: user.shippingAddresses ?? [],
+    selectedShippingAddressId: user.selectedShippingAddressId ?? null,
   } satisfies SafeAuthUser;
 };
 
@@ -272,6 +281,97 @@ export const updateAccountUserProfile = async (
       "image" in input
         ? (input.avatarObjectKey ?? null)
         : (existingUser.avatarObjectKey ?? null),
+    user,
+  };
+};
+
+export const addAccountUserShippingAddress = async (
+  userId: string,
+  input: UserShippingAddressInput,
+) => {
+  if (!ObjectId.isValid(userId)) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  const normalizedInput = normalizeShippingAddressInput(input);
+
+  if (
+    !normalizedInput.title ||
+    !normalizedInput.line1 ||
+    !normalizedInput.city
+  ) {
+    return {
+      ok: false as const,
+      reason: UserOperationErrorReason.MissingFields,
+    };
+  }
+
+  if (!isCountryCode(normalizedInput.country)) {
+    return {
+      ok: false as const,
+      reason: UserOperationErrorReason.InvalidCountry,
+    };
+  }
+
+  const existingUser = await findUserById(new ObjectId(userId));
+
+  if (!existingUser?._id) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  const result = await addUserShippingAddress(
+    new ObjectId(userId),
+    normalizedInput,
+  );
+
+  return {
+    ok: true as const,
+    address: result.address,
+    user: result.user,
+  };
+};
+
+export const selectAccountUserShippingAddress = async (
+  userId: string,
+  addressId: string,
+) => {
+  if (!ObjectId.isValid(userId)) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  const normalizedAddressId = addressId.trim();
+
+  if (!normalizedAddressId) {
+    return {
+      ok: false as const,
+      reason: UserOperationErrorReason.AddressNotFound,
+    };
+  }
+
+  const existingUser = await findUserById(new ObjectId(userId));
+
+  if (!existingUser?._id) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  if (
+    !(existingUser.shippingAddresses ?? []).some(
+      (address) => address.id === normalizedAddressId,
+    )
+  ) {
+    return {
+      ok: false as const,
+      reason: UserOperationErrorReason.AddressNotFound,
+    };
+  }
+
+  const user = await setSelectedUserShippingAddress(
+    new ObjectId(userId),
+    normalizedAddressId,
+  );
+
+  return {
+    ok: true as const,
     user,
   };
 };

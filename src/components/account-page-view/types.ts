@@ -1,8 +1,6 @@
-import type { ReactNode } from "react";
-
 import type { Locale } from "@/i18n/config";
 import type { AccountOrder } from "@/types/order";
-import type { AuthProvider } from "@/types/users";
+import type { AuthProvider, UserShippingAddress } from "@/types/users";
 import type { CountryCode } from "@/utils";
 
 export type AccountPageUser = {
@@ -12,6 +10,8 @@ export type AccountPageUser = {
   phone?: string | null;
   image?: string | null;
   authProviders?: AuthProvider[];
+  shippingAddresses?: UserShippingAddress[];
+  selectedShippingAddressId?: string | null;
 };
 
 export type AccountPageViewProps = {
@@ -31,9 +31,3 @@ export type SectionKey =
   | "favorites"
   | "settings"
   | "logout";
-
-export type AccountSidebarItem = {
-  key: SectionKey;
-  label: string;
-  icon: ReactNode;
-};

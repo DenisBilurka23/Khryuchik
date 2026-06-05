@@ -5,7 +5,6 @@ import {
   defaultCountry,
   geoCountryHeaderNames,
 } from "@/constants/country";
-import type { Locale } from "@/i18n/config";
 
 export type CountryCode = "BY" | "US";
 
@@ -24,15 +23,30 @@ export {
 export const isCountryCode = (value: string | null | undefined): value is CountryCode =>
   Boolean(value && countries.includes(value as CountryCode));
 
-export const countryLabels: Record<Locale, Record<CountryCode, string>> = {
-  ru: {
-    BY: "BY",
-    US: "US",
+const countryConfig: Record<
+  CountryCode,
+  {
+    shortLabel: string;
+    displayName: string;
+  }
+> = {
+  BY: {
+    shortLabel: "BY",
+    displayName: "Belarus",
   },
-  en: {
-    BY: "BY",
-    US: "US",
+  US: {
+    shortLabel: "US",
+    displayName: "United States",
   },
+};
+
+export const getCountryShortLabel = (country: CountryCode) =>
+  countryConfig[country].shortLabel;
+
+export const getCountryDisplayName = (locale: string, country: CountryCode) => {
+  const displayName = new Intl.DisplayNames([locale], { type: "region" }).of(country);
+
+  return displayName ?? countryConfig[country].displayName;
 };
 
 export const countryCurrencies: Record<CountryCode, CurrencyCode> = {

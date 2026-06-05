@@ -10,6 +10,8 @@ import type {
   UpdateAdminUserInput,
   UpdateUserProfileInput,
   UserDocument,
+  UserShippingAddress,
+  UserShippingAddressInput,
   WishlistEntryDocument,
 } from "@/types/users";
 
@@ -37,6 +39,34 @@ const sortWishlistEntries = (entries: WishlistEntryDocument[]) =>
     (left, right) => right.addedAt.getTime() - left.addedAt.getTime(),
   );
 
+const normalizeShippingAddress = (
+  address: UserShippingAddress,
+): UserShippingAddress => ({
+  id: address.id,
+  title: address.title.trim(),
+  line1: address.line1.trim(),
+  line2: address.line2?.trim() || undefined,
+  city: address.city.trim(),
+  region: address.region?.trim() || undefined,
+  postalCode: address.postalCode?.trim() || undefined,
+  country: address.country,
+});
+
+const getSelectedShippingAddressId = (
+  user: Pick<UserDocument, "shippingAddresses" | "selectedShippingAddressId">,
+) => {
+  const shippingAddresses = user.shippingAddresses ?? [];
+
+  if (
+    user.selectedShippingAddressId &&
+    shippingAddresses.some((address) => address.id === user.selectedShippingAddressId)
+  ) {
+    return user.selectedShippingAddressId;
+  }
+
+  return shippingAddresses[0]?.id ?? null;
+};
+
 const getUsersCollection = async () => {
   const db = await getMongoDb();
   const collection = db.collection<UserDocument>(USERS_COLLECTION_NAME);
@@ -52,15 +82,26 @@ const getUsersCollection = async () => {
   return collection;
 };
 
-const toSafeAuthUser = (user: UserDocument): SafeAuthUser => ({
-  id: (user._id ?? new ObjectId()).toString(),
-  email: normalizeEmail(user.email),
-  name: user.name,
-  phone: user.phone,
-  isAdmin: Boolean(user.isAdmin),
-  authProviders: user.authProviders,
-  image: user.image ?? null,
-});
+const toSafeAuthUser = (user: UserDocument): SafeAuthUser => {
+  const shippingAddresses = (user.shippingAddresses ?? []).map(
+    normalizeShippingAddress,
+  );
+
+  return {
+    id: (user._id ?? new ObjectId()).toString(),
+    email: normalizeEmail(user.email),
+    name: user.name,
+    phone: user.phone,
+    isAdmin: Boolean(user.isAdmin),
+    authProviders: user.authProviders,
+    image: user.image ?? null,
+    shippingAddresses,
+    selectedShippingAddressId: getSelectedShippingAddressId({
+      shippingAddresses,
+      selectedShippingAddressId: user.selectedShippingAddressId,
+    }),
+  };
+};
 
 export const findUserByEmail = async (email: string) => {
   const collection = await getUsersCollection();
@@ -88,6 +129,8 @@ export const createCredentialsUser = async (
     image: null,
     avatarObjectKey: null,
     authProviders: ["credentials"],
+    shippingAddresses: [],
+    selectedShippingAddressId: null,
     createdAt: now,
     updatedAt: now,
   };
@@ -172,6 +215,8 @@ export const createGoogleUser = async (input: {
     avatarObjectKey: null,
     passwordHash: null,
     authProviders: ["google"],
+    shippingAddresses: [],
+    selectedShippingAddressId: null,
     createdAt: now,
     updatedAt: now,
   };
@@ -284,6 +329,79 @@ export const updateAdminUser = async (
   }
 
   return updatedUser;
+};
+
+export const addUserShippingAddress = async (
+  userId: ObjectId,
+  input: UserShippingAddressInput,
+) => {
+  const collection = await getUsersCollection();
+  const existingUser = await collection.findOne(
+    { _id: userId },
+    { projection: { shippingAddresses: 1, selectedShippingAddressId: 1 } },
+  );
+
+  if (!existingUser) {
+    throw new Error("Failed to load existing user");
+  }
+
+  const address: UserShippingAddress = normalizeShippingAddress({
+    id: new ObjectId().toString(),
+    ...input,
+  });
+  const shippingAddresses = [...(existingUser.shippingAddresses ?? []), address];
+  const selectedShippingAddressId =
+    getSelectedShippingAddressId({
+      shippingAddresses,
+      selectedShippingAddressId: existingUser.selectedShippingAddressId,
+    }) ?? address.id;
+
+  await collection.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        shippingAddresses,
+        selectedShippingAddressId,
+        updatedAt: new Date(),
+      },
+    },
+  );
+
+  const updatedUser = await collection.findOne({ _id: userId });
+
+  if (!updatedUser) {
+    throw new Error("Failed to load updated user");
+  }
+
+  return {
+    address,
+    user: toSafeAuthUser(updatedUser),
+  };
+};
+
+export const setSelectedUserShippingAddress = async (
+  userId: ObjectId,
+  addressId: string,
+) => {
+  const collection = await getUsersCollection();
+
+  await collection.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        selectedShippingAddressId: addressId,
+        updatedAt: new Date(),
+      },
+    },
+  );
+
+  const updatedUser = await collection.findOne({ _id: userId });
+
+  if (!updatedUser) {
+    throw new Error("Failed to load updated user");
+  }
+
+  return toSafeAuthUser(updatedUser);
 };
 
 export const findAllUsers = async (limit?: number) => {
