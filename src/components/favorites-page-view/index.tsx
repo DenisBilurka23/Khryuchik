@@ -15,7 +15,6 @@ import type { ResolvedWishlistItem } from "./wishlist-grid";
 
 export const FavoritesPageView = ({
   locale,
-  categoryLabels,
   isAuthenticated: initialIsAuthenticated,
   shopHref,
   loginHref,
@@ -24,7 +23,7 @@ export const FavoritesPageView = ({
 }: FavoritesPageViewProps) => {
   const tFavorites = useTranslations("storefront.favoritesPage");
   const { addItem } = useCart();
-  const { items, ids, isLoading, isAuthenticated, toggleWishlist } = useWishlist();
+  const { items, ids, isLoading, isAuthenticated } = useWishlist();
   const authState = isAuthenticated || initialIsAuthenticated;
   const resolvedItems = items.filter(
     (item): item is ResolvedWishlistItem => Boolean(item.product),
@@ -68,12 +67,7 @@ export const FavoritesPageView = ({
           <FavoritesWishlistGrid
             locale={locale}
             authState={authState}
-            categoryLabels={categoryLabels}
             items={resolvedItems}
-            onAddToCart={(productId: string) => {
-              addItem({ productId, quantity: 1 });
-            }}
-            onToggleWishlist={toggleWishlist}
           />
         )}
       </Box>

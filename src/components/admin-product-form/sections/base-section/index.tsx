@@ -4,7 +4,12 @@ import { useTranslations } from "next-intl";
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import { getAdminCategoryLabel } from "@/utils/admin";
 
-import { AdminCheckboxField, AdminSectionCard } from "../../../admin-page-shared";
+import {
+  AdminCheckboxField,
+  AdminSectionCard,
+} from "../../../admin-page-shared";
+import { AdminFormatsField } from "../../formats-field";
+import { AdminLanguagesField } from "../../languages-field";
 import type { AdminProductBaseSectionProps } from "./types";
 
 export const AdminProductBaseSection = ({
@@ -16,6 +21,9 @@ export const AdminProductBaseSection = ({
   merchCategories,
   onTypeChange,
   onCategoryChange,
+  availableLocales,
+  initialLanguages,
+  initialFormats,
 }: AdminProductBaseSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
   const tShared = useTranslations("adminPage.shared");
@@ -59,7 +67,9 @@ export const AdminProductBaseSection = ({
           label={tForm("fields.type")}
           name="type"
           value={selectedType}
-          onChange={(event) => onTypeChange(event.target.value as typeof selectedType)}
+          onChange={(event) =>
+            onTypeChange(event.target.value as typeof selectedType)
+          }
         >
           <MenuItem value="book">
             {tShared("status.productTypes.book")}
@@ -118,6 +128,33 @@ export const AdminProductBaseSection = ({
           defaultValue={payload.product.inventory.quantity ?? ""}
         />
       </Box>
+      {selectedType === "book" && (
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
+            gap: 2,
+            mt: 2,
+          }}
+        >
+          <AdminLanguagesField
+            name="languagesJson"
+            title={tForm("fields.languages")}
+            helperText={tForm("helpers.languagesSelectRule")}
+            adminLocale={locale}
+            availableLocales={availableLocales}
+            initialOptions={initialLanguages}
+          />
+          <AdminFormatsField
+            name="formatsJson"
+            title={tForm("fields.formats")}
+            helperText={tForm("helpers.formatsRule")}
+            printedLabel={tForm("fields.formatPrinted")}
+            digitalLabel={tForm("fields.formatDigital")}
+            initialFormats={initialFormats}
+          />
+        </Box>
+      )}
       <Typography
         variant="subtitle2"
         sx={{ mt: 2.5, mb: 1, fontWeight: 700, color: "text.secondary" }}

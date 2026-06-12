@@ -44,7 +44,7 @@ export type ProductPageLabels = {
     sku: string;
     securePayment: string;
     shipping: string;
-    languageSupport: string;
+    languageSupportLabel: string;
   };
   tabs: {
     description: string;

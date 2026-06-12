@@ -8,8 +8,5 @@ export type ResolvedWishlistItem = WishlistItem & {
 export type FavoritesWishlistGridProps = {
   locale: Locale;
   authState: boolean;
-  categoryLabels: Record<string, string>;
   items: ResolvedWishlistItem[];
-  onAddToCart: (productId: string) => void;
-  onToggleWishlist: (productId: string) => Promise<void>;
 };

@@ -136,9 +136,13 @@ export const ProductPageView = async ({
                   <Typography variant="body2" color="text.secondary">
                     {tProductPage("details.shipping")}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {tProductPage("details.languageSupport")}
-                  </Typography>
+                  {product.languages?.length ? (
+                    <Typography variant="body2" color="text.secondary">
+                      {tProductPage("details.languageSupportLabel", {
+                        langs: product.languages.map((l) => l.value.toUpperCase()).join(" / "),
+                      })}
+                    </Typography>
+                  ) : null}
                 </Stack>
               </Grid>
 

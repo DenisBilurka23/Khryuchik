@@ -88,7 +88,7 @@ const parseLocaleTranslation = (formData: FormData, locale: Locale) => ({
     formData,
     `${locale}.thumbnailBackgroundColor`,
   ),
-  lang: parseOptionalString(formData, `${locale}.lang`) ?? locale.toUpperCase(),
+  lang: parseOptionalString(formData, `${locale}.lang`),
 });
 
 const parseDetailLocaleTranslation = (formData: FormData, locale: Locale) => ({
@@ -98,8 +98,8 @@ const parseDetailLocaleTranslation = (formData: FormData, locale: Locale) => ({
   storyLabel: parseOptionalString(formData, `${locale}.storyLabel`),
   description: parseString(formData, `${locale}.description`).trim(),
   images: parseJsonField<ProductImage[]>(formData, `${locale}.imagesJson`, []),
-  languages: parseJsonField<ProductOption[]>(formData, `${locale}.languagesJson`, []),
-  formats: parseJsonField<ProductOption[]>(formData, `${locale}.formatsJson`, []),
+  languages: parseJsonField<ProductOption[]>(formData, "languagesJson", []),
+  formats: parseJsonField<ProductOption[]>(formData, "formatsJson", []),
   sizes: parseJsonField<ProductOption[]>(formData, `${locale}.sizesJson`, []),
   colors: parseJsonField<ProductOption[]>(formData, `${locale}.colorsJson`, []),
   specs: parseJsonField<Array<{ label: string; value: string }>>(formData, `${locale}.specsJson`, []),
@@ -175,6 +175,11 @@ export const parseAdminProductFormData = (
     parseBoolean(formData, `region.${region}.active`),
   );
 
+  const languages = parseJsonField<ProductOption[]>(formData, "languagesJson", []);
+  const langLabel = languages.length > 0
+    ? languages.map((l) => l.value.toUpperCase()).join(" / ")
+    : undefined;
+
   return {
     product: {
       productId,
@@ -203,10 +208,10 @@ export const parseAdminProductFormData = (
       ) as AdminProductPayload["product"]["pricing"],
       availableRegions,
       translations: Object.fromEntries(
-        activeLocaleCodes.map((locale) => [
-          locale,
-          parseLocaleTranslation(formData, locale),
-        ]),
+        activeLocaleCodes.map((locale) => {
+          const t = parseLocaleTranslation(formData, locale);
+          return [locale, { ...t, lang: langLabel }];
+        }),
       ) as AdminProductPayload["product"]["translations"],
     },
     details: {

@@ -126,10 +126,6 @@ export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
         ) : null}
       </Stack>
 
-      <Typography color="text.secondary" sx={{ mt: 3, lineHeight: 1.8 }}>
-        {product.description}
-      </Typography>
-
       <Stack spacing={2.5} sx={{ mt: 4 }}>
         {product.languages?.length ? (
           <TextField
@@ -138,9 +134,10 @@ export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
             value={language}
             onChange={(event) => setLanguage(event.target.value)}
             fullWidth
+            slotProps={{ select: { sx: { textTransform: "capitalize" } } }}
           >
             {product.languages.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
+              <MenuItem key={option.value} value={option.value} sx={{ textTransform: "capitalize" }}>
                 {option.label}
               </MenuItem>
             ))}

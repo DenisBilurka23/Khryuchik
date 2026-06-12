@@ -195,6 +195,9 @@ const AdminProductFormInner = ({
             merchCategories={merchCategories}
             onTypeChange={handleTypeChange}
             onCategoryChange={setSelectedCategory}
+            availableLocales={activeLocales}
+            initialLanguages={payload.details.translations[defaultLocale]?.languages ?? []}
+            initialFormats={payload.details.translations[defaultLocale]?.formats ?? []}
           />
 
           <AdminProductPricingSection
@@ -215,6 +218,7 @@ const AdminProductFormInner = ({
               translation={payload.product.translations[activeLocale.code]}
               details={payload.details.translations[activeLocale.code]}
               productId={isNew ? undefined : payload.product.productId}
+              selectedType={selectedType}
             />
           ))}
 

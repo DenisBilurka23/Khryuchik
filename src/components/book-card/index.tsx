@@ -45,13 +45,15 @@ export const BookCard = ({
           )}
         </Link>
 
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ fontWeight: 500 }}
-        >
-          {book.lang}
-        </Typography>
+        {book.lang ? (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ fontWeight: 500 }}
+          >
+            {book.lang}
+          </Typography>
+        ) : null}
 
         <Link
           href={detailsHref}
@@ -67,14 +69,6 @@ export const BookCard = ({
             {book.shortTitle ?? book.title}
           </Typography>
         </Link>
-
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ mt: 1.5, lineHeight: 1.7 }}
-        >
-          {book.shortDescription}
-        </Typography>
 
         <Stack direction="row" spacing={1.5} sx={{ mt: "auto", pt: 3 }}>
           <Link
