@@ -51,6 +51,8 @@ const DefaultCheckoutPage = async () => {
       locale={defaultLocale}
       country={country}
       initialCustomer={initialCustomerFromSession(session)}
+      initialShippingAddresses={session?.user?.shippingAddresses ?? []}
+      initialSelectedAddressId={session?.user?.selectedShippingAddressId ?? null}
     />
   );
 };

@@ -17,7 +17,7 @@ import type {
   UserShippingAddressInput,
 } from "@/types/users";
 import { UserOperationErrorReason } from "@/types/users";
-import { isCountryCode } from "@/utils";
+import { isIsoCountryCode } from "@/utils";
 import { normalizeShippingAddressInput } from "@/utils/account-page";
 
 import {
@@ -306,7 +306,7 @@ export const addAccountUserShippingAddress = async (
     };
   }
 
-  if (!isCountryCode(normalizedInput.country)) {
+  if (!isIsoCountryCode(normalizedInput.country)) {
     return {
       ok: false as const,
       reason: UserOperationErrorReason.InvalidCountry,

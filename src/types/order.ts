@@ -31,7 +31,7 @@ export type OrderShippingAddress = {
   city: string;
   region?: string;
   postalCode?: string;
-  country: CountryCode;
+  country: string;
 };
 
 export type OrderPaymentStatus =

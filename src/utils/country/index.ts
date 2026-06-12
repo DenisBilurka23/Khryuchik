@@ -5,10 +5,16 @@ import {
   defaultCountry,
   geoCountryHeaderNames,
 } from "@/constants/country";
+import { ALL_COUNTRY_CODES } from "@/constants/all-country-codes";
 
-export type CountryCode = "BY" | "US";
+// Region and currency codes are open-ended strings so admin-managed regions
+// are not limited to the built-in set. The built-in maps below still cover the
+// seeded BY/US defaults; dynamic regions carry their own currency.
+export type CountryCode = string;
 
-export type CurrencyCode = "BYN" | "USD";
+export type BuiltInCountryCode = "BY" | "US";
+
+export type CurrencyCode = string;
 
 export type PaymentMethod = "stripe" | "cod" | "telegram_transfer";
 
@@ -21,7 +27,7 @@ export {
 };
 
 export const isCountryCode = (value: string | null | undefined): value is CountryCode =>
-  Boolean(value && countries.includes(value as CountryCode));
+  Boolean(value && countries.includes(value as BuiltInCountryCode));
 
 const countryConfig: Record<
   CountryCode,
@@ -43,11 +49,24 @@ const countryConfig: Record<
 export const getCountryShortLabel = (country: CountryCode) =>
   countryConfig[country].shortLabel;
 
-export const getCountryDisplayName = (locale: string, country: CountryCode) => {
+export const getCountryDisplayName = (locale: string, country: string): string => {
   const displayName = new Intl.DisplayNames([locale], { type: "region" }).of(country);
 
-  return displayName ?? countryConfig[country].displayName;
+  if (displayName) return displayName;
+
+  return isCountryCode(country) ? countryConfig[country].displayName : country;
 };
+
+export const isIsoCountryCode = (value: unknown): value is string =>
+  typeof value === "string" && (ALL_COUNTRY_CODES as readonly string[]).includes(value);
+
+export const getAllCountriesSorted = (
+  locale: string,
+): { code: string; label: string }[] =>
+  ALL_COUNTRY_CODES.map((code) => ({
+    code,
+    label: getCountryDisplayName(locale, code),
+  })).sort((a, b) => a.label.localeCompare(b.label, locale));
 
 export const countryCurrencies: Record<CountryCode, CurrencyCode> = {
   BY: "BYN",
