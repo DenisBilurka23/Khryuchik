@@ -3,6 +3,10 @@ import type { ProductDetailTranslation, ProductTranslation } from "@/types/catal
 
 export type AdminProductLocaleSectionProps = {
   locale: Locale;
+  label: string;
+  isActive: boolean;
+  canToggle: boolean;
+  onToggleActive: () => void;
   translation: ProductTranslation;
   details: ProductDetailTranslation;
   productId?: string;

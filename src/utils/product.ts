@@ -1,4 +1,4 @@
-import type { Locale } from "@/i18n/config";
+import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   LocalizedProductSummary,
   ProductDetailDocument,
@@ -46,7 +46,17 @@ export const localizeProductSummary = (
   locale: Locale,
   country: CountryCode,
 ): LocalizedProductSummary | null => {
-  const translation = product.translations[locale];
+  // Hidden in regions the product is not activated for.
+  if (
+    product.availableRegions &&
+    !product.availableRegions.includes(country)
+  ) {
+    return null;
+  }
+
+  // Languages without their own translation fall back to the default locale.
+  const translation =
+    product.translations[locale] ?? product.translations[defaultLocale];
   const pricing = product.pricing[country] ?? product.pricing[defaultCountry];
 
   if (!translation || !pricing) {
@@ -91,7 +101,9 @@ export const toProductDetails = (
   locale: Locale,
   country: CountryCode,
 ): ProductDetails | null => {
-  const translation = detailsDocument.translations[locale];
+  const translation =
+    detailsDocument.translations[locale] ??
+    detailsDocument.translations[defaultLocale];
 
   if (!translation) {
     return null;

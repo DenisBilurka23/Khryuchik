@@ -62,6 +62,7 @@ const getActiveSection = (searchParams: { get: (name: string) => string | null }
 export const AccountPageView = ({
   locale,
   country,
+  availableLocales,
   homeHref,
   favoriteCategoryLabels,
   user,
@@ -160,7 +161,6 @@ export const AccountPageView = ({
         return (
           <AddressesSection
             locale={locale}
-            country={country}
             initialAddresses={user.shippingAddresses ?? []}
             initialSelectedId={
               user.selectedShippingAddressId ?? user.shippingAddresses?.[0]?.id ?? null
@@ -180,6 +180,7 @@ export const AccountPageView = ({
           <SettingsSection
             locale={locale}
             country={country}
+            availableLocales={availableLocales}
             profileEditor={profileEditorState}
           />
         );

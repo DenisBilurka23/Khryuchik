@@ -5,5 +5,6 @@ export type LocaleSwitcherProps = {
   locale: Locale;
   label?: string;
   localizedPaths: Record<Locale, string>;
+  availableLocales: string[];
   sx?: SxProps<Theme>;
 };

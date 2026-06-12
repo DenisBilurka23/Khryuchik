@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { DeliveryPageView } from "@/components/delivery-page-view";
-import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedDeliveryPageProps = {
@@ -14,7 +15,7 @@ export const generateMetadata = async ({
 }: LocalizedDeliveryPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
@@ -53,7 +54,7 @@ const LocalizedDeliveryPage = async ({
 }: LocalizedDeliveryPageProps) => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 

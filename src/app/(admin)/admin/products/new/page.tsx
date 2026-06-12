@@ -36,6 +36,8 @@ const NewAdminProductPage = async ({ searchParams }: NewAdminProductPageProps) =
       locale={locale}
       payload={editorData.payload}
       categories={editorData.categories}
+      activeLocales={editorData.activeLocales}
+      activeRegions={editorData.activeRegions}
       initialRelatedProductOptions={editorData.initialRelatedProductOptions}
       selectedRelatedProductOptions={editorData.selectedRelatedProductOptions}
       selectedStoryProductOption={editorData.selectedStoryProductOption}

@@ -7,7 +7,8 @@ import {
   getProductDetails,
   getProductSummariesByIds,
 } from "@/data/products";
-import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedProductPageProps = {
@@ -19,7 +20,7 @@ export const generateMetadata = async ({
 }: LocalizedProductPageProps): Promise<Metadata> => {
   const { lang, slug } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
@@ -62,7 +63,7 @@ export const generateMetadata = async ({
 const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
   const { lang, slug } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 

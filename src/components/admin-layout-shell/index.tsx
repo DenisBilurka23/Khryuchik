@@ -34,6 +34,7 @@ export const AdminLayoutShell = async ({
     dashboard: tNav("dashboard"),
     products: tNav("products"),
     categories: tNav("categories"),
+    localization: tNav("localization"),
     customers: tNav("customers"),
     orders: tNav("orders"),
   });

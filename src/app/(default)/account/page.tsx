@@ -6,6 +6,7 @@ import { getShopCategories } from "@/data/products";
 import { defaultLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { getActiveLocaleCodes } from "@/server/localization/localization.service";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
 import { getAccountUserByEmail, getAccountUserById } from "@/server/users/services/users.service";
 import { toAccountOrder } from "@/utils";
@@ -17,19 +18,21 @@ const AccountPage = async () => {
     redirect("/login?callbackUrl=%2Faccount");
   }
 
-  const [country, user, rawOrders, categories] = await Promise.all([
-    getRequestCountry(),
-    session.user.id
-      ? getAccountUserById(session.user.id)
-      : session.user.email
-        ? getAccountUserByEmail(session.user.email)
-        : Promise.resolve(null),
-    findOrdersForUser(
-      session.user.id || undefined,
-      session.user.email ?? undefined,
-    ),
-    getShopCategories(defaultLocale),
-  ]);
+  const [country, user, rawOrders, categories, availableLocales] =
+    await Promise.all([
+      getRequestCountry(),
+      session.user.id
+        ? getAccountUserById(session.user.id)
+        : session.user.email
+          ? getAccountUserByEmail(session.user.email)
+          : Promise.resolve(null),
+      findOrdersForUser(
+        session.user.id || undefined,
+        session.user.email ?? undefined,
+      ),
+      getShopCategories(defaultLocale),
+      getActiveLocaleCodes(),
+    ]);
   const orders = rawOrders.map((order) => toAccountOrder(order, defaultLocale));
 
   return (
@@ -37,6 +40,7 @@ const AccountPage = async () => {
       <AccountPageView
         locale={defaultLocale}
         country={country}
+        availableLocales={availableLocales}
         homeHref="/"
         favoriteCategoryLabels={Object.fromEntries(
           categories.map((category) => [category.key, category.label]),

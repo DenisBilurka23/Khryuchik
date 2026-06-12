@@ -3,7 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { CartPageView } from "@/components/cart-page-view";
-import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedCartPageProps = {
@@ -17,7 +18,7 @@ export const generateMetadata = async ({
 }: LocalizedCartPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
@@ -48,7 +49,7 @@ export const generateMetadata = async ({
 const LocalizedCartPage = async ({ params }: LocalizedCartPageProps) => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 

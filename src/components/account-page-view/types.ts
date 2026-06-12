@@ -17,6 +17,7 @@ export type AccountPageUser = {
 export type AccountPageViewProps = {
   locale: Locale;
   country: CountryCode;
+  availableLocales: string[];
   homeHref: string;
   favoriteCategoryLabels: Record<string, string>;
   user: AccountPageUser;

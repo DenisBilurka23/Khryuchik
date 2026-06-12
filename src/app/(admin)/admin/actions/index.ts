@@ -7,6 +7,12 @@ export {
   saveAdminCustomerAction,
 } from "./customers";
 export {
+  deleteAdminLocaleAction,
+  deleteAdminRegionAction,
+  saveAdminLocaleAction,
+  saveAdminRegionAction,
+} from "./localization";
+export {
   deleteAdminOrderAction,
   updateAdminOrderStatusAction,
 } from "./orders";

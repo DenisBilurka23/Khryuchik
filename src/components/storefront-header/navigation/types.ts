@@ -11,4 +11,5 @@ export type StorefrontNavigationPaths = {
 export type StorefrontHeaderViewModel = {
   localizedPaths: Record<Locale, string>;
   navigationPaths: StorefrontNavigationPaths;
+  availableLocales: string[];
 };

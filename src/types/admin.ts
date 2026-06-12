@@ -5,12 +5,14 @@ import type {
   ProductDocument,
   ProductType,
 } from "@/types/catalog";
+import type { LocaleDocument, RegionDocument } from "@/types/localization";
 import type { AuthProvider } from "@/types/users";
 
 export type AdminViewKey =
   | "dashboard"
   | "products"
   | "categories"
+  | "localization"
   | "orders"
   | "customers"
   | "shipping"
@@ -93,6 +95,8 @@ export type AdminDashboardStats = {
 export type AdminProductEditorData = {
   payload: AdminProductPayload;
   categories: CategoryDocument[];
+  activeLocales: LocaleDocument[];
+  activeRegions: RegionDocument[];
   initialRelatedProductOptions: AdminProductOption[];
   selectedRelatedProductOptions: AdminProductOption[];
   selectedStoryProductOption?: AdminProductOption;
@@ -105,4 +109,41 @@ export type AdminCategoryUpsertInput = {
   visibleInHomeTabs: boolean;
   sortOrder: number;
   translations: Partial<Record<Locale, { label: string }>>;
+};
+
+export type AdminLocaleListItem = {
+  code: string;
+  label: string;
+  isActive: boolean;
+  isDefault: boolean;
+  sortOrder: number;
+};
+
+export type AdminRegionListItem = {
+  code: string;
+  label: string;
+  currency: string;
+  isActive: boolean;
+  isDefault: boolean;
+  sortOrder: number;
+};
+
+export type AdminLocaleUpsertInput = {
+  code: string;
+  isActive: boolean;
+  isDefault: boolean;
+  sortOrder: number;
+};
+
+export type AdminRegionUpsertInput = {
+  code: string;
+  currency: string;
+  isActive: boolean;
+  isDefault: boolean;
+  sortOrder: number;
+};
+
+export type AdminLocalizationData = {
+  locales: AdminLocaleListItem[];
+  regions: AdminRegionListItem[];
 };

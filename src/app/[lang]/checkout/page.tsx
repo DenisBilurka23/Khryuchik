@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 
 import { CheckoutPageView } from "@/components/checkout-page-view";
 import type { CheckoutInitialCustomer } from "@/components/checkout-page-view/types";
-import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
 
@@ -19,7 +20,7 @@ export const generateMetadata = async ({
 }: LocalizedCheckoutPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
@@ -58,7 +59,7 @@ const initialCustomerFromSession = (
 const LocalizedCheckoutPage = async ({ params }: LocalizedCheckoutPageProps) => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
@@ -72,6 +73,8 @@ const LocalizedCheckoutPage = async ({ params }: LocalizedCheckoutPageProps) => 
       locale={lang}
       country={country}
       initialCustomer={initialCustomerFromSession(session)}
+      initialShippingAddresses={session?.user?.shippingAddresses ?? []}
+      initialSelectedAddressId={session?.user?.selectedShippingAddressId ?? null}
     />
   );
 };

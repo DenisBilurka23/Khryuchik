@@ -1,4 +1,13 @@
-import { Box, Stack, TextField } from "@mui/material";
+"use client";
+
+import {
+  Box,
+  Collapse,
+  FormControlLabel,
+  Stack,
+  Switch,
+  TextField,
+} from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { AdminSectionCard, AdminStatusChip } from "../../../admin-page-shared";
@@ -13,6 +22,10 @@ const stringifyLines = (value: string[] | undefined) =>
 
 export const AdminProductLocaleSection = ({
   locale,
+  label,
+  isActive,
+  canToggle,
+  onToggleActive,
   translation,
   details,
   productId,
@@ -27,22 +40,43 @@ export const AdminProductLocaleSection = ({
 
   return (
     <AdminSectionCard
-      title={`${locale.toUpperCase()} ${tForm("localeSectionTitle")}`}
+      title={`${label} ${tForm("localeSectionTitle")}`}
       description={tForm("localeSectionDescription")}
       action={
-        <Stack direction="row" gap={1} flexWrap="wrap">
-          <AdminStatusChip
-            label={`${details.images.length} ${tForm("galleryCountLabel")}`}
-            tone="info"
-          />
-          <AdminStatusChip
-            label={`${details.digitalAssets?.length ?? 0} ${tForm("filesCountLabel")}`}
-            tone="warning"
+        <Stack direction="row" gap={1.5} flexWrap="wrap" alignItems="center">
+          {isActive ? (
+            <>
+              <AdminStatusChip
+                label={`${details.images.length} ${tForm("galleryCountLabel")}`}
+                tone="info"
+              />
+              <AdminStatusChip
+                label={`${details.digitalAssets?.length ?? 0} ${tForm("filesCountLabel")}`}
+                tone="warning"
+              />
+            </>
+          ) : null}
+          <FormControlLabel
+            sx={{ mr: 0 }}
+            control={
+              <Switch
+                checked={isActive}
+                onChange={onToggleActive}
+                disabled={!canToggle}
+              />
+            }
+            label={tForm("addForLanguage")}
           />
         </Stack>
       }
     >
-      <Stack gap={2.5}>
+      <input
+        type="hidden"
+        name={`${locale}.active`}
+        value={isActive ? "on" : "off"}
+      />
+      <Collapse in={isActive}>
+        <Stack gap={2.5}>
         <Box
           sx={{
             display: "grid",
@@ -68,7 +102,7 @@ export const AdminProductLocaleSection = ({
             label={tForm("fields.title")}
             name={`${locale}.title`}
             defaultValue={translation.title}
-            required
+            required={isActive}
           />
           <TextField
             label={tForm("fields.shortTitle")}
@@ -79,7 +113,7 @@ export const AdminProductLocaleSection = ({
             label={tForm("fields.shortDescription")}
             name={`${locale}.shortDescription`}
             defaultValue={translation.shortDescription}
-            required
+            required={isActive}
           />
           <TextField
             label={tForm("fields.thumbnailBackgroundColor")}
@@ -90,7 +124,7 @@ export const AdminProductLocaleSection = ({
             label={tForm("fields.subtitle")}
             name={`${locale}.subtitle`}
             defaultValue={details.subtitle}
-            required
+            required={isActive}
           />
           <TextField
             label={tForm("fields.badge")}
@@ -226,7 +260,8 @@ export const AdminProductLocaleSection = ({
             removeButtonLabel={tForm("buttons.removeItem")}
           />
         </Box>
-      </Stack>
+        </Stack>
+      </Collapse>
     </AdminSectionCard>
   );
 };

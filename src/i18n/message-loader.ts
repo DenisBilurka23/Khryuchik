@@ -1,6 +1,6 @@
 import type { CountryCode } from "@/utils";
 
-import type { Locale } from "./config";
+import { defaultLocale, type Locale } from "./config";
 import enDictionary from "./messages/en.json";
 import ruDictionary from "./messages/ru.json";
 import type { Dictionary, SeedDictionary, StorefrontDictionary } from "./types";
@@ -106,7 +106,10 @@ export const loadMessages = async (
   locale: Locale,
   country: CountryCode,
 ): Promise<Dictionary> => {
-  const dictionary = dictionariesByLocale[locale];
+  // Admin-managed locales may not ship a UI dictionary yet; fall back to the
+  // default-locale (English) copy until a translation file is added in code.
+  const dictionary =
+    dictionariesByLocale[locale] ?? dictionariesByLocale[defaultLocale];
 
   return {
     metadata: dictionary.metadata,

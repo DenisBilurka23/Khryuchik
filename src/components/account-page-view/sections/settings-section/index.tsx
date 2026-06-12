@@ -12,6 +12,7 @@ import type { SettingsSectionProps } from "./types";
 export const SettingsSection = ({
   locale,
   country,
+  availableLocales,
   profileEditor,
 }: SettingsSectionProps) => {
   const t = useTranslations("accountPage");
@@ -37,6 +38,7 @@ export const SettingsSection = ({
             <LocaleSwitcher
               locale={locale}
               localizedPaths={localizedAccountPaths}
+              availableLocales={availableLocales}
               sx={{ width: "100%", minWidth: 0 }}
             />
           </Grid>

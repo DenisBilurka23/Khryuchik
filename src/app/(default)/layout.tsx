@@ -8,14 +8,16 @@ import { createStorefrontHeaderViewModel } from "@/components/storefront-header/
 import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
 import { defaultLocale } from "@/i18n/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { getActiveLocaleCodes } from "@/server/localization/localization.service";
 
 const DefaultLayout = async ({ children }: { children: ReactNode }) => {
-  const [country, messages] = await Promise.all([
+  const [country, messages, availableLocales] = await Promise.all([
     getRequestCountry(),
     getMessages({ locale: defaultLocale }),
+    getActiveLocaleCodes(),
   ]);
   const { localizedPaths, navigationPaths } =
-    createStorefrontHeaderViewModel(defaultLocale);
+    createStorefrontHeaderViewModel(defaultLocale, availableLocales);
   const homeHref = "/";
 
   return (
@@ -26,6 +28,7 @@ const DefaultLayout = async ({ children }: { children: ReactNode }) => {
           country={country}
           homeHref={homeHref}
           localizedPaths={localizedPaths}
+          availableLocales={availableLocales}
           navigationPaths={navigationPaths}
         />
         {children}
