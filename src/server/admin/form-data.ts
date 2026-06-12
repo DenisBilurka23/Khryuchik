@@ -1,9 +1,11 @@
 import "server-only";
 
-import type { Locale } from "@/i18n/config";
+import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryUpsertInput,
+  AdminLocaleUpsertInput,
   AdminProductPayload,
+  AdminRegionUpsertInput,
 } from "@/types/admin";
 import type { ProductAvailability, ProductType } from "@/types/catalog";
 import type {
@@ -77,8 +79,10 @@ const parseLocaleTranslation = (formData: FormData, locale: Locale) => ({
   title: parseString(formData, `${locale}.title`).trim(),
   shortTitle: parseOptionalString(formData, `${locale}.shortTitle`),
   shortDescription: parseString(formData, `${locale}.shortDescription`).trim(),
-  price: parseNumber(formData, locale === "ru" ? "pricing.BY.price" : "pricing.US.price"),
-  currency: parseString(formData, locale === "ru" ? "pricing.BY.currency" : "pricing.US.currency") as CurrencyCode,
+  // Display price/currency come from per-region pricing; these are placeholders
+  // normalized in `sanitizeProductPayload`.
+  price: 0,
+  currency: "" as CurrencyCode,
   emoji: parseString(formData, `${locale}.emoji`).trim(),
   thumbnailBackgroundColor: parseOptionalString(
     formData,
@@ -126,53 +130,96 @@ export const parseAdminCategoryFormData = (
   },
 });
 
+export const parseAdminLocaleFormData = (
+  formData: FormData,
+): AdminLocaleUpsertInput => ({
+  code: parseString(formData, "code").trim(),
+  isActive: parseBoolean(formData, "isActive"),
+  isDefault: parseBoolean(formData, "isDefault"),
+  sortOrder: parseNumber(formData, "sortOrder", 100),
+});
+
+export const parseAdminRegionFormData = (
+  formData: FormData,
+): AdminRegionUpsertInput => ({
+  code: parseString(formData, "code").trim(),
+  currency: parseString(formData, "currency").trim(),
+  isActive: parseBoolean(formData, "isActive"),
+  isDefault: parseBoolean(formData, "isDefault"),
+  sortOrder: parseNumber(formData, "sortOrder", 100),
+});
+
+const parseRegionPricing = (formData: FormData, region: string) => ({
+  price: parseNumber(formData, `pricing.${region}.price`),
+  currency: parseString(formData, `pricing.${region}.currency`) as CurrencyCode,
+  oldPrice: parseOptionalNumber(formData, `pricing.${region}.oldPrice`),
+});
+
 export const parseAdminProductFormData = (
   formData: FormData,
-): AdminProductPayload => ({
-  product: {
-    productId: parseString(formData, "productId").trim(),
-    slug: parseString(formData, "slug").trim(),
-    classification: {
-      type: parseString(formData, "type") as ProductType,
-      category: parseString(formData, "category").trim(),
-    },
-    status: {
-      isActive: parseBoolean(formData, "isActive"),
-      visibleInShop: parseBoolean(formData, "visibleInShop"),
-      visibleOnHome: parseBoolean(formData, "visibleOnHome"),
-    },
-    merchandising: {
-      sortOrder: parseNumber(formData, "sortOrder", 100),
-    },
-    inventory: {
-      quantity: parseOptionalNumber(formData, "quantity") ?? null,
-      availability: parseString(formData, "availability") as ProductAvailability,
-    },
-    pricing: {
-      BY: {
-        price: parseNumber(formData, "pricing.BY.price"),
-        currency: parseString(formData, "pricing.BY.currency") as CurrencyCode,
-        oldPrice: parseOptionalNumber(formData, "pricing.BY.oldPrice"),
+): AdminProductPayload => {
+  const localeCodes = parseCsvList(formData, "localeCodes");
+  const regionCodes = parseCsvList(formData, "regionCodes");
+  const productId = parseString(formData, "productId").trim();
+
+  // A language is published only when "Add for this language" is on. The
+  // default locale is always published (it is the storefront fallback source).
+  const activeLocaleCodes = localeCodes.filter(
+    (locale) =>
+      locale === defaultLocale || parseBoolean(formData, `${locale}.active`),
+  );
+
+  // Regions are activated per product; an unchecked region is excluded from
+  // `availableRegions`, hiding the product there on the storefront.
+  const availableRegions = regionCodes.filter((region) =>
+    parseBoolean(formData, `region.${region}.active`),
+  );
+
+  return {
+    product: {
+      productId,
+      slug: parseString(formData, "slug").trim(),
+      classification: {
+        type: parseString(formData, "type") as ProductType,
+        category: parseString(formData, "category").trim(),
       },
-      US: {
-        price: parseNumber(formData, "pricing.US.price"),
-        currency: parseString(formData, "pricing.US.currency") as CurrencyCode,
-        oldPrice: parseOptionalNumber(formData, "pricing.US.oldPrice"),
+      status: {
+        isActive: parseBoolean(formData, "isActive"),
+        visibleInShop: parseBoolean(formData, "visibleInShop"),
+        visibleOnHome: parseBoolean(formData, "visibleOnHome"),
       },
+      merchandising: {
+        sortOrder: parseNumber(formData, "sortOrder", 100),
+      },
+      inventory: {
+        quantity: parseOptionalNumber(formData, "quantity") ?? null,
+        availability: parseString(
+          formData,
+          "availability",
+        ) as ProductAvailability,
+      },
+      pricing: Object.fromEntries(
+        regionCodes.map((region) => [region, parseRegionPricing(formData, region)]),
+      ) as AdminProductPayload["product"]["pricing"],
+      availableRegions,
+      translations: Object.fromEntries(
+        activeLocaleCodes.map((locale) => [
+          locale,
+          parseLocaleTranslation(formData, locale),
+        ]),
+      ) as AdminProductPayload["product"]["translations"],
     },
-    translations: {
-      ru: parseLocaleTranslation(formData, "ru"),
-      en: parseLocaleTranslation(formData, "en"),
+    details: {
+      productId,
+      sku: parseString(formData, "sku").trim(),
+      storyProductId: parseOptionalString(formData, "storyProductId"),
+      relatedProductIds: parseCsvList(formData, "relatedProductIds"),
+      translations: Object.fromEntries(
+        activeLocaleCodes.map((locale) => [
+          locale,
+          parseDetailLocaleTranslation(formData, locale),
+        ]),
+      ) as AdminProductPayload["details"]["translations"],
     },
-  },
-  details: {
-    productId: parseString(formData, "productId").trim(),
-    sku: parseString(formData, "sku").trim(),
-    storyProductId: parseOptionalString(formData, "storyProductId"),
-    relatedProductIds: parseCsvList(formData, "relatedProductIds"),
-    translations: {
-      ru: parseDetailLocaleTranslation(formData, "ru"),
-      en: parseDetailLocaleTranslation(formData, "en"),
-    },
-  },
-});
+  };
+};

@@ -8,7 +8,8 @@ import {
   getProductsForPlacement,
   getShopProducts,
 } from "@/data/products";
-import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedPageProps = {
@@ -21,7 +22,7 @@ export const generateMetadata = async ({
 }: LocalizedPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
@@ -56,7 +57,7 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
   const { lang } = await params;
   const { category } = await searchParams;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 

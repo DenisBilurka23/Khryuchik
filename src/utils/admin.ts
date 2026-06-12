@@ -4,7 +4,7 @@ import type { AdminNavItem, AdminProductPayload } from "@/types/admin";
 import type { ProductDetailTranslation, ProductTranslation } from "@/types/catalog";
 
 type AdminNavLabels = Record<
-  "dashboard" | "products" | "categories" | "customers" | "orders",
+  "dashboard" | "products" | "categories" | "localization" | "customers" | "orders",
   string
 >;
 
@@ -23,6 +23,7 @@ export const createAdminNavItems = (
   { key: "dashboard", label: labels.dashboard, href: "/admin" },
   { key: "products", label: labels.products, href: "/admin/products" },
   { key: "categories", label: labels.categories, href: "/admin/categories" },
+  { key: "localization", label: labels.localization, href: "/admin/localization" },
   { key: "customers", label: labels.customers, href: "/admin/customers" },
   { key: "orders", label: labels.orders, href: "/admin/orders" },
 ];
@@ -109,10 +110,12 @@ const createEmptyTranslation = (locale: Locale): ProductTranslation => ({
   shortTitle: "",
   shortDescription: "",
   price: 0,
-  currency: locale === "ru" ? "BYN" : "USD",
-  emoji: locale === "ru" ? "📘" : "📘",
+  // Display currency is sourced from per-region pricing downstream, so the
+  // per-translation currency is a placeholder filled in on save.
+  currency: "",
+  emoji: "📘",
   thumbnailBackgroundColor: "#FFF8F0",
-  lang: locale === "ru" ? "RU" : "EN",
+  lang: locale.toUpperCase(),
 });
 
 const createEmptyDetailTranslation = (): ProductDetailTranslation => ({
@@ -131,7 +134,19 @@ const createEmptyDetailTranslation = (): ProductDetailTranslation => ({
   digitalAssets: [],
 });
 
-export const createEmptyAdminProductPayload = (): AdminProductPayload => ({
+const buildTranslationsForLocales = (localeCodes: string[]) =>
+  Object.fromEntries(
+    localeCodes.map((code) => [code, createEmptyTranslation(code)]),
+  ) as AdminProductPayload["product"]["translations"];
+
+const buildDetailTranslationsForLocales = (localeCodes: string[]) =>
+  Object.fromEntries(
+    localeCodes.map((code) => [code, createEmptyDetailTranslation()]),
+  ) as AdminProductPayload["details"]["translations"];
+
+export const createEmptyAdminProductPayload = (
+  localeCodes: string[] = ["en"],
+): AdminProductPayload => ({
   product: {
     productId: "",
     slug: "",
@@ -152,19 +167,48 @@ export const createEmptyAdminProductPayload = (): AdminProductPayload => ({
       availability: "in_stock",
     },
     pricing: {},
-    translations: {
-      ru: createEmptyTranslation("ru"),
-      en: createEmptyTranslation("en"),
-    },
+    translations: buildTranslationsForLocales(localeCodes),
   },
   details: {
     productId: "",
     sku: "",
     storyProductId: "",
     relatedProductIds: [],
+    translations: buildDetailTranslationsForLocales(localeCodes),
+  },
+});
+
+// Ensures the payload has a translation/detail entry for every active locale
+// and a pricing entry for every active region, so the editor can render a
+// section per active language/region even when the stored product predates a
+// newly added locale or region.
+export const ensureProductPayloadCoverage = (
+  payload: AdminProductPayload,
+  localeCodes: string[],
+  regionCodes: string[],
+): AdminProductPayload => ({
+  ...payload,
+  product: {
+    ...payload.product,
     translations: {
-      ru: createEmptyDetailTranslation(),
-      en: createEmptyDetailTranslation(),
+      ...buildTranslationsForLocales(localeCodes),
+      ...payload.product.translations,
+    },
+    pricing: {
+      ...Object.fromEntries(
+        regionCodes.map((code) => [
+          code,
+          payload.product.pricing[code] ?? { price: 0, currency: "" },
+        ]),
+      ),
+      ...payload.product.pricing,
+    },
+  },
+  details: {
+    ...payload.details,
+    translations: {
+      ...buildDetailTranslationsForLocales(localeCodes),
+      ...payload.details.translations,
     },
   },
 });

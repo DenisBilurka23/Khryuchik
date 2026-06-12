@@ -10,6 +10,10 @@ import {
   getStorefrontBookSeedItems,
 } from "@/server/catalog/seed-data/storefront.seed";
 import { categorySeedDocuments } from "@/server/catalog/seed-data/categories.seed";
+import {
+  localeSeedDocuments,
+  regionSeedDocuments,
+} from "@/server/localization/seed-data/localization.seed";
 import { type Locale, locales } from "@/i18n/config";
 import type { CountryCode } from "@/utils";
 import type {
@@ -20,6 +24,7 @@ import type {
   ProductCountryPricing,
   ProductType,
 } from "@/types/catalog";
+import type { LocaleDocument, RegionDocument } from "@/types/localization";
 
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB;
@@ -270,6 +275,34 @@ const seedCategories = async (client: MongoClient) => {
   );
 };
 
+const seedLocalization = async (client: MongoClient) => {
+  await dropCollectionIfExists(client, "locales");
+  await dropCollectionIfExists(client, "regions");
+
+  const localesCollection = client
+    .db(dbName)
+    .collection<LocaleDocument>("locales");
+  const regionsCollection = client
+    .db(dbName)
+    .collection<RegionDocument>("regions");
+
+  await localesCollection.createIndex({ code: 1 }, { unique: true });
+  await regionsCollection.createIndex({ code: 1 }, { unique: true });
+
+  await Promise.all([
+    ...localeSeedDocuments.map((locale) =>
+      localesCollection.replaceOne({ code: locale.code }, locale, {
+        upsert: true,
+      }),
+    ),
+    ...regionSeedDocuments.map((region) =>
+      regionsCollection.replaceOne({ code: region.code }, region, {
+        upsert: true,
+      }),
+    ),
+  ]);
+};
+
 const seedProductDetails = async (client: MongoClient) => {
   await dropCollectionIfExists(client, "productDetails");
 
@@ -299,6 +332,7 @@ const main = async () => {
   try {
     await client.connect();
     await dropCollectionIfExists(client, "dictionaries");
+    await seedLocalization(client);
     await seedCategories(client);
     await seedProducts(client);
     await seedProductDetails(client);

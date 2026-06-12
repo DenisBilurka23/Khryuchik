@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 
 import { FavoritesPageView } from "@/components/favorites-page-view";
 import { getShopCategories } from "@/data/products";
-import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getLocalizedPath } from "@/utils";
 
@@ -19,7 +20,7 @@ export const generateMetadata = async ({
 }: LocalizedFavoritesPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
@@ -50,7 +51,7 @@ export const generateMetadata = async ({
 const LocalizedFavoritesPage = async ({ params }: LocalizedFavoritesPageProps) => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 

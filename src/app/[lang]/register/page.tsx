@@ -3,7 +3,7 @@ import { Container } from "@mui/material";
 
 import { RegisterPageView } from "@/components/register-page-view";
 import { getLocalizedPath } from "@/utils";
-import { isLocale } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import type { LocalizedRegisterPageProps } from "@/types/auth-pages";
 
@@ -13,7 +13,7 @@ const LocalizedRegisterPage = async ({
 }: LocalizedRegisterPageProps) => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 

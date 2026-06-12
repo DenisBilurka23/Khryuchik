@@ -3,7 +3,7 @@ import { Container } from "@mui/material";
 
 import { AuthPageView } from "@/components/auth-page-view";
 import { getLocalizedPath } from "@/utils";
-import { isLocale } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 import { isGoogleAuthEnabled } from "@/server/auth/config";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import type { LocalizedLoginPageProps } from "@/types/auth-pages";
@@ -11,7 +11,7 @@ import type { LocalizedLoginPageProps } from "@/types/auth-pages";
 const LocalizedLoginPage = async ({ params, searchParams }: LocalizedLoginPageProps) => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 

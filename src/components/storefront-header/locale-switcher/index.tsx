@@ -5,15 +5,15 @@ import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-import { defaultLocale, locales } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
 import { getLocaleDisplayName, getLocaleShortLabel } from "@/utils";
 
 import { HeaderSelect } from "../header-select";
 
 import type { LocaleSwitcherProps } from "./types";
 
-const stripLocalePrefix = (pathname: string) => {
-  for (const locale of locales) {
+const stripLocalePrefix = (pathname: string, availableLocales: string[]) => {
+  for (const locale of availableLocales) {
     const localePrefix = `/${locale}`;
 
     if (pathname === localePrefix) {
@@ -31,8 +31,9 @@ const stripLocalePrefix = (pathname: string) => {
 const getPathForLocale = (
   pathname: string,
   targetLocale: LocaleSwitcherProps["locale"],
+  availableLocales: string[],
 ) => {
-  const basePath = stripLocalePrefix(pathname);
+  const basePath = stripLocalePrefix(pathname, availableLocales);
 
   if (targetLocale === defaultLocale) {
     return basePath;
@@ -42,7 +43,7 @@ const getPathForLocale = (
 };
 
 export const LocaleSwitcher = (props: LocaleSwitcherProps) => {
-  const { locale, label, sx } = props;
+  const { locale, label, availableLocales, sx } = props;
   const t = useTranslations("storefront");
   const router = useRouter();
   const pathname = usePathname();
@@ -57,13 +58,13 @@ export const LocaleSwitcher = (props: LocaleSwitcherProps) => {
         <LanguageOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
       }
       disabled={isPending}
-      options={locales.map((targetLocale) => ({
+      options={availableLocales.map((targetLocale) => ({
         value: targetLocale,
         label: getLocaleDisplayName(targetLocale, locale),
         selectedLabel: getLocaleShortLabel(targetLocale),
       }))}
       onChangeAction={(value) => {
-        if (value !== locale && (value === "ru" || value === "en")) {
+        if (value !== locale && availableLocales.includes(value)) {
           const nextSearchParams = new URLSearchParams(searchParams.toString());
           const callbackUrl = nextSearchParams.get("callbackUrl");
 
@@ -75,6 +76,7 @@ export const LocaleSwitcher = (props: LocaleSwitcherProps) => {
             const localizedCallbackUrl = getPathForLocale(
               callbackUrlObject.pathname,
               value,
+              availableLocales,
             );
             const localizedCallbackSearch = callbackUrlObject.search;
 
@@ -84,7 +86,7 @@ export const LocaleSwitcher = (props: LocaleSwitcherProps) => {
             );
           }
 
-          const nextPathname = getPathForLocale(pathname, value);
+          const nextPathname = getPathForLocale(pathname, value, availableLocales);
           const nextSearch = nextSearchParams.toString();
 
           startTransition(() => {

@@ -1,15 +1,17 @@
 import type { Locale } from "@/i18n/config";
-import { defaultLocale, locales } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
 import { getLocalizedPath } from "@/utils";
 
 import type { StorefrontHeaderViewModel } from "./types";
 
 export const createStorefrontHeaderViewModel = (
   locale: Locale,
+  availableLocales: string[] = [],
 ): StorefrontHeaderViewModel => {
   return {
+    availableLocales,
     localizedPaths: Object.fromEntries(
-      locales.map((targetLocale) => [
+      availableLocales.map((targetLocale) => [
         targetLocale,
         targetLocale === defaultLocale ? "/" : `/${targetLocale}`,
       ]),

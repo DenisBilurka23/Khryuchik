@@ -158,8 +158,11 @@ export type CheckoutPageLabels = {
     city: string;
     region: string;
     postalCode: string;
+    country: string;
     notes: string;
   };
+  savedAddressesTitle: string;
+  newAddressOption: string;
   paymentMethods: {
     stripe: CheckoutPaymentMethodLabel;
     cod: CheckoutPaymentMethodLabel;
@@ -698,6 +701,7 @@ export type AdminPageDictionary = {
     dashboard: string;
     products: string;
     categories: string;
+    localization: string;
     customers: string;
     orders: string;
   };
@@ -837,6 +841,44 @@ export type AdminPageDictionary = {
       isActive: string;
       visibleInShop: string;
       visibleInHomeTabs: string;
+    };
+  };
+  localization: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    savedMessage: string;
+    deletedMessage: string;
+    deleteProtectedMessage: string;
+    deleteFailedMessage: string;
+    invalidCurrencyMessage: string;
+    languagesTitle: string;
+    languagesDescription: string;
+    newLanguageTitle: string;
+    newLanguageDescription: string;
+    regionsTitle: string;
+    regionsDescription: string;
+    newRegionTitle: string;
+    newRegionDescription: string;
+    saveButton: string;
+    savingButton: string;
+    updateButton: string;
+    deleteButton: string;
+    deleteDialogTitle: string;
+    deleteDialogDescription: string;
+    confirmDeleteButton: string;
+    cancelDeleteButton: string;
+    deleteProtectedHint: string;
+    defaultBadge: string;
+    fields: {
+      code: string;
+      regionCode: string;
+      currency: string;
+      sortOrder: string;
+    };
+    toggles: {
+      isActive: string;
+      isDefault: string;
     };
   };
   customers: {
@@ -1005,8 +1047,10 @@ export type AdminPageDictionary = {
     placementTitle: string;
     pricingSectionTitle: string;
     pricingSectionDescription: string;
+    regionActiveLabel: string;
     localeSectionTitle: string;
     localeSectionDescription: string;
+    addForLanguage: string;
     currentGalleryTitle: string;
     currentAssetsTitle: string;
     imagesUploadButton: string;
@@ -1048,10 +1092,8 @@ export type AdminPageDictionary = {
       isActive: string;
       visibleInShop: string;
       visibleOnHome: string;
-      byPrice: string;
-      byOldPrice: string;
-      usPrice: string;
-      usOldPrice: string;
+      regionPrice: string;
+      regionOldPrice: string;
       slug: string;
       title: string;
       shortTitle: string;

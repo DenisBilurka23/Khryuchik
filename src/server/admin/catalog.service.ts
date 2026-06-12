@@ -1,7 +1,7 @@
 import "server-only";
 
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
-import { defaultLocale, locales, type Locale } from "@/i18n/config";
+import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryListItem,
   AdminCategoryUpsertInput,
@@ -20,14 +20,18 @@ import type {
   ProductDetailTranslation,
   ProductTranslation,
 } from "@/types/catalog";
-import type { CurrencyCode } from "@/utils";
 
 import {
   buildUniqueValue,
   createEmptyAdminProductPayload,
+  ensureProductPayloadCoverage,
   getAdminCategoryLabel,
   normalizeIdentifierPart,
 } from "@/utils/admin";
+import {
+  getActiveLocales,
+  getActiveRegions,
+} from "@/server/localization/localization.service";
 import {
   deleteAdminUserAccount,
   getAdminUserEditorData,
@@ -234,7 +238,7 @@ export const getAdminProducts = async (
   return products.map((product) => {
     const details = detailsById.get(product.productId);
     const category = categoriesByKey.get(product.classification.category);
-    const pricing = product.pricing.BY ?? product.pricing.US;
+    const pricing = Object.values(product.pricing)[0];
     const sku = details?.sku || "";
 
     return {
@@ -279,17 +283,22 @@ export const getAdminProductEditorData = async (
   productId?: string,
   locale: Locale = defaultLocale,
 ): Promise<AdminProductEditorData> => {
-  const [categories, initialRelatedProductOptions] = await Promise.all([
-    findAllCategories(),
-    getAdminProductOptions({
-      locale,
-      excludeProductId: productId,
-      limit: 10,
-    }),
-  ]);
+  const [categories, activeLocales, activeRegions, initialRelatedProductOptions] =
+    await Promise.all([
+      findAllCategories(),
+      getActiveLocales(),
+      getActiveRegions(),
+      getAdminProductOptions({
+        locale,
+        excludeProductId: productId,
+        limit: 10,
+      }),
+    ]);
+  const localeCodes = activeLocales.map((item) => item.code);
+  const regionCodes = activeRegions.map((item) => item.code);
 
   if (!productId) {
-    const emptyPayload = createEmptyAdminProductPayload();
+    const emptyPayload = createEmptyAdminProductPayload(localeCodes);
 
     if (categories[0]) {
       emptyPayload.product.classification.category = categories[0].key;
@@ -297,6 +306,8 @@ export const getAdminProductEditorData = async (
 
     return {
       categories,
+      activeLocales,
+      activeRegions,
       initialRelatedProductOptions,
       payload: emptyPayload,
       selectedRelatedProductOptions: [],
@@ -326,11 +337,14 @@ export const getAdminProductEditorData = async (
 
   return {
     categories,
+    activeLocales,
+    activeRegions,
     initialRelatedProductOptions,
-    payload: {
-      product,
-      details,
-    },
+    payload: ensureProductPayloadCoverage(
+      { product, details },
+      localeCodes,
+      regionCodes,
+    ),
     selectedRelatedProductOptions,
     selectedStoryProductOption,
   };
@@ -493,10 +507,38 @@ const sanitizeProductPayload = (
     throw new Error("Merch products cannot use the books category");
   }
 
-  const localeCurrency: Record<Locale, CurrencyCode> = {
-    ru: "BYN",
-    en: "USD",
-  };
+  // Only the languages toggled on ("Add for this language") reach the parser,
+  // so every entry here must have its required fields filled in. Languages left
+  // off fall back to the default-locale content on the storefront.
+  const publishedLocaleCodes = Object.keys(payload.product.translations);
+  const regionCodes = Object.keys(payload.product.pricing);
+
+  if (!publishedLocaleCodes.includes(defaultLocale)) {
+    throw new Error("The default language is required");
+  }
+
+  for (const code of publishedLocaleCodes) {
+    const translation = payload.product.translations[code];
+    const detail = payload.details.translations[code];
+
+    if (
+      !translation?.title.trim() ||
+      !translation?.shortDescription.trim() ||
+      !detail?.subtitle.trim()
+    ) {
+      throw new Error(`Missing required fields for language "${code}"`);
+    }
+  }
+
+  const availableRegions = (payload.product.availableRegions ?? regionCodes)
+    .filter((code) => regionCodes.includes(code));
+
+  // Display currency is sourced from per-region pricing downstream, so the
+  // per-translation currency only needs to be a valid placeholder.
+  const fallbackCurrency =
+    regionCodes
+      .map((code) => payload.product.pricing[code]?.currency?.trim())
+      .find((currency): currency is string => Boolean(currency)) ?? "USD";
 
   const nextPayload: AdminProductPayload = {
     product: {
@@ -510,10 +552,11 @@ const sanitizeProductPayload = (
         ...payload.product.merchandising,
       },
       slug,
+      availableRegions,
       translations: Object.fromEntries(
-        locales.map((locale) => {
+        publishedLocaleCodes.map((locale) => {
           const translation = payload.product.translations[locale];
-          const image = payload.details.translations[locale].images[0];
+          const image = payload.details.translations[locale]?.images[0];
           return [
             locale,
             {
@@ -521,24 +564,26 @@ const sanitizeProductPayload = (
               title: translation.title.trim(),
               shortTitle: translation.shortTitle?.trim() || undefined,
               shortDescription: translation.shortDescription.trim(),
-              currency: localeCurrency[locale],
+              currency: fallbackCurrency,
               thumbnail: image,
             },
           ];
-        })
+        }),
       ) as Record<Locale, ProductTranslation>,
-      pricing: {
-        BY: {
-          ...payload.product.pricing.BY,
-          price: payload.product.pricing.BY?.price ?? 0,
-          currency: "BYN",
-        },
-        US: {
-          ...payload.product.pricing.US,
-          price: payload.product.pricing.US?.price ?? 0,
-          currency: "USD",
-        },
-      },
+      pricing: Object.fromEntries(
+        regionCodes.map((code) => {
+          const regionPricing = payload.product.pricing[code];
+          return [
+            code,
+            {
+              ...regionPricing,
+              price: regionPricing?.price ?? 0,
+              currency: regionPricing?.currency?.trim() || fallbackCurrency,
+              oldPrice: regionPricing?.oldPrice,
+            },
+          ];
+        }),
+      ) as AdminProductPayload["product"]["pricing"],
     },
     details: {
       ...payload.details,
@@ -547,7 +592,7 @@ const sanitizeProductPayload = (
       storyProductId: payload.details.storyProductId?.trim() || undefined,
       relatedProductIds: payload.details.relatedProductIds.filter(Boolean),
       translations: Object.fromEntries(
-        locales.map((locale) => {
+        publishedLocaleCodes.map((locale) => {
           const t = payload.details.translations[locale];
           return [
             locale,
@@ -559,16 +604,10 @@ const sanitizeProductPayload = (
               description: t.description.trim(),
             },
           ];
-        })
+        }),
       ) as Record<Locale, ProductDetailTranslation>,
     },
   };
-
-  if (
-    locales.some((locale) => !nextPayload.product.translations[locale].title)
-  ) {
-    throw new Error("Product title is required for all locales");
-  }
 
   return nextPayload;
 };

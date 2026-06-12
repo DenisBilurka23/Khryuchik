@@ -8,8 +8,11 @@ import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import { Alert, Box, Paper, Stack, Typography } from "@mui/material";
 
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
+import { defaultLocale } from "@/i18n/config";
+import { useProductPublishToggles } from "@/hooks/useProductPublishToggles";
 import { AdminProductFormErrorCode } from "@/server/admin/product-form-state";
 import type { ProductType } from "@/types/catalog";
+import { getLocaleDisplayName } from "@/utils";
 
 import { AdminConfirmSubmitButton, AdminSectionCard } from "../../admin-page-shared";
 import { AdminReviewsField } from "../reviews-field";
@@ -30,6 +33,8 @@ const AdminProductFormInner = ({
   locale,
   payload,
   categories,
+  activeLocales,
+  activeRegions,
   initialRelatedProductOptions,
   selectedRelatedProductOptions,
   selectedStoryProductOption,
@@ -40,6 +45,18 @@ const AdminProductFormInner = ({
 }: AdminProductFormProps) => {
   const tForm = useTranslations("adminPage.productForm");
   const { runAll } = useAdminProductUploadRegistry();
+  const {
+    toggleLocale,
+    toggleRegion,
+    isLocaleActive,
+    isRegionActive,
+  } = useProductPublishToggles({
+    payload,
+    localeCodes: activeLocales.map((item) => item.code),
+    regionCodes: activeRegions.map((item) => item.code),
+    defaultLocale,
+    isNew,
+  });
   const formRef = useRef<HTMLFormElement | null>(null);
   const [uploadErrorMessage, setUploadErrorMessage] = useState<string | null>(
     null,
@@ -68,14 +85,19 @@ const AdminProductFormInner = ({
         return undefined;
     }
   })();
-  const ruDetails = payload.details.translations.ru;
-  const enDetails = payload.details.translations.en;
+  const localeDetails = activeLocales.map(
+    (activeLocale) => payload.details.translations[activeLocale.code],
+  );
   const sharedReviews =
-    ruDetails.reviews.length > 0 ? ruDetails.reviews : enDetails.reviews;
-  const totalImages = ruDetails.images.length + enDetails.images.length;
-  const totalAssets =
-    (ruDetails.digitalAssets?.length ?? 0) +
-    (enDetails.digitalAssets?.length ?? 0);
+    localeDetails.find((details) => details.reviews.length > 0)?.reviews ?? [];
+  const totalImages = localeDetails.reduce(
+    (total, details) => total + details.images.length,
+    0,
+  );
+  const totalAssets = localeDetails.reduce(
+    (total, details) => total + (details.digitalAssets?.length ?? 0),
+    0,
+  );
   const merchCategories = categories.filter(
     (category) => category.key !== BOOKS_CATEGORY_KEY,
   );
@@ -150,6 +172,16 @@ const AdminProductFormInner = ({
         onSubmit={() => setIsSubmitting(true)}
       >
         <input type="hidden" name="formMode" value={isNew ? "new" : "edit"} />
+        <input
+          type="hidden"
+          name="localeCodes"
+          value={activeLocales.map((item) => item.code).join(",")}
+        />
+        <input
+          type="hidden"
+          name="regionCodes"
+          value={activeRegions.map((item) => item.code).join(",")}
+        />
         <Stack gap={3}>
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
 
@@ -165,14 +197,23 @@ const AdminProductFormInner = ({
             onCategoryChange={setSelectedCategory}
           />
 
-          <AdminProductPricingSection payload={payload} />
+          <AdminProductPricingSection
+            payload={payload}
+            regions={activeRegions}
+            isRegionActive={isRegionActive}
+            onToggleRegion={toggleRegion}
+          />
 
-          {(["ru", "en"] as const).map((translationLocale) => (
+          {activeLocales.map((activeLocale) => (
             <AdminProductLocaleSection
-              key={translationLocale}
-              locale={translationLocale}
-              translation={payload.product.translations[translationLocale]}
-              details={payload.details.translations[translationLocale]}
+              key={activeLocale.code}
+              locale={activeLocale.code}
+              label={getLocaleDisplayName(activeLocale.code, locale)}
+              isActive={isLocaleActive(activeLocale.code)}
+              canToggle={activeLocale.code !== defaultLocale}
+              onToggleActive={() => toggleLocale(activeLocale.code)}
+              translation={payload.product.translations[activeLocale.code]}
+              details={payload.details.translations[activeLocale.code]}
               productId={isNew ? undefined : payload.product.productId}
             />
           ))}

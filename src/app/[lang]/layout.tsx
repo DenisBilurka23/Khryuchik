@@ -7,12 +7,21 @@ import { IntlClientProvider } from "@/components/providers/intl-client-provider"
 import { StorefrontHeader } from "@/components/storefront-header";
 import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
 import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
-import { isLocale, locales } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import {
+  getActiveLocaleCodes,
+  isActiveLocale,
+} from "@/server/localization/localization.service";
 
-export const dynamicParams = false;
+// Admin can add locales at runtime, so accept any param and validate it against
+// the active-locale list below instead of pre-rendering a fixed set only.
+export const dynamicParams = true;
 
-export const generateStaticParams = () => locales.map((lang) => ({ lang }));
+export const generateStaticParams = async () =>
+  (await getActiveLocaleCodes())
+    .filter((lang) => lang !== defaultLocale)
+    .map((lang) => ({ lang }));
 
 const LocaleLayout = async ({
   children,
@@ -23,17 +32,18 @@ const LocaleLayout = async ({
 }) => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
-  const [country, messages] = await Promise.all([
+  const [country, messages, availableLocales] = await Promise.all([
     getRequestCountry(),
     getMessages({ locale: lang }),
+    getActiveLocaleCodes(),
   ]);
   const { localizedPaths, navigationPaths } =
-    createStorefrontHeaderViewModel(lang);
-  const homeHref = lang === "en" ? "/" : `/${lang}`;
+    createStorefrontHeaderViewModel(lang, availableLocales);
+  const homeHref = lang === defaultLocale ? "/" : `/${lang}`;
 
   return (
     <IntlClientProvider locale={lang} messages={messages}>
@@ -43,6 +53,7 @@ const LocaleLayout = async ({
           country={country}
           homeHref={homeHref}
           localizedPaths={localizedPaths}
+          availableLocales={availableLocales}
           navigationPaths={navigationPaths}
         />
         {children}

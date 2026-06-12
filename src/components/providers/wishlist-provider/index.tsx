@@ -18,7 +18,7 @@ import {
 } from "@/client-api/wishlist";
 import { GUEST_WISHLIST_CHANGE_EVENT } from "@/constants/wishlist";
 import { WishlistContext } from "@/hooks/useWishlist";
-import { defaultLocale, type Locale, locales } from "@/i18n/config";
+import { defaultLocale, isLocale } from "@/i18n/config";
 import type {
   GuestWishlistItem,
   UseWishlistResult,
@@ -35,8 +35,8 @@ const getLocaleFromPathname = (pathname: string) => {
   const segments = pathname.split("/").filter(Boolean);
   const localeSegment = segments[0];
 
-  return locales.includes(localeSegment as Locale)
-    ? (localeSegment as Locale)
+  return localeSegment && isLocale(localeSegment)
+    ? localeSegment
     : defaultLocale;
 };
 

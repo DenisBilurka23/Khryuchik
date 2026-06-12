@@ -51,6 +51,7 @@ export const MobileMenu = ({
   locale,
   country,
   localizedPaths,
+  availableLocales,
   navItems,
   cartHref,
   homeHref,
@@ -152,6 +153,7 @@ export const MobileMenu = ({
               <LocaleSwitcher
                 locale={locale}
                 localizedPaths={localizedPaths}
+                availableLocales={availableLocales}
                 sx={{ minWidth: 0, width: "100%" }}
               />
             </Box>

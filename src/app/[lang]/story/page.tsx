@@ -3,7 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 
 import { StoryPageView } from "@/components/story-page-view";
-import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 
 type LocalizedStoryPageProps = {
   params: Promise<{ lang: string }>;
@@ -14,7 +15,7 @@ export const generateMetadata = async ({
 }: LocalizedStoryPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
@@ -51,7 +52,7 @@ export const generateMetadata = async ({
 const LocalizedStoryPage = async ({ params }: LocalizedStoryPageProps) => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 

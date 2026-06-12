@@ -1,4 +1,12 @@
-import { Box, TextField } from "@mui/material";
+"use client";
+
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Stack,
+  TextField,
+} from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { AdminSectionCard } from "../../../admin-page-shared";
@@ -6,6 +14,9 @@ import type { AdminProductPricingSectionProps } from "./types";
 
 export const AdminProductPricingSection = ({
   payload,
+  regions,
+  isRegionActive,
+  onToggleRegion,
 }: AdminProductPricingSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
 
@@ -14,8 +25,6 @@ export const AdminProductPricingSection = ({
       title={tForm("pricingSectionTitle")}
       description={tForm("pricingSectionDescription")}
     >
-      <input type="hidden" name="pricing.BY.currency" value="BYN" />
-      <input type="hidden" name="pricing.US.currency" value="USD" />
       <Box
         sx={{
           display: "grid",
@@ -26,30 +35,66 @@ export const AdminProductPricingSection = ({
           gap: 2,
         }}
       >
-        <TextField
-          label={tForm("fields.byPrice")}
-          name="pricing.BY.price"
-          type="number"
-          defaultValue={payload.product.pricing.BY?.price ?? ""}
-        />
-        <TextField
-          label={tForm("fields.byOldPrice")}
-          name="pricing.BY.oldPrice"
-          type="number"
-          defaultValue={payload.product.pricing.BY?.oldPrice ?? ""}
-        />
-        <TextField
-          label={tForm("fields.usPrice")}
-          name="pricing.US.price"
-          type="number"
-          defaultValue={payload.product.pricing.US?.price ?? ""}
-        />
-        <TextField
-          label={tForm("fields.usOldPrice")}
-          name="pricing.US.oldPrice"
-          type="number"
-          defaultValue={payload.product.pricing.US?.oldPrice ?? ""}
-        />
+        {regions.map((region) => {
+          const regionPricing = payload.product.pricing[region.code];
+          const active = isRegionActive(region.code);
+
+          return (
+            <Stack
+              key={region.code}
+              gap={1.5}
+              sx={{
+                p: 2,
+                borderRadius: "18px",
+                border: "1px solid #F0DFC8",
+                bgcolor: active ? "#fff" : "#FBF4EA",
+              }}
+            >
+              <FormControlLabel
+                sx={{ mr: 0 }}
+                control={
+                  <Checkbox
+                    name={`region.${region.code}.active`}
+                    checked={active}
+                    onChange={() => onToggleRegion(region.code)}
+                  />
+                }
+                label={`${region.code} (${region.currency}) — ${tForm(
+                  "regionActiveLabel",
+                )}`}
+              />
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+                  gap: 2,
+                }}
+              >
+                <input
+                  type="hidden"
+                  name={`pricing.${region.code}.currency`}
+                  value={region.currency}
+                />
+                <TextField
+                  label={tForm("fields.regionPrice", { region: region.code })}
+                  name={`pricing.${region.code}.price`}
+                  type="number"
+                  defaultValue={regionPricing?.price ?? ""}
+                  disabled={!active}
+                />
+                <TextField
+                  label={tForm("fields.regionOldPrice", {
+                    region: region.code,
+                  })}
+                  name={`pricing.${region.code}.oldPrice`}
+                  type="number"
+                  defaultValue={regionPricing?.oldPrice ?? ""}
+                  disabled={!active}
+                />
+              </Box>
+            </Stack>
+          );
+        })}
       </Box>
     </AdminSectionCard>
   );

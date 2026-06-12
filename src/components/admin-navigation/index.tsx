@@ -5,6 +5,7 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
+import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import type { ReactNode } from "react";
 import { List, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { usePathname } from "next/navigation";
@@ -15,6 +16,7 @@ const iconByKey: Record<AdminViewKey, ReactNode> = {
   dashboard: <DashboardOutlinedIcon />,
   products: <Inventory2OutlinedIcon />,
   categories: <CategoryOutlinedIcon />,
+  localization: <LanguageOutlinedIcon />,
   orders: <ShoppingBagOutlinedIcon />,
   customers: <PeopleAltOutlinedIcon />,
   shipping: <ShoppingBagOutlinedIcon />,

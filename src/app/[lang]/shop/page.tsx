@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 
 import { ShopPageView } from "@/components/shop-page-view";
 import { getShopCategories, getShopProducts } from "@/data/products";
-import { defaultLocale, isLocale, locales } from "@/i18n/config";
+import { defaultLocale, locales } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedShopPageProps = {
@@ -19,7 +20,7 @@ export const generateMetadata = async ({
 }: LocalizedShopPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
@@ -54,7 +55,7 @@ const LocalizedShopPage = async ({
   const { lang } = await params;
   const { category, q } = await searchParams;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 

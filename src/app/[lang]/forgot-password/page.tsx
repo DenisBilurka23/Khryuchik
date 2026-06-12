@@ -3,14 +3,14 @@ import { Container } from "@mui/material";
 
 import { ForgotPasswordPageView } from "@/components/forgot-password-page-view";
 import { getLocalizedPath } from "@/utils";
-import { isLocale } from "@/i18n/config";
+import { isActiveLocale } from "@/server/localization/localization.service";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import type { LocalizedForgotPasswordPageProps } from "@/types/auth-pages";
 
 const LocalizedForgotPasswordPage = async ({ params }: LocalizedForgotPasswordPageProps) => {
   const { lang } = await params;
 
-  if (!isLocale(lang)) {
+  if (!(await isActiveLocale(lang))) {
     notFound();
   }
 
