@@ -29,6 +29,7 @@ export const AdminProductLocaleSection = ({
   translation,
   details,
   productId,
+  selectedType,
 }: AdminProductLocaleSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
   const uploadStatusLabels = {
@@ -202,45 +203,33 @@ export const AdminProductLocaleSection = ({
           />
         </Box>
 
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              md: "repeat(2, minmax(0, 1fr))",
-            },
-            gap: 2,
-          }}
-        >
-          <AdminOptionsField
-            name={`${locale}.languagesJson`}
-            title={tForm("fields.languages")}
-            helperText={tForm("helpers.optionsRule")}
-            initialOptions={details.languages ?? []}
-            itemLabel={tForm("fields.languages")}
-          />
-          <AdminOptionsField
-            name={`${locale}.formatsJson`}
-            title={tForm("fields.formats")}
-            helperText={tForm("helpers.optionsRule")}
-            initialOptions={details.formats ?? []}
-            itemLabel={tForm("fields.formats")}
-          />
-          <AdminOptionsField
-            name={`${locale}.sizesJson`}
-            title={tForm("fields.sizes")}
-            helperText={tForm("helpers.optionsRule")}
-            initialOptions={details.sizes ?? []}
-            itemLabel={tForm("fields.sizes")}
-          />
-          <AdminOptionsField
-            name={`${locale}.colorsJson`}
-            title={tForm("fields.colors")}
-            helperText={tForm("helpers.optionsRule")}
-            initialOptions={details.colors ?? []}
-            itemLabel={tForm("fields.colors")}
-          />
-        </Box>
+        {selectedType === "merch" && (
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "repeat(2, minmax(0, 1fr))",
+              },
+              gap: 2,
+            }}
+          >
+            <AdminOptionsField
+              name={`${locale}.sizesJson`}
+              title={tForm("fields.sizes")}
+              helperText={tForm("helpers.optionsRule")}
+              initialOptions={details.sizes ?? []}
+              itemLabel={tForm("fields.sizes")}
+            />
+            <AdminOptionsField
+              name={`${locale}.colorsJson`}
+              title={tForm("fields.colors")}
+              helperText={tForm("helpers.optionsRule")}
+              initialOptions={details.colors ?? []}
+              itemLabel={tForm("fields.colors")}
+            />
+          </Box>
+        )}
 
         <Box
           sx={{

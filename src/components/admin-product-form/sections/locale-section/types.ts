@@ -1,5 +1,9 @@
 import type { Locale } from "@/i18n/config";
-import type { ProductDetailTranslation, ProductTranslation } from "@/types/catalog";
+import type {
+  ProductDetailTranslation,
+  ProductTranslation,
+  ProductType,
+} from "@/types/catalog";
 
 export type AdminProductLocaleSectionProps = {
   locale: Locale;
@@ -10,4 +14,5 @@ export type AdminProductLocaleSectionProps = {
   translation: ProductTranslation;
   details: ProductDetailTranslation;
   productId?: string;
+  selectedType: ProductType;
 };

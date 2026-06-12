@@ -190,7 +190,7 @@
         "sku": "SKU",
         "securePayment": "Secure online payment",
         "shipping": "Shipping across Belarus and internationally",
-        "languageSupport": "RU / EN versions available for books"
+        "languageSupportLabel": "{langs} version available"
       },
       "tabs": {
         "description": "Description",
@@ -1264,6 +1264,8 @@
         "storyProductId": "Pick the book or product that should supply the title and thumbnail for the story block.",
         "mediaRule": "The first image is used as the thumbnail. The rest become the gallery.",
         "optionsRule": "Type a value and press Enter.",
+        "languagesSelectRule": "Select the languages the book is written in.",
+        "formatsRule": "Select the formats the book is available in.",
         "specsRule": "Add specifications as separate fields with a name and a value.",
         "reviewsRule": "Reviews are shared across all product locales.",
         "filesRule": "Existing files stay attached. Upload new PDFs to append them."
@@ -1302,6 +1304,8 @@
         "description": "Description",
         "languages": "Languages",
         "formats": "Formats",
+        "formatPrinted": "Printed",
+        "formatDigital": "Digital (e-book)",
         "sizes": "Sizes",
         "colors": "Colors",
         "specs": "Specifications",

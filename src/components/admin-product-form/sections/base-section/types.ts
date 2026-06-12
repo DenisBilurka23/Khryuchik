@@ -1,6 +1,8 @@
 import type { Locale } from "@/i18n/config";
 import type { AdminProductPayload } from "@/types/admin";
 import type { CategoryDocument, ProductType } from "@/types/catalog";
+import type { LocaleDocument } from "@/types/localization";
+import type { ProductOption } from "@/types/product-details";
 
 export type AdminProductBaseSectionProps = {
   payload: AdminProductPayload;
@@ -12,4 +14,7 @@ export type AdminProductBaseSectionProps = {
   merchCategories: CategoryDocument[];
   onTypeChange: (value: ProductType) => void;
   onCategoryChange: (value: string) => void;
+  availableLocales: LocaleDocument[];
+  initialLanguages: ProductOption[];
+  initialFormats: ProductOption[];
 };

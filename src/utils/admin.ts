@@ -105,7 +105,7 @@ export const buildUniqueValue = (
   return `${normalizedBaseValue}-${suffix}`;
 };
 
-const createEmptyTranslation = (locale: Locale): ProductTranslation => ({
+const createEmptyTranslation = (): ProductTranslation => ({
   title: "",
   shortTitle: "",
   shortDescription: "",
@@ -115,7 +115,7 @@ const createEmptyTranslation = (locale: Locale): ProductTranslation => ({
   currency: "",
   emoji: "📘",
   thumbnailBackgroundColor: "#FFF8F0",
-  lang: locale.toUpperCase(),
+  lang: undefined,
 });
 
 const createEmptyDetailTranslation = (): ProductDetailTranslation => ({
@@ -136,7 +136,7 @@ const createEmptyDetailTranslation = (): ProductDetailTranslation => ({
 
 const buildTranslationsForLocales = (localeCodes: string[]) =>
   Object.fromEntries(
-    localeCodes.map((code) => [code, createEmptyTranslation(code)]),
+    localeCodes.map((code) => [code, createEmptyTranslation()]),
   ) as AdminProductPayload["product"]["translations"];
 
 const buildDetailTranslationsForLocales = (localeCodes: string[]) =>
