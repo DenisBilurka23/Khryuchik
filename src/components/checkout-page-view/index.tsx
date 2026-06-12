@@ -1,22 +1,12 @@
 "use client";
 
 import {
-  Alert,
   Box,
   Breadcrumbs,
-  Button,
-  Card,
-  CardContent,
   Container,
-  Divider,
-  FormControl,
-  FormControlLabel,
   Grid,
   Link as MuiLink,
-  Radio,
-  RadioGroup,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import Link from "next/link";
@@ -28,92 +18,59 @@ import { useCart } from "@/components/cart/store";
 import { EmptyCartState } from "@/components/cart";
 import storefrontStyles from "@/components/storefront/storefront.module.css";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
-import type { CheckoutPageLabels } from "@/i18n/types";
 import {
   countryShippingConfig,
-  formatCurrency,
   getCountryCurrency,
+  getAllCountriesSorted,
   getCountryPaymentMethods,
   getLocalizedPath,
+  isIsoCountryCode,
+  type CountryCode,
   type PaymentMethod,
 } from "@/utils";
 
-import type { CheckoutPageViewProps } from "./types";
-
-type FormState = {
-  name: string;
-  email: string;
-  phone: string;
-  line1: string;
-  line2: string;
-  city: string;
-  region: string;
-  postalCode: string;
-  notes: string;
-};
-
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-const requiredFields = ["name", "line1", "city"] as const;
-type FieldErrors = Partial<Record<keyof FormState, string>>;
-
-const initialFormState = (
-  initialCustomer: CheckoutPageViewProps["initialCustomer"],
-): FormState => ({
-  name: initialCustomer?.name ?? "",
-  email: initialCustomer?.email ?? "",
-  phone: initialCustomer?.phone ?? "",
-  line1: "",
-  line2: "",
-  city: "",
-  region: "",
-  postalCode: "",
-  notes: "",
-});
-
-const validateForm = (
-  form: FormState,
-  messages: { required: string; invalidEmail: string },
-): FieldErrors => {
-  const errors: FieldErrors = {};
-
-  for (const field of requiredFields) {
-    if (form[field].trim().length === 0) {
-      errors[field] = messages.required;
-    }
-  }
-
-  if (form.email.trim().length > 0 && !emailPattern.test(form.email.trim())) {
-    errors.email = messages.invalidEmail;
-  }
-
-  return errors;
-};
+import {
+  CheckoutContactSection,
+  CheckoutOrderSummarySection,
+  CheckoutPaymentSection,
+  CheckoutSavedAddressesSection,
+  CheckoutShippingAddressSection,
+} from "./sections";
+import type {
+  CheckoutLabels,
+  CheckoutPageViewProps,
+  FieldErrors,
+  FormFieldKey,
+  FormState,
+} from "./types";
+import { formFromAddress, validateForm } from "./utils";
 
 export const CheckoutPageView = ({
   locale,
   country,
   initialCustomer,
+  initialShippingAddresses,
+  initialSelectedAddressId,
 }: CheckoutPageViewProps) => {
   const t = useTranslations("storefront.checkoutPage");
-  const labels = {
+  const labels: CheckoutLabels = {
     eyebrow: t("eyebrow"),
     title: t("title"),
     lead: t("lead"),
-    breadcrumbs: t.raw("breadcrumbs") as CheckoutPageLabels["breadcrumbs"],
+    breadcrumbs: t.raw("breadcrumbs") as CheckoutLabels["breadcrumbs"],
     contactTitle: t("contactTitle"),
     shippingTitle: t("shippingTitle"),
     paymentTitle: t("paymentTitle"),
     summaryTitle: t("summaryTitle"),
-    fields: t.raw("fields") as CheckoutPageLabels["fields"],
-    paymentMethods: t.raw(
-      "paymentMethods",
-    ) as CheckoutPageLabels["paymentMethods"],
-    summary: t.raw("summary") as CheckoutPageLabels["summary"],
-    submit: t.raw("submit") as CheckoutPageLabels["submit"],
-    errors: t.raw("errors") as CheckoutPageLabels["errors"],
-    fieldErrors: t.raw("fieldErrors") as CheckoutPageLabels["fieldErrors"],
-    emptyState: t.raw("emptyState") as CheckoutPageLabels["emptyState"],
+    fields: t.raw("fields") as CheckoutLabels["fields"],
+    savedAddressesTitle: t("savedAddressesTitle"),
+    newAddressOption: t("newAddressOption"),
+    paymentMethods: t.raw("paymentMethods") as CheckoutLabels["paymentMethods"],
+    summary: t.raw("summary") as CheckoutLabels["summary"],
+    submit: t.raw("submit") as CheckoutLabels["submit"],
+    errors: t.raw("errors") as CheckoutLabels["errors"],
+    fieldErrors: t.raw("fieldErrors") as CheckoutLabels["fieldErrors"],
+    emptyState: t.raw("emptyState") as CheckoutLabels["emptyState"],
   };
 
   const cart = useCart();
@@ -126,6 +83,7 @@ export const CheckoutPageView = ({
     () => getCountryPaymentMethods(country),
     [country],
   );
+  const allCountries = useMemo(() => getAllCountriesSorted(locale), [locale]);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(
     availableMethods[0],
   );
@@ -133,8 +91,23 @@ export const CheckoutPageView = ({
     ? selectedMethod
     : availableMethods[0];
 
+  const hasSavedAddresses =
+    initialShippingAddresses !== undefined &&
+    initialShippingAddresses.length > 0;
+
+  const defaultSelectedAddressId = hasSavedAddresses
+    ? (initialSelectedAddressId ?? initialShippingAddresses![0]?.id ?? "")
+    : "";
+
+  const defaultAddress = hasSavedAddresses
+    ? initialShippingAddresses!.find((a) => a.id === defaultSelectedAddressId)
+    : undefined;
+
+  const [selectedSavedAddressId, setSelectedSavedAddressId] = useState<string>(
+    defaultSelectedAddressId,
+  );
   const [form, setForm] = useState<FormState>(() =>
-    initialFormState(initialCustomer),
+    formFromAddress(initialCustomer, defaultAddress),
   );
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [error, setError] = useState<string | null>(null);
@@ -153,17 +126,58 @@ export const CheckoutPageView = ({
   const total = subtotal + shipping;
   const currency = getCountryCurrency(country);
 
+  const clearFieldError = (key: FormFieldKey) => {
+    setFieldErrors((prev) => {
+      if (!prev[key]) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  };
+
   const handleField =
-    (key: keyof FormState) =>
+    (key: FormFieldKey) =>
     (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setForm((prev) => ({ ...prev, [key]: event.target.value }));
-      setFieldErrors((prev) => {
-        if (!prev[key]) return prev;
-        const next = { ...prev };
-        delete next[key];
-        return next;
-      });
+      clearFieldError(key);
     };
+
+  const handleCountryChange = (value: string) => {
+    setForm((prev) => ({ ...prev, country: value }));
+    clearFieldError("country");
+  };
+
+  const handleSavedAddressSelect = (addressId: string) => {
+    setSelectedSavedAddressId(addressId);
+    setFieldErrors({});
+
+    if (addressId === "") {
+      setForm((prev) => ({
+        ...prev,
+        line1: "",
+        line2: "",
+        city: "",
+        region: "",
+        postalCode: "",
+        country: "",
+      }));
+      return;
+    }
+
+    const address = initialShippingAddresses?.find((a) => a.id === addressId);
+
+    if (address) {
+      setForm((prev) => ({
+        ...prev,
+        line1: address.line1,
+        line2: address.line2 ?? "",
+        city: address.city,
+        region: address.region ?? "",
+        postalCode: address.postalCode ?? "",
+        country: address.country,
+      }));
+    }
+  };
 
   const errorForCode = (code: string): string => {
     switch (code) {
@@ -194,6 +208,11 @@ export const CheckoutPageView = ({
       return;
     }
 
+    if (!isIsoCountryCode(form.country)) {
+      setFieldErrors({ country: labels.fieldErrors.required });
+      return;
+    }
+
     setFieldErrors({});
     setError(null);
     setIsSubmitting(true);
@@ -213,6 +232,7 @@ export const CheckoutPageView = ({
           city: form.city.trim(),
           region: form.region.trim() || undefined,
           postalCode: form.postalCode.trim() || undefined,
+          country: form.country as CountryCode,
         },
         paymentMethod,
         notes: form.notes.trim() || undefined,
@@ -239,7 +259,6 @@ export const CheckoutPageView = ({
       // here would empty the cart before the browser navigates, briefly
       // rendering the empty state on this page.
       const params = new URLSearchParams({ order_id: orderId });
-
       window.location.assign(`${confirmationHref}?${params.toString()}`);
     } catch (submitError) {
       console.error("Checkout submit failed", submitError);
@@ -248,14 +267,7 @@ export const CheckoutPageView = ({
     }
   };
 
-  const renderEmptyState = () => (
-    <EmptyCartState
-      title={labels.emptyState.title}
-      text={labels.emptyState.text}
-      actionLabel={labels.emptyState.action}
-      actionHref={shopHref}
-    />
-  );
+  const showAddressForm = selectedSavedAddressId === "" || !hasSavedAddresses;
 
   return (
     <Box className={storefrontStyles.pageShell} sx={{ color: "text.primary" }}>
@@ -322,259 +334,68 @@ export const CheckoutPageView = ({
             </Box>
 
             {!hasStoredItems && !isLoading ? (
-              renderEmptyState()
+              <EmptyCartState
+                title={labels.emptyState.title}
+                text={labels.emptyState.text}
+                actionLabel={labels.emptyState.action}
+                actionHref={shopHref}
+              />
             ) : (
               <Box component="form" onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={4} alignItems="flex-start">
                   <Grid size={{ xs: 12, md: 7, lg: 8 }}>
                     <Stack spacing={4}>
-                      <Card sx={{ border: "1px solid #F0DFC8" }}>
-                        <CardContent sx={{ p: 3 }}>
-                          <Typography sx={{ fontSize: 20, fontWeight: 800, mb: 2 }}>
-                            {labels.contactTitle}
-                          </Typography>
-                          <Stack spacing={2}>
-                            <TextField
-                              fullWidth
-                              required
-                              label={labels.fields.name}
-                              value={form.name}
-                              onChange={handleField("name")}
-                              error={Boolean(fieldErrors.name)}
-                              helperText={fieldErrors.name}
-                            />
-                            <TextField
-                              fullWidth
-                              type="email"
-                              label={labels.fields.email}
-                              value={form.email}
-                              onChange={handleField("email")}
-                              error={Boolean(fieldErrors.email)}
-                              helperText={fieldErrors.email}
-                            />
-                            <TextField
-                              fullWidth
-                              label={labels.fields.phone}
-                              value={form.phone}
-                              onChange={handleField("phone")}
-                            />
-                          </Stack>
-                        </CardContent>
-                      </Card>
+                      <CheckoutContactSection
+                        form={form}
+                        fieldErrors={fieldErrors}
+                        onField={handleField}
+                        labels={labels}
+                      />
 
-                      <Card sx={{ border: "1px solid #F0DFC8" }}>
-                        <CardContent sx={{ p: 3 }}>
-                          <Typography sx={{ fontSize: 20, fontWeight: 800, mb: 2 }}>
-                            {labels.shippingTitle}
-                          </Typography>
-                          <Stack spacing={2}>
-                            <TextField
-                              fullWidth
-                              required
-                              label={labels.fields.line1}
-                              value={form.line1}
-                              onChange={handleField("line1")}
-                              error={Boolean(fieldErrors.line1)}
-                              helperText={fieldErrors.line1}
-                            />
-                            <TextField
-                              fullWidth
-                              label={labels.fields.line2}
-                              value={form.line2}
-                              onChange={handleField("line2")}
-                            />
-                            <Grid container spacing={2}>
-                              <Grid size={{ xs: 12, sm: 6 }}>
-                                <TextField
-                                  fullWidth
-                                  required
-                                  label={labels.fields.city}
-                                  value={form.city}
-                                  onChange={handleField("city")}
-                                  error={Boolean(fieldErrors.city)}
-                                  helperText={fieldErrors.city}
-                                />
-                              </Grid>
-                              <Grid size={{ xs: 12, sm: 6 }}>
-                                <TextField
-                                  fullWidth
-                                  label={labels.fields.region}
-                                  value={form.region}
-                                  onChange={handleField("region")}
-                                />
-                              </Grid>
-                              <Grid size={{ xs: 12, sm: 6 }}>
-                                <TextField
-                                  fullWidth
-                                  label={labels.fields.postalCode}
-                                  value={form.postalCode}
-                                  onChange={handleField("postalCode")}
-                                />
-                              </Grid>
-                            </Grid>
-                            <TextField
-                              fullWidth
-                              multiline
-                              minRows={2}
-                              label={labels.fields.notes}
-                              value={form.notes}
-                              onChange={handleField("notes")}
-                            />
-                          </Stack>
-                        </CardContent>
-                      </Card>
+                      {hasSavedAddresses ? (
+                        <CheckoutSavedAddressesSection
+                          addresses={initialShippingAddresses!}
+                          selectedAddressId={selectedSavedAddressId}
+                          onSelect={handleSavedAddressSelect}
+                          locale={locale}
+                          labels={labels}
+                        />
+                      ) : null}
 
-                      <Card sx={{ border: "1px solid #F0DFC8" }}>
-                        <CardContent sx={{ p: 3 }}>
-                          <Typography sx={{ fontSize: 20, fontWeight: 800, mb: 2 }}>
-                            {labels.paymentTitle}
-                          </Typography>
-                          <FormControl fullWidth>
-                            <RadioGroup
-                              value={paymentMethod}
-                              onChange={(event) =>
-                                setSelectedMethod(
-                                  event.target.value as PaymentMethod,
-                                )
-                              }
-                            >
-                              <Stack spacing={1.5}>
-                                {availableMethods.map((method) => {
-                                  const methodLabel = labels.paymentMethods[method];
-                                  return (
-                                    <Box
-                                      key={method}
-                                      sx={{
-                                        border: "1px solid",
-                                        borderColor:
-                                          paymentMethod === method
-                                            ? "primary.main"
-                                            : "#F0DFC8",
-                                        borderRadius: 2,
-                                        p: 2,
-                                        transition: "border-color .2s ease",
-                                      }}
-                                    >
-                                      <FormControlLabel
-                                        value={method}
-                                        control={<Radio />}
-                                        sx={{ alignItems: "flex-start", m: 0 }}
-                                        label={
-                                          <Box sx={{ ml: 1 }}>
-                                            <Typography sx={{ fontWeight: 700 }}>
-                                              {methodLabel.title}
-                                            </Typography>
-                                            <Typography
-                                              variant="body2"
-                                              color="text.secondary"
-                                              sx={{ mt: 0.5 }}
-                                            >
-                                              {methodLabel.description}
-                                            </Typography>
-                                          </Box>
-                                        }
-                                      />
-                                    </Box>
-                                  );
-                                })}
-                              </Stack>
-                            </RadioGroup>
-                          </FormControl>
-                        </CardContent>
-                      </Card>
+                      {showAddressForm ? (
+                        <CheckoutShippingAddressSection
+                          form={form}
+                          fieldErrors={fieldErrors}
+                          onField={handleField}
+                          countries={allCountries}
+                          onCountryChange={handleCountryChange}
+                          labels={labels}
+                        />
+                      ) : null}
+
+                      <CheckoutPaymentSection
+                        availableMethods={availableMethods}
+                        selectedMethod={paymentMethod}
+                        onMethodChange={setSelectedMethod}
+                        labels={labels}
+                      />
                     </Stack>
                   </Grid>
 
+                  {/* Order summary */}
                   <Grid size={{ xs: 12, md: 5, lg: 4 }}>
-                    <Card
-                      sx={{
-                        border: "1px solid #F0DFC8",
-                        position: { md: "sticky" },
-                        top: { md: 100 },
-                      }}
-                    >
-                      <CardContent sx={{ p: 3 }}>
-                        <Typography sx={{ fontSize: 24, fontWeight: 800, mb: 2 }}>
-                          {labels.summaryTitle}
-                        </Typography>
-
-                        <Stack spacing={1} sx={{ mb: 2 }}>
-                          {items.map((item) => (
-                            <Stack
-                              key={item.id}
-                              direction="row"
-                              justifyContent="space-between"
-                              gap={2}
-                            >
-                              <Typography color="text.secondary">
-                                {item.title}
-                                {item.quantity > 1 ? ` ×${item.quantity}` : ""}
-                              </Typography>
-                              <Typography>
-                                {formatCurrency(
-                                  item.price * item.quantity,
-                                  locale,
-                                  currency,
-                                )}
-                              </Typography>
-                            </Stack>
-                          ))}
-                        </Stack>
-
-                        <Divider sx={{ my: 2 }} />
-
-                        <Stack spacing={1.5}>
-                          <Stack direction="row" justifyContent="space-between">
-                            <Typography color="text.secondary">
-                              {labels.summary.itemsLabel}
-                            </Typography>
-                            <Typography>
-                              {formatCurrency(subtotal, locale, currency)}
-                            </Typography>
-                          </Stack>
-                        </Stack>
-
-                        <Divider sx={{ my: 2 }} />
-
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="center"
-                        >
-                          <Typography sx={{ fontSize: 20, fontWeight: 800 }}>
-                            {labels.summary.totalLabel}
-                          </Typography>
-                          <Typography
-                            sx={{
-                              fontSize: 28,
-                              fontWeight: 800,
-                              color: "primary.main",
-                            }}
-                          >
-                            {formatCurrency(total, locale, currency)}
-                          </Typography>
-                        </Stack>
-
-                        {error ? (
-                          <Alert severity="error" sx={{ mt: 3 }}>
-                            {error}
-                          </Alert>
-                        ) : null}
-
-                        <Button
-                          type="submit"
-                          fullWidth
-                          variant="contained"
-                          size="large"
-                          disabled={isSubmitting || !hasStoredItems}
-                          sx={{ mt: 3 }}
-                        >
-                          {isSubmitting
-                            ? labels.submit.loading
-                            : labels.submit[paymentMethod]}
-                        </Button>
-                      </CardContent>
-                    </Card>
+                    <CheckoutOrderSummarySection
+                      items={items}
+                      subtotal={subtotal}
+                      total={total}
+                      currency={currency}
+                      locale={locale}
+                      error={error}
+                      isSubmitting={isSubmitting}
+                      hasStoredItems={hasStoredItems}
+                      paymentMethod={paymentMethod}
+                      labels={labels}
+                    />
                   </Grid>
                 </Grid>
               </Box>

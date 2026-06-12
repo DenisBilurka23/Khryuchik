@@ -19,6 +19,7 @@ import type {
 import { isStoredCartItem } from "@/types/cart-guards";
 import {
   getCountryPaymentMethods,
+  isIsoCountryCode,
   type PaymentMethod,
 } from "@/utils";
 
@@ -52,10 +53,7 @@ const parseCustomer = (value: unknown): OrderCustomer | null => {
   };
 };
 
-const parseShippingAddress = (
-  value: unknown,
-  country: OrderShippingAddress["country"],
-): OrderShippingAddress | null => {
+const parseShippingAddress = (value: unknown): OrderShippingAddress | null => {
   if (!value || typeof value !== "object") {
     return null;
   }
@@ -71,6 +69,12 @@ const parseShippingAddress = (
     return null;
   }
 
+  const countryValue = typeof raw.country === "string" ? raw.country : "";
+
+  if (!isIsoCountryCode(countryValue)) {
+    return null;
+  }
+
   const optional = (key: string) =>
     typeof raw[key] === "string" && (raw[key] as string).length > 0
       ? (raw[key] as string)
@@ -82,7 +86,7 @@ const parseShippingAddress = (
     city: raw.city.trim(),
     region: optional("region"),
     postalCode: optional("postalCode"),
-    country,
+    country: countryValue,
   };
 };
 
@@ -124,7 +128,7 @@ export const POST = async (request: NextRequest) => {
     : [];
 
   const customer = parseCustomer(payload.customer);
-  const shippingAddress = parseShippingAddress(payload.shippingAddress, country);
+  const shippingAddress = parseShippingAddress(payload.shippingAddress);
   const paymentMethod = payload.paymentMethod;
 
   if (

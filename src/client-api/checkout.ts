@@ -11,7 +11,7 @@ export type CheckoutRequestPayload = {
   locale: Locale;
   items: StoredCartItem[];
   customer: OrderCustomer;
-  shippingAddress: Omit<OrderShippingAddress, "country">;
+  shippingAddress: OrderShippingAddress;
   paymentMethod: PaymentMethod;
   notes?: string;
 };

@@ -1,7 +1,5 @@
 import type { ObjectId } from "mongodb";
 
-import type { CountryCode } from "@/utils";
-
 export type AuthProvider = "google" | "credentials";
 
 export enum UserOperationErrorReason {
@@ -29,7 +27,7 @@ export type UserShippingAddress = {
   city: string;
   region?: string;
   postalCode?: string;
-  country: CountryCode;
+  country: string;
 };
 
 export type UserShippingAddressInput = Omit<UserShippingAddress, "id">;

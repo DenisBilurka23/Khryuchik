@@ -7,8 +7,12 @@ import {
   ButtonBase,
   Chip,
   CircularProgress,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -28,24 +32,25 @@ import {
   getUserShippingAddressLines,
   getUserShippingAddressTitle,
 } from "@/utils/account-page";
+import { getAllCountriesSorted, isIsoCountryCode } from "@/utils";
+import { scrollMenuToKeyChar } from "@/utils/menu";
 
 import { SectionCard } from "../../shared";
 
 import type { AddressesSectionProps } from "./types";
 
-const createInitialAddressForm = (country: AddressesSectionProps["country"]): UserShippingAddressInput => ({
+const emptyAddressForm = (): UserShippingAddressInput => ({
   title: "",
   line1: "",
   line2: undefined,
   city: "",
   region: undefined,
   postalCode: undefined,
-  country,
+  country: "",
 });
 
 export const AddressesSection = ({
   locale,
-  country,
   initialAddresses,
   initialSelectedId,
   onAddressesChange,
@@ -60,9 +65,8 @@ export const AddressesSection = ({
   const [isSavingAddress, setIsSavingAddress] = useState(false);
   const [isSelectingAddressId, setIsSelectingAddressId] = useState<string | null>(null);
   const [addressError, setAddressError] = useState<string | null>(null);
-  const [addressForm, setAddressForm] = useState<UserShippingAddressInput>(() =>
-    createInitialAddressForm(country),
-  );
+  const [addressForm, setAddressForm] = useState<UserShippingAddressInput>(emptyAddressForm);
+  const allCountries = getAllCountriesSorted(locale);
 
   const sortedAddresses = [...addresses].sort((left, right) => {
     const leftSelected = left.id === selectedShippingAddressId ? 1 : 0;
@@ -93,10 +97,6 @@ export const AddressesSection = ({
     onAddressesChange?.(nextAddresses, nextSelectedId);
   };
 
-  const resetAddressForm = () => {
-    setAddressForm(createInitialAddressForm(country));
-  };
-
   const handleBeginAddAddress = () => {
     setIsAddingAddress(true);
     setAddressError(null);
@@ -105,7 +105,7 @@ export const AddressesSection = ({
   const handleCancelAddAddress = () => {
     setIsAddingAddress(false);
     setAddressError(null);
-    resetAddressForm();
+    setAddressForm(emptyAddressForm());
   };
 
   const handleAddressFieldChange = <TField extends keyof UserShippingAddressInput>(
@@ -117,12 +117,15 @@ export const AddressesSection = ({
   };
 
   const handleAddAddress = async () => {
-    if (isSavingAddress) {
-      return;
-    }
+    if (isSavingAddress) return;
 
     if (!addressForm.line1.trim() || !addressForm.city.trim()) {
       setAddressError(t("addressMissingFields"));
+      return;
+    }
+
+    if (!isIsoCountryCode(addressForm.country)) {
+      setAddressError(t("addressInvalidCountry"));
       return;
     }
 
@@ -153,13 +156,11 @@ export const AddressesSection = ({
 
     applyAddressesState(nextAddresses, nextSelectedId);
     setIsAddingAddress(false);
-    resetAddressForm();
+    setAddressForm(emptyAddressForm());
   };
 
   const handleSelectAddress = async (addressId: string) => {
-    if (addressId === selectedShippingAddressId || isSelectingAddressId !== null) {
-      return;
-    }
+    if (addressId === selectedShippingAddressId || isSelectingAddressId !== null) return;
 
     setIsSelectingAddressId(addressId);
     setAddressError(null);
@@ -212,7 +213,7 @@ export const AddressesSection = ({
                   required
                   label={tCheckoutFields("line1")}
                   value={addressForm.line1}
-                  onChange={(event) => handleAddressFieldChange("line1", event.target.value)}
+                  onChange={(e) => handleAddressFieldChange("line1", e.target.value)}
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -220,8 +221,8 @@ export const AddressesSection = ({
                   fullWidth
                   label={tCheckoutFields("line2")}
                   value={addressForm.line2 ?? ""}
-                  onChange={(event) =>
-                    handleAddressFieldChange("line2", event.target.value || undefined)
+                  onChange={(e) =>
+                    handleAddressFieldChange("line2", e.target.value || undefined)
                   }
                 />
               </Grid>
@@ -231,7 +232,7 @@ export const AddressesSection = ({
                   required
                   label={tCheckoutFields("city")}
                   value={addressForm.city}
-                  onChange={(event) => handleAddressFieldChange("city", event.target.value)}
+                  onChange={(e) => handleAddressFieldChange("city", e.target.value)}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -239,8 +240,8 @@ export const AddressesSection = ({
                   fullWidth
                   label={tCheckoutFields("region")}
                   value={addressForm.region ?? ""}
-                  onChange={(event) =>
-                    handleAddressFieldChange("region", event.target.value || undefined)
+                  onChange={(e) =>
+                    handleAddressFieldChange("region", e.target.value || undefined)
                   }
                 />
               </Grid>
@@ -249,10 +250,27 @@ export const AddressesSection = ({
                   fullWidth
                   label={tCheckoutFields("postalCode")}
                   value={addressForm.postalCode ?? ""}
-                  onChange={(event) =>
-                    handleAddressFieldChange("postalCode", event.target.value || undefined)
+                  onChange={(e) =>
+                    handleAddressFieldChange("postalCode", e.target.value || undefined)
                   }
                 />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <FormControl fullWidth required>
+                  <InputLabel>{t("addressCountryLabel")}</InputLabel>
+                  <Select
+                    value={addressForm.country}
+                    label={t("addressCountryLabel")}
+                    onChange={(e) => handleAddressFieldChange("country", e.target.value)}
+                    MenuProps={{ disablePortal: true, PaperProps: { sx: { maxHeight: 280 } }, MenuListProps: { onKeyDown: scrollMenuToKeyChar } }}
+                  >
+                    {allCountries.map(({ code, label }) => (
+                      <MenuItem key={code} value={code}>
+                        {label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
 
@@ -295,9 +313,7 @@ export const AddressesSection = ({
               <Grid key={address.id} size={{ xs: 12, md: 6 }}>
                 <ButtonBase
                   onClick={() => {
-                    if (!isCurrent) {
-                      void handleSelectAddress(address.id);
-                    }
+                    if (!isCurrent) void handleSelectAddress(address.id);
                   }}
                   disabled={isCurrent || Boolean(isSelectingAddressId)}
                   sx={{

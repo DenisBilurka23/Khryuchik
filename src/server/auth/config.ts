@@ -72,6 +72,8 @@ export const authOptions: NextAuthOptions = {
           token.isAdmin = accountUser.isAdmin;
           token.authProviders = accountUser.authProviders;
           token.picture = accountUser.image ?? undefined;
+          token.shippingAddresses = accountUser.shippingAddresses;
+          token.selectedShippingAddressId = accountUser.selectedShippingAddressId;
         }
       }
 
@@ -82,6 +84,11 @@ export const authOptions: NextAuthOptions = {
         token.isAdmin = session.user.isAdmin ?? token.isAdmin;
         token.authProviders = session.user.authProviders ?? token.authProviders;
         token.picture = session.user.image ?? token.picture;
+        token.shippingAddresses =
+          session.user.shippingAddresses ?? token.shippingAddresses;
+        token.selectedShippingAddressId =
+          session.user.selectedShippingAddressId ??
+          token.selectedShippingAddressId;
       }
 
       return token;
@@ -100,6 +107,13 @@ export const authOptions: NextAuthOptions = {
             )
           : [];
         session.user.image = typeof token.picture === "string" ? token.picture : session.user.image;
+        session.user.shippingAddresses = Array.isArray(token.shippingAddresses)
+          ? token.shippingAddresses
+          : [];
+        session.user.selectedShippingAddressId =
+          typeof token.selectedShippingAddressId === "string"
+            ? token.selectedShippingAddressId
+            : null;
       }
 
       return session;

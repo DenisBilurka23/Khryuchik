@@ -1,7 +1,7 @@
 import type { DefaultSession } from "next-auth";
 import type { JWT as DefaultJWT } from "next-auth/jwt";
 
-import type { AuthProvider } from "@/types/users";
+import type { AuthProvider, UserShippingAddress } from "@/types/users";
 
 declare module "next-auth" {
   interface Session {
@@ -10,6 +10,8 @@ declare module "next-auth" {
       phone: string;
       isAdmin: boolean;
       authProviders: AuthProvider[];
+      shippingAddresses: UserShippingAddress[];
+      selectedShippingAddressId: string | null;
     };
   }
 }
@@ -20,5 +22,7 @@ declare module "next-auth/jwt" {
     phone?: string;
     isAdmin?: boolean;
     authProviders?: AuthProvider[];
+    shippingAddresses?: UserShippingAddress[];
+    selectedShippingAddressId?: string | null;
   }
 }
