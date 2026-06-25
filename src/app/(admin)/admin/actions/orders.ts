@@ -2,9 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-
 import {
   deleteOrder,
+  findOrderById,
+  updateOrderPayment,
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
 import { requireAdminApiAccess } from "@/server/admin/auth";
@@ -37,6 +38,36 @@ export const updateAdminOrderStatusAction = async (
     await updateOrderStatus(orderId, status);
   } catch (error) {
     console.error("updateAdminOrderStatusAction failed", error);
+    return { ok: false, error: "failed" };
+  }
+
+  revalidateOrderDependentPaths();
+  return { ok: true };
+};
+
+type ConfirmOrderPaymentResult =
+  | { ok: true }
+  | { ok: false; error: "unauthorized" | "failed" };
+
+export const confirmAdminOrderPaymentAction = async (
+  orderId: string,
+): Promise<ConfirmOrderPaymentResult> => {
+  const session = await requireAdminApiAccess();
+  if (!session) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  try {
+    const order = await findOrderById(orderId);
+    await updateOrderPayment(orderId, {
+      status: "paid",
+      paidAt: new Date().toISOString(),
+    });
+    if (order?.fulfillmentType === "digital") {
+      await updateOrderStatus(orderId, "delivered");
+    }
+  } catch (error) {
+    console.error("confirmAdminOrderPaymentAction failed", error);
     return { ok: false, error: "failed" };
   }
 

@@ -6,4 +6,5 @@ export const customerOrderStatusColors: Record<CustomerOrderStatus, string> = {
   shipped: "#FFF3D6",
   delivered: "#E6F6EC",
   cancelled: "#F8D7DA",
+  completed: "#E6F6EC",
 };

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { CheckoutResultView } from "@/components/checkout-result-view";
 import { locales } from "@/i18n/config";
 import { isActiveLocale } from "@/server/localization/localization.service";
-import { findOrderByStripeSessionId } from "@/server/orders/repositories/orders.repository";
+import { confirmOrderFromStripeSession } from "@/server/orders/services/orders.service";
 
 type LocalizedCheckoutSuccessPageProps = {
   params: Promise<{ lang: string }>;
@@ -24,7 +24,7 @@ const LocalizedCheckoutSuccessPage = async ({
 
   const { session_id } = await searchParams;
   const order = session_id
-    ? await findOrderByStripeSessionId(session_id)
+    ? await confirmOrderFromStripeSession(session_id)
     : null;
 
   return (

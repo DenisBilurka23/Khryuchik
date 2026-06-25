@@ -6,9 +6,13 @@ import { getShopCategories } from "@/data/products";
 import { defaultLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { getUserPurchasedDownloads } from "@/server/downloads/downloads.service";
 import { getActiveLocaleCodes } from "@/server/localization/localization.service";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
-import { getAccountUserByEmail, getAccountUserById } from "@/server/users/services/users.service";
+import {
+  getAccountUserByEmail,
+  getAccountUserById,
+} from "@/server/users/services/users.service";
 import { toAccountOrder } from "@/utils";
 
 const AccountPage = async () => {
@@ -18,18 +22,19 @@ const AccountPage = async () => {
     redirect("/login?callbackUrl=%2Faccount");
   }
 
-  const [country, user, rawOrders, categories, availableLocales] =
+  const userId = session.user.id || undefined;
+  const userEmail = session.user.email ?? undefined;
+
+  const [country, user, rawOrders, downloads, categories, availableLocales] =
     await Promise.all([
       getRequestCountry(),
-      session.user.id
-        ? getAccountUserById(session.user.id)
-        : session.user.email
-          ? getAccountUserByEmail(session.user.email)
+      userId
+        ? getAccountUserById(userId)
+        : userEmail
+          ? getAccountUserByEmail(userEmail)
           : Promise.resolve(null),
-      findOrdersForUser(
-        session.user.id || undefined,
-        session.user.email ?? undefined,
-      ),
+      findOrdersForUser(userId, userEmail),
+      getUserPurchasedDownloads(userId, userEmail),
       getShopCategories(defaultLocale),
       getActiveLocaleCodes(),
     ]);
@@ -47,6 +52,7 @@ const AccountPage = async () => {
         )}
         user={user ?? session.user ?? {}}
         orders={orders}
+        downloads={downloads}
       />
     </Container>
   );

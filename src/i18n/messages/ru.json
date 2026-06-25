@@ -828,7 +828,8 @@
       "confirmed": "Готовится к отправке",
       "shipped": "В доставке",
       "delivered": "Доставлен",
-      "cancelled": "Отменён"
+      "cancelled": "Отменён",
+      "completed": "Доступен для скачивания"
     },
     "showAll": "Показать все",
     "removeAll": "Очистить",
@@ -843,6 +844,10 @@
     "repeatPasswordLabel": "Повторите пароль",
     "recentOrders": "Последние заказы",
     "downloadedBooks": "Скачанные книги",
+    "download": "Скачать",
+    "noBooks": "У вас пока нет купленных электронных книг. После покупки они появятся здесь.",
+    "orderFormatDigital": "Цифровая",
+    "orderFormatPrinted": "Печатная",
     "shippingAddresses": "Адреса доставки",
     "favoritesEyebrow": "Wishlist",
     "favoritesTitle": "Ваше избранное",
@@ -1188,6 +1193,7 @@
         "delivered": "Доставлен",
         "cancelled": "Отменён"
       },
+      "confirmPayment": "Подтвердить оплату",
       "delete": {
         "button": "Удалить заказ",
         "dialogTitle": "Удалить заказ?",
@@ -1268,7 +1274,7 @@
         "formatsRule": "Выберите доступные форматы книги.",
         "specsRule": "Добавляйте характеристики отдельными полями: название и значение.",
         "reviewsRule": "Отзывы общие для всех локалей товара.",
-        "filesRule": "Текущие файлы сохраняются. Новые PDF добавляются к существующим."
+        "filesRule": "Загрузите один PDF-файл. Новый файл заменит предыдущий."
       },
       "buttons": {
         "addLanguage": "Добавить язык",

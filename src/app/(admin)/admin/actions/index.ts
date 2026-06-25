@@ -13,6 +13,7 @@ export {
   saveAdminRegionAction,
 } from "./localization";
 export {
+  confirmAdminOrderPaymentAction,
   deleteAdminOrderAction,
   updateAdminOrderStatusAction,
 } from "./orders";

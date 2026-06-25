@@ -5,6 +5,7 @@ import type Stripe from "stripe";
 import {
   findOrderById,
   updateOrderPayment,
+  updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
 import { verifyStripeWebhook } from "@/server/payments/stripe";
 import { notifyAdminOrderPaid } from "@/server/payments/telegram";
@@ -42,6 +43,10 @@ const handleCheckoutCompleted = async (session: Stripe.Checkout.Session) => {
     stripePaymentIntentId: paymentIntent,
     paidAt: new Date().toISOString(),
   });
+
+  if (existing.fulfillmentType === "digital") {
+    await updateOrderStatus(orderId, "delivered");
+  }
 
   // Re-fetch so the notification reflects the updated payment status.
   const updated = await findOrderById(orderId);

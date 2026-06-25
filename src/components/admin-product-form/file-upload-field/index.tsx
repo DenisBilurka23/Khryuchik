@@ -1,8 +1,17 @@
 "use client";
 
 import { useEffect, useEffectEvent, useRef, useState } from "react";
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
-
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined";
+import {
+  Box,
+  Button,
+  IconButton,
+  Paper,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { requestAdminProductAssetUploadUrls } from "@/client-api/admin";
 import type { ProductFileAsset } from "@/types/product-details";
 
@@ -16,15 +25,13 @@ import type {
   AdminFileUploadStatusLabels,
 } from "./types";
 
-const buildAssetsJsonValue = (
-  existingFiles: ProductFileAsset[],
-  items: AdminFileUploadItem[],
+const buildAssetsJson = (
+  storedFiles: ProductFileAsset[],
+  pendingItem: AdminFileUploadItem | null,
 ) =>
   JSON.stringify([
-    ...existingFiles,
-    ...items
-      .map((item) => item.uploadedAsset)
-      .filter((asset): asset is ProductFileAsset => Boolean(asset)),
+    ...storedFiles,
+    ...(pendingItem?.uploadedAsset ? [pendingItem.uploadedAsset] : []),
   ]);
 
 const formatStatus = (
@@ -38,7 +45,6 @@ const formatStatus = (
       return labels.uploaded;
     case "error":
       return labels.error;
-    case "pending":
     default:
       return "";
   }
@@ -53,122 +59,133 @@ export const AdminFileUploadField = ({
   existingFiles,
   statusLabels,
 }: AdminFileUploadFieldProps) => {
-  const [items, setItems] = useState<AdminFileUploadItem[]>([]);
-  const itemsRef = useRef<AdminFileUploadItem[]>(items);
+  const [storedFiles, setStoredFiles] =
+    useState<ProductFileAsset[]>(existingFiles);
+  const [pendingItem, setPendingItem] = useState<AdminFileUploadItem | null>(
+    null,
+  );
+  const pendingRef = useRef<AdminFileUploadItem | null>(pendingItem);
   const hiddenInputRef = useRef<HTMLInputElement | null>(null);
   const { register } = useAdminProductUploadRegistry();
 
-  const syncHiddenInput = (nextItems: AdminFileUploadItem[]) => {
+  const syncHiddenInput = (
+    nextStored: ProductFileAsset[],
+    nextPending: AdminFileUploadItem | null,
+  ) => {
     if (hiddenInputRef.current) {
-      hiddenInputRef.current.value = buildAssetsJsonValue(
-        existingFiles,
-        nextItems,
-      );
+      hiddenInputRef.current.value = buildAssetsJson(nextStored, nextPending);
     }
   };
 
-  const updateItems = (nextItems: AdminFileUploadItem[]) => {
-    itemsRef.current = nextItems;
-    setItems(nextItems);
-    syncHiddenInput(nextItems);
-  };
-
-  const patchItem = useEffectEvent(
-    (itemId: string, patch: Partial<AdminFileUploadItem>) => {
-      const next = itemsRef.current.map((item) =>
-        item.id === itemId ? { ...item, ...patch } : item,
-      );
-
-      updateItems(next);
-    },
-  );
+  const patchPending = useEffectEvent((patch: Partial<AdminFileUploadItem>) => {
+    if (!pendingRef.current) return;
+    const next = { ...pendingRef.current, ...patch };
+    pendingRef.current = next;
+    setPendingItem(next);
+    syncHiddenInput(storedFiles, next);
+  });
 
   useEffect(() => {
     const runUploads = async () => {
-      const pendingItems = itemsRef.current.filter(
-        (item) => item.status === "pending" || item.status === "error",
-      );
+      const item = pendingRef.current;
 
-      if (pendingItems.length === 0) {
+      if (!item || (item.status !== "pending" && item.status !== "error")) {
         return;
       }
 
-      pendingItems.forEach((item) => {
-        patchItem(item.id, {
-          status: "uploading",
-          progress: 0,
-          errorMessage: undefined,
-        });
+      patchPending({
+        status: "uploading",
+        progress: 0,
+        errorMessage: undefined,
       });
 
       const presignResponse = await requestAdminProductAssetUploadUrls({
         locale,
         productId,
-        files: pendingItems.map((item) => ({
-          fileName: item.file.name,
-          contentType: item.file.type || "application/pdf",
-        })),
+        files: [
+          {
+            fileName: item.file.name,
+            contentType: item.file.type || "application/pdf",
+          },
+        ],
       });
 
-      if (!presignResponse.ok || !presignResponse.data?.items) {
-        pendingItems.forEach((item) => {
-          patchItem(item.id, { status: "error" });
-        });
-
-        throw new Error("Failed to obtain asset upload URLs");
+      if (!presignResponse.ok || !presignResponse.data?.items?.[0]) {
+        patchPending({ status: "error" });
+        throw new Error("Failed to obtain asset upload URL");
       }
 
-      const plans = presignResponse.data.items;
+      const plan = presignResponse.data.items[0];
 
-      await Promise.all(
-        plans.map(async (plan, index) => {
-          const item = pendingItems[index];
+      try {
+        await uploadDirectToR2({
+          uploadUrl: plan.uploadUrl,
+          file: item.file,
+          contentType: plan.contentType,
+          onProgress: (progress) => patchPending({ progress }),
+        });
 
-          if (!item) {
-            return;
-          }
-
-          try {
-            await uploadDirectToR2({
-              uploadUrl: plan.uploadUrl,
-              file: item.file,
-              contentType: plan.contentType,
-              onProgress: (progress) => {
-                patchItem(item.id, { progress });
-              },
-            });
-
-            const uploadedAsset: ProductFileAsset = {
-              id: plan.id,
-              label: plan.fileName,
-              fileName: plan.fileName,
-              format: plan.format,
-              contentType: plan.contentType,
-              sizeBytes: item.file.size,
-              objectKey: plan.objectKey,
-            };
-
-            patchItem(item.id, {
-              status: "uploaded",
-              progress: 1,
-              uploadedAsset,
-            });
-          } catch (uploadError) {
-            patchItem(item.id, {
-              status: "error",
-              errorMessage:
-                uploadError instanceof Error
-                  ? uploadError.message
-                  : "upload_failed",
-            });
-            throw uploadError;
-          }
-        }),
-      );
+        patchPending({
+          status: "uploaded",
+          progress: 1,
+          uploadedAsset: {
+            id: plan.id,
+            label: plan.fileName,
+            fileName: plan.fileName,
+            format: plan.format,
+            contentType: plan.contentType,
+            sizeBytes: item.file.size,
+            objectKey: plan.objectKey,
+          },
+        });
+      } catch (err) {
+        patchPending({
+          status: "error",
+          errorMessage: err instanceof Error ? err.message : "upload_failed",
+        });
+        throw err;
+      }
     };
 
     return register(runUploads);
   }, [locale, productId, register]);
+
+  const handleFileSelect = (file: File) => {
+    const newItem: AdminFileUploadItem = {
+      id: crypto.randomUUID(),
+      file,
+      status: "pending",
+      progress: 0,
+    };
+    setStoredFiles([]);
+    pendingRef.current = newItem;
+    setPendingItem(newItem);
+    syncHiddenInput([], newItem);
+  };
+
+  const handleDeleteStored = (fileId: string) => {
+    const next = storedFiles.filter((f) => f.id !== fileId);
+    setStoredFiles(next);
+    syncHiddenInput(next, pendingItem);
+  };
+
+  const handleDeletePending = () => {
+    pendingRef.current = null;
+    setPendingItem(null);
+    syncHiddenInput(storedFiles, null);
+  };
+
+  const currentFile: { name: string; meta: string } | null = (() => {
+    if (pendingItem) {
+      const statusText = formatStatus(pendingItem, statusLabels);
+      return { name: pendingItem.file.name, meta: statusText };
+    }
+    if (storedFiles.length > 0) {
+      const f = storedFiles[0];
+      return { name: f.label, meta: `${f.format.toUpperCase()}` };
+    }
+    return null;
+  })();
 
   return (
     <Stack gap={1.5}>
@@ -176,57 +193,61 @@ export const AdminFileUploadField = ({
         ref={hiddenInputRef}
         type="hidden"
         name={assetsJsonInputName}
-        defaultValue={buildAssetsJsonValue(existingFiles, items)}
+        defaultValue={buildAssetsJson(storedFiles, pendingItem)}
       />
 
       <Typography variant="body2" color="text.secondary">
         {helperText}
       </Typography>
 
-      {existingFiles.length > 0 ? (
-        <Stack gap={1}>
-          {existingFiles.map((file) => (
-            <Paper
-              key={file.id}
-              variant="outlined"
-              sx={{ p: 1.5, borderRadius: "16px" }}
-            >
-              <Typography fontWeight={600}>{file.label}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {file.fileName} · {file.format}
+      {currentFile ? (
+        <Paper variant="outlined" sx={{ p: 1.5, borderRadius: "16px" }}>
+          <Stack direction="row" alignItems="center" spacing={1.5}>
+            <InsertDriveFileOutlinedIcon
+              fontSize="small"
+              sx={{ color: "text.secondary", flexShrink: 0 }}
+            />
+            <Box sx={{ minWidth: 0, flex: 1 }}>
+              <Typography
+                fontWeight={600}
+                sx={{
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {currentFile.name}
               </Typography>
-            </Paper>
-          ))}
-        </Stack>
-      ) : null}
-
-      {items.length > 0 ? (
-        <Stack gap={0.75}>
-          {items.map((item) => {
-            const statusText = formatStatus(item, statusLabels);
-
-            return (
-              <Box key={item.id}>
-                <Typography variant="body2">{item.file.name}</Typography>
-                {statusText ? (
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      color:
-                        item.status === "error"
-                          ? "error.main"
-                          : item.status === "uploaded"
-                            ? "#1F8A4C"
-                            : "#1F2937",
-                    }}
-                  >
-                    {statusText}
-                  </Typography>
-                ) : null}
-              </Box>
-            );
-          })}
-        </Stack>
+              {currentFile.meta ? (
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color:
+                      pendingItem?.status === "error"
+                        ? "error.main"
+                        : pendingItem?.status === "uploaded"
+                          ? "#1F8A4C"
+                          : "text.secondary",
+                  }}
+                >
+                  {currentFile.meta}
+                </Typography>
+              ) : null}
+            </Box>
+            <Tooltip title="Remove file">
+              <IconButton
+                size="small"
+                onClick={
+                  pendingItem
+                    ? handleDeletePending
+                    : () => handleDeleteStored(storedFiles[0].id)
+                }
+              >
+                <DeleteOutlineOutlinedIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        </Paper>
       ) : null}
 
       <Button
@@ -239,27 +260,12 @@ export const AdminFileUploadField = ({
           hidden
           type="file"
           accept=".pdf,application/pdf"
-          multiple
           onClick={(event) => {
             event.currentTarget.value = "";
           }}
           onChange={(event) => {
-            const selectedFiles = Array.from(event.target.files ?? []);
-
-            if (selectedFiles.length === 0) {
-              return;
-            }
-
-            const nextItems = selectedFiles.map<AdminFileUploadItem>(
-              (file) => ({
-                id: crypto.randomUUID(),
-                file,
-                status: "pending",
-                progress: 0,
-              }),
-            );
-
-            updateItems([...itemsRef.current, ...nextItems]);
+            const file = event.target.files?.[0];
+            if (file) handleFileSelect(file);
           }}
         />
       </Button>

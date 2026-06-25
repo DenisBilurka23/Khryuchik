@@ -1,7 +1,7 @@
-import type { AccountDownloadMock } from "@/data/account-page-mock";
 import type { Locale } from "@/i18n/config";
+import type { AccountDownload } from "@/types/download";
 
 export type BooksSectionProps = {
   locale: Locale;
-  downloads: AccountDownloadMock[];
+  downloads: AccountDownload[];
 };

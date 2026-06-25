@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import {
   Alert,
@@ -59,6 +60,8 @@ export const AddressesSection = ({
   const tCheckout = useTranslations("storefront.checkoutPage");
   const tCheckoutFields = useTranslations("storefront.checkoutPage.fields");
 
+  const { update } = useSession();
+
   const [addresses, setAddresses] = useState(initialAddresses);
   const [selectedShippingAddressId, setSelectedShippingAddressId] = useState(initialSelectedId);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
@@ -95,6 +98,12 @@ export const AddressesSection = ({
     setAddresses(nextAddresses);
     setSelectedShippingAddressId(nextSelectedId);
     onAddressesChange?.(nextAddresses, nextSelectedId);
+    void update({
+      user: {
+        shippingAddresses: nextAddresses,
+        selectedShippingAddressId: nextSelectedId,
+      },
+    });
   };
 
   const handleBeginAddAddress = () => {

@@ -17,6 +17,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import { deleteAdminOrderAction } from "@/app/(admin)/admin/actions";
 import {
   AdminOrderDeleteButton,
+  AdminOrderPaymentConfirmButton,
   AdminOrderStatusSelect,
 } from "@/components/admin-orders-page-view";
 import {
@@ -39,11 +40,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
     namespace: "adminPage.orders",
   });
 
-  return createAdminMetadata(
-    tOrders("title"),
-    tOrders("description"),
-    locale,
-  );
+  return createAdminMetadata(tOrders("title"), tOrders("description"), locale);
 };
 
 const AdminOrdersPage = async () => {
@@ -55,12 +52,14 @@ const AdminOrdersPage = async () => {
   const orders = await findOrders();
 
   const columns = tOrders.raw("columns") as OrderColumns;
-  const paymentMethodLabels = tOrders.raw(
-    "paymentMethodLabels",
-  ) as Record<string, string>;
-  const paymentStatusLabels = tOrders.raw(
-    "paymentStatusLabels",
-  ) as Record<string, string>;
+  const paymentMethodLabels = tOrders.raw("paymentMethodLabels") as Record<
+    string,
+    string
+  >;
+  const paymentStatusLabels = tOrders.raw("paymentStatusLabels") as Record<
+    string,
+    string
+  >;
 
   return (
     <Stack gap={3}>
@@ -141,13 +140,25 @@ const AdminOrdersPage = async () => {
                       />
                     </TableCell>
                     <TableCell align="right">
-                      <AdminOrderDeleteButton
-                        orderId={order.id}
-                        action={deleteAdminOrderAction}
-                        icon={
-                          <DeleteOutlineOutlinedIcon key="delete-order-icon" />
-                        }
-                      />
+                      <Stack
+                        direction="row"
+                        justifyContent="flex-end"
+                        spacing={0.5}
+                      >
+                        {order.payment.status === "pending" &&
+                          order.payment.method !== "stripe" && (
+                            <AdminOrderPaymentConfirmButton
+                              orderId={order.id}
+                            />
+                          )}
+                        <AdminOrderDeleteButton
+                          orderId={order.id}
+                          action={deleteAdminOrderAction}
+                          icon={
+                            <DeleteOutlineOutlinedIcon key="delete-order-icon" />
+                          }
+                        />
+                      </Stack>
                     </TableCell>
                   </TableRow>
                 ))}

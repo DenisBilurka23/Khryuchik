@@ -13,6 +13,8 @@ export type OrderItem = {
   emoji: string;
   thumbnailBackgroundColor?: string;
   variant?: string;
+  formatSelection?: string;
+  languageSelection?: string;
   unitPrice: number;
   quantity: number;
   lineTotal: number;
@@ -58,6 +60,8 @@ export type OrderPaymentInfo = {
   paidAt?: string;
 };
 
+export type OrderFulfillmentType = "digital" | "physical";
+
 export type OrderDocument = {
   id: string;
   createdAt: string;
@@ -74,6 +78,7 @@ export type OrderDocument = {
   shippingAddress: OrderShippingAddress;
   payment: OrderPaymentInfo;
   status: OrderStatus;
+  fulfillmentType?: OrderFulfillmentType;
   notes?: string;
 };
 
@@ -82,13 +87,24 @@ export type CustomerOrderStatus =
   | "confirmed"
   | "shipped"
   | "delivered"
-  | "cancelled";
+  | "cancelled"
+  | "completed";
+
+export type AccountOrderItem = {
+  title: string;
+  emoji: string;
+  variant?: string;
+  formatSelection?: string;
+  quantity: number;
+};
 
 export type AccountOrder = {
   id: string;
   number: string;
   createdAt: string;
+  locale: string;
   itemsSummary: string;
+  items: AccountOrderItem[];
   total: string;
   status: CustomerOrderStatus;
 };
