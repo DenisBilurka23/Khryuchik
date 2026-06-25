@@ -46,7 +46,12 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
       return;
     }
 
-    updateQuantity(id, Math.max(1, item.quantity - 1));
+    if (item.quantity <= 1) {
+      removeItem(id);
+      return;
+    }
+
+    updateQuantity(id, item.quantity - 1);
   };
 
   const handleRemove = (id: string) => {

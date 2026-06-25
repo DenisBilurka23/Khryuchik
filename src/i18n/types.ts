@@ -37,6 +37,7 @@ export type ProductPageLabels = {
   };
   actions: {
     addToCart: string;
+    addedToCart: string;
     buyNow: string;
     viewBook: string;
   };
