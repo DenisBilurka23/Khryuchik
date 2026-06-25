@@ -5,18 +5,24 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import {
+  Alert,
   Box,
   Button,
   Chip,
   IconButton,
   MenuItem,
+  Snackbar,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+
+import { getLocalizedPath } from "@/utils";
 
 import { useWishlist } from "@/hooks/useWishlist";
+import { BOOK_FORMAT } from "@/constants/catalog";
 import { formatCurrency } from "@/utils";
 import { useCart } from "../../cart/store";
 import type { ProductInfoProps } from "../types";
@@ -26,13 +32,16 @@ export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
   const tShopSection = useTranslations("storefront.shopSection");
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const [language, setLanguage] = useState(product.languages?.[0]?.value || "");
   const [format, setFormat] = useState(product.formats?.[0]?.value || "");
   const [size, setSize] = useState(product.sizes?.[0]?.value || "");
   const [color, setColor] = useState(product.colors?.[0]?.value || "");
+  const [toastOpen, setToastOpen] = useState(false);
   const isWishlisted = isInWishlist(product.productId);
   const hasMetaChips = Boolean(product.badge || product.storyLabel);
+  const isDigital = format === BOOK_FORMAT.digital;
 
   const handleAddToCart = () => {
     addItem({
@@ -45,6 +54,12 @@ export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
         color: color || undefined,
       },
     });
+    setToastOpen(true);
+  };
+
+  const handleBuyNow = () => {
+    handleAddToCart();
+    router.push(getLocalizedPath(locale, "/checkout"));
   };
 
   return (
@@ -192,20 +207,22 @@ export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
           </TextField>
         ) : null}
 
-        <TextField
-          label={tProductPage("selectors.quantity")}
-          type="number"
-          value={quantity}
-          onChange={(event) =>
-            setQuantity(Math.max(1, Number(event.target.value) || 1))
-          }
-          slotProps={{
-            htmlInput: {
-              min: 1,
-            },
-          }}
-          fullWidth
-        />
+        {!isDigital ? (
+          <TextField
+            label={tProductPage("selectors.quantity")}
+            type="number"
+            value={quantity}
+            onChange={(event) =>
+              setQuantity(Math.max(1, Number(event.target.value) || 1))
+            }
+            slotProps={{
+              htmlInput: {
+                min: 1,
+              },
+            }}
+            fullWidth
+          />
+        ) : null}
       </Stack>
 
       <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 4 }}>
@@ -223,10 +240,27 @@ export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
           color="inherit"
           size="large"
           sx={{ flex: 1, borderColor: "#E8D6BF", bgcolor: "#fff" }}
+          onClick={handleBuyNow}
         >
           {tProductPage("actions.buyNow")}
         </Button>
       </Stack>
+
+      <Snackbar
+        open={toastOpen}
+        autoHideDuration={3000}
+        onClose={() => setToastOpen(false)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setToastOpen(false)}
+          severity="success"
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {tProductPage("actions.addedToCart")}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

@@ -184,6 +184,7 @@
       },
       "actions": {
         "addToCart": "Add to cart",
+        "addedToCart": "Added to cart",
         "buyNow": "Buy now",
         "viewBook": "View the book"
       },
