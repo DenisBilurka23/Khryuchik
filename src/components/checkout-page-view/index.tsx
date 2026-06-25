@@ -11,11 +11,16 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { submitCheckoutClient } from "@/client-api/checkout";
 import { useCart } from "@/components/cart/store";
+import {
+  getBuyNowItem,
+  clearBuyNowItem,
+} from "@/components/cart/buy-now-store";
 import { EmptyCartState } from "@/components/cart";
+import type { StoredCartItem } from "@/types/cart";
 import storefrontStyles from "@/components/storefront/storefront.module.css";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import {
@@ -74,9 +79,17 @@ export const CheckoutPageView = ({
   };
 
   const cart = useCart();
+  const [buyNowItems, setBuyNowItems] = useState<StoredCartItem[] | null>(null);
+
+  useEffect(() => {
+    const item = getBuyNowItem();
+    if (item) setBuyNowItems([item]);
+  }, []);
+
   const { items, subtotal, isLoading, hasStoredItems } = useResolvedCart(
     locale,
     country,
+    buyNowItems ?? undefined,
   );
 
   const availableMethods = useMemo(
@@ -220,7 +233,7 @@ export const CheckoutPageView = ({
     try {
       const response = await submitCheckoutClient({
         locale,
-        items: cart.items,
+        items: buyNowItems ?? cart.items,
         customer: {
           name: form.name.trim(),
           email: form.email.trim() || undefined,
@@ -249,6 +262,8 @@ export const CheckoutPageView = ({
       }
 
       const { orderId, redirectUrl } = response.data;
+
+      clearBuyNowItem();
 
       if (redirectUrl) {
         window.location.assign(redirectUrl);

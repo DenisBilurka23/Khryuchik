@@ -28,6 +28,7 @@ export type CartItem = {
   thumbnailBackgroundColor?: string;
   quantity: number;
   variant?: string;
+  isDigital?: boolean;
 };
 
 export type CartResolveResponse = {

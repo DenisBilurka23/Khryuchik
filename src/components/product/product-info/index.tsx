@@ -19,12 +19,12 @@ import {
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
-import { getLocalizedPath } from "@/utils";
+import { formatCurrency, getLocalizedPath } from "@/utils";
 
 import { useWishlist } from "@/hooks/useWishlist";
 import { BOOK_FORMAT } from "@/constants/catalog";
-import { formatCurrency } from "@/utils";
 import { useCart } from "../../cart/store";
+import { setBuyNowItem } from "../../cart/buy-now-store";
 import type { ProductInfoProps } from "../types";
 
 export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
@@ -58,7 +58,16 @@ export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
   };
 
   const handleBuyNow = () => {
-    handleAddToCart();
+    setBuyNowItem({
+      productId: product.productId,
+      quantity: isDigital ? 1 : quantity,
+      selections: {
+        language: language || undefined,
+        format: format || undefined,
+        size: size || undefined,
+        color: color || undefined,
+      },
+    });
     router.push(getLocalizedPath(locale, "/checkout"));
   };
 
@@ -152,7 +161,11 @@ export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
             slotProps={{ select: { sx: { textTransform: "capitalize" } } }}
           >
             {product.languages.map((option) => (
-              <MenuItem key={option.value} value={option.value} sx={{ textTransform: "capitalize" }}>
+              <MenuItem
+                key={option.value}
+                value={option.value}
+                sx={{ textTransform: "capitalize" }}
+              >
                 {option.label}
               </MenuItem>
             ))}
