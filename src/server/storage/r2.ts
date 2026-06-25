@@ -2,6 +2,7 @@ import "server-only";
 
 import {
   DeleteObjectCommand,
+  GetObjectCommand,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -157,6 +158,17 @@ export const deletePrivateObject = async (objectKey: string) => {
 
   await client.send(
     new DeleteObjectCommand({
+      Bucket: R2_BUCKET_PRIVATE,
+      Key: objectKey,
+    }),
+  );
+};
+
+export const getPrivateObject = async (objectKey: string) => {
+  const client = getR2Client();
+
+  return client.send(
+    new GetObjectCommand({
       Bucket: R2_BUCKET_PRIVATE,
       Key: objectKey,
     }),

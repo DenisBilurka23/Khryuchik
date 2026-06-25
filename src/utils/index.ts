@@ -72,6 +72,7 @@ export const getCountLabel = (
 };
 
 export { formatCurrency } from "./format-currency";
+export { formatFileSize } from "./format-file-size";
 export { formatOrderNumber } from "./format-order-number";
 
 export const getLocalizedPath = (locale: Locale, path: string) =>

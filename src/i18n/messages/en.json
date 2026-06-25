@@ -828,7 +828,8 @@
       "confirmed": "Preparing for shipment",
       "shipped": "In transit",
       "delivered": "Delivered",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "completed": "Available for download"
     },
     "showAll": "Show all",
     "removeAll": "Clear",
@@ -843,6 +844,10 @@
     "repeatPasswordLabel": "Repeat password",
     "recentOrders": "Recent orders",
     "downloadedBooks": "Downloaded books",
+    "download": "Download",
+    "noBooks": "You haven't purchased any e-books yet. Purchased digital books will appear here.",
+    "orderFormatDigital": "Digital",
+    "orderFormatPrinted": "Printed",
     "shippingAddresses": "Shipping addresses",
     "favoritesEyebrow": "Wishlist",
     "favoritesTitle": "Your favorites",
@@ -1188,6 +1193,7 @@
         "delivered": "Delivered",
         "cancelled": "Cancelled"
       },
+      "confirmPayment": "Confirm payment",
       "delete": {
         "button": "Delete order",
         "dialogTitle": "Delete this order?",
@@ -1268,7 +1274,7 @@
         "formatsRule": "Select the formats the book is available in.",
         "specsRule": "Add specifications as separate fields with a name and a value.",
         "reviewsRule": "Reviews are shared across all product locales.",
-        "filesRule": "Existing files stay attached. Upload new PDFs to append them."
+        "filesRule": "Upload one PDF file. A new upload will replace the existing one."
       },
       "buttons": {
         "addLanguage": "Add language",

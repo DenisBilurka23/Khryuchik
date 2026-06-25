@@ -661,6 +661,7 @@ export type AccountPageDictionary = {
     shipped: string;
     delivered: string;
     cancelled: string;
+    completed: string;
   };
   showAll: string;
   removeAll: string;
@@ -675,6 +676,10 @@ export type AccountPageDictionary = {
   repeatPasswordLabel: string;
   recentOrders: string;
   downloadedBooks: string;
+  download: string;
+  noBooks: string;
+  orderFormatDigital: string;
+  orderFormatPrinted: string;
   shippingAddresses: string;
   favoritesEyebrow: string;
   favoritesTitle: string;

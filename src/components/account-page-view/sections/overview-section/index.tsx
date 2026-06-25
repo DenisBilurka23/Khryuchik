@@ -4,6 +4,7 @@ import { Box, Button, Chip, Grid, Paper, Stack, Typography } from "@mui/material
 import { useTranslations } from "next-intl";
 
 import { customerOrderStatusColors } from "@/constants/order";
+import { formatFileSize } from "@/utils";
 import {
   getUserShippingAddressLines,
   getUserShippingAddressTitle,
@@ -76,40 +77,59 @@ export const OverviewSection = ({
         <Grid size={{ xs: 12, lg: 6 }}>
           <SectionCard title={t("downloadedBooks")}>
             <Stack spacing={2}>
-              {downloads.map((item) => (
-                <Paper
-                  key={item.title}
-                  elevation={0}
-                  sx={{
-                    p: 2.25,
-                    borderRadius: "22px",
-                    border: "1px solid #F0DFC8",
-                    bgcolor: "#fff",
-                  }}
-                >
-                  <Stack
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    spacing={2}
+              {downloads.length === 0 ? (
+                <Typography color="text.secondary">{t("noBooks")}</Typography>
+              ) : (
+                downloads.map((item) => (
+                  <Paper
+                    key={item.assetId}
+                    elevation={0}
+                    sx={{
+                      p: 2.25,
+                      borderRadius: "22px",
+                      border: "1px solid #F0DFC8",
+                      bgcolor: "#fff",
+                    }}
                   >
-                    <Box>
-                      <Typography sx={{ fontWeight: 700 }}>{item.title}</Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                        {item.format} • {item.size}
-                      </Typography>
-                    </Box>
-                    <Button
-                      variant="outlined"
-                      color="inherit"
-                      startIcon={<DownloadOutlinedIcon />}
-                      sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      spacing={2}
+                      sx={{ width: "100%" }}
                     >
-                      {locale === "ru" ? "Скачать" : "Download"}
-                    </Button>
-                  </Stack>
-                </Paper>
-              ))}
+                      <Box sx={{ minWidth: 0, flex: 1 }}>
+                        <Typography
+                          sx={{
+                            fontWeight: 700,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {item.productTitle}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                          {item.format}
+                          {item.sizeBytes
+                            ? ` • ${formatFileSize(item.sizeBytes)}`
+                            : ""}
+                          {` • ${new Intl.DisplayNames([item.locale], { type: "language" }).of(item.locale) ?? item.locale.toUpperCase()}`}
+                        </Typography>
+                      </Box>
+                      <Button
+                        variant="outlined"
+                        color="inherit"
+                        startIcon={<DownloadOutlinedIcon />}
+                        component="a"
+                        href={item.downloadUrl}
+                        sx={{ borderColor: "#E8D6BF", bgcolor: "#fff", flexShrink: 0 }}
+                      >
+                        {t("download")}
+                      </Button>
+                    </Stack>
+                  </Paper>
+                ))
+              )}
             </Stack>
           </SectionCard>
         </Grid>

@@ -74,6 +74,11 @@ export const createStripeCheckoutSession = async (
   });
 };
 
+export const retrieveStripeCheckoutSession = (
+  sessionId: string,
+): Promise<Stripe.Checkout.Session> =>
+  stripeClient.checkout.sessions.retrieve(sessionId);
+
 export const verifyStripeWebhook = (
   rawBody: string,
   signature: string | null,

@@ -24,8 +24,6 @@ import {
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
-
-import { getAccountPageMockData } from "@/data/account-page-mock";
 import type { UserShippingAddress } from "@/types/users";
 
 import {
@@ -51,7 +49,9 @@ const accountSectionKeys: SectionKey[] = [
   "logout",
 ];
 
-const getActiveSection = (searchParams: { get: (name: string) => string | null }) => {
+const getActiveSection = (searchParams: {
+  get: (name: string) => string | null;
+}) => {
   const sectionParam = searchParams.get("section");
 
   return accountSectionKeys.includes(sectionParam as SectionKey)
@@ -67,6 +67,7 @@ export const AccountPageView = ({
   favoriteCategoryLabels,
   user,
   orders,
+  downloads,
 }: AccountPageViewProps) => {
   const t = useTranslations("accountPage");
   const tabs = t.raw("tabs") as string[];
@@ -94,7 +95,6 @@ export const AccountPageView = ({
     user.selectedShippingAddressId ?? user.shippingAddresses?.[0]?.id ?? null,
   );
 
-  const { downloads } = getAccountPageMockData(locale);
   const activeSection = getActiveSection(searchParams);
 
   const overviewAddresses = [...shippingAddresses].sort((left, right) => {
@@ -105,13 +105,41 @@ export const AccountPageView = ({
   });
 
   const sidebarItems = [
-    { key: "overview" as const, label: tabs[0] ?? t("profile"), icon: <PersonOutlineIcon /> },
-    { key: "orders" as const, label: t("orders"), icon: <ReceiptLongOutlinedIcon /> },
-    { key: "books" as const, label: t("books"), icon: <MenuBookOutlinedIcon /> },
-    { key: "addresses" as const, label: t("addresses"), icon: <LocationOnOutlinedIcon /> },
-    { key: "favorites" as const, label: t("favorites"), icon: <FavoriteBorderIcon /> },
-    { key: "settings" as const, label: t("settings"), icon: <SettingsOutlinedIcon /> },
-    { key: "logout" as const, label: t("logout"), icon: <LogoutOutlinedIcon /> },
+    {
+      key: "overview" as const,
+      label: tabs[0] ?? t("profile"),
+      icon: <PersonOutlineIcon />,
+    },
+    {
+      key: "orders" as const,
+      label: t("orders"),
+      icon: <ReceiptLongOutlinedIcon />,
+    },
+    {
+      key: "books" as const,
+      label: t("books"),
+      icon: <MenuBookOutlinedIcon />,
+    },
+    {
+      key: "addresses" as const,
+      label: t("addresses"),
+      icon: <LocationOnOutlinedIcon />,
+    },
+    {
+      key: "favorites" as const,
+      label: t("favorites"),
+      icon: <FavoriteBorderIcon />,
+    },
+    {
+      key: "settings" as const,
+      label: t("settings"),
+      icon: <SettingsOutlinedIcon />,
+    },
+    {
+      key: "logout" as const,
+      label: t("logout"),
+      icon: <LogoutOutlinedIcon />,
+    },
   ];
 
   const replaceSection = (nextSection: SectionKey) => {
@@ -163,7 +191,9 @@ export const AccountPageView = ({
             locale={locale}
             initialAddresses={user.shippingAddresses ?? []}
             initialSelectedId={
-              user.selectedShippingAddressId ?? user.shippingAddresses?.[0]?.id ?? null
+              user.selectedShippingAddressId ??
+              user.shippingAddresses?.[0]?.id ??
+              null
             }
             onAddressesChange={handleAddressesChange}
           />
@@ -185,7 +215,9 @@ export const AccountPageView = ({
           />
         );
       case "logout":
-        return <LogoutSection onSignOut={() => signOut({ callbackUrl: homeHref })} />;
+        return (
+          <LogoutSection onSignOut={() => signOut({ callbackUrl: homeHref })} />
+        );
       case "overview":
       default:
         return (
@@ -209,7 +241,9 @@ export const AccountPageView = ({
           order={{ xs: 1, md: 1 }}
           sx={{ display: "flex" }}
         >
-          <Card sx={{ border: "1px solid #F0DFC8", width: "100%", height: "100%" }}>
+          <Card
+            sx={{ border: "1px solid #F0DFC8", width: "100%", height: "100%" }}
+          >
             <CardContent sx={{ p: 3 }}>
               <Stack alignItems="center" textAlign="center">
                 <AccountAvatarUploadField
@@ -230,14 +264,22 @@ export const AccountPageView = ({
                   variant={isEditingProfile ? "contained" : "outlined"}
                   color={isEditingProfile ? undefined : "inherit"}
                   startIcon={
-                    isEditingProfile ? <SaveOutlinedIcon /> : <EditOutlinedIcon />
+                    isEditingProfile ? (
+                      <SaveOutlinedIcon />
+                    ) : (
+                      <EditOutlinedIcon />
+                    )
                   }
                   sx={
                     isEditingProfile
                       ? { mt: 2.5 }
                       : { mt: 2.5, borderColor: "#E8D6BF", bgcolor: "#fff" }
                   }
-                  onClick={isEditingProfile ? () => void handleProfileSave() : openProfileSettings}
+                  onClick={
+                    isEditingProfile
+                      ? () => void handleProfileSave()
+                      : openProfileSettings
+                  }
                   loading={isSavingProfile}
                 >
                   {isEditingProfile ? t("save") : t("editProfile")}
@@ -275,10 +317,16 @@ export const AccountPageView = ({
             >
               {t("account")}
             </Typography>
-            <Typography variant="h1" sx={{ mt: 1.5, fontSize: { xs: 34, md: 48 } }}>
+            <Typography
+              variant="h1"
+              sx={{ mt: 1.5, fontSize: { xs: 34, md: 48 } }}
+            >
               {t("welcome")}
             </Typography>
-            <Typography color="text.secondary" sx={{ mt: 2, maxWidth: 680, lineHeight: 1.8 }}>
+            <Typography
+              color="text.secondary"
+              sx={{ mt: 2, maxWidth: 680, lineHeight: 1.8 }}
+            >
               {t("lead")}
             </Typography>
           </Paper>

@@ -10,12 +10,11 @@ import type { OrdersSectionProps } from "./types";
 export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
   const t = useTranslations("accountPage");
   const tStatus = useTranslations("accountPage.orderStatuses");
-  const tEmpty = useTranslations("accountPage");
 
   if (orders.length === 0) {
     return (
       <SectionCard title={t("allOrders")}>
-        <Typography color="text.secondary">{tEmpty("noOrders")}</Typography>
+        <Typography color="text.secondary">{t("noOrders")}</Typography>
       </SectionCard>
     );
   }
@@ -39,14 +38,44 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
               justifyContent="space-between"
               spacing={2}
             >
-              <Stack spacing={0.75}>
-                <Typography sx={{ fontWeight: 800 }}>{order.number}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {new Date(order.createdAt).toLocaleDateString(locale)}
-                </Typography>
-                <Typography>{order.itemsSummary}</Typography>
+              <Stack spacing={1}>
+                <Stack direction="row" spacing={1} alignItems="baseline">
+                  <Typography sx={{ fontWeight: 800 }}>{order.number}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {new Date(order.createdAt).toLocaleDateString(locale)}
+                  </Typography>
+                </Stack>
+
+                <Stack spacing={1}>
+                  {order.items.map((item, i) => (
+                    <Stack key={i} spacing={0.5}>
+                      <Typography>
+                        {item.quantity > 1 ? `${item.title} ×${item.quantity}` : item.title}
+                      </Typography>
+                      <Stack direction="row" spacing={0.5} flexWrap="wrap">
+                        {item.variant
+                          ? item.variant.split("/").map((part) => part.trim()).filter(Boolean).map((part, j) => (
+                              <Chip
+                                key={j}
+                                label={part}
+                                size="small"
+                                sx={{ bgcolor: "#F5F0EB", fontWeight: 500, height: 22, fontSize: "0.7rem" }}
+                              />
+                            ))
+                          : item.formatSelection ? (
+                              <Chip
+                                label={item.formatSelection === "digital" ? t("orderFormatDigital") : t("orderFormatPrinted")}
+                                size="small"
+                                sx={{ bgcolor: "#F5F0EB", fontWeight: 500, height: 22, fontSize: "0.7rem" }}
+                              />
+                            ) : null}
+                      </Stack>
+                    </Stack>
+                  ))}
+                </Stack>
               </Stack>
-              <Stack alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1.25}>
+
+              <Stack alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1.25} flexShrink={0}>
                 <Chip
                   label={tStatus(order.status)}
                   sx={{

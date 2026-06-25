@@ -3,14 +3,22 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
-import { insertOrder } from "@/server/orders/repositories/orders.repository";
-import { notifyAdminNewOrder } from "@/server/payments/telegram";
+import {
+  findOrderByStripeSessionId,
+  insertOrder,
+  updateOrderPayment,
+  updateOrderStatus,
+} from "@/server/orders/repositories/orders.repository";
+import { retrieveStripeCheckoutSession } from "@/server/payments/stripe";
+import { notifyAdminNewOrder, notifyAdminOrderPaid } from "@/server/payments/telegram";
 import type {
   CreateOrderInput,
   OrderDocument,
+  OrderFulfillmentType,
   OrderItem,
   OrderPaymentInfo,
 } from "@/types/order";
+import { BOOK_FORMAT } from "@/constants/catalog";
 import {
   countryShippingConfig,
   getCountryCurrency,
@@ -63,6 +71,10 @@ export const createOrder = async (
     );
   }
 
+  const selectionsById = new Map(
+    items.map((item) => [item.id, item.selections]),
+  );
+
   const orderItems: OrderItem[] = resolved.map((item) => ({
     productId: item.productId,
     slug: item.slug,
@@ -70,10 +82,18 @@ export const createOrder = async (
     emoji: item.emoji,
     thumbnailBackgroundColor: item.thumbnailBackgroundColor,
     variant: item.variant,
+    formatSelection: selectionsById.get(item.id)?.format,
+    languageSelection: selectionsById.get(item.id)?.language,
     unitPrice: item.price,
     quantity: item.quantity,
     lineTotal: round2(item.price * item.quantity),
   }));
+
+  const fulfillmentType: OrderFulfillmentType = orderItems.every(
+    (item) => item.formatSelection === BOOK_FORMAT.digital,
+  )
+    ? "digital"
+    : "physical";
 
   const subtotal = round2(
     orderItems.reduce((sum, item) => sum + item.lineTotal, 0),
@@ -105,6 +125,7 @@ export const createOrder = async (
       status: initialPaymentStatus(paymentMethod),
     },
     status: "new",
+    fulfillmentType,
     notes: input.notes,
   };
 
@@ -115,4 +136,44 @@ export const createOrder = async (
   void notifyAdminNewOrder(saved);
 
   return saved;
+};
+
+export const confirmOrderFromStripeSession = async (
+  sessionId: string,
+): Promise<OrderDocument | null> => {
+  const [stripeSession, order] = await Promise.all([
+    retrieveStripeCheckoutSession(sessionId).catch(() => null),
+    findOrderByStripeSessionId(sessionId),
+  ]);
+
+  if (!order || !stripeSession) {
+    return order ?? null;
+  }
+
+  if (
+    order.payment.status !== "paid" &&
+    stripeSession.payment_status === "paid"
+  ) {
+    const paymentIntent =
+      typeof stripeSession.payment_intent === "string"
+        ? stripeSession.payment_intent
+        : stripeSession.payment_intent?.id;
+
+    await updateOrderPayment(order.id, {
+      status: "paid",
+      stripeSessionId: sessionId,
+      stripePaymentIntentId: paymentIntent,
+      paidAt: new Date().toISOString(),
+    });
+
+    if (order.fulfillmentType === "digital") {
+      await updateOrderStatus(order.id, "delivered");
+    }
+
+    void notifyAdminOrderPaid({ ...order, payment: { ...order.payment, status: "paid" } });
+
+    return { ...order, payment: { ...order.payment, status: "paid" as const } };
+  }
+
+  return order;
 };
