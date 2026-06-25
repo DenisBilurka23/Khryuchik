@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   Stack,
@@ -17,6 +18,7 @@ export const ProductCard = ({
   product,
   locale,
   addToCart,
+  selectOptions,
   wishlistAriaLabel,
   detailsHref,
 }: ProductCardProps) => {
@@ -24,7 +26,7 @@ export const ProductCard = ({
 
   return (
     <Card className={styles.card}>
-      <CardContent sx={{ p: 2.5 }}>
+      <CardContent sx={{ p: 2.5, display: "flex", flexDirection: "column", height: "100%" }}>
         <Link
           href={detailsHref}
           style={{ textDecoration: "none", color: "inherit", display: "block" }}
@@ -72,12 +74,23 @@ export const ProductCard = ({
           {formatCurrency(product.price, locale, product.currency)}
         </Typography>
 
-        <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
-          <AddToCartButton
-            productId={product.id}
-            label={addToCart}
-            className={styles.addButton}
-          />
+        <Stack direction="row" spacing={1.5} sx={{ mt: "auto", pt: 3 }}>
+          {product.hasOptions ? (
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              href={detailsHref}
+            >
+              {selectOptions}
+            </Button>
+          ) : (
+            <AddToCartButton
+              productId={product.id}
+              label={addToCart}
+              className={styles.addButton}
+            />
+          )}
 
           <WishlistButton
             productId={product.id}

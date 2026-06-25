@@ -76,6 +76,7 @@
       "title": "Favorite Khryuchik merch",
       "actionLabel": "All merch",
       "addToCart": "Add to cart",
+      "selectOptions": "Select",
       "wishlistAriaLabel": "Add to favorites"
     },
     "favoritesLabel": "Favorites",

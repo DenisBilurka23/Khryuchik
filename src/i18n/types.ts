@@ -449,6 +449,7 @@ export type StorefrontDictionary = {
     title: string;
     actionLabel: string;
     addToCart: string;
+    selectOptions: string;
     wishlistAriaLabel: string;
   };
   favoritesLabel: string;

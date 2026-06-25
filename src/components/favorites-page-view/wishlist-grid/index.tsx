@@ -53,6 +53,7 @@ export const FavoritesWishlistGrid = ({
                 product={item.product}
                 locale={locale}
                 addToCart={tShopSection("addToCart")}
+                selectOptions={tShopSection("selectOptions")}
                 wishlistAriaLabel={tShopSection("wishlistAriaLabel")}
                 detailsHref={getLocalizedProductPath(locale, item.product.slug)}
               />
