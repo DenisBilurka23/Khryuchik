@@ -47,6 +47,7 @@ export const ShopSection = async ({
                 product={product}
                 locale={locale}
                 addToCart={t("addToCart")}
+                selectOptions={t("selectOptions")}
                 wishlistAriaLabel={t("wishlistAriaLabel")}
                 detailsHref={getLocalizedProductPath(locale, product.slug)}
               />

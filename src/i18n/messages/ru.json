@@ -76,6 +76,7 @@
       "title": "Любимый мерч с Хрючиком",
       "actionLabel": "Весь мерч",
       "addToCart": "В корзину",
+      "selectOptions": "Выбрать",
       "wishlistAriaLabel": "Добавить в избранное"
     },
     "favoritesLabel": "Избранное",

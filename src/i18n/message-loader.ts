@@ -92,6 +92,7 @@ const buildStorefrontDictionary = async (
       title: dictionary.storefront.shopSection.title,
       actionLabel: dictionary.storefront.shopSection.actionLabel,
       addToCart: dictionary.storefront.shopSection.addToCart,
+      selectOptions: dictionary.storefront.shopSection.selectOptions,
       wishlistAriaLabel: dictionary.storefront.shopSection.wishlistAriaLabel,
     },
   };

@@ -141,6 +141,7 @@ export const ShopPageView = async ({
                     product={product}
                     locale={locale}
                     addToCart={tShopSection("addToCart")}
+                    selectOptions={tShopSection("selectOptions")}
                     wishlistAriaLabel={tShopSection("wishlistAriaLabel")}
                     detailsHref={getLocalizedProductPath(locale, product.slug)}
                   />

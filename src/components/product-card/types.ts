@@ -5,6 +5,7 @@ export type ProductCardProps = {
   product: LocalizedProductSummary;
   locale: Locale;
   addToCart: string;
+  selectOptions: string;
   wishlistAriaLabel: string;
   detailsHref: string;
 };

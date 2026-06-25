@@ -91,6 +91,7 @@ export type ProductDocument = {
   // active region (backward-compatible with products created before per-region
   // activation existed).
   availableRegions?: string[];
+  hasOptions?: boolean;
   translations: Record<Locale, ProductTranslation>;
 };
 
@@ -104,6 +105,7 @@ export type LocalizedProductSummary = ProductTranslation & {
   isActive: boolean;
   sortOrder: number;
   availability: ProductAvailability;
+  hasOptions: boolean;
   quantity: number | null;
 };
 

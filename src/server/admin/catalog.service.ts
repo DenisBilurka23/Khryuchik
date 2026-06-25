@@ -671,8 +671,16 @@ export const saveAdminProduct = async (payload: AdminProductPayload) => {
     nextPayload: sanitizedPayload,
   });
 
+  const hasOptions = Object.values(sanitizedPayload.details.translations).some(
+    (t) =>
+      (t.languages?.length ?? 0) > 0 ||
+      (t.formats?.length ?? 0) > 0 ||
+      (t.sizes?.length ?? 0) > 0 ||
+      (t.colors?.length ?? 0) > 0,
+  );
+
   await Promise.all([
-    upsertProduct(sanitizedPayload.product),
+    upsertProduct({ ...sanitizedPayload.product, hasOptions }),
     upsertProductDetails(sanitizedPayload.details),
   ]);
 

@@ -84,6 +84,7 @@ export const localizeProductSummary = (
     sortOrder: product.merchandising.sortOrder,
     availability: product.inventory.availability,
     quantity: product.inventory.quantity,
+    hasOptions: product.hasOptions ?? false,
     ...translation,
     price: pricing.price,
     currency: pricing.currency,
