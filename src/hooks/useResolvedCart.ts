@@ -4,18 +4,23 @@ import { useEffect, useMemo, useState } from "react";
 
 import { resolveCartClient } from "@/client-api/cart";
 import type { Locale } from "@/i18n/config";
-import type { CartItem, CartResolveResponse } from "@/types/cart";
+import type { CartItem, CartResolveResponse, StoredCartItem } from "@/types/cart";
 import type { CountryCode } from "@/utils";
 
 import { useCart } from "@/components/cart/store";
 
-export const useResolvedCart = (locale: Locale, country: CountryCode) => {
+export const useResolvedCart = (
+  locale: Locale,
+  country: CountryCode,
+  itemsOverride?: StoredCartItem[],
+) => {
   const cart = useCart();
+  const storedItems = itemsOverride ?? cart.items;
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (cart.items.length === 0) {
+    if (storedItems.length === 0) {
       setItems([]);
       setIsLoading(false);
       return;
@@ -30,7 +35,7 @@ export const useResolvedCart = (locale: Locale, country: CountryCode) => {
         const response = await resolveCartClient(
           {
             locale,
-            items: cart.items,
+            items: storedItems,
           },
           { signal: abortController.signal },
         );
@@ -69,7 +74,7 @@ export const useResolvedCart = (locale: Locale, country: CountryCode) => {
     return () => {
       abortController.abort();
     };
-  }, [cart.items, country, locale]);
+  }, [storedItems, country, locale]);
 
   const subtotal = useMemo(
     () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
@@ -81,6 +86,6 @@ export const useResolvedCart = (locale: Locale, country: CountryCode) => {
     items,
     subtotal,
     isLoading,
-    hasStoredItems: cart.items.length > 0,
+    hasStoredItems: storedItems.length > 0,
   };
 };

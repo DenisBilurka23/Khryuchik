@@ -11,6 +11,7 @@ import {
 } from "@/utils";
 import type { ProductDocument, ProductPlacement } from "@/types/catalog";
 import type { CartItem, StoredCartItem } from "@/types/cart";
+import { BOOK_FORMAT } from "@/constants/catalog";
 import type { ProductOption } from "@/types/product-details";
 import {
   findActiveProductBySlug,
@@ -181,6 +182,7 @@ export const resolveCartItems = async (
           detailsById.get(item.productId) ?? null,
           locale,
         ),
+        isDigital: item.selections?.format === BOOK_FORMAT.digital,
       },
     ];
   });

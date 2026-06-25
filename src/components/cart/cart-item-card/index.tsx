@@ -87,11 +87,12 @@ export const CartItemCard = ({
 
             <Stack
               direction={{ xs: "column", md: "row" }}
-              justifyContent="space-between"
+              justifyContent={item.isDigital ? "flex-end" : "space-between"}
               alignItems={{ xs: "flex-start", md: "center" }}
               spacing={2}
               sx={{ mt: 3 }}
             >
+              {!item.isDigital ? (
               <Stack direction="row" alignItems="center" spacing={1}>
                 <IconButton
                   onClick={() => onDecrease(item.id)}
@@ -121,6 +122,7 @@ export const CartItemCard = ({
                   <AddIcon fontSize="small" />
                 </IconButton>
               </Stack>
+            ) : null}
 
               <Stack
                 direction="row"
