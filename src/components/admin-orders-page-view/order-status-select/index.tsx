@@ -2,7 +2,7 @@
 
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 import { updateAdminOrderStatusAction } from "@/app/(admin)/admin/actions";
 import { ORDER_STATUSES, type OrderStatus } from "@/types/order";
@@ -16,6 +16,10 @@ export const AdminOrderStatusSelect = ({
   const tStatus = useTranslations("adminPage.orders.statusLabels");
   const [status, setStatus] = useState<OrderStatus>(currentStatus);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setStatus(currentStatus);
+  }, [currentStatus]);
 
   const handleChange = (nextStatus: OrderStatus) => {
     if (nextStatus === status) return;
