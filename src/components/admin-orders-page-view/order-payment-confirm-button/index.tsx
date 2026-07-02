@@ -3,6 +3,7 @@
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { IconButton, Tooltip } from "@mui/material";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 import { confirmAdminOrderPaymentAction } from "@/app/(admin)/admin/actions";
@@ -13,11 +14,13 @@ export const AdminOrderPaymentConfirmButton = ({
   orderId,
 }: AdminOrderPaymentConfirmButtonProps) => {
   const t = useTranslations("adminPage.orders");
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const handleClick = () => {
     startTransition(async () => {
-      await confirmAdminOrderPaymentAction(orderId);
+      const result = await confirmAdminOrderPaymentAction(orderId);
+      if (result.ok) router.refresh();
     });
   };
 
