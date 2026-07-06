@@ -8,7 +8,6 @@
     "start": "next start",
     "admin:grant": "node --env-file=.env.local --import tsx ./scripts/grant-admin.ts",
     "lint": "eslint .",
-    "check:admin-flow": "node --env-file=.env.local ./scripts/check-admin-flow.mjs",
     "seed:mongodb": "node --env-file=.env.local --import tsx ./scripts/seed-mongodb.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
