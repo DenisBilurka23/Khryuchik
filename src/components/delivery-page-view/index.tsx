@@ -10,6 +10,7 @@ import { DeliveryFaqSection } from "./sections/delivery-faq-section";
 import { DeliveryHeroSection } from "./sections/delivery-hero-section";
 import { DeliveryMethodsSection } from "./sections/delivery-methods-section";
 import { DeliveryPaymentSection } from "./sections/delivery-payment-section";
+import { DeliveryReturnsSection } from "./sections/delivery-returns-section";
 import { DeliveryStepsSection } from "./sections/delivery-steps-section";
 import { getDeliveryRegionTheme } from "./region-config";
 import type { DeliveryPageViewProps } from "./types";
@@ -27,6 +28,7 @@ export const DeliveryPageView = async ({
   const methods = t.raw("methods") as DeliveryPageLabels["methods"];
   const steps = t.raw("steps") as DeliveryPageLabels["steps"];
   const faq = t.raw("faq") as DeliveryPageLabels["faq"];
+  const returns = t.raw("returns") as DeliveryPageLabels["returns"];
   const finalCta = t.raw("finalCta") as DeliveryPageLabels["finalCta"];
 
   const { accent, heroGradient, paymentVariant } = getDeliveryRegionTheme(country);
@@ -50,6 +52,7 @@ export const DeliveryPageView = async ({
         <DeliveryMethodsSection {...methods} accent={accent} />
         <DeliveryStepsSection {...steps} accent={accent} />
         <DeliveryFaqSection {...faq} accent={accent} />
+        <DeliveryReturnsSection {...returns} accent={accent} />
         <DeliveryCtaSection {...finalCta} shopHref={shopHref} accent={accent} />
       </Box>
     </Box>

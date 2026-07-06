@@ -513,6 +513,36 @@
           {
             "q": "How long does the parcel take?",
             "a": "Usually 3–5 business days across Belarus. After dispatch we send a tracking number."
+          },
+          {
+            "q": "What about returns?",
+            "a": "It depends on what you ordered — e-books, physical books, and made-to-order merch each work differently. See the full breakdown below."
+          }
+        ]
+      },
+      "returns": {
+        "eyebrow": "Returns & refunds",
+        "titlePrefix": "Returns &",
+        "titleAccent": "refunds",
+        "sub": "What to expect depends on what you ordered — here's how each type works.",
+        "items": [
+          {
+            "icon": "digital",
+            "title": "E-books",
+            "window": "7 days",
+            "desc": "Digital books are delivered instantly and are final sale. If a file won't open or download, or you can't access your purchase, email us within 7 days and we'll fix it or refund you."
+          },
+          {
+            "icon": "physical",
+            "title": "Physical books",
+            "window": "14 days",
+            "desc": "We pack and mail these by hand. If your book arrives damaged or isn't what you ordered, email us within 14 days with a photo — we'll send a replacement or refund the order in full. No need to send anything back."
+          },
+          {
+            "icon": "merch",
+            "title": "Merch",
+            "window": "30 days",
+            "desc": "Every item is printed to order, so we can't accept returns for sizing or a change of mind. If something arrives with a printing defect, damaged, or wrong, email us within 30 days with a photo and we'll arrange a reprint or refund."
           }
         ]
       },

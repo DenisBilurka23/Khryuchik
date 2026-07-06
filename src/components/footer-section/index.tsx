@@ -18,7 +18,7 @@ export const FooterSection = async ({
   const sections = tFooter.raw("sections") as StorefrontFooterSection[];
 
   return (
-    <Box component="footer" id="faq" className={styles.footer}>
+    <Box component="footer" className={styles.footer}>
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Grid container spacing={5}>
           <Grid size={{ xs: 12, md: 3 }}>

@@ -27,7 +27,7 @@ export const DeliveryFaqSection = ({
   accent,
 }: DeliveryFaqSectionProps) => {
   return (
-    <Box component="section" sx={{ py: { xs: 5, md: 7 } }}>
+    <Box component="section" id="faq" sx={{ py: { xs: 5, md: 7 } }}>
       <Container maxWidth="lg">
         <Box sx={{ maxWidth: 720, mb: 5 }}>
           <Typography sx={{ ...eyebrowSx, color: accent }}>{eyebrow}</Typography>

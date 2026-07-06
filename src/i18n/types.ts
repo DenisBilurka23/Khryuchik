@@ -333,6 +333,15 @@ export type DeliveryFaqItem = {
   a: string;
 };
 
+export type DeliveryReturnsIcon = "digital" | "physical" | "merch";
+
+export type DeliveryReturnsItem = {
+  icon: string;
+  title: string;
+  window: string;
+  desc: string;
+};
+
 export type DeliveryPageLabels = {
   hero: {
     eyebrow: string;
@@ -372,6 +381,13 @@ export type DeliveryPageLabels = {
     titlePrefix: string;
     titleAccent: string;
     items: DeliveryFaqItem[];
+  };
+  returns: {
+    eyebrow: string;
+    titlePrefix: string;
+    titleAccent: string;
+    sub: string;
+    items: DeliveryReturnsItem[];
   };
   finalCta: {
     eyebrow: string;
