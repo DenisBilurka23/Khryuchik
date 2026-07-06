@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { defaultLocale, isLocale } from "@/i18n/config";
+import { sendWelcomeEmail } from "@/server/email/welcome";
 import { registerUser } from "@/server/users/services/users.service";
 import { AuthInputErrorCode } from "@/types/auth";
 import { EMAIL_PATTERN } from "@/utils/validation";
@@ -11,6 +13,8 @@ export async function POST(request: Request) {
     const email = typeof body.email === "string" ? body.email.trim() : "";
     const phone = typeof body.phone === "string" ? body.phone.trim() : "";
     const password = typeof body.password === "string" ? body.password : "";
+    const requestedLocale = typeof body.locale === "string" ? body.locale : defaultLocale;
+    const locale = isLocale(requestedLocale) ? requestedLocale : defaultLocale;
 
     if (!name || !email || !phone || !password) {
       return NextResponse.json(
@@ -38,6 +42,8 @@ export async function POST(request: Request) {
     if (!result.ok) {
       return NextResponse.json({ error: result.reason }, { status: 409 });
     }
+
+    void sendWelcomeEmail(email, name, locale);
 
     return NextResponse.json({ ok: true });
   } catch {

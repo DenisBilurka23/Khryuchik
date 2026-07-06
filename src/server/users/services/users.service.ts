@@ -241,10 +241,12 @@ export const syncGoogleUser = async (input: {
   const existingUser = await findUserByEmail(input.email);
 
   if (existingUser?._id) {
-    return addGoogleToExistingUser(existingUser._id as ObjectId, input);
+    const user = await addGoogleToExistingUser(existingUser._id as ObjectId, input);
+    return { user, isNewUser: false };
   }
 
-  return createGoogleUser(input);
+  const user = await createGoogleUser(input);
+  return { user, isNewUser: true };
 };
 
 export const getAccountUserByEmail = async (email: string) => {

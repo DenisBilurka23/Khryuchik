@@ -17,6 +17,7 @@ import type { RegisterPageViewProps } from "./types";
 export const RegisterPageView = ({
   callbackUrl,
   loginHref,
+  locale,
 }: RegisterPageViewProps) => {
   const t = useTranslations("registerPage");
   const router = useRouter();
@@ -39,7 +40,7 @@ export const RegisterPageView = ({
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const response = await registerUserClient({ name, email, phone, password });
+    const response = await registerUserClient({ name, email, phone, password, locale });
 
     if (!response.ok) {
       switch (response.data?.error ?? AuthInputErrorCode.UnexpectedError) {

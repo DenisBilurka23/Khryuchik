@@ -21,6 +21,7 @@ export const registerUserClient = async (payload: {
   email: string;
   phone: string;
   password: string;
+  locale: Locale;
 }) => POST<ErrorResponse>("/api/auth/register", payload);
 
 export const confirmPasswordResetClient = async (

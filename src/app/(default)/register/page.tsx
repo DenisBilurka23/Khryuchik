@@ -14,6 +14,7 @@ const RegisterPage = async ({ searchParams }: RegisterPageProps) => {
       <RegisterPageView
         callbackUrl={callbackUrl ?? "/account"}
         loginHref="/login"
+        locale={defaultLocale}
       />
     </Container>
   );

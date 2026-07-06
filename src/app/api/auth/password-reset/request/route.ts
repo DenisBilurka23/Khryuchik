@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
-import { sendPasswordResetEmail } from "@/server/email/email.service";
+import { sendPasswordResetEmail } from "@/server/email/password-reset";
 import { requestPasswordReset } from "@/server/users/services/users.service";
 import { AuthInputErrorCode } from "@/types/auth";
 import { EMAIL_PATTERN } from "@/utils/validation";

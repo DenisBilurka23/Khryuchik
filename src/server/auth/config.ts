@@ -2,6 +2,8 @@ import { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
+import { sendWelcomeEmail } from "@/server/email/welcome";
+import { resolveLocale } from "@/server/i18n/request-locale";
 import { authenticateCredentialsUser, getAccountUserByEmail, syncGoogleUser } from "@/server/users/services/users.service";
 
 export const isGoogleAuthEnabled = Boolean(
@@ -52,11 +54,16 @@ export const authOptions: NextAuthOptions = {
         return false;
       }
 
-      await syncGoogleUser({
+      const { isNewUser } = await syncGoogleUser({
         email: user.email,
         name: user.name,
         image: user.image,
       });
+
+      if (isNewUser) {
+        const locale = await resolveLocale("storefront");
+        void sendWelcomeEmail(user.email, user.name ?? "", locale);
+      }
 
       return true;
     },

@@ -25,6 +25,7 @@ const LocalizedRegisterPage = async ({
       <RegisterPageView
         callbackUrl={callbackUrl ?? `/${lang}/account`}
         loginHref={getLocalizedPath(lang, "/login")}
+        locale={lang}
       />
     </Container>
   );
