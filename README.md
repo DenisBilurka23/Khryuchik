@@ -77,6 +77,5 @@ Open `http://localhost:3000`.
 ```bash
 npm run lint
 npm run build
-npm run check:admin-flow
 npm run admin:grant -- you@example.com
 ```
