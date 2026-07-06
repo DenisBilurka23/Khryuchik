@@ -692,28 +692,27 @@
         {
           "title": "Разделы",
           "items": [
-            "Книги",
-            "Магазин",
-            "История Хрючика",
-            "Подарочные наборы"
+            { "key": "books", "label": "Книги" },
+            { "key": "shop", "label": "Магазин" },
+            { "key": "story", "label": "История Хрючика" },
+            { "key": "gifts", "label": "Подарочные наборы" }
           ]
         },
         {
           "title": "Покупателям",
           "items": [
-            "Доставка и оплата",
-            "Возврат",
-            "Частые вопросы",
-            "Контакты"
+            { "key": "shipping", "label": "Доставка и оплата" },
+            { "key": "returns", "label": "Возврат" },
+            { "key": "faq", "label": "Частые вопросы" },
+            { "key": "contacts", "label": "Контакты" }
           ]
         },
         {
           "title": "Соцсети",
           "items": [
-            "Instagram",
-            "TikTok",
-            "Telegram",
-            "Email"
+            { "key": "instagram", "label": "Instagram" },
+            { "key": "facebook", "label": "Facebook" },
+            { "key": "email", "label": "Email" }
           ]
         }
       ]

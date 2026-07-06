@@ -692,28 +692,27 @@
         {
           "title": "Sections",
           "items": [
-            "Books",
-            "Shop",
-            "Khryuchik story",
-            "Gift bundles"
+            { "key": "books", "label": "Books" },
+            { "key": "shop", "label": "Shop" },
+            { "key": "story", "label": "Khryuchik story" },
+            { "key": "gifts", "label": "Gift bundles" }
           ]
         },
         {
           "title": "For customers",
           "items": [
-            "Shipping and payment",
-            "Returns",
-            "FAQ",
-            "Contacts"
+            { "key": "shipping", "label": "Shipping and payment" },
+            { "key": "returns", "label": "Returns" },
+            { "key": "faq", "label": "FAQ" },
+            { "key": "contacts", "label": "Contacts" }
           ]
         },
         {
           "title": "Socials",
           "items": [
-            "Instagram",
-            "TikTok",
-            "Telegram",
-            "Email"
+            { "key": "instagram", "label": "Instagram" },
+            { "key": "facebook", "label": "Facebook" },
+            { "key": "email", "label": "Email" }
           ]
         }
       ]

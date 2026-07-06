@@ -32,7 +32,7 @@ const DefaultLayout = async ({ children }: { children: ReactNode }) => {
           navigationPaths={navigationPaths}
         />
         {children}
-        <FooterSection locale={defaultLocale} />
+        <FooterSection locale={defaultLocale} country={country} />
       </StorefrontThemeProvider>
     </IntlClientProvider>
   );

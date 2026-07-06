@@ -399,9 +399,14 @@ export type DeliveryPageLabels = {
   };
 };
 
+export type StorefrontFooterItem = {
+  key: string;
+  label: string;
+};
+
 export type StorefrontFooterSection = {
   title: string;
-  items: string[];
+  items: StorefrontFooterItem[];
 };
 
 export type StorefrontDictionary = {

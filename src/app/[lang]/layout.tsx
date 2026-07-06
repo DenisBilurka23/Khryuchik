@@ -14,8 +14,6 @@ import {
   isActiveLocale,
 } from "@/server/localization/localization.service";
 
-// Admin can add locales at runtime, so accept any param and validate it against
-// the active-locale list below instead of pre-rendering a fixed set only.
 export const dynamicParams = true;
 
 export const generateStaticParams = async () =>
@@ -41,8 +39,10 @@ const LocaleLayout = async ({
     getMessages({ locale: lang }),
     getActiveLocaleCodes(),
   ]);
-  const { localizedPaths, navigationPaths } =
-    createStorefrontHeaderViewModel(lang, availableLocales);
+  const { localizedPaths, navigationPaths } = createStorefrontHeaderViewModel(
+    lang,
+    availableLocales,
+  );
   const homeHref = lang === defaultLocale ? "/" : `/${lang}`;
 
   return (
@@ -57,7 +57,7 @@ const LocaleLayout = async ({
           navigationPaths={navigationPaths}
         />
         {children}
-        <FooterSection locale={lang} />
+        <FooterSection locale={lang} country={country} />
       </StorefrontThemeProvider>
     </IntlClientProvider>
   );
