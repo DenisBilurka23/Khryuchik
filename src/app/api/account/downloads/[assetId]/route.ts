@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-import { getServerAuthSession } from "@/server/auth/config";
+import { requireAccountApiAccess } from "@/server/auth/page-context";
 import {
   findPurchasedAsset,
 } from "@/server/downloads/downloads.service";
@@ -14,17 +14,14 @@ export const GET = async (
   _request: NextRequest,
   { params }: { params: Promise<{ assetId: string }> },
 ) => {
-  const session = await getServerAuthSession();
+  const access = await requireAccountApiAccess();
 
-  if (!session?.user) {
+  if (!access) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
   const { assetId } = await params;
-  const userId = session.user.id || undefined;
-  const email = session.user.email ?? undefined;
-
-  const asset = await findPurchasedAsset(userId, email, assetId);
+  const asset = await findPurchasedAsset(access.user.id, access.user.email, assetId);
 
   if (!asset) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
