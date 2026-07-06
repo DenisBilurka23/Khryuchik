@@ -12,4 +12,5 @@ export type OverviewSectionProps = {
   addresses: UserShippingAddress[];
   selectedShippingAddressId: string | null;
   profileEditor: ProfileEditorState;
+  onAddAddress: () => void;
 };

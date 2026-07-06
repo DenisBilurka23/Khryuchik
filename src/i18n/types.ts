@@ -693,6 +693,17 @@ export type AccountPageDictionary = {
   favoritesView: string;
   signOutTitle: string;
   signOutText: string;
+  deleteAccountTitle: string;
+  deleteAccountText: string;
+  deleteAccountButton: string;
+  deleteAccountPasswordLabel: string;
+  deleteAccountDialogTitle: string;
+  deleteAccountDialogDescription: string;
+  deleteAccountConfirmButton: string;
+  deleteAccountCancelButton: string;
+  deleteAccountWrongPassword: string;
+  deleteAccountLastAdmin: string;
+  deleteAccountUnexpectedError: string;
   tabs: string[];
 };
 

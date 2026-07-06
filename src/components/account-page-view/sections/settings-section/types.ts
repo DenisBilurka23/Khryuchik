@@ -11,4 +11,5 @@ export type SettingsSectionProps = {
   profileEditor: ProfileEditorState;
   authProviders: AuthProvider[];
   userEmail: string;
+  onAccountDeletedAction: () => void;
 };

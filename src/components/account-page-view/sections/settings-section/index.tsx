@@ -1,6 +1,7 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import {
@@ -13,8 +14,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { changeAccountPasswordClient } from "@/client-api/account";
+import { changeAccountPasswordClient, deleteAccountClient } from "@/client-api/account";
 import { requestPasswordResetClient } from "@/client-api/auth";
+import { ModalButton } from "@/components/modal-button";
 import { AuthInputErrorCode } from "@/types/auth";
 import { UserOperationErrorReason } from "@/types/users";
 
@@ -31,6 +33,7 @@ export const SettingsSection = ({
   profileEditor,
   authProviders,
   userEmail,
+  onAccountDeletedAction,
 }: SettingsSectionProps) => {
   const t = useTranslations("accountPage");
   const localizedAccountPaths = {
@@ -48,6 +51,10 @@ export const SettingsSection = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isSendingReset, setIsSendingReset] = useState(false);
   const [resetSent, setResetSent] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState<string | null>(
+    null,
+  );
 
   const handleForgotPassword = async () => {
     if (isSendingReset || resetSent) return;
@@ -96,6 +103,30 @@ export const SettingsSection = ({
     setNewPassword("");
     setRepeatPassword("");
     setSuccessMessage(t("securitySaveSuccess"));
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleteErrorMessage(null);
+
+    const response = await deleteAccountClient({
+      currentPassword: deletePassword,
+    });
+
+    if (!response.ok) {
+      const error = response.data?.error;
+
+      if (error === UserOperationErrorReason.WrongPassword) {
+        setDeleteErrorMessage(t("deleteAccountWrongPassword"));
+      } else if (error === UserOperationErrorReason.LastAdmin) {
+        setDeleteErrorMessage(t("deleteAccountLastAdmin"));
+      } else {
+        setDeleteErrorMessage(t("deleteAccountUnexpectedError"));
+      }
+
+      return false;
+    }
+
+    onAccountDeletedAction();
   };
 
   return (
@@ -234,6 +265,45 @@ export const SettingsSection = ({
             onChange={(e) => setRepeatPassword(e.target.value)}
             autoComplete="new-password"
             required
+          />
+        </Stack>
+      </SectionCard>
+
+      <SectionCard title={t("deleteAccountTitle")}>
+        <Stack spacing={2}>
+          {deleteErrorMessage ? (
+            <Alert severity="error">{deleteErrorMessage}</Alert>
+          ) : null}
+
+          <Typography color="text.secondary" sx={{ lineHeight: 1.8 }}>
+            {t("deleteAccountText")}
+          </Typography>
+
+          {hasCredentials ? (
+            <TextField
+              fullWidth
+              label={t("deleteAccountPasswordLabel")}
+              type="password"
+              value={deletePassword}
+              onChange={(e) => {
+                setDeletePassword(e.target.value);
+                setDeleteErrorMessage(null);
+              }}
+              autoComplete="current-password"
+            />
+          ) : null}
+
+          <ModalButton
+            label={t("deleteAccountButton")}
+            color="error"
+            variant="outlined"
+            icon={<DeleteOutlineOutlinedIcon />}
+            disabled={hasCredentials && deletePassword.trim().length === 0}
+            onConfirmAction={handleDeleteAccount}
+            dialogTitle={t("deleteAccountDialogTitle")}
+            dialogDescription={t("deleteAccountDialogDescription")}
+            confirmLabel={t("deleteAccountConfirmButton")}
+            cancelLabel={t("deleteAccountCancelButton")}
           />
         </Stack>
       </SectionCard>

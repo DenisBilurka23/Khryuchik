@@ -60,3 +60,6 @@ export const changeAccountPasswordClient = async (payload: {
   currentPassword: string;
   newPassword: string;
 }) => POST<ErrorResponse>("/api/account/password", payload);
+
+export const deleteAccountClient = async (payload: { currentPassword?: string }) =>
+  POST<ErrorResponse>("/api/account/delete", payload);
