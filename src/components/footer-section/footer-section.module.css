@@ -18,3 +18,14 @@
   font-size: 20px;
   font-weight: 800;
 }
+
+.footerLink {
+  display: block;
+  width: fit-content;
+  text-decoration: none;
+  color: inherit;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}

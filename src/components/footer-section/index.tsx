@@ -1,15 +1,20 @@
 import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { getTranslations } from "next-intl/server";
+import Link from "next/link";
 
 import type { Locale } from "@/i18n/config";
 import type { StorefrontFooterSection } from "@/i18n/types";
+import type { CountryCode } from "@/utils";
+import { getFooterItemHref } from "@/utils/footer";
 
 import styles from "./footer-section.module.css";
 
 export const FooterSection = async ({
   locale,
+  country,
 }: {
   locale: Locale;
+  country: CountryCode;
 }) => {
   const [tStorefront, tFooter] = await Promise.all([
     getTranslations({ locale, namespace: "storefront" }),
@@ -41,9 +46,22 @@ export const FooterSection = async ({
             <Grid key={section.title} size={{ xs: 12, md: 3 }}>
               <Typography sx={{ fontWeight: 700 }}>{section.title}</Typography>
               <Stack spacing={1.5} sx={{ mt: 2, color: "text.secondary" }}>
-                {section.items.map((item) => (
-                  <Typography key={item}>{item}</Typography>
-                ))}
+                {section.items.map((item) => {
+                  const href = getFooterItemHref(item.key, locale, country);
+
+                  return (
+                    <Link
+                      key={item.key}
+                      href={href}
+                      className={styles.footerLink}
+                      {...(href.startsWith("http")
+                        ? { target: "_blank", rel: "noopener noreferrer" }
+                        : {})}
+                    >
+                      <Typography component="span">{item.label}</Typography>
+                    </Link>
+                  );
+                })}
               </Stack>
             </Grid>
           ))}

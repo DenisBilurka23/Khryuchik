@@ -1,6 +1,6 @@
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
-
+import { CONTACT_EMAIL } from "@/constants/contact";
 import type { StoryAuthorSectionProps } from "./types";
 
 const eyebrowSx = {
@@ -21,7 +21,7 @@ export const StoryAuthorSection = ({
   actionLabel,
 }: StoryAuthorSectionProps) => {
   return (
-    <Box component="section" sx={{ py: { xs: 4, md: 8 } }}>
+    <Box component="section" id="author" sx={{ py: { xs: 4, md: 8 } }}>
       <Container maxWidth="lg">
         <Paper
           elevation={0}
@@ -92,6 +92,8 @@ export const StoryAuthorSection = ({
                 variant="outlined"
                 color="inherit"
                 endIcon={<MailOutlineIcon />}
+                component="a"
+                href={`mailto:${CONTACT_EMAIL}`}
                 sx={{ mt: 1 }}
               >
                 {actionLabel}
