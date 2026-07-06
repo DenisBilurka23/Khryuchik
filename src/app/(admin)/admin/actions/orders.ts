@@ -8,6 +8,8 @@ import {
   updateOrderPayment,
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
+import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
+import { sendOrderShippedEmail } from "@/server/email/order-shipped";
 import { requireAdminApiAccess } from "@/server/admin/auth";
 import type { OrderStatus } from "@/types/order";
 import { isOrderStatus } from "@/utils";
@@ -35,7 +37,15 @@ export const updateAdminOrderStatusAction = async (
   }
 
   try {
+    const previous = await findOrderById(orderId);
     await updateOrderStatus(orderId, status);
+
+    if (status === "shipped" && previous?.status !== "shipped") {
+      const updated = await findOrderById(orderId);
+      if (updated) {
+        void sendOrderShippedEmail(updated);
+      }
+    }
   } catch (error) {
     console.error("updateAdminOrderStatusAction failed", error);
     return { ok: false, error: "failed" };
@@ -65,6 +75,11 @@ export const confirmAdminOrderPaymentAction = async (
     });
     if (order?.fulfillmentType === "digital") {
       await updateOrderStatus(orderId, "delivered");
+    }
+
+    const updated = await findOrderById(orderId);
+    if (updated) {
+      void sendOrderConfirmationEmail(updated);
     }
   } catch (error) {
     console.error("confirmAdminOrderPaymentAction failed", error);
