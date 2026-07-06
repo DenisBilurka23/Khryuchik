@@ -12,6 +12,7 @@ export enum UserOperationErrorReason {
   CannotDemoteSelf = "cannot_demote_self",
   CannotDeleteSelf = "cannot_delete_self",
   LastAdmin = "last_admin",
+  WrongPassword = "wrong_password",
 }
 
 export type WishlistEntryDocument = {

@@ -116,7 +116,7 @@ export const findUserById = async (userId: ObjectId) => {
 };
 
 export const createCredentialsUser = async (
-  input: RegisterUserInput & { passwordHash: string },
+  input: Omit<RegisterUserInput, "password"> & { passwordHash: string },
 ) => {
   const collection = await getUsersCollection();
   const now = new Date();
@@ -141,7 +141,7 @@ export const createCredentialsUser = async (
 
 export const addCredentialsToExistingUser = async (
   userId: ObjectId,
-  input: RegisterUserInput & { passwordHash: string },
+  input: Omit<RegisterUserInput, "password"> & { passwordHash: string },
 ) => {
   const collection = await getUsersCollection();
   const now = new Date();

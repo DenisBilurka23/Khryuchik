@@ -1,10 +1,8 @@
 "use client";
 
 import { Box, Container, Paper } from "@mui/material";
-import { useTranslations } from "next-intl";
 
 import { useWishlist } from "@/hooks/useWishlist";
-import { getCountLabel } from "@/utils";
 
 import { useCart } from "../cart/store";
 import { FavoritesEmptyState } from "./empty-state";
@@ -21,19 +19,12 @@ export const FavoritesPageView = ({
   registerHref,
   embedded = false,
 }: FavoritesPageViewProps) => {
-  const tFavorites = useTranslations("storefront.favoritesPage");
   const { addItem } = useCart();
-  const { items, ids, isLoading, isAuthenticated } = useWishlist();
+  const { items, isLoading, isAuthenticated } = useWishlist();
   const authState = isAuthenticated || initialIsAuthenticated;
   const resolvedItems = items.filter(
     (item): item is ResolvedWishlistItem => Boolean(item.product),
   );
-  const countLabel = getCountLabel(
-    ids.length,
-    locale,
-    tFavorites.raw("itemCount") as Parameters<typeof getCountLabel>[2],
-  );
-
   const addAllToCart = () => {
     resolvedItems.forEach((item) => {
       addItem({
@@ -48,7 +39,6 @@ export const FavoritesPageView = ({
       <FavoritesHero
         locale={locale}
         authState={authState}
-        countLabel={countLabel}
         shopHref={shopHref}
         loginHref={loginHref}
         registerHref={registerHref}

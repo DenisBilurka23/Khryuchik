@@ -2,14 +2,7 @@
 
 import { useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import {
   Box,
   Button,
@@ -37,17 +30,8 @@ import {
 } from "./sections";
 import { AccountAvatarUploadField, SidebarItem } from "./shared";
 import { useProfileEditor } from "@/hooks/useProfileEditor";
+import { accountSectionKeys, accountSidebarConfig } from "@/constants/account";
 import type { AccountPageViewProps, SectionKey } from "./types";
-
-const accountSectionKeys: SectionKey[] = [
-  "overview",
-  "orders",
-  "books",
-  "addresses",
-  "favorites",
-  "settings",
-  "logout",
-];
 
 const getActiveSection = (searchParams: {
   get: (name: string) => string | null;
@@ -104,43 +88,11 @@ export const AccountPageView = ({
     return rightSelected - leftSelected;
   });
 
-  const sidebarItems = [
-    {
-      key: "overview" as const,
-      label: tabs[0] ?? t("profile"),
-      icon: <PersonOutlineIcon />,
-    },
-    {
-      key: "orders" as const,
-      label: t("orders"),
-      icon: <ReceiptLongOutlinedIcon />,
-    },
-    {
-      key: "books" as const,
-      label: t("books"),
-      icon: <MenuBookOutlinedIcon />,
-    },
-    {
-      key: "addresses" as const,
-      label: t("addresses"),
-      icon: <LocationOnOutlinedIcon />,
-    },
-    {
-      key: "favorites" as const,
-      label: t("favorites"),
-      icon: <FavoriteBorderIcon />,
-    },
-    {
-      key: "settings" as const,
-      label: t("settings"),
-      icon: <SettingsOutlinedIcon />,
-    },
-    {
-      key: "logout" as const,
-      label: t("logout"),
-      icon: <LogoutOutlinedIcon />,
-    },
-  ];
+  const sidebarItems = accountSidebarConfig.map(({ key, tKey, Icon }) => ({
+    key,
+    label: key === "overview" ? (tabs[0] ?? t("profile")) : t(tKey),
+    icon: <Icon />,
+  }));
 
   const replaceSection = (nextSection: SectionKey) => {
     const nextSearchParams = new URLSearchParams(searchParams.toString());
@@ -212,6 +164,8 @@ export const AccountPageView = ({
             country={country}
             availableLocales={availableLocales}
             profileEditor={profileEditorState}
+            authProviders={user.authProviders ?? []}
+            userEmail={user.email ?? ""}
           />
         );
       case "logout":

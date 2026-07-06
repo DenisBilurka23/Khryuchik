@@ -55,3 +55,8 @@ export const addAccountAddressClient = async (
 
 export const selectAccountAddressClient = async (addressId: string) =>
   PATCH<UpdateAccountAddressesResponse>("/api/account/addresses", { addressId });
+
+export const changeAccountPasswordClient = async (payload: {
+  currentPassword: string;
+  newPassword: string;
+}) => POST<ErrorResponse>("/api/account/password", payload);

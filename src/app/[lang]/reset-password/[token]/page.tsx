@@ -4,7 +4,6 @@ import { Container } from "@mui/material";
 import { ResetPasswordPageView } from "@/components/reset-password-page-view";
 import { getLocalizedPath } from "@/utils";
 import { isActiveLocale } from "@/server/localization/localization.service";
-import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import type { LocalizedResetPasswordPageProps } from "@/types/auth-pages";
 
 const LocalizedResetPasswordPage = async ({ params }: LocalizedResetPasswordPageProps) => {
@@ -13,8 +12,6 @@ const LocalizedResetPasswordPage = async ({ params }: LocalizedResetPasswordPage
   if (!(await isActiveLocale(lang))) {
     notFound();
   }
-
-  await getGuestAuthPageContext(lang);
 
   return (
     <Container maxWidth="lg">
