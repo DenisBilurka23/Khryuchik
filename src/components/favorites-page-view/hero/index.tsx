@@ -17,7 +17,6 @@ import type { FavoritesHeroProps } from "./types";
 
 export const FavoritesHero = ({
   authState,
-  countLabel,
   shopHref,
   loginHref,
   registerHref,
@@ -152,29 +151,6 @@ export const FavoritesHero = ({
           </Box>
         </Grid>
 
-        <Grid size={{ xs: 12, md: "auto" }}>
-          <Box
-            sx={{
-              width: { xs: "100%", md: "fit-content" },
-              minWidth: { md: 170 },
-              maxWidth: { md: 220 },
-              p: { xs: 1.25, md: 1.5 },
-              borderRadius: "20px",
-              bgcolor: "rgba(255,255,255,0.78)",
-              border: "1px solid #F0DFC8",
-              textAlign: "center",
-            }}
-          >
-            <Typography color="text.secondary" variant="body2">
-              {authState ? tAccount("favoritesSavedLabel") : tFavorites("savedLabel")}
-            </Typography>
-            <Typography
-              sx={{ mt: 0.25, fontWeight: 800, fontSize: { xs: 18, md: 20 } }}
-            >
-              {countLabel}
-            </Typography>
-          </Box>
-        </Grid>
       </Grid>
     </Paper>
   );

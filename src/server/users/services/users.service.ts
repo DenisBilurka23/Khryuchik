@@ -134,6 +134,54 @@ export const authenticateCredentialsUser = async (
   return toCredentialsAuthUser(user);
 };
 
+export const changeAccountUserPassword = async (
+  userId: string,
+  currentPassword: string,
+  newPassword: string,
+) => {
+  if (!ObjectId.isValid(userId)) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  const user = await findUserById(new ObjectId(userId));
+
+  if (!user?._id) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  const hasCredentials = user.authProviders.includes("credentials");
+
+  if (hasCredentials) {
+    if (!user.passwordHash) {
+      return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+    }
+
+    const isValid = await verifyPassword(currentPassword, user.passwordHash);
+
+    if (!isValid) {
+      return {
+        ok: false as const,
+        reason: UserOperationErrorReason.WrongPassword,
+      };
+    }
+  }
+
+  const passwordHash = await hashPassword(newPassword);
+
+  if (!hasCredentials) {
+    await addCredentialsToExistingUser(user._id as ObjectId, {
+      name: user.name ?? "",
+      email: user.email,
+      phone: user.phone ?? "",
+      passwordHash,
+    });
+  } else {
+    await setUserPasswordHash(user._id as ObjectId, passwordHash);
+  }
+
+  return { ok: true as const };
+};
+
 export const requestPasswordReset = async (email: string) => {
   const user = await findUserByEmail(email);
 
