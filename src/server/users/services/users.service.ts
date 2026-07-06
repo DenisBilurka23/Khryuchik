@@ -578,6 +578,57 @@ export const deleteAdminUserAccount = async (
   };
 };
 
+export const deleteAccountUserSelf = async (
+  userId: string,
+  currentPassword: string,
+) => {
+  if (!ObjectId.isValid(userId)) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  const user = await findUserById(new ObjectId(userId));
+
+  if (!user?._id) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  const hasCredentials = user.authProviders.includes("credentials");
+
+  if (hasCredentials) {
+    if (!user.passwordHash) {
+      return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+    }
+
+    const isValid = await verifyPassword(currentPassword, user.passwordHash);
+
+    if (!isValid) {
+      return {
+        ok: false as const,
+        reason: UserOperationErrorReason.WrongPassword,
+      };
+    }
+  }
+
+  if (user.isAdmin) {
+    const { adminUsers } = await getAdminUsersStats();
+
+    if (adminUsers <= 1) {
+      return { ok: false as const, reason: UserOperationErrorReason.LastAdmin };
+    }
+  }
+
+  const deletedUser = await deleteUserById(user._id as ObjectId);
+
+  if (!deletedUser?._id) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  return {
+    ok: true as const,
+    avatarObjectKey: deletedUser.avatarObjectKey ?? null,
+  };
+};
+
 export const getAdminUsersStats = async () => {
   const [totalUsers, adminUsers] = await Promise.all([
     countUsers(),

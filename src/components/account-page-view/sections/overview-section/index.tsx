@@ -21,6 +21,7 @@ export const OverviewSection = ({
   addresses,
   selectedShippingAddressId,
   profileEditor,
+  onAddAddress,
 }: OverviewSectionProps) => {
   const t = useTranslations("accountPage");
   const tStatus = useTranslations("accountPage.orderStatuses");
@@ -34,9 +35,8 @@ export const OverviewSection = ({
         action={<Button variant="text">{t("allOrders")}</Button>}
       >
         <Stack spacing={2}>
-          {orders.map((order) => (
+          {orders.length === 0 ? (
             <Paper
-              key={order.id}
               elevation={0}
               sx={{
                 p: 2.25,
@@ -45,31 +45,46 @@ export const OverviewSection = ({
                 bgcolor: "#fff",
               }}
             >
-              <Stack
-                direction={{ xs: "column", md: "row" }}
-                justifyContent="space-between"
-                spacing={2}
-              >
-                <Box>
-                  <Typography sx={{ fontWeight: 800 }}>{order.number}</Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    {new Date(order.createdAt).toLocaleDateString(locale)}
-                  </Typography>
-                  <Typography sx={{ mt: 1.25 }}>{order.itemsSummary}</Typography>
-                </Box>
-                <Stack alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1}>
-                  <Chip
-                    label={tStatus(order.status)}
-                    sx={{
-                      bgcolor: customerOrderStatusColors[order.status],
-                      fontWeight: 700,
-                    }}
-                  />
-                  <Typography sx={{ fontWeight: 800 }}>{order.total}</Typography>
-                </Stack>
-              </Stack>
+              <Typography color="text.secondary">{t("noOrders")}</Typography>
             </Paper>
-          ))}
+          ) : (
+            orders.map((order) => (
+              <Paper
+                key={order.id}
+                elevation={0}
+                sx={{
+                  p: 2.25,
+                  borderRadius: "22px",
+                  border: "1px solid #F0DFC8",
+                  bgcolor: "#fff",
+                }}
+              >
+                <Stack
+                  direction={{ xs: "column", md: "row" }}
+                  justifyContent="space-between"
+                  spacing={2}
+                >
+                  <Box>
+                    <Typography sx={{ fontWeight: 800 }}>{order.number}</Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                      {new Date(order.createdAt).toLocaleDateString(locale)}
+                    </Typography>
+                    <Typography sx={{ mt: 1.25 }}>{order.itemsSummary}</Typography>
+                  </Box>
+                  <Stack alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1}>
+                    <Chip
+                      label={tStatus(order.status)}
+                      sx={{
+                        bgcolor: customerOrderStatusColors[order.status],
+                        fontWeight: 700,
+                      }}
+                    />
+                    <Typography sx={{ fontWeight: 800 }}>{order.total}</Typography>
+                  </Stack>
+                </Stack>
+              </Paper>
+            ))
+          )}
         </Stack>
       </SectionCard>
 
@@ -135,7 +150,14 @@ export const OverviewSection = ({
         </Grid>
 
         <Grid size={{ xs: 12, lg: 6 }}>
-          <SectionCard title={t("shippingAddresses")}>
+          <SectionCard
+            title={t("shippingAddresses")}
+            action={
+              <Button variant="contained" size="small" onClick={onAddAddress}>
+                {t("addAddress")}
+              </Button>
+            }
+          >
             <Stack spacing={2}>
               {addresses.length === 0 ? (
                 <Paper

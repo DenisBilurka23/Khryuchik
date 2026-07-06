@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import {
@@ -94,13 +94,22 @@ export const AccountPageView = ({
     icon: <Icon />,
   }));
 
-  const replaceSection = (nextSection: SectionKey) => {
+  const replaceSection = (
+    nextSection: SectionKey,
+    options?: { action?: string },
+  ) => {
     const nextSearchParams = new URLSearchParams(searchParams.toString());
 
     if (nextSection === "overview") {
       nextSearchParams.delete("section");
     } else {
       nextSearchParams.set("section", nextSection);
+    }
+
+    if (options?.action) {
+      nextSearchParams.set("action", options.action);
+    } else {
+      nextSearchParams.delete("action");
     }
 
     const nextSearch = nextSearchParams.toString();
@@ -122,6 +131,27 @@ export const AccountPageView = ({
 
     replaceSection(key);
   };
+
+  const handleAddAddressFromOverview = () => {
+    replaceSection("addresses", { action: "add" });
+  };
+
+  const shouldAutoOpenAddAddress =
+    activeSection === "addresses" && searchParams.get("action") === "add";
+
+  useEffect(() => {
+    if (searchParams.get("action") !== "add") {
+      return;
+    }
+
+    const nextSearchParams = new URLSearchParams(searchParams.toString());
+    nextSearchParams.delete("action");
+    const nextSearch = nextSearchParams.toString();
+
+    router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, {
+      scroll: false,
+    });
+  }, [searchParams, pathname, router]);
 
   const handleAddressesChange = (
     addresses: UserShippingAddress[],
@@ -148,6 +178,7 @@ export const AccountPageView = ({
               null
             }
             onAddressesChange={handleAddressesChange}
+            autoOpenAddForm={shouldAutoOpenAddAddress}
           />
         );
       case "favorites":
@@ -166,6 +197,7 @@ export const AccountPageView = ({
             profileEditor={profileEditorState}
             authProviders={user.authProviders ?? []}
             userEmail={user.email ?? ""}
+            onAccountDeletedAction={() => signOut({ callbackUrl: homeHref })}
           />
         );
       case "logout":
@@ -182,6 +214,7 @@ export const AccountPageView = ({
             addresses={overviewAddresses}
             selectedShippingAddressId={selectedShippingAddressId}
             profileEditor={profileEditorState}
+            onAddAddress={handleAddAddressFromOverview}
           />
         );
     }

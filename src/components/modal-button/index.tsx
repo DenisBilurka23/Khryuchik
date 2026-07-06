@@ -47,16 +47,14 @@ export const ModalButton = ({
     setIsSubmitting(true);
 
     try {
-      const result = await onConfirmAction();
-
-      if (result === false) {
-        setIsSubmitting(false);
-        return;
-      }
+      await onConfirmAction();
     } catch {
-      setIsSubmitting(false);
-      return;
+      // Callers surface their own error UI (e.g. an Alert on the page);
+      // closing here just returns the user to see it.
     }
+
+    setIsSubmitting(false);
+    setOpen(false);
   };
 
   const trigger = iconOnly ? (

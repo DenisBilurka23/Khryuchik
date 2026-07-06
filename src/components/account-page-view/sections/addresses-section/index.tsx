@@ -55,6 +55,7 @@ export const AddressesSection = ({
   initialAddresses,
   initialSelectedId,
   onAddressesChange,
+  autoOpenAddForm = false,
 }: AddressesSectionProps) => {
   const t = useTranslations("accountPage");
   const tCheckout = useTranslations("storefront.checkoutPage");
@@ -64,7 +65,7 @@ export const AddressesSection = ({
 
   const [addresses, setAddresses] = useState(initialAddresses);
   const [selectedShippingAddressId, setSelectedShippingAddressId] = useState(initialSelectedId);
-  const [isAddingAddress, setIsAddingAddress] = useState(false);
+  const [isAddingAddress, setIsAddingAddress] = useState(autoOpenAddForm);
   const [isSavingAddress, setIsSavingAddress] = useState(false);
   const [isSelectingAddressId, setIsSelectingAddressId] = useState<string | null>(null);
   const [addressError, setAddressError] = useState<string | null>(null);
