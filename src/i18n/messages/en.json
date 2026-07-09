@@ -838,10 +838,6 @@
             {
               "key": "story",
               "label": "Khryuchik story"
-            },
-            {
-              "key": "gifts",
-              "label": "Gift bundles"
             }
           ]
         },
@@ -857,13 +853,14 @@
               "label": "Returns"
             },
             {
-              "key": "faq",
-              "label": "FAQ"
-            },
-            {
               "key": "contacts",
               "label": "Contacts"
-            },
+            }
+          ]
+        },
+        {
+          "title": "Legal",
+          "items": [
             {
               "key": "terms",
               "label": "Terms of Service"

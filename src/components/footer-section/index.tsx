@@ -21,12 +21,13 @@ export const FooterSection = async ({
     getTranslations({ locale, namespace: "storefront.footer" }),
   ]);
   const sections = tFooter.raw("sections") as StorefrontFooterSection[];
+  const sectionColumnWidth = (12 - 4) / sections.length;
 
   return (
     <Box component="footer" className={styles.footer}>
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Grid container spacing={5}>
-          <Grid size={{ xs: 12, md: 3 }}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <Stack direction="row" spacing={1.5} alignItems="center">
               <Box className={styles.brandMark}>🐷</Box>
               <Typography className={styles.brandTitle}>
@@ -43,7 +44,7 @@ export const FooterSection = async ({
           </Grid>
 
           {sections.map((section) => (
-            <Grid key={section.title} size={{ xs: 12, md: 3 }}>
+            <Grid key={section.title} size={{ xs: 12, md: sectionColumnWidth }}>
               <Typography sx={{ fontWeight: 700 }}>{section.title}</Typography>
               <Stack spacing={1.5} sx={{ mt: 2, color: "text.secondary" }}>
                 {section.items.map((item) => {
