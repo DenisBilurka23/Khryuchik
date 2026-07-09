@@ -72,6 +72,14 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+To receive Stripe webhooks locally (order confirmation, payment status), run this in a second terminal:
+
+```bash
+npm run dev:stripe
+```
+
+It prints a fresh `whsec_...` signing secret each time it starts — copy it into `STRIPE_WEBHOOK_SECRET` in `.env.local` and restart `npm run dev` once per session.
+
 ## Quality Checks
 
 ```bash

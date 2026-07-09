@@ -3,6 +3,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
+import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import {
   findOrderByStripeSessionId,
   insertOrder,
@@ -170,9 +171,12 @@ export const confirmOrderFromStripeSession = async (
       await updateOrderStatus(order.id, "delivered");
     }
 
-    void notifyAdminOrderPaid({ ...order, payment: { ...order.payment, status: "paid" } });
+    const updatedOrder = { ...order, payment: { ...order.payment, status: "paid" as const } };
 
-    return { ...order, payment: { ...order.payment, status: "paid" as const } };
+    void notifyAdminOrderPaid(updatedOrder);
+    void sendOrderConfirmationEmail(updatedOrder);
+
+    return updatedOrder;
   }
 
   return order;
