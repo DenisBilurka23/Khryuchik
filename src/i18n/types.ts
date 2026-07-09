@@ -281,6 +281,20 @@ export type StoryPageLabels = {
   };
 };
 
+export type LegalPageSection = {
+  heading: string;
+  paragraphs: string[];
+};
+
+export type LegalPageLabels = {
+  eyebrow: string;
+  title: string;
+  updatedLabel: string;
+  updatedDate: string;
+  intro: string;
+  sections: LegalPageSection[];
+};
+
 export type DeliveryRegionOptionLabels = {
   flag: string;
   country: string;
@@ -534,6 +548,8 @@ export type StorefrontDictionary = {
   shopPage: ShopPageLabels;
   storyPage: StoryPageLabels;
   deliveryPage: DeliveryPageLabels;
+  termsPage: LegalPageLabels;
+  privacyPage: LegalPageLabels;
   cartPage: CartPageLabels;
   checkoutPage: CheckoutPageLabels;
   checkoutResult: CheckoutResultLabels;

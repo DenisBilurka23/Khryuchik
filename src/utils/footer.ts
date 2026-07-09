@@ -11,6 +11,8 @@ const internalPathsByKey: Record<string, string> = {
   returns: "/delivery#returns",
   faq: "/delivery#faq",
   contacts: "/story#author",
+  terms: "/terms",
+  privacy: "/privacy",
 };
 
 export const getFooterItemHref = (

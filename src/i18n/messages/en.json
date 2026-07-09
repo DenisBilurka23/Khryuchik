@@ -555,6 +555,141 @@
         "sub": "Pay at the post office on pickup"
       }
     },
+    "termsPage": {
+      "eyebrow": "Legal",
+      "title": "Terms of Service",
+      "updatedLabel": "Last updated:",
+      "updatedDate": "July 7, 2026",
+      "intro": "These Terms of Service govern your use of the Khryuchik website and any purchase you make through it. By placing an order or creating an account, you agree to the terms below.",
+      "sections": [
+        {
+          "heading": "Who we are",
+          "paragraphs": [
+            "Khryuchik is currently operated by an individual seller, not a registered company. All orders, payments, and customer support are handled directly by the person operating this site. You can reach us at khryuchik@gmail.com."
+          ]
+        },
+        {
+          "heading": "Products and orders",
+          "paragraphs": [
+            "We sell books (physical and digital) and branded merchandise. Product descriptions, images, and prices are shown on each product page and may change without prior notice.",
+            "Placing an order is an offer to buy. We confirm your order by email once it is accepted; we may decline or cancel an order if a product is unavailable, priced incorrectly, or if we suspect fraud."
+          ]
+        },
+        {
+          "heading": "Prices and payment",
+          "paragraphs": [
+            "All prices are shown in the currency of your selected country and include applicable taxes unless stated otherwise. Payments are processed securely by Stripe; we do not receive or store your full card number.",
+            "Depending on your country, you may also be offered cash on delivery or bank transfer as payment methods, as described on the Shipping & Payment page."
+          ]
+        },
+        {
+          "heading": "Shipping, returns, and refunds",
+          "paragraphs": [
+            "Delivery times, shipping costs, and return conditions depend on your country and the type of product ordered (e-book, physical book, or merch). The full policy is published on our Shipping & Payment page.",
+            "If you are eligible for a refund, it is issued to your original payment method within a reasonable time after we receive and inspect the returned item, or immediately for approved e-book cancellations."
+          ]
+        },
+        {
+          "heading": "Your account",
+          "paragraphs": [
+            "You can check out as a guest or create an account using email/password or Google sign-in. You are responsible for keeping your account credentials confidential and for all activity under your account."
+          ]
+        },
+        {
+          "heading": "Limitation of liability",
+          "paragraphs": [
+            "We provide the website and products as described, but to the extent permitted by law we are not liable for indirect or consequential losses arising from your use of the site. Nothing in these Terms limits any statutory rights you have as a consumer that cannot be excluded by agreement."
+          ]
+        },
+        {
+          "heading": "Changes to these Terms",
+          "paragraphs": [
+            "We may update these Terms from time to time, for example as the business grows or legal requirements change. The updated date at the top of this page reflects the latest revision; continued use of the site after a change means you accept the updated Terms."
+          ]
+        },
+        {
+          "heading": "Contact",
+          "paragraphs": [
+            "Questions about an order or these Terms? Email us at khryuchik@gmail.com."
+          ]
+        }
+      ]
+    },
+    "privacyPage": {
+      "eyebrow": "Legal",
+      "title": "Privacy Policy",
+      "updatedLabel": "Last updated:",
+      "updatedDate": "July 7, 2026",
+      "intro": "This Privacy Policy explains what personal data Khryuchik collects when you use this website, why we collect it, and the choices and rights you have.",
+      "sections": [
+        {
+          "heading": "Who is responsible for your data",
+          "paragraphs": [
+            "Khryuchik is currently operated by an individual seller, not a registered company. For any privacy question or request, contact khryuchik@gmail.com — we will respond as the party responsible for handling your data."
+          ]
+        },
+        {
+          "heading": "Data we collect",
+          "paragraphs": [
+            "Account data: name, email address, and password (stored securely hashed) if you register, or your name and email from Google if you sign in with Google.",
+            "Order data: shipping address, contact details, order contents, and order status, needed to fulfill and support your purchase.",
+            "Payment data: handled directly by Stripe. We never see or store your full card number; we only receive confirmation that a payment succeeded or failed.",
+            "Technical data: your selected country and language preference, stored in cookies, and basic request information needed to keep the site secure and functioning."
+          ]
+        },
+        {
+          "heading": "How we use your data",
+          "paragraphs": [
+            "To process and deliver your orders, send order confirmations and shipping updates, respond to support requests, and let you sign in and manage your account and order history."
+          ]
+        },
+        {
+          "heading": "Who we share data with",
+          "paragraphs": [
+            "Stripe, to process payments. Google, if you choose to sign in with your Google account. Our email provider, to send transactional emails such as order confirmations and password resets.",
+            "We also receive an internal notification in a private Telegram chat when a new order is placed, so we can fulfill it promptly — this is for our own order handling only and is not used for marketing.",
+            "We do not sell your personal data, and we do not share it with advertisers."
+          ]
+        },
+        {
+          "heading": "Cookies",
+          "paragraphs": [
+            "We use essential cookies only: to keep you signed in, to remember your selected country and language, and to keep your shopping cart working. We do not use third-party advertising or tracking cookies at this time."
+          ]
+        },
+        {
+          "heading": "Data retention",
+          "paragraphs": [
+            "We keep order and account data for as long as needed to fulfill orders, handle returns, and meet any applicable tax or accounting record-keeping requirements, after which it is deleted or anonymized."
+          ]
+        },
+        {
+          "heading": "International data transfers",
+          "paragraphs": [
+            "Some of our service providers (such as Stripe, Google, and our database and hosting infrastructure) may process data outside your country of residence. Where required, we rely on the safeguards these providers offer for cross-border transfers."
+          ]
+        },
+        {
+          "heading": "Your rights",
+          "paragraphs": [
+            "Depending on where you live, you may have the right to access, correct, delete, or export a copy of your personal data, to object to or restrict certain processing, and to withdraw consent at any time.",
+            "To exercise any of these rights, email khryuchik@gmail.com. If you are in the EU/EEA, you also have the right to lodge a complaint with your local data protection authority."
+          ]
+        },
+        {
+          "heading": "Children's privacy",
+          "paragraphs": [
+            "Khryuchik sells children's books, but the website itself is intended for use by adults who place orders on behalf of children. We do not knowingly collect personal data directly from children."
+          ]
+        },
+        {
+          "heading": "Changes to this policy",
+          "paragraphs": [
+            "We may update this Privacy Policy as our practices evolve or legal requirements change. The updated date at the top of this page reflects the latest revision."
+          ]
+        }
+      ]
+    },
     "cartPage": {
       "eyebrow": "Cart",
       "title": "Your cozy Khryuchik order",
@@ -692,27 +827,68 @@
         {
           "title": "Sections",
           "items": [
-            { "key": "books", "label": "Books" },
-            { "key": "shop", "label": "Shop" },
-            { "key": "story", "label": "Khryuchik story" },
-            { "key": "gifts", "label": "Gift bundles" }
+            {
+              "key": "books",
+              "label": "Books"
+            },
+            {
+              "key": "shop",
+              "label": "Shop"
+            },
+            {
+              "key": "story",
+              "label": "Khryuchik story"
+            },
+            {
+              "key": "gifts",
+              "label": "Gift bundles"
+            }
           ]
         },
         {
           "title": "For customers",
           "items": [
-            { "key": "shipping", "label": "Shipping and payment" },
-            { "key": "returns", "label": "Returns" },
-            { "key": "faq", "label": "FAQ" },
-            { "key": "contacts", "label": "Contacts" }
+            {
+              "key": "shipping",
+              "label": "Shipping and payment"
+            },
+            {
+              "key": "returns",
+              "label": "Returns"
+            },
+            {
+              "key": "faq",
+              "label": "FAQ"
+            },
+            {
+              "key": "contacts",
+              "label": "Contacts"
+            },
+            {
+              "key": "terms",
+              "label": "Terms of Service"
+            },
+            {
+              "key": "privacy",
+              "label": "Privacy Policy"
+            }
           ]
         },
         {
           "title": "Socials",
           "items": [
-            { "key": "instagram", "label": "Instagram" },
-            { "key": "facebook", "label": "Facebook" },
-            { "key": "email", "label": "Email" }
+            {
+              "key": "instagram",
+              "label": "Instagram"
+            },
+            {
+              "key": "facebook",
+              "label": "Facebook"
+            },
+            {
+              "key": "email",
+              "label": "Email"
+            }
           ]
         }
       ]
