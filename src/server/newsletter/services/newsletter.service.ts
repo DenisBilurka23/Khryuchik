@@ -6,12 +6,30 @@ import { markProductAnnouncedIfNew } from "@/server/newsletter/repositories/anno
 import {
   addNewsletterSubscriber,
   getAllNewsletterSubscribers,
+  isNewsletterSubscriberPresent,
+  removeNewsletterSubscriberByEmail,
   removeNewsletterSubscriberByToken,
 } from "@/server/newsletter/repositories/newsletter.repository";
 import type { ProductDocument } from "@/types/catalog";
 
 export const subscribeToNewsletter = async (email: string, locale: Locale) => {
   await addNewsletterSubscriber(email.toLowerCase(), locale);
+};
+
+export const isSubscribedToNewsletter = async (email: string) =>
+  isNewsletterSubscriberPresent(email.toLowerCase());
+
+export const setNewsletterSubscription = async (
+  email: string,
+  locale: Locale,
+  subscribed: boolean,
+) => {
+  if (subscribed) {
+    await subscribeToNewsletter(email, locale);
+    return;
+  }
+
+  await removeNewsletterSubscriberByEmail(email.toLowerCase());
 };
 
 export const unsubscribeFromNewsletter = async (token: string) =>

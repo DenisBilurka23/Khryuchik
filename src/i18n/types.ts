@@ -720,6 +720,7 @@ export type AccountPageDictionary = {
   notifications: string;
   notificationsEmailUpdatesTitle: string;
   notificationsEmailUpdatesDescription: string;
+  notificationsUpdateError: string;
   languageRegion: string;
   personalData: string;
   newPasswordLabel: string;

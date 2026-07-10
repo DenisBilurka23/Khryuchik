@@ -54,10 +54,29 @@ export const getAllNewsletterSubscribers = async () => {
   return collection.find({}, { projection: { _id: 0 } }).toArray();
 };
 
+export const isNewsletterSubscriberPresent = async (email: string) => {
+  const collection = await getNewsletterSubscribersCollection();
+
+  const existing = await collection.findOne(
+    { email },
+    { projection: { _id: 1 } },
+  );
+
+  return existing !== null;
+};
+
 export const removeNewsletterSubscriberByToken = async (token: string) => {
   const collection = await getNewsletterSubscribersCollection();
 
   const result = await collection.deleteOne({ unsubscribeToken: token });
+
+  return result.deletedCount > 0;
+};
+
+export const removeNewsletterSubscriberByEmail = async (email: string) => {
+  const collection = await getNewsletterSubscribersCollection();
+
+  const result = await collection.deleteOne({ email });
 
   return result.deletedCount > 0;
 };

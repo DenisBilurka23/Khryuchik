@@ -129,13 +129,35 @@ const buildUnsubscribeHtml = (
     >
   </p>`;
 
+const buildProductImageHtml = (imageUrl: string, alt: string) =>
+  html` <table
+    role="presentation"
+    width="100%"
+    cellpadding="0"
+    cellspacing="0"
+    border="0"
+  >
+    <tr>
+      <td align="center" style="padding:0 0 26px 0;">
+        <img
+          src="${imageUrl}"
+          alt="${alt}"
+          width="220"
+          style="display:block;width:220px;max-width:100%;height:auto;border-radius:18px;"
+        />
+      </td>
+    </tr>
+  </table>`;
+
 const buildNewProductBodyHtml = (
+  imageHtml: string,
   intro: string,
   description: string,
   buttonLabel: string,
   productUrl: string,
   unsubscribeHtml: string,
 ) => html`
+                    ${imageHtml}
                     ${buildParagraphHtml(intro, 14)}
                     ${description ? buildParagraphHtml(description, 28) : ""}
                     ${buildButtonHtml(buttonLabel, productUrl)}
@@ -157,6 +179,16 @@ const buildNewProductContent = (
   const title = translation?.title?.trim() || product.slug;
   const description = translation?.shortDescription?.trim() ?? "";
   const productUrl = `${getAppOrigin()}${getLocalizedProductPath(locale, product.slug)}`;
+
+  // Cover image src is already an absolute R2 URL; guard for any legacy relative
+  // value so the email always points at a fully-qualified image.
+  const rawImageUrl = translation?.thumbnail?.src?.trim();
+  const imageUrl = rawImageUrl
+    ? rawImageUrl.startsWith("http")
+      ? rawImageUrl
+      : `${getAppOrigin()}${rawImageUrl.startsWith("/") ? "" : "/"}${rawImageUrl}`
+    : "";
+  const imageHtml = imageUrl ? buildProductImageHtml(imageUrl, title) : "";
 
   const strings: EmailShellStrings = {
     lang: locale,
@@ -192,6 +224,7 @@ const buildNewProductContent = (
     html: buildEmailShell(
       strings,
       buildNewProductBodyHtml(
+        imageHtml,
         typeCopy.intro(title),
         description,
         typeCopy.buttonLabel,

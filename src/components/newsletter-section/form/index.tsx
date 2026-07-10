@@ -11,13 +11,14 @@ import type { NewsletterFormProps } from "./types";
 
 export const NewsletterForm = ({
   locale,
+  defaultEmail,
   emailPlaceholder,
   buttonLabel,
   successMessage,
   invalidEmailMessage,
   unexpectedErrorMessage,
 }: NewsletterFormProps) => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(defaultEmail);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
