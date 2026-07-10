@@ -9,7 +9,7 @@ import {
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
-import { sendOrderShippedEmail } from "@/server/email/order-shipped";
+import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { requireAdminApiAccess } from "@/server/admin/auth";
 import type { OrderStatus } from "@/types/order";
 import { isOrderStatus } from "@/utils";
@@ -40,10 +40,10 @@ export const updateAdminOrderStatusAction = async (
     const previous = await findOrderById(orderId);
     await updateOrderStatus(orderId, status);
 
-    if (status === "shipped" && previous?.status !== "shipped") {
+    if (previous && previous.status !== status) {
       const updated = await findOrderById(orderId);
       if (updated) {
-        void sendOrderShippedEmail(updated);
+        sendOrderStatusEmail(updated, previous.status);
       }
     }
   } catch (error) {
