@@ -198,6 +198,15 @@ export const AdminProductBaseSection = ({
           }
           label={tForm("fields.visibleOnHome")}
         />
+        <AdminCheckboxField
+          control={
+            <Checkbox
+              name="notifySubscribers"
+              defaultChecked={payload.product.status.notifySubscribers}
+            />
+          }
+          label={tForm("fields.notifySubscribers")}
+        />
       </Box>
     </AdminSectionCard>
   );

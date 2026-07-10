@@ -192,6 +192,7 @@ export const parseAdminProductFormData = (
         isActive: parseBoolean(formData, "isActive"),
         visibleInShop: parseBoolean(formData, "visibleInShop"),
         visibleOnHome: parseBoolean(formData, "visibleOnHome"),
+        notifySubscribers: parseBoolean(formData, "notifySubscribers"),
       },
       merchandising: {
         sortOrder: parseNumber(formData, "sortOrder", 100),

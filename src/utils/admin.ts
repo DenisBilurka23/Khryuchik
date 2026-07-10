@@ -1,10 +1,18 @@
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import type { Locale } from "@/i18n/config";
 import type { AdminNavItem, AdminProductPayload } from "@/types/admin";
-import type { ProductDetailTranslation, ProductTranslation } from "@/types/catalog";
+import type {
+  ProductDetailTranslation,
+  ProductTranslation,
+} from "@/types/catalog";
 
 type AdminNavLabels = Record<
-  "dashboard" | "products" | "categories" | "localization" | "customers" | "orders",
+  | "dashboard"
+  | "products"
+  | "categories"
+  | "localization"
+  | "customers"
+  | "orders",
   string
 >;
 
@@ -17,13 +25,15 @@ type AdminProductTypeLabels = Record<"book" | "merch", string>;
 
 type AdminAuthProviderLabels = Record<"google" | "credentials", string>;
 
-export const createAdminNavItems = (
-  labels: AdminNavLabels,
-): AdminNavItem[] => [
+export const createAdminNavItems = (labels: AdminNavLabels): AdminNavItem[] => [
   { key: "dashboard", label: labels.dashboard, href: "/admin" },
   { key: "products", label: labels.products, href: "/admin/products" },
   { key: "categories", label: labels.categories, href: "/admin/categories" },
-  { key: "localization", label: labels.localization, href: "/admin/localization" },
+  {
+    key: "localization",
+    label: labels.localization,
+    href: "/admin/localization",
+  },
   { key: "customers", label: labels.customers, href: "/admin/customers" },
   { key: "orders", label: labels.orders, href: "/admin/orders" },
 ];
@@ -57,9 +67,15 @@ export const getAdminAuthProviderLabel = (
 };
 
 export const getAdminCategoryLabel = (
-  translations: Partial<Record<Locale, { label: string; description?: string }>>,
+  translations: Partial<
+    Record<Locale, { label: string; description?: string }>
+  >,
   locale: Locale,
-) => translations[locale]?.label ?? translations.en?.label ?? translations.ru?.label ?? "";
+) =>
+  translations[locale]?.label ??
+  translations.en?.label ??
+  translations.ru?.label ??
+  "";
 
 export const normalizeIdentifierPart = (value: string) =>
   value
@@ -158,6 +174,7 @@ export const createEmptyAdminProductPayload = (
       isActive: true,
       visibleInShop: true,
       visibleOnHome: false,
+      notifySubscribers: true,
     },
     merchandising: {
       sortOrder: 100,

@@ -1,14 +1,7 @@
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
+import { NewsletterForm } from "./form";
 import styles from "./newsletter-section.module.css";
 import type { NewsletterSectionProps } from "./types";
 
@@ -44,14 +37,14 @@ export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
 
             <Grid size={{ xs: 12, md: 4 }}>
               <Paper elevation={0} className={styles.formCard} sx={{ p: 2 }}>
-                <TextField
-                  fullWidth
-                  placeholder={t("emailPlaceholder")}
-                  variant="outlined"
+                <NewsletterForm
+                  locale={locale}
+                  emailPlaceholder={t("emailPlaceholder")}
+                  buttonLabel={t("buttonLabel")}
+                  successMessage={t("successMessage")}
+                  invalidEmailMessage={t("invalidEmail")}
+                  unexpectedErrorMessage={t("unexpectedError")}
                 />
-                <Button fullWidth variant="contained" sx={{ mt: 2 }}>
-                  {t("buttonLabel")}
-                </Button>
               </Paper>
             </Grid>
           </Grid>

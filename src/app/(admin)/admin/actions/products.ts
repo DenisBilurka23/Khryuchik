@@ -9,6 +9,7 @@ import {
   saveAdminProduct,
 } from "@/server/admin/catalog.service";
 import { parseAdminProductFormData } from "@/server/admin/form-data";
+import { announceNewProduct } from "@/server/newsletter/services/newsletter.service";
 import {
   AdminProductFormErrorCode,
   AdminProductFormMode,
@@ -73,7 +74,11 @@ export const saveAdminProductAction = async (formData: FormData) => {
     payload = parseAdminProductFormData(formData);
     payload = await populateAdminProductIdentifiers(payload);
 
-    await saveAdminProduct(payload);
+    const saved = await saveAdminProduct(payload);
+    const { status } = saved.product;
+    if (status.isActive && status.visibleInShop && status.notifySubscribers) {
+      void announceNewProduct(saved.product);
+    }
 
     revalidateProductDependentPaths(payload.product.slug);
     redirectPath = `/admin/products/${payload.product.productId}/edit?saved=1`;
