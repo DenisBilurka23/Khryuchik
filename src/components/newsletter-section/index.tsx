@@ -1,11 +1,19 @@
 import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import { getTranslations } from "next-intl/server";
-
+import { getServerAuthSession } from "@/server/auth/config";
+import { isSubscribedToNewsletter } from "@/server/newsletter/services/newsletter.service";
 import { NewsletterForm } from "./form";
 import styles from "./newsletter-section.module.css";
 import type { NewsletterSectionProps } from "./types";
 
 export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
+  const session = await getServerAuthSession();
+  const accountEmail = session?.user?.email ?? "";
+
+  if (accountEmail && (await isSubscribedToNewsletter(accountEmail))) {
+    return null;
+  }
+
   const t = await getTranslations({
     locale,
     namespace: "storefront.newsletter",
@@ -39,6 +47,7 @@ export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
               <Paper elevation={0} className={styles.formCard} sx={{ p: 2 }}>
                 <NewsletterForm
                   locale={locale}
+                  defaultEmail={accountEmail}
                   emailPlaceholder={t("emailPlaceholder")}
                   buttonLabel={t("buttonLabel")}
                   successMessage={t("successMessage")}

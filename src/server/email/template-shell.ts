@@ -1,5 +1,16 @@
 import "server-only";
 
+import { defaultLocale, isLocale } from "@/i18n/config";
+import { getLocalizedPath } from "@/utils";
+
+import { getAppOrigin } from "./transport";
+
+const buildFooterUrl = (lang: string, path: string) => {
+  const locale = isLocale(lang) ? lang : defaultLocale;
+
+  return `${getAppOrigin()}${getLocalizedPath(locale, path)}`;
+};
+
 export type EmailShellStrings = {
   lang: string;
   preheader: string;
@@ -111,6 +122,7 @@ export const buildEmailShell = (strings: EmailShellStrings, bodyHtml: string) =>
               <!-- brand -->
               <table
                 role="presentation"
+                align="center"
                 class="wrap"
                 width="600"
                 cellpadding="0"
@@ -141,6 +153,7 @@ export const buildEmailShell = (strings: EmailShellStrings, bodyHtml: string) =>
               <!-- card -->
               <table
                 role="presentation"
+                align="center"
                 class="wrap"
                 width="600"
                 cellpadding="0"
@@ -193,6 +206,7 @@ export const buildEmailShell = (strings: EmailShellStrings, bodyHtml: string) =>
               <!-- footer -->
               <table
                 role="presentation"
+                align="center"
                 class="wrap"
                 width="600"
                 cellpadding="0"
@@ -201,27 +215,35 @@ export const buildEmailShell = (strings: EmailShellStrings, bodyHtml: string) =>
                 style="width:600px;max-width:600px;"
               >
                 <tr>
-                  <td align="center" style="padding:26px 24px 8px 24px;">
+                  <td
+                    align="center"
+                    style="padding:26px 24px 8px 24px;text-align:center;"
+                  >
                     <p
-                      style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#6a6058;"
+                      style="margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:17px;color:#6a6058;text-align:center;"
                     >
                       ${strings.quote}
                     </p>
                   </td>
                 </tr>
                 <tr>
-                  <td align="center" style="padding:14px 24px 0 24px;">
+                  <td
+                    align="center"
+                    style="padding:14px 24px 0 24px;text-align:center;"
+                  >
                     <table
                       role="presentation"
+                      align="center"
                       cellpadding="0"
                       cellspacing="0"
                       border="0"
+                      style="margin:0 auto;"
                     >
                       <tr>
                         <td style="padding:0 8px;">
                           <a
                             class="link-hover"
-                            href="#"
+                            href="${buildFooterUrl(strings.lang, "/shop")}"
                             style="font-family:'Manrope',Arial,sans-serif;font-size:12px;font-weight:600;color:#6a6058;text-decoration:none;"
                             >${strings.footerShop}</a
                           >
@@ -230,7 +252,7 @@ export const buildEmailShell = (strings: EmailShellStrings, bodyHtml: string) =>
                         <td style="padding:0 8px;">
                           <a
                             class="link-hover"
-                            href="#"
+                            href="${buildFooterUrl(strings.lang, "/story")}"
                             style="font-family:'Manrope',Arial,sans-serif;font-size:12px;font-weight:600;color:#6a6058;text-decoration:none;"
                             >${strings.footerStory}</a
                           >
@@ -239,7 +261,10 @@ export const buildEmailShell = (strings: EmailShellStrings, bodyHtml: string) =>
                         <td style="padding:0 8px;">
                           <a
                             class="link-hover"
-                            href="#"
+                            href="${buildFooterUrl(
+                              strings.lang,
+                              "/story#author",
+                            )}"
                             style="font-family:'Manrope',Arial,sans-serif;font-size:12px;font-weight:600;color:#6a6058;text-decoration:none;"
                             >${strings.footerHelp}</a
                           >
@@ -251,7 +276,7 @@ export const buildEmailShell = (strings: EmailShellStrings, bodyHtml: string) =>
                 <tr>
                   <td
                     align="center"
-                    style="padding:16px 24px 0 24px;font-family:'Manrope',Arial,sans-serif;font-size:11px;line-height:1.7;color:#a89d92;"
+                    style="padding:16px 24px 0 24px;font-family:'Manrope',Arial,sans-serif;font-size:11px;line-height:1.7;color:#a89d92;text-align:center;"
                   >
                     ${strings.footerCopyright}
                   </td>

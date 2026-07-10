@@ -1,9 +1,17 @@
-import { PATCH, POST } from "@/client-api";
+import { GET, PATCH, POST } from "@/client-api";
 
-import type { UserShippingAddress, UserShippingAddressInput } from "@/types/users";
+import type { Locale } from "@/i18n/config";
+import type {
+  UserShippingAddress,
+  UserShippingAddressInput,
+} from "@/types/users";
 
 type ErrorResponse = {
   error?: string;
+};
+
+type NewsletterSubscriptionResponse = ErrorResponse & {
+  subscribed?: boolean;
 };
 
 type AccountClientUser = {
@@ -54,12 +62,27 @@ export const addAccountAddressClient = async (
 ) => POST<UpdateAccountAddressesResponse>("/api/account/addresses", payload);
 
 export const selectAccountAddressClient = async (addressId: string) =>
-  PATCH<UpdateAccountAddressesResponse>("/api/account/addresses", { addressId });
+  PATCH<UpdateAccountAddressesResponse>("/api/account/addresses", {
+    addressId,
+  });
 
 export const changeAccountPasswordClient = async (payload: {
   currentPassword: string;
   newPassword: string;
 }) => POST<ErrorResponse>("/api/account/password", payload);
 
-export const deleteAccountClient = async (payload: { currentPassword?: string }) =>
-  POST<ErrorResponse>("/api/account/delete", payload);
+export const deleteAccountClient = async (payload: {
+  currentPassword?: string;
+}) => POST<ErrorResponse>("/api/account/delete", payload);
+
+export const getAccountNewsletterStatusClient = async () =>
+  GET<NewsletterSubscriptionResponse>("/api/account/newsletter");
+
+export const setAccountNewsletterSubscriptionClient = async (
+  subscribed: boolean,
+  locale: Locale,
+) =>
+  PATCH<NewsletterSubscriptionResponse>("/api/account/newsletter", {
+    subscribed,
+    locale,
+  });

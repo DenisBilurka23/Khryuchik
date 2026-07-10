@@ -1,20 +1,27 @@
 "use client";
 
-import { type SyntheticEvent, useState } from "react";
+import { type SyntheticEvent, useEffect, useState } from "react";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import {
   Alert,
+  Box,
   Button,
   Grid,
   Paper,
   Stack,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { changeAccountPasswordClient, deleteAccountClient } from "@/client-api/account";
+import {
+  changeAccountPasswordClient,
+  deleteAccountClient,
+  getAccountNewsletterStatusClient,
+  setAccountNewsletterSubscriptionClient,
+} from "@/client-api/account";
 import { requestPasswordResetClient } from "@/client-api/auth";
 import { ModalButton } from "@/components/modal-button";
 import { AuthInputErrorCode } from "@/types/auth";
@@ -55,6 +62,44 @@ export const SettingsSection = ({
   const [deleteErrorMessage, setDeleteErrorMessage] = useState<string | null>(
     null,
   );
+
+  const [isSubscribed, setIsSubscribed] = useState<boolean | null>(null);
+  const [isTogglingSubscription, setIsTogglingSubscription] = useState(false);
+  const [subscriptionError, setSubscriptionError] = useState<string | null>(
+    null,
+  );
+
+  useEffect(() => {
+    let isActive = true;
+
+    void getAccountNewsletterStatusClient().then((response) => {
+      if (isActive && response.ok) {
+        setIsSubscribed(Boolean(response.data?.subscribed));
+      }
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  const handleSubscriptionToggle = async (nextSubscribed: boolean) => {
+    setIsTogglingSubscription(true);
+    setSubscriptionError(null);
+    setIsSubscribed(nextSubscribed);
+
+    const response = await setAccountNewsletterSubscriptionClient(
+      nextSubscribed,
+      locale,
+    );
+
+    setIsTogglingSubscription(false);
+
+    if (!response.ok) {
+      setIsSubscribed(!nextSubscribed);
+      setSubscriptionError(t("notificationsUpdateError"));
+    }
+  };
 
   const handleForgotPassword = async () => {
     if (isSendingReset || resetSent) return;
@@ -175,12 +220,42 @@ export const SettingsSection = ({
             bgcolor: "#fff",
           }}
         >
-          <Typography sx={{ fontWeight: 700 }}>
-            {t("notificationsEmailUpdatesTitle")}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {t("notificationsEmailUpdatesDescription")}
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              gap: 2,
+            }}
+          >
+            <Box sx={{ minWidth: 0 }}>
+              <Typography sx={{ fontWeight: 700 }}>
+                {t("notificationsEmailUpdatesTitle")}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                {t("notificationsEmailUpdatesDescription")}
+              </Typography>
+            </Box>
+            <Switch
+              checked={isSubscribed ?? false}
+              disabled={isSubscribed === null || isTogglingSubscription}
+              onChange={(event) =>
+                void handleSubscriptionToggle(event.target.checked)
+              }
+              slotProps={{
+                input: { "aria-label": t("notificationsEmailUpdatesTitle") },
+              }}
+            />
+          </Box>
+          {subscriptionError ? (
+            <Alert severity="error" sx={{ mt: 1.5 }}>
+              {subscriptionError}
+            </Alert>
+          ) : null}
         </Paper>
       </SectionCard>
 
