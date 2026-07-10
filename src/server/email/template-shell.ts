@@ -191,7 +191,7 @@ export const buildEmailShell = (strings: EmailShellStrings, bodyHtml: string) =>
 
                 <!-- body -->
                 <tr>
-                  <td class="px" style="padding:38px 48px 6px 48px;">
+                  <td class="px" style="padding:38px 48px 34px 48px;">
                     <h1
                       class="h1"
                       style="margin:0 0 16px 0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:40px;line-height:1.1;color:#2a2522;letter-spacing:-0.01em;"

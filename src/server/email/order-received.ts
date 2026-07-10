@@ -42,8 +42,8 @@ const paymentInstructionByMethod: Record<string, { ru: string; en: string }> = {
     en: "You'll pay on delivery. We'll contact you to confirm the details.",
   },
   telegram_transfer: {
-    ru: "Мы свяжемся с вами в Telegram, чтобы согласовать перевод и подтвердить заказ.",
-    en: "We'll reach out on Telegram to arrange the transfer and confirm your order.",
+    ru: "Мы свяжемся с вами, чтобы согласовать перевод и подтвердить заказ.",
+    en: "We'll reach out to arrange the transfer and confirm your order.",
   },
 };
 
