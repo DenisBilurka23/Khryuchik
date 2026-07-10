@@ -559,6 +559,17 @@ export type StorefrontDictionary = {
     text: string;
     emailPlaceholder: string;
     buttonLabel: string;
+    successMessage: string;
+    invalidEmail: string;
+    unexpectedError: string;
+  };
+  unsubscribePage: {
+    eyebrow: string;
+    title: string;
+    intro: string;
+    confirmButton: string;
+    successMessage: string;
+    errorMessage: string;
   };
   footer: {
     description: string;
@@ -1147,6 +1158,7 @@ export type AdminPageDictionary = {
       isActive: string;
       visibleInShop: string;
       visibleOnHome: string;
+      notifySubscribers: string;
       regionPrice: string;
       regionOldPrice: string;
       slug: string;

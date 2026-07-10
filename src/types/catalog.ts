@@ -26,6 +26,7 @@ export type ProductStatus = {
   isActive: boolean;
   visibleInShop: boolean;
   visibleOnHome: boolean;
+  notifySubscribers: boolean;
 };
 
 export type ProductMerchandising = {

@@ -819,7 +819,18 @@
       "title": "Get updates on new books and Khryuchik collections",
       "text": "Announcements about new stories, merch drops, gift bundles, and seasonal releases — without extra noise.",
       "emailPlaceholder": "Your email",
-      "buttonLabel": "Subscribe"
+      "buttonLabel": "Subscribe",
+      "successMessage": "Thanks! You're subscribed.",
+      "invalidEmail": "Please enter a valid email address.",
+      "unexpectedError": "Something went wrong. Please try again."
+    },
+    "unsubscribePage": {
+      "eyebrow": "Newsletter",
+      "title": "Unsubscribe from the newsletter",
+      "intro": "Click the button below to stop receiving new book and product announcements from Khryuchik.",
+      "confirmButton": "Unsubscribe",
+      "successMessage": "You've been unsubscribed. We're sorry to see you go.",
+      "errorMessage": "Something went wrong. Please try again."
     },
     "footer": {
       "description": "Gentle family stories and cozy merch for children and adults.",
@@ -1518,6 +1529,7 @@
         "isActive": "Active",
         "visibleInShop": "Visible in shop",
         "visibleOnHome": "Visible on homepage",
+        "notifySubscribers": "Notify newsletter subscribers on publish",
         "regionPrice": "Price, {region}",
         "regionOldPrice": "Old price, {region}",
         "slug": "Slug",

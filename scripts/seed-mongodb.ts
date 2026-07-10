@@ -137,6 +137,7 @@ const buildProductDocument = (productId: string): ProductDocument => ({
     isActive: true,
     visibleInShop: true,
     visibleOnHome: true,
+    notifySubscribers: false,
   },
   merchandising: {
     sortOrder: getProductSortOrder(productId),
