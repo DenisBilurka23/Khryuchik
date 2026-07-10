@@ -4,6 +4,7 @@ import { randomUUID } from "node:crypto";
 
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
+import { sendOrderReceivedEmail } from "@/server/email/order-received";
 import {
   findOrderByStripeSessionId,
   insertOrder,
@@ -11,7 +12,10 @@ import {
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
 import { retrieveStripeCheckoutSession } from "@/server/payments/stripe";
-import { notifyAdminNewOrder, notifyAdminOrderPaid } from "@/server/payments/telegram";
+import {
+  notifyAdminNewOrder,
+  notifyAdminOrderPaid,
+} from "@/server/payments/telegram";
 import type {
   CreateOrderInput,
   OrderDocument,
@@ -44,8 +48,7 @@ const round2 = (value: number) => Math.round(value * 100) / 100;
 
 const initialPaymentStatus = (
   method: PaymentMethod,
-): OrderPaymentInfo["status"] =>
-  method === "cod" ? "cod_pending" : "pending";
+): OrderPaymentInfo["status"] => (method === "cod" ? "cod_pending" : "pending");
 
 export const createOrder = async (
   input: CreateOrderInput,
@@ -131,10 +134,10 @@ export const createOrder = async (
   };
 
   const saved = await insertOrder(order);
-
-  // Fire-and-forget admin notification — never block the customer or fail
-  // the order if Telegram is misconfigured or unreachable.
   void notifyAdminNewOrder(saved);
+  if (paymentMethod !== "stripe") {
+    void sendOrderReceivedEmail(saved);
+  }
 
   return saved;
 };
@@ -171,7 +174,10 @@ export const confirmOrderFromStripeSession = async (
       await updateOrderStatus(order.id, "delivered");
     }
 
-    const updatedOrder = { ...order, payment: { ...order.payment, status: "paid" as const } };
+    const updatedOrder = {
+      ...order,
+      payment: { ...order.payment, status: "paid" as const },
+    };
 
     void notifyAdminOrderPaid(updatedOrder);
     void sendOrderConfirmationEmail(updatedOrder);

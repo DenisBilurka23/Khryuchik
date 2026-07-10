@@ -8,6 +8,7 @@ import {
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
+import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { verifyStripeWebhook } from "@/server/payments/stripe";
 import { notifyAdminOrderPaid } from "@/server/payments/telegram";
 
@@ -49,7 +50,6 @@ const handleCheckoutCompleted = async (session: Stripe.Checkout.Session) => {
     await updateOrderStatus(orderId, "delivered");
   }
 
-  // Re-fetch so the notification reflects the updated payment status.
   const updated = await findOrderById(orderId);
   if (updated) {
     void notifyAdminOrderPaid(updated);
@@ -81,6 +81,11 @@ const handleCheckoutExpired = async (session: Stripe.Checkout.Session) => {
     stripeSessionId: session.id,
   });
   await updateOrderStatus(orderId, "cancelled");
+
+  const updated = await findOrderById(orderId);
+  if (updated) {
+    sendOrderStatusEmail(updated, existing.status);
+  }
 };
 
 export const POST = async (request: NextRequest) => {
