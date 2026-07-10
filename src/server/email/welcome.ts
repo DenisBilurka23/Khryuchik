@@ -31,7 +31,6 @@ const buildWelcomeBodyHtml = (
                     ${buildParagraphHtml(strings.para1, 14)}
                     ${buildParagraphHtml(strings.para2, 28)}
                     ${buildButtonHtml(strings.buttonLabel, shopUrl)}
-                    <div style="height:24px;line-height:24px;font-size:0;">&nbsp;</div>
                   </td>
                 </tr>`;
 

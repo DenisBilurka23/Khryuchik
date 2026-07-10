@@ -163,7 +163,6 @@ const buildNewProductBodyHtml = (
                     ${buildButtonHtml(buttonLabel, productUrl)}
                     <div style="height:28px;line-height:28px;font-size:0;">&nbsp;</div>
                     ${unsubscribeHtml}
-                    <div style="height:24px;line-height:24px;font-size:0;">&nbsp;</div>
                   </td>
                 </tr>`;
 
