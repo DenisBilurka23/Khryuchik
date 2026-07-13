@@ -40,6 +40,8 @@ export type ProductPageLabels = {
     addedToCart: string;
     buyNow: string;
     viewBook: string;
+    alreadyOwned: string;
+    viewInLibrary: string;
   };
   details: {
     sku: string;

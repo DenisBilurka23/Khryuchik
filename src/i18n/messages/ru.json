@@ -187,7 +187,9 @@
         "addToCart": "В корзину",
         "addedToCart": "Добавлено в корзину",
         "buyNow": "Купить сейчас",
-        "viewBook": "Смотреть книгу"
+        "viewBook": "Смотреть книгу",
+        "alreadyOwned": "Уже в вашей библиотеке",
+        "viewInLibrary": "Открыть библиотеку"
       },
       "details": {
         "sku": "Артикул",

@@ -26,6 +26,7 @@ export type ProductGalleryProps = {
 export type ProductInfoProps = {
   locale: Locale;
   product: ProductDetails;
+  ownedLanguages?: string[];
 };
 
 export type ProductTabsProps = {
@@ -50,4 +51,5 @@ export type ProductPageViewProps = {
   product: ProductDetails;
   relatedProducts: LocalizedProductSummary[];
   storyProduct?: LocalizedProductSummary | null;
+  ownedLanguages?: string[];
 };

@@ -65,6 +65,7 @@ export const ProductPageView = async ({
   product,
   relatedProducts,
   storyProduct,
+  ownedLanguages,
 }: ProductPageViewProps) => {
   const tProductPage = await getTranslations({
     locale,
@@ -150,6 +151,7 @@ export const ProductPageView = async ({
                 <ProductInfo
                   locale={locale}
                   product={product}
+                  ownedLanguages={ownedLanguages}
                 />
               </Grid>
             </Grid>

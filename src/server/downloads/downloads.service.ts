@@ -76,6 +76,32 @@ export const getUserPurchasedDownloads = async (
   return downloads;
 };
 
+export const getOwnedProductLanguages = async (
+  userId: string | undefined,
+  email: string | undefined,
+  productId: string,
+): Promise<string[]> => {
+  const orders = await findOrdersForUser(userId, email);
+  const paidOrders = orders.filter((o) => o.payment.status === "paid");
+
+  const languages = new Set<string>();
+
+  for (const order of paidOrders) {
+    for (const item of order.items) {
+      if (item.productId !== productId) continue;
+
+      const isDigital =
+        !item.formatSelection || item.formatSelection === BOOK_FORMAT.digital;
+
+      if (!isDigital) continue;
+
+      languages.add(item.languageSelection ?? order.locale);
+    }
+  }
+
+  return [...languages];
+};
+
 export type PurchasedAsset = {
   objectKey: string;
   fileName: string;
