@@ -9,7 +9,7 @@ import { useCart } from "../../cart/store";
 
 import type { CartButtonProps } from "./types";
 
-export const CartButton = ({ href, className }: CartButtonProps) => {
+export const CartButton = ({ href }: CartButtonProps) => {
   const t = useTranslations("storefront");
   const { totalCount } = useCart();
   const label = t("cartLabel");
@@ -19,7 +19,6 @@ export const CartButton = ({ href, className }: CartButtonProps) => {
       component={Link}
       href={href}
       variant="contained"
-      className={className}
       aria-label={label}
       sx={{
         display: "inline-flex",

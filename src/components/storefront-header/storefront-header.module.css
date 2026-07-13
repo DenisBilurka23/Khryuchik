@@ -3,12 +3,3 @@
   background: rgba(255, 253, 249, 0.94);
   border-bottom: 1px solid #eadbc8;
 }
-
-.cartButton {
-  background: #18181b;
-  color: #fff;
-}
-
-.cartButton:hover {
-  background: #09090b;
-}

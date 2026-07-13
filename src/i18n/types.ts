@@ -523,7 +523,6 @@ export type StorefrontDictionary = {
     title: string;
     actionLabel: string;
     detailsButton: string;
-    buyButton: string;
   };
   shopSection: {
     eyebrow: string;

@@ -138,10 +138,7 @@ export const StorefrontHeader = async ({
                 sx={{ display: { xs: "none", md: "inline-flex" } }}
               />
 
-              <CartButton
-                href={navigationPaths?.cart ?? "/cart"}
-                className={styles.cartButton}
-              />
+              <CartButton href={navigationPaths?.cart ?? "/cart"} />
             </Box>
           </Toolbar>
         </Container>

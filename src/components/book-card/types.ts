@@ -4,5 +4,4 @@ export type BookCardProps = {
   book: LocalizedProductSummary;
   detailsHref: string;
   detailsButton: string;
-  buyButton: string;
 };

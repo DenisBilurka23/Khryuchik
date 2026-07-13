@@ -30,7 +30,6 @@ export const BookSection = async ({
                 book={book}
                 detailsHref={getLocalizedProductPath(locale, book.slug)}
                 detailsButton={t("detailsButton")}
-                buyButton={t("buyButton")}
               />
             </Grid>
           ))}

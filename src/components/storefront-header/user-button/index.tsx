@@ -37,6 +37,9 @@ export const UserButton = ({
         borderRadius: "999px",
         borderColor: "#E8D6BF",
         bgcolor: "#fff",
+        "&:hover": {
+          borderColor: "#D96C82",
+        },
         ...sx,
       }}
     >
