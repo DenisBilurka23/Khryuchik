@@ -22,15 +22,3 @@
   height: 100%;
   object-fit: cover;
 }
-
-.detailsButton {
-  background: #18181b;
-}
-
-.detailsButton:hover {
-  background: #09090b;
-}
-
-.buyButton {
-  border-color: #e8d6bf;
-}

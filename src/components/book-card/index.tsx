@@ -15,7 +15,6 @@ export const BookCard = ({
   book,
   detailsHref,
   detailsButton,
-  buyButton,
 }: BookCardProps) => {
   const thumbnail = book.thumbnail;
 
@@ -70,30 +69,13 @@ export const BookCard = ({
           </Typography>
         </Link>
 
-        <Stack direction="row" spacing={1.5} sx={{ mt: "auto", pt: 3 }}>
+        <Stack direction="row" sx={{ mt: "auto", pt: 3 }}>
           <Link
             href={detailsHref}
-            style={{ textDecoration: "none", color: "inherit" }}
+            style={{ textDecoration: "none", color: "inherit", display: "block", width: "100%" }}
           >
-            <Button
-              component="span"
-              variant="contained"
-              className={styles.detailsButton}
-            >
+            <Button component="span" variant="contained" fullWidth>
               {detailsButton}
-            </Button>
-          </Link>
-          <Link
-            href={detailsHref}
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            <Button
-              component="span"
-              variant="outlined"
-              color="inherit"
-              className={styles.buyButton}
-            >
-              {buyButton}
             </Button>
           </Link>
         </Stack>

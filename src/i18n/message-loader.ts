@@ -85,7 +85,6 @@ const buildStorefrontDictionary = async (
       title: dictionary.storefront.booksSection.title,
       actionLabel: dictionary.storefront.booksSection.actionLabel,
       detailsButton: dictionary.storefront.booksSection.detailsButton,
-      buyButton: dictionary.storefront.booksSection.buyButton,
     },
     shopSection: {
       eyebrow: dictionary.storefront.shopSection.eyebrow,
