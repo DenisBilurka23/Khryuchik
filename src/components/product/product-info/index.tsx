@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
+import MenuBookOutlinedIcon from "@mui/icons-material/MenuBookOutlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import {
   Alert,
@@ -17,6 +19,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { formatCurrency, getLocalizedPath } from "@/utils";
@@ -27,7 +30,11 @@ import { useCart } from "../../cart/store";
 import { setBuyNowItem } from "../../cart/buy-now-store";
 import type { ProductInfoProps } from "../types";
 
-export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
+export const ProductInfo = ({
+  locale,
+  product,
+  ownedLanguages = [],
+}: ProductInfoProps) => {
   const tProductPage = useTranslations("storefront.productPage");
   const tShopSection = useTranslations("storefront.shopSection");
   const { addItem } = useCart();
@@ -42,6 +49,7 @@ export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
   const isWishlisted = isInWishlist(product.productId);
   const hasMetaChips = Boolean(product.badge || product.storyLabel);
   const isDigital = format === BOOK_FORMAT.digital;
+  const alreadyOwned = isDigital && ownedLanguages.includes(language);
 
   const handleAddToCart = () => {
     addItem({
@@ -238,26 +246,48 @@ export const ProductInfo = ({ locale, product }: ProductInfoProps) => {
         ) : null}
       </Stack>
 
-      <Stack direction={{ xs: "column", sm: "row" }} spacing={2} sx={{ mt: 4 }}>
-        <Button
-          variant="contained"
-          size="large"
-          startIcon={<ShoppingBagOutlinedIcon />}
-          sx={{ flex: 1 }}
-          onClick={handleAddToCart}
+      {alreadyOwned ? (
+        <Stack spacing={2} sx={{ mt: 4 }}>
+          <Alert icon={<CheckCircleOutlinedIcon />} severity="success">
+            {tProductPage("actions.alreadyOwned")}
+          </Alert>
+          <Button
+            component={Link}
+            href={getLocalizedPath(locale, "/account?section=books")}
+            variant="contained"
+            size="large"
+            startIcon={<MenuBookOutlinedIcon />}
+            fullWidth
+          >
+            {tProductPage("actions.viewInLibrary")}
+          </Button>
+        </Stack>
+      ) : (
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={2}
+          sx={{ mt: 4 }}
         >
-          {tProductPage("actions.addToCart")}
-        </Button>
-        <Button
-          variant="outlined"
-          color="inherit"
-          size="large"
-          sx={{ flex: 1, borderColor: "#E8D6BF", bgcolor: "#fff" }}
-          onClick={handleBuyNow}
-        >
-          {tProductPage("actions.buyNow")}
-        </Button>
-      </Stack>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<ShoppingBagOutlinedIcon />}
+            sx={{ flex: 1 }}
+            onClick={handleAddToCart}
+          >
+            {tProductPage("actions.addToCart")}
+          </Button>
+          <Button
+            variant="outlined"
+            color="inherit"
+            size="large"
+            sx={{ flex: 1, borderColor: "#E8D6BF", bgcolor: "#fff" }}
+            onClick={handleBuyNow}
+          >
+            {tProductPage("actions.buyNow")}
+          </Button>
+        </Stack>
+      )}
 
       <Snackbar
         open={toastOpen}

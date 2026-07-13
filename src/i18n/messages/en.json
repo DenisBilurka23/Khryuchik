@@ -187,7 +187,9 @@
         "addToCart": "Add to cart",
         "addedToCart": "Added to cart",
         "buyNow": "Buy now",
-        "viewBook": "View the book"
+        "viewBook": "View the book",
+        "alreadyOwned": "Already in your library",
+        "viewInLibrary": "Open library"
       },
       "details": {
         "sku": "SKU",
