@@ -8,7 +8,7 @@ const internalPathsByKey: Record<string, string> = {
   story: "/story",
   shipping: "/delivery",
   returns: "/delivery#returns",
-  contacts: "/story#author",
+  contacts: "/contacts",
   terms: "/terms",
   privacy: "/privacy",
 };

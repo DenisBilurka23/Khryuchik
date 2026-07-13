@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { ContactMessageInput } from "@/types/contact";
 import type { OrderDocument } from "@/types/order";
 
 const TELEGRAM_API = "https://api.telegram.org";
@@ -89,14 +90,24 @@ const buildPaidOrderMessage = (order: OrderDocument): string =>
     `Сумма: ${order.total.toFixed(2)} ${order.currency}`,
   ].join("\n");
 
-const sendMessage = async (text: string): Promise<void> => {
+const buildContactMessage = (input: ContactMessageInput): string =>
+  [
+    "✉️ Новое сообщение с сайта",
+    "",
+    `👤 ${input.name}`,
+    `📧 ${input.email}`,
+    "",
+    input.message,
+  ].join("\n");
+
+const sendMessage = async (text: string): Promise<boolean> => {
   const config = getBotConfig();
 
   if (!config) {
     console.warn(
       "[telegram] TELEGRAM_BOT_TOKEN or TELEGRAM_ADMIN_CHAT_ID is not set — skipping admin notification",
     );
-    return;
+    return false;
   }
 
   try {
@@ -118,14 +129,22 @@ const sendMessage = async (text: string): Promise<void> => {
         `[telegram] sendMessage failed: ${response.status}`,
         await response.text(),
       );
+      return false;
     }
+
+    return true;
   } catch (error) {
     console.error("[telegram] sendMessage threw:", error);
+    return false;
   }
 };
 
 export const notifyAdminNewOrder = (order: OrderDocument): Promise<void> =>
-  sendMessage(buildNewOrderMessage(order));
+  sendMessage(buildNewOrderMessage(order)).then(() => undefined);
 
 export const notifyAdminOrderPaid = (order: OrderDocument): Promise<void> =>
-  sendMessage(buildPaidOrderMessage(order));
+  sendMessage(buildPaidOrderMessage(order)).then(() => undefined);
+
+export const notifyAdminContactMessage = (
+  input: ContactMessageInput,
+): Promise<boolean> => sendMessage(buildContactMessage(input));
