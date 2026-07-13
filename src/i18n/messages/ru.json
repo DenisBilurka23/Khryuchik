@@ -814,6 +814,47 @@
         "backToShop": "В магазин"
       }
     },
+    "contactPage": {
+      "hero": {
+        "eyebrow": "Контакты",
+        "titlePrefix": "Напишите",
+        "titleAccent": "Хрючику",
+        "lede": "Вопрос о заказе, идея для сотрудничества или просто тёплое слово — мы читаем каждое сообщение и отвечаем в течение одного рабочего дня."
+      },
+      "channels": {
+        "title": "Мы на связи",
+        "sub": "Выберите удобный способ — ответим везде.",
+        "instagramLabel": "Instagram",
+        "facebookLabel": "Facebook",
+        "facebookHandle": "Хрючик",
+        "emailLabel": "Email",
+        "note": "Обычно отвечаем в течение одного рабочего дня, с понедельника по пятницу."
+      },
+      "form": {
+        "eyebrow": "Форма заявки",
+        "titlePrefix": "Отправить",
+        "titleAccent": "сообщение",
+        "sub": "Заполните поля — письмо придёт прямо на почту Хрючика.",
+        "nameLabel": "Имя",
+        "namePlaceholder": "Ваше имя",
+        "emailLabel": "Email",
+        "emailPlaceholder": "you@example.com",
+        "messageLabel": "Сообщение",
+        "messagePlaceholder": "Расскажите, чем мы можем помочь…",
+        "requiredMark": "*",
+        "submitLabel": "Отправить письмо",
+        "invalidName": "Как к вам обращаться?",
+        "invalidEmail": "Проверьте адрес email",
+        "invalidMessage": "Пара слов побольше — так нам проще помочь",
+        "unexpectedError": "Что-то пошло не так. Попробуйте ещё раз.",
+        "success": {
+          "titlePrefix": "Сообщение",
+          "titleAccent": "отправлено",
+          "text": "Спасибо! Мы получили ваше письмо и ответим в течение одного рабочего дня. Если что — пишите напрямую на",
+          "againLabel": "Написать ещё раз"
+        }
+      }
+    },
     "newsletter": {
       "eyebrow": "Подписка",
       "title": "Получайте новости о новых книгах и коллекциях Хрючика",

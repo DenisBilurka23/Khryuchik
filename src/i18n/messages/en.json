@@ -814,6 +814,47 @@
         "backToShop": "Back to the shop"
       }
     },
+    "contactPage": {
+      "hero": {
+        "eyebrow": "Contacts",
+        "titlePrefix": "Write to",
+        "titleAccent": "Khryuchik",
+        "lede": "A question about an order, an idea for a collaboration, or just a kind word — we read every message and reply within one business day."
+      },
+      "channels": {
+        "title": "We're in touch",
+        "sub": "Pick whatever suits you — we answer everywhere.",
+        "instagramLabel": "Instagram",
+        "facebookLabel": "Facebook",
+        "facebookHandle": "Khryuchik",
+        "emailLabel": "Email",
+        "note": "We usually reply within one business day, Monday to Friday."
+      },
+      "form": {
+        "eyebrow": "Contact form",
+        "titlePrefix": "Send a",
+        "titleAccent": "message",
+        "sub": "Fill in the fields and it will land straight in the Khryuchik inbox.",
+        "nameLabel": "Name",
+        "namePlaceholder": "Your name",
+        "emailLabel": "Email",
+        "emailPlaceholder": "you@example.com",
+        "messageLabel": "Message",
+        "messagePlaceholder": "Tell us how we can help…",
+        "requiredMark": "*",
+        "submitLabel": "Send message",
+        "invalidName": "How should we address you?",
+        "invalidEmail": "Please check your email address",
+        "invalidMessage": "A few more words — it helps us help you",
+        "unexpectedError": "Something went wrong. Please try again.",
+        "success": {
+          "titlePrefix": "Message",
+          "titleAccent": "sent",
+          "text": "Thank you! We've received your message and will reply within one business day. If anything, write to us directly at",
+          "againLabel": "Write again"
+        }
+      }
+    },
     "newsletter": {
       "eyebrow": "Newsletter",
       "title": "Get updates on new books and Khryuchik collections",

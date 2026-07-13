@@ -295,6 +295,48 @@ export type LegalPageLabels = {
   sections: LegalPageSection[];
 };
 
+export type ContactPageLabels = {
+  hero: {
+    eyebrow: string;
+    titlePrefix: string;
+    titleAccent: string;
+    lede: string;
+  };
+  channels: {
+    title: string;
+    sub: string;
+    instagramLabel: string;
+    facebookLabel: string;
+    facebookHandle: string;
+    emailLabel: string;
+    note: string;
+  };
+  form: {
+    eyebrow: string;
+    titlePrefix: string;
+    titleAccent: string;
+    sub: string;
+    nameLabel: string;
+    namePlaceholder: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    messageLabel: string;
+    messagePlaceholder: string;
+    requiredMark: string;
+    submitLabel: string;
+    invalidName: string;
+    invalidEmail: string;
+    invalidMessage: string;
+    unexpectedError: string;
+    success: {
+      titlePrefix: string;
+      titleAccent: string;
+      text: string;
+      againLabel: string;
+    };
+  };
+};
+
 export type DeliveryRegionOptionLabels = {
   flag: string;
   country: string;
@@ -548,6 +590,7 @@ export type StorefrontDictionary = {
   shopPage: ShopPageLabels;
   storyPage: StoryPageLabels;
   deliveryPage: DeliveryPageLabels;
+  contactPage: ContactPageLabels;
   termsPage: LegalPageLabels;
   privacyPage: LegalPageLabels;
   cartPage: CartPageLabels;
