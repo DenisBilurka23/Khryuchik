@@ -483,6 +483,7 @@ export type StorefrontDictionary = {
     shop: string;
     story: string;
     faq: string;
+    contacts: string;
   };
   hero: {
     badge: string;

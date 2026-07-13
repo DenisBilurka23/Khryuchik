@@ -4,6 +4,7 @@ export type StorefrontNavigationPaths = {
   shop: string;
   story: string;
   faq: string;
+  contacts: string;
   favorites: string;
   cart: string;
 };

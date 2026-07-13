@@ -54,22 +54,22 @@ export const HeaderSelect = ({
         disabled={disabled}
         onClick={handleOpen}
         sx={{
-          minWidth: 96,
+          minWidth: 64,
           height: 40,
           px: 1.5,
           borderRadius: "999px",
           bgcolor: "#fff",
           boxShadow: "0 1px 3px rgba(54, 33, 18, 0.04)",
           border: "1px solid #E8D6BF",
-          justifyContent: "space-between",
-          gap: 1,
+          justifyContent: "center",
+          gap: 0.75,
           "&:hover": {
             borderColor: "#D96C82",
           },
           ...sx,
         }}
       >
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={0.75} alignItems="center">
           <Box
             component="span"
             sx={{ display: "inline-flex", alignItems: "center", lineHeight: 0 }}
@@ -82,8 +82,15 @@ export const HeaderSelect = ({
           >
             {selectedOption?.selectedLabel ?? selectedOption?.label ?? value}
           </Typography>
+          <KeyboardArrowDownRoundedIcon
+            sx={{
+              fontSize: 18,
+              color: "text.secondary",
+              ml: -0.25,
+              display: { xs: "none", lg: "inline-flex" },
+            }}
+          />
         </Stack>
-        <KeyboardArrowDownRoundedIcon sx={{ color: "text.secondary" }} />
       </ButtonBase>
 
       <Popper

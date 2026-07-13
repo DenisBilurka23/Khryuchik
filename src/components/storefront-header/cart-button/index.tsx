@@ -1,7 +1,7 @@
 "use client";
 
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import { Badge, Box, Button } from "@mui/material";
+import { Badge, Button } from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -13,40 +13,28 @@ export const CartButton = ({ href, className }: CartButtonProps) => {
   const t = useTranslations("storefront");
   const { totalCount } = useCart();
   const label = t("cartLabel");
-  const icon = (
-    <Badge badgeContent={totalCount} color="primary">
-      <ShoppingBagOutlinedIcon fontSize="small" />
-    </Badge>
-  );
 
   return (
     <Button
       component={Link}
       href={href}
       variant="contained"
-      startIcon={icon}
       className={className}
       aria-label={label}
       sx={{
         display: "inline-flex",
         flex: "0 0 auto",
-        width: { xs: 40, md: 40, lg: "auto" },
-        minWidth: { xs: 40, md: 40, lg: 0 },
-        height: { xs: 40, md: 40 },
-        px: { xs: 0, md: 0, lg: 2 },
-        py: { xs: 0, md: 0, lg: 1.25 },
-        borderRadius: { xs: "999px", md: "999px", lg: "999px" },
+        width: 40,
+        minWidth: 40,
+        height: 40,
+        p: 0,
+        borderRadius: "999px",
         justifyContent: "center",
-        whiteSpace: "nowrap",
-        "& .MuiButton-startIcon": {
-          marginRight: { xs: 0, md: 0, lg: 2 },
-          marginLeft: 0,
-        },
       }}
     >
-      <Box component="span" sx={{ display: { xs: "none", lg: "inline" } }}>
-        {label}
-      </Box>
+      <Badge badgeContent={totalCount} color="primary">
+        <ShoppingBagOutlinedIcon fontSize="small" />
+      </Badge>
     </Button>
   );
 };

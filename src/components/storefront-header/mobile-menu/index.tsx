@@ -1,6 +1,7 @@
 "use client";
 
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
@@ -21,11 +22,13 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 import { getLocalizedPath } from "@/utils";
+import { isNavItemActive } from "@/utils/active-nav";
 
 import { Logo } from "../../logo";
 import { CountrySwitcher } from "../country-switcher";
@@ -43,6 +46,7 @@ const iconByKey: Record<MobileMenuItem["key"], React.ReactNode> = {
   shop: <StorefrontOutlinedIcon fontSize="small" />,
   story: <AutoStoriesOutlinedIcon fontSize="small" />,
   faq: <LocalShippingOutlinedIcon fontSize="small" />,
+  contacts: <ChatBubbleOutlineOutlinedIcon fontSize="small" />,
   account: <PersonOutlineIcon fontSize="small" />,
   favorites: <FavoriteBorderIcon fontSize="small" />,
 };
@@ -58,6 +62,7 @@ export const MobileMenu = ({
   favoritesHref,
 }: MobileMenuProps) => {
   const t = useTranslations("storefront");
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
   const accountHref = session
@@ -162,37 +167,49 @@ export const MobileMenu = ({
           <Divider sx={{ my: 3, borderColor: "#E8D6BF" }} />
 
           <List sx={{ p: 0 }}>
-            {menuItems.map((item) => (
-              <Link
-                key={item.key}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <ListItemButton
-                  component="span"
-                  sx={{
-                    borderRadius: "18px",
-                    mb: 1,
-                    bgcolor: "#fff",
-                    border: "1px solid #F0DFC8",
-                    py: 1.5,
-                  }}
+            {menuItems.map((item) => {
+              const active = isNavItemActive(pathname, item.href);
+
+              return (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  style={{ textDecoration: "none", color: "inherit" }}
                 >
-                  <ListItemIcon sx={{ minWidth: 38, color: "text.primary" }}>
-                    {iconByKey[item.key]}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.label}
-                    slotProps={{
-                      primary: {
-                        sx: { fontWeight: 700 },
-                      },
+                  <ListItemButton
+                    component="span"
+                    aria-current={active ? "page" : undefined}
+                    sx={{
+                      borderRadius: "18px",
+                      mb: 1,
+                      bgcolor: active ? "secondary.main" : "#fff",
+                      border: "1px solid",
+                      borderColor: active ? "primary.main" : "#F0DFC8",
+                      color: active ? "primary.main" : "inherit",
+                      py: 1.5,
                     }}
-                  />
-                </ListItemButton>
-              </Link>
-            ))}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 38,
+                        color: active ? "primary.main" : "text.primary",
+                      }}
+                    >
+                      {iconByKey[item.key]}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={item.label}
+                      slotProps={{
+                        primary: {
+                          sx: { fontWeight: 700 },
+                        },
+                      }}
+                    />
+                  </ListItemButton>
+                </Link>
+              );
+            })}
           </List>
 
           <Link

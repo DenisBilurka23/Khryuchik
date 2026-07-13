@@ -20,6 +20,7 @@ export const createStorefrontHeaderViewModel = (
       shop: getLocalizedPath(locale, "/shop"),
       story: getLocalizedPath(locale, "/story"),
       faq: getLocalizedPath(locale, "/delivery"),
+      contacts: getLocalizedPath(locale, "/contacts"),
       favorites: getLocalizedPath(locale, "/favorites"),
       cart: getLocalizedPath(locale, "/cart"),
     },
