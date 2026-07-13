@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 import { Container } from "@mui/material";
-
 import { AccountPageView } from "@/components/account-page-view";
-import { getShopCategories } from "@/data/products";
+import { getShopCategories } from "@/server/catalog/services/categories.service";
 import {
   getActiveLocaleCodes,
   isActiveLocale,

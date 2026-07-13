@@ -1,8 +1,7 @@
 import { Container } from "@mui/material";
-
 import { AccountPageView } from "@/components/account-page-view";
-import { getShopCategories } from "@/data/products";
 import { defaultLocale } from "@/i18n/config";
+import { getShopCategories } from "@/server/catalog/services/categories.service";
 import { requireAccountPageContext } from "@/server/auth/page-context";
 import { getRequestCountry } from "@/server/country/request-country";
 import { getUserPurchasedDownloads } from "@/server/downloads/downloads.service";
@@ -11,7 +10,9 @@ import { findOrdersForUser } from "@/server/orders/repositories/orders.repositor
 import { toAccountOrder } from "@/utils";
 
 const AccountPage = async () => {
-  const { user } = await requireAccountPageContext("/login?callbackUrl=%2Faccount");
+  const { user } = await requireAccountPageContext(
+    "/login?callbackUrl=%2Faccount",
+  );
 
   const [country, rawOrders, downloads, categories, availableLocales] =
     await Promise.all([
