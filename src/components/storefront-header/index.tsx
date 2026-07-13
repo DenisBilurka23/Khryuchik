@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
-import { AppBar, Box, Button, Container, Stack, Toolbar } from "@mui/material";
+import { AppBar, Box, Container, Toolbar } from "@mui/material";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
@@ -12,6 +13,7 @@ import { CountrySwitcher } from "./country-switcher";
 import { FavoritesButton } from "./favorites-button";
 import { LocaleSwitcher } from "./locale-switcher";
 import { MobileMenu } from "./mobile-menu";
+import { HeaderNavLinks } from "./nav-links";
 import styles from "./storefront-header.module.css";
 import type { StorefrontHeaderProps, StorefrontNavItem } from "./types";
 import { UserButton } from "./user-button";
@@ -43,6 +45,12 @@ export const StorefrontHeader = async ({
       label: t("nav.faq"),
       href: navigationPaths?.faq ?? "#faq",
       icon: <LocalShippingOutlinedIcon fontSize="small" />,
+    },
+    {
+      key: "contacts",
+      label: t("nav.contacts"),
+      href: navigationPaths?.contacts ?? "/contacts",
+      icon: <ChatBubbleOutlineOutlinedIcon fontSize="small" />,
     },
   ];
 
@@ -77,26 +85,11 @@ export const StorefrontHeader = async ({
               <Logo
                 title={t("brand.title")}
                 subtitle={t("brand.subtitle")}
+                textSx={{ display: { xs: "block", md: "none", lg: "block" } }}
               />
             </Link>
 
-            <Stack
-              direction="row"
-              spacing={1}
-              sx={{ display: { xs: "none", md: "flex" } }}
-            >
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  <Button color="inherit" startIcon={item.icon} component="span">
-                    {item.label}
-                  </Button>
-                </Link>
-              ))}
-            </Stack>
+            <HeaderNavLinks items={navItems} />
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Box
@@ -109,14 +102,14 @@ export const StorefrontHeader = async ({
                 <CountrySwitcher
                   country={country}
                   locale={locale}
-                  sx={{ minWidth: 92 }}
+                  sx={{ minWidth: 64 }}
                 />
 
                 <LocaleSwitcher
                   locale={locale}
                   localizedPaths={localizedPaths}
                   availableLocales={availableLocales}
-                  sx={{ minWidth: 92 }}
+                  sx={{ minWidth: 64 }}
                 />
               </Box>
 
