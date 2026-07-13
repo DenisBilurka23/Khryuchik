@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-
 import { FavoritesPageView } from "@/components/favorites-page-view";
-import { getShopCategories } from "@/data/products";
 import { defaultLocale, locales } from "@/i18n/config";
+import { getShopCategories } from "@/server/catalog/services/categories.service";
 import { isActiveLocale } from "@/server/localization/localization.service";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getLocalizedPath } from "@/utils";
@@ -24,7 +23,10 @@ export const generateMetadata = async ({
     notFound();
   }
 
-  const tStorefront = await getTranslations({ locale: lang, namespace: "storefront" });
+  const tStorefront = await getTranslations({
+    locale: lang,
+    namespace: "storefront",
+  });
 
   return {
     title: `${tStorefront("favoritesPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
@@ -48,7 +50,9 @@ export const generateMetadata = async ({
   };
 };
 
-const LocalizedFavoritesPage = async ({ params }: LocalizedFavoritesPageProps) => {
+const LocalizedFavoritesPage = async ({
+  params,
+}: LocalizedFavoritesPageProps) => {
   const { lang } = await params;
 
   if (!(await isActiveLocale(lang))) {
@@ -68,7 +72,10 @@ const LocalizedFavoritesPage = async ({ params }: LocalizedFavoritesPageProps) =
       )}
       isAuthenticated={Boolean(session?.user?.id)}
       shopHref={getLocalizedPath(lang, "/shop")}
-      loginHref={getLocalizedPath(lang, `/login?callbackUrl=${encodeURIComponent(getLocalizedPath(lang, "/favorites"))}`)}
+      loginHref={getLocalizedPath(
+        lang,
+        `/login?callbackUrl=${encodeURIComponent(getLocalizedPath(lang, "/favorites"))}`,
+      )}
       registerHref={getLocalizedPath(lang, "/register")}
     />
   );

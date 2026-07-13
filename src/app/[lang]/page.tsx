@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-
 import { Storefront } from "@/components/storefront";
+import { defaultLocale, locales } from "@/i18n/config";
 import {
-  getHomeTabCategories,
   getProductsForPlacement,
   getShopProducts,
-} from "@/data/products";
-import { defaultLocale, locales } from "@/i18n/config";
+} from "@/server/catalog/services/catalog.service";
+import { getHomeTabCategories } from "@/server/catalog/services/categories.service";
 import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 

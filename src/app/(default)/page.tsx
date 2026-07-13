@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-
 import { Storefront } from "@/components/storefront";
+import { defaultLocale } from "@/i18n/config";
 import {
-  getHomeTabCategories,
   getProductsForPlacement,
   getShopProducts,
-} from "@/data/products";
-import { defaultLocale } from "@/i18n/config";
+} from "@/server/catalog/services/catalog.service";
+import { getHomeTabCategories } from "@/server/catalog/services/categories.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type HomePageProps = {

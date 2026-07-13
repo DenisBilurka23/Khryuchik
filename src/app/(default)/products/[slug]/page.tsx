@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-
 import { ProductPageView } from "@/components/product";
+import { defaultLocale, locales } from "@/i18n/config";
 import {
   getProductDetails,
   getProductSummariesByIds,
-} from "@/data/products";
-import { defaultLocale, locales } from "@/i18n/config";
+} from "@/server/catalog/services/catalog.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type ProductPageProps = {

@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-
 import { FavoritesPageView } from "@/components/favorites-page-view";
-import { getShopCategories } from "@/data/products";
 import { defaultLocale, locales } from "@/i18n/config";
+import { getShopCategories } from "@/server/catalog/services/categories.service";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getLocalizedPath } from "@/utils";
 
@@ -49,7 +48,10 @@ const DefaultFavoritesPage = async () => {
       )}
       isAuthenticated={Boolean(session?.user?.id)}
       shopHref={getLocalizedPath(defaultLocale, "/shop")}
-      loginHref={getLocalizedPath(defaultLocale, "/login?callbackUrl=%2Ffavorites")}
+      loginHref={getLocalizedPath(
+        defaultLocale,
+        "/login?callbackUrl=%2Ffavorites",
+      )}
       registerHref={getLocalizedPath(defaultLocale, "/register")}
     />
   );

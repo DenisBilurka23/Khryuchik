@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-
 import { ShopPageView } from "@/components/shop-page-view";
-import { getShopCategories, getShopProducts } from "@/data/products";
 import { defaultLocale, locales } from "@/i18n/config";
+import { getShopProducts } from "@/server/catalog/services/catalog.service";
+import { getShopCategories } from "@/server/catalog/services/categories.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type DefaultShopPageProps = {
