@@ -41,8 +41,8 @@ const orderShippedEmailBuilders: Record<
   ru: (order, ordersUrl) => {
     const orderNumber = formatOrderNumber(order.id) ?? "";
     const addressLine = [
-      order.shippingAddress.line1,
-      order.shippingAddress.city,
+      order.shippingAddress?.line1,
+      order.shippingAddress?.city,
     ]
       .filter(Boolean)
       .join(", ");
@@ -79,8 +79,8 @@ const orderShippedEmailBuilders: Record<
   en: (order, ordersUrl) => {
     const orderNumber = formatOrderNumber(order.id) ?? "";
     const addressLine = [
-      order.shippingAddress.line1,
-      order.shippingAddress.city,
+      order.shippingAddress?.line1,
+      order.shippingAddress?.city,
     ]
       .filter(Boolean)
       .join(", ");

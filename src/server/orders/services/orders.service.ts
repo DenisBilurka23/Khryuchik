@@ -104,6 +104,7 @@ export const createOrder = async (
   );
   const shippingConfig = countryShippingConfig[country];
   const shipping =
+    fulfillmentType === "digital" ||
     subtotal >= shippingConfig.freeShippingThreshold
       ? 0
       : shippingConfig.shippingPrice;
@@ -123,7 +124,8 @@ export const createOrder = async (
     discount,
     total,
     customer: input.customer,
-    shippingAddress: input.shippingAddress,
+    shippingAddress:
+      fulfillmentType === "digital" ? undefined : input.shippingAddress,
     payment: {
       method: paymentMethod,
       status: initialPaymentStatus(paymentMethod),

@@ -75,7 +75,7 @@ export type OrderDocument = {
   discount: number;
   total: number;
   customer: OrderCustomer;
-  shippingAddress: OrderShippingAddress;
+  shippingAddress?: OrderShippingAddress;
   payment: OrderPaymentInfo;
   status: OrderStatus;
   fulfillmentType?: OrderFulfillmentType;
@@ -114,7 +114,7 @@ export type CreateOrderInput = {
   country: CountryCode;
   items: StoredCartItem[];
   customer: OrderCustomer;
-  shippingAddress: OrderShippingAddress;
+  shippingAddress?: OrderShippingAddress;
   paymentMethod: PaymentMethod;
   userId?: string;
   notes?: string;

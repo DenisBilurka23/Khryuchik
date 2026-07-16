@@ -22,10 +22,14 @@ export const formFromAddress = (
 export const validateForm = (
   form: FormState,
   messages: { required: string; invalidEmail: string },
+  options?: { skipAddress?: boolean },
 ): FieldErrors => {
   const errors: FieldErrors = {};
 
   for (const field of requiredFields) {
+    if (options?.skipAddress && field !== "name") {
+      continue;
+    }
     if (form[field].trim().length === 0) {
       errors[field] = messages.required;
     }

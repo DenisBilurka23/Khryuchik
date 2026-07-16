@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
+import { type SyntheticEvent, useState } from "react";
 
 import { sendContactMessageClient } from "@/client-api/contact";
 import { EMAIL_PATTERN } from "@/utils/validation";
@@ -41,7 +41,7 @@ export const ContactForm = ({
     return next;
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
 
     const nextErrors = validate();
