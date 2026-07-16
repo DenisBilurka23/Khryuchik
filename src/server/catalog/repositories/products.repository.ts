@@ -71,6 +71,23 @@ export const findProductsForPlacement = async (
   return cursor.toArray();
 };
 
+export const findLatestBook = async () => {
+  const db = await getMongoDb();
+
+  return db
+    .collection<ProductDocument>("products")
+    .find(
+      {
+        "status.isActive": true,
+        "classification.type": "book",
+      },
+      { projection: { _id: 0 } },
+    )
+    .sort({ _id: -1 })
+    .limit(1)
+    .next();
+};
+
 export const findShopVisibleProducts = async (
   options?: ShopProductsQueryOptions,
 ) => {
@@ -148,10 +165,7 @@ export const findProductsByIds = async (productIds: string[]) => {
 
   return db
     .collection<ProductDocument>("products")
-    .find(
-      { productId: { $in: productIds } },
-      { projection: { _id: 0 } },
-    )
+    .find({ productId: { $in: productIds } }, { projection: { _id: 0 } })
     .toArray();
 };
 

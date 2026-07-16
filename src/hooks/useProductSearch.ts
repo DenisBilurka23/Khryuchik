@@ -3,24 +3,20 @@
 import { useEffect, useRef, useState } from "react";
 
 import { searchAdminProductsClient } from "@/client-api/admin";
-import type { Locale } from "@/i18n/config";
-import type { AdminProductOption } from "@/types/admin";
+
+import type {
+  UseProductSearchArgs,
+  UseProductSearchResult,
+} from "./useProductSearch.types";
 
 const SEARCH_DEBOUNCE_MS = 350;
-
-type UseProductSearchInput = {
-  locale: Locale;
-  query: string;
-  excludeProductId: string;
-  fallbackOptions: AdminProductOption[];
-};
 
 export const useProductSearch = ({
   locale,
   query,
   excludeProductId,
   fallbackOptions,
-}: UseProductSearchInput) => {
+}: UseProductSearchArgs): UseProductSearchResult => {
   const [options, setOptions] = useState(fallbackOptions);
   const [isLoading, setIsLoading] = useState(false);
   const timeoutRef = useRef<number | null>(null);

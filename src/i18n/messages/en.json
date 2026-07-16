@@ -25,7 +25,7 @@
     },
     "hero": {
       "badge": "✨ Books in Russian and English",
-      "title": "The warm world of Khryuchik — stories, books, and merch for the whole family",
+      "title": "The warm world of Khryuchik - stories, books, and merch for the whole family",
       "highlight": "Khryuchik",
       "lead": "Kind stories inspired by real life, plus cozy products with a beloved character: books, mugs, T-shirts, stickers, and gift bundles.",
       "primaryAction": "Browse books",
@@ -244,11 +244,7 @@
             "series": "small",
             "blurb": "Family, house rules, and the first \"I can do it myself\". Little Khryuchik learns to make friends, share, and say thank you.",
             "book": "Khryuchik and friends",
-            "tags": [
-              "Family",
-              "Kindness",
-              "First step"
-            ]
+            "tags": ["Family", "Kindness", "First step"]
           },
           {
             "age": "5+",
@@ -257,11 +253,7 @@
             "series": "small",
             "blurb": "Snow, grandma's pies, and a lost mitten. A story about caring for those nearby and about small miracles.",
             "book": "Khryuchik in winter",
-            "tags": [
-              "Care",
-              "Family",
-              "Wonder"
-            ]
+            "tags": ["Care", "Family", "Wonder"]
           },
           {
             "age": "6+",
@@ -270,11 +262,7 @@
             "series": "small",
             "blurb": "Garden beds, a bicycle, a new friend across the fence. Khryuchik learns to take responsibility for what he started.",
             "book": "Khryuchik at the cottage",
-            "tags": [
-              "Responsibility",
-              "Summer",
-              "Friendship"
-            ]
+            "tags": ["Responsibility", "Summer", "Friendship"]
           },
           {
             "age": "8+",
@@ -283,10 +271,7 @@
             "series": "travel",
             "blurb": "A new school, an unfamiliar city, and a silence that feels scary to break. The first real \"I'll try anyway\".",
             "book": "Khryuchik on the road",
-            "tags": [
-              "Courage",
-              "Change"
-            ]
+            "tags": ["Courage", "Change"]
           },
           {
             "age": "10+",
@@ -295,10 +280,7 @@
             "series": "travel",
             "blurb": "A train, a ferry, and a salty wind. A story about a dream you reach on your own, even when it's frightening.",
             "book": "Journey to the south",
-            "tags": [
-              "Dream",
-              "Persistence"
-            ]
+            "tags": ["Dream", "Persistence"]
           },
           {
             "age": "12+",
@@ -307,10 +289,7 @@
             "series": "travel",
             "blurb": "Khryuchik grows up: choices, mistakes, conversations until dawn. A book about how everyone has their own road.",
             "book": "Where stories live",
-            "tags": [
-              "Growing up",
-              "Choice"
-            ]
+            "tags": ["Growing up", "Choice"]
           }
         ]
       },
@@ -326,12 +305,7 @@
             "name": "Khryuchik when he was little",
             "age": "3 — 7 years",
             "desc": "Warm family stories, humor, first discoveries, and the big feelings of a little piglet. Books to read aloud — and to live through together.",
-            "themes": [
-              "Family",
-              "Friendship",
-              "Kindness",
-              "Humor"
-            ],
+            "themes": ["Family", "Friendship", "Kindness", "Humor"],
             "count": "4 books"
           },
           {
@@ -340,12 +314,7 @@
             "name": "Khryuchik's travels",
             "age": "8 — 12+ years",
             "desc": "Change, roads, new countries, and the search for oneself. The stories are based on the author's real impressions — so they smell of the sea, the train, and a real morning.",
-            "themes": [
-              "Dream",
-              "The road",
-              "Courage",
-              "Growing up"
-            ],
+            "themes": ["Dream", "The road", "Courage", "Growing up"],
             "count": "3 books · and more to come"
           }
         ]
@@ -398,10 +367,7 @@
       "hero": {
         "eyebrow": "Delivery & payment",
         "title": {
-          "lines": [
-            "Khryuchik",
-            "comes to you —"
-          ],
+          "lines": ["Khryuchik", "comes to you —"],
           "accent": "however suits you."
         },
         "toggleAriaLabel": "Region selection",
@@ -966,21 +932,13 @@
     "unavailable": "Google sign-in is not configured yet. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to enable it.",
     "ready": "OAuth is ready for sign-in.",
     "dividerLabel": "or",
-    "chips": [
-      "Orders",
-      "Books",
-      "Addresses"
-    ]
+    "chips": ["Orders", "Books", "Addresses"]
   },
   "registerPage": {
     "eyebrow": "Registration",
     "title": "Create your Khryuchik account",
     "lead": "Register with email and password to keep your profile, contact phone, delivery details, and future order history in one place.",
-    "chips": [
-      "Email login",
-      "Phone contact",
-      "Future orders"
-    ],
+    "chips": ["Email login", "Phone contact", "Future orders"],
     "nameLabel": "Full name",
     "namePlaceholder": "Anna Peterson",
     "emailLabel": "Email",
@@ -1005,11 +963,7 @@
     "eyebrow": "Password reset",
     "title": "Reset your password",
     "lead": "Enter your email and we will prepare a password reset link for your Khryuchik account.",
-    "chips": [
-      "Email recovery",
-      "30 minute token",
-      "Safe reset"
-    ],
+    "chips": ["Email recovery", "30 minute token", "Safe reset"],
     "emailLabel": "Email",
     "emailPlaceholder": "name@example.com",
     "submitButton": "Send reset link",
@@ -1137,13 +1091,7 @@
     "deleteAccountWrongPassword": "Current password is incorrect.",
     "deleteAccountLastAdmin": "This is the only admin account, so it can't be deleted.",
     "deleteAccountUnexpectedError": "Unable to delete account. Try again in a moment.",
-    "tabs": [
-      "Overview",
-      "Orders",
-      "Books",
-      "Addresses",
-      "Settings"
-    ]
+    "tabs": ["Overview", "Orders", "Books", "Addresses", "Settings"]
   },
   "adminPage": {
     "layout": {
@@ -1157,9 +1105,34 @@
       "dashboard": "Dashboard",
       "products": "Products",
       "categories": "Categories",
+      "home": "Home page",
       "localization": "Localization",
       "customers": "Accounts",
       "orders": "Orders"
+    },
+    "home": {
+      "eyebrow": "Storefront",
+      "title": "Home page",
+      "description": "Choose which catalog products appear in the hero section. Their title, price, and image are pulled from the catalog automatically.",
+      "savedMessage": "Home page updated.",
+      "errorMessage": "Could not save the home page. Please try again.",
+      "sections": {
+        "products": {
+          "title": "Hero products",
+          "description": "Pick the products shown in the hero cards. Leave a slot empty to fall back to the default content."
+        }
+      },
+      "fields": {
+        "featuredProduct": "Hit of the week",
+        "newBookProduct": "New book"
+      },
+      "helpers": {
+        "featuredProduct": "Shown as the floating \"hit of the week\" card with its price.",
+        "newBookProduct": "Shown as the \"new book\" card with its cover. Leave empty to show the latest added book automatically."
+      },
+      "buttons": {
+        "save": "Save home page"
+      }
     },
     "shared": {
       "actions": {

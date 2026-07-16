@@ -6,6 +6,7 @@ export {
   deleteAdminCustomerAction,
   saveAdminCustomerAction,
 } from "./customers";
+export { saveAdminHeroContentAction } from "./home-content";
 export {
   deleteAdminLocaleAction,
   deleteAdminRegionAction,

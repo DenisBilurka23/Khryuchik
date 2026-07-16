@@ -4,10 +4,10 @@ import { cache } from "react";
 
 import type { Locale } from "@/i18n/config";
 import {
+  type CountryCode,
   isLocalizedProductSummary,
   localizeProductSummary,
   toProductDetails,
-  type CountryCode,
 } from "@/utils";
 import type { ProductDocument, ProductPlacement } from "@/types/catalog";
 import type { CartItem, StoredCartItem } from "@/types/cart";
@@ -17,6 +17,7 @@ import {
   findActiveProductBySlug,
   findActiveProductsByIds,
   findActiveProductSlugs,
+  findLatestBook,
   findProductsForPlacement,
   findShopVisibleProducts,
 } from "../repositories/products.repository";
@@ -26,7 +27,7 @@ const localizeProductSummaries = (
   products: ProductDocument[],
   locale: Locale,
   country: CountryCode,
- ) =>
+) =>
   products
     .map((product) => localizeProductSummary(product, locale, country))
     .filter(isLocalizedProductSummary);
@@ -59,6 +60,20 @@ export const getProductsForPlacement = cache(
   },
 );
 
+export const getLatestBookSummary = cache(
+  async (locale: Locale, country: CountryCode) => {
+    const product = await findLatestBook();
+
+    if (!product) {
+      return null;
+    }
+
+    const summary = localizeProductSummary(product, locale, country);
+
+    return isLocalizedProductSummary(summary) ? summary : null;
+  },
+);
+
 export const getShopProducts = cache(
   async (
     locale: Locale,
@@ -81,7 +96,9 @@ export const getProductSummariesByIds = async (
 ) => {
   const products = await findActiveProductsByIds(productIds);
   const summaries = localizeProductSummaries(products, locale, country);
-  const productsById = new Map(summaries.map((product) => [product.id, product]));
+  const productsById = new Map(
+    summaries.map((product) => [product.id, product]),
+  );
 
   return productIds
     .map((productId) => productsById.get(productId) ?? null)
