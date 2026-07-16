@@ -7,10 +7,13 @@ import { Stack } from "@mui/material";
 
 import type { AdminProductOption } from "@/types/admin";
 
-import { AdminSectionCard } from "../../../admin-page-shared";
-import { AdminProductAutocompleteField } from "./product-autocomplete-field";
+import { useProductSearch } from "@/hooks/useProductSearch";
+
+import {
+  AdminProductAutocompleteField,
+  AdminSectionCard,
+} from "../../../admin-page-shared";
 import type { AdminProductRelatedSectionProps } from "./types";
-import { useProductSearch } from "./use-product-search";
 
 const createFallbackOption = (id: string): AdminProductOption => ({
   id,

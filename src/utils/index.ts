@@ -40,8 +40,6 @@ export const getLocaleDisplayName = (
     : getLocaleShortLabel(locale);
 };
 
-export const promoBackgrounds = ["#FFF0C9", "#DDF3E8"];
-
 export const getCountLabel = (
   count: number,
   locale: Locale,
