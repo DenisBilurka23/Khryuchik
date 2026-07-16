@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   CardContent,
+  Chip,
   Divider,
   Stack,
   Typography,
@@ -36,18 +37,42 @@ export const CheckoutOrderSummarySection = ({
         {labels.summaryTitle}
       </Typography>
 
-      <Stack spacing={1} sx={{ mb: 2 }}>
+      <Stack spacing={1.5} sx={{ mb: 2 }}>
         {items.map((item) => (
           <Stack
             key={item.id}
             direction="row"
             justifyContent="space-between"
+            alignItems="flex-start"
             gap={2}
           >
-            <Typography color="text.secondary">
-              {item.title}
-              {item.quantity > 1 ? ` ×${item.quantity}` : ""}
-            </Typography>
+            <Stack spacing={0.5}>
+              <Typography color="text.secondary">
+                {item.title}
+                {item.quantity > 1 ? ` ×${item.quantity}` : ""}
+              </Typography>
+              {item.variant ? (
+                <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
+                  {item.variant
+                    .split("/")
+                    .map((part) => part.trim())
+                    .filter(Boolean)
+                    .map((part, index) => (
+                      <Chip
+                        key={index}
+                        label={part}
+                        size="small"
+                        sx={{
+                          bgcolor: "#F5F0EB",
+                          fontWeight: 500,
+                          height: 22,
+                          fontSize: "0.7rem",
+                        }}
+                      />
+                    ))}
+                </Stack>
+              ) : null}
+            </Stack>
             <Typography>
               {formatCurrency(item.price * item.quantity, locale, currency)}
             </Typography>
@@ -72,7 +97,9 @@ export const CheckoutOrderSummarySection = ({
         <Typography sx={{ fontSize: 20, fontWeight: 800 }}>
           {labels.summary.totalLabel}
         </Typography>
-        <Typography sx={{ fontSize: 28, fontWeight: 800, color: "primary.main" }}>
+        <Typography
+          sx={{ fontSize: 28, fontWeight: 800, color: "primary.main" }}
+        >
           {formatCurrency(total, locale, currency)}
         </Typography>
       </Stack>

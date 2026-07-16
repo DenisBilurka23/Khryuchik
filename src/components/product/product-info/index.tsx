@@ -76,7 +76,7 @@ export const ProductInfo = ({
         color: color || undefined,
       },
     });
-    router.push(getLocalizedPath(locale, "/checkout"));
+    router.push(getLocalizedPath(locale, "/checkout?buyNow=1"));
   };
 
   return (
