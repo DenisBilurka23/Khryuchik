@@ -11,26 +11,23 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { submitCheckoutClient } from "@/client-api/checkout";
 import { useCart } from "@/components/cart/store";
-import {
-  getBuyNowItem,
-  clearBuyNowItem,
-} from "@/components/cart/buy-now-store";
+import { clearBuyNowItem } from "@/components/cart/buy-now-store";
 import { EmptyCartState } from "@/components/cart";
-import type { StoredCartItem } from "@/types/cart";
 import storefrontStyles from "@/components/storefront/storefront.module.css";
+import { useBuyNowCheckoutItems } from "@/hooks/useBuyNowCheckoutItems";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import {
+  type CountryCode,
   countryShippingConfig,
-  getCountryCurrency,
   getAllCountriesSorted,
+  getCountryCurrency,
   getCountryPaymentMethods,
   getLocalizedPath,
   isIsoCountryCode,
-  type CountryCode,
   type PaymentMethod,
 } from "@/utils";
 
@@ -79,12 +76,7 @@ export const CheckoutPageView = ({
   };
 
   const cart = useCart();
-  const [buyNowItems, setBuyNowItems] = useState<StoredCartItem[] | null>(null);
-
-  useEffect(() => {
-    const item = getBuyNowItem();
-    if (item) setBuyNowItems([item]);
-  }, []);
+  const buyNowItems = useBuyNowCheckoutItems();
 
   const { items, subtotal, isLoading, hasStoredItems } = useResolvedCart(
     locale,
@@ -332,7 +324,10 @@ export const CheckoutPageView = ({
               >
                 {labels.eyebrow}
               </Typography>
-              <Typography variant="h1" sx={{ mt: 2, fontSize: { xs: 36, md: 56 } }}>
+              <Typography
+                variant="h1"
+                sx={{ mt: 2, fontSize: { xs: 36, md: 56 } }}
+              >
                 {labels.title}
               </Typography>
               <Typography
