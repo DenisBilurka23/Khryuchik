@@ -122,10 +122,13 @@ export const CheckoutPageView = ({
   const cartHref = getLocalizedPath(locale, "/cart");
   const shopHref = getLocalizedPath(locale, "/shop");
   const confirmationHref = getLocalizedPath(locale, "/checkout/confirmation");
-
+  const isDigitalOnly =
+    items.length > 0 && items.every((item) => item.isDigital);
   const shippingConfig = countryShippingConfig[country];
   const shipping =
-    subtotal === 0 || subtotal >= shippingConfig.freeShippingThreshold
+    isDigitalOnly ||
+    subtotal === 0 ||
+    subtotal >= shippingConfig.freeShippingThreshold
       ? 0
       : shippingConfig.shippingPrice;
   const total = subtotal + shipping;
@@ -203,17 +206,18 @@ export const CheckoutPageView = ({
     }
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-
-    const validationErrors = validateForm(form, labels.fieldErrors);
+    const validationErrors = validateForm(form, labels.fieldErrors, {
+      skipAddress: isDigitalOnly,
+    });
     if (Object.keys(validationErrors).length > 0) {
       setFieldErrors(validationErrors);
       setError(null);
       return;
     }
 
-    if (!isIsoCountryCode(form.country)) {
+    if (!isDigitalOnly && !isIsoCountryCode(form.country)) {
       setFieldErrors({ country: labels.fieldErrors.required });
       return;
     }
@@ -231,14 +235,16 @@ export const CheckoutPageView = ({
           email: form.email.trim() || undefined,
           phone: form.phone.trim() || undefined,
         },
-        shippingAddress: {
-          line1: form.line1.trim(),
-          line2: form.line2.trim() || undefined,
-          city: form.city.trim(),
-          region: form.region.trim() || undefined,
-          postalCode: form.postalCode.trim() || undefined,
-          country: form.country as CountryCode,
-        },
+        shippingAddress: isDigitalOnly
+          ? undefined
+          : {
+              line1: form.line1.trim(),
+              line2: form.line2.trim() || undefined,
+              city: form.city.trim(),
+              region: form.region.trim() || undefined,
+              postalCode: form.postalCode.trim() || undefined,
+              country: form.country as CountryCode,
+            },
         paymentMethod,
         notes: form.notes.trim() || undefined,
       });
@@ -362,7 +368,7 @@ export const CheckoutPageView = ({
                         labels={labels}
                       />
 
-                      {hasSavedAddresses ? (
+                      {!isDigitalOnly && hasSavedAddresses ? (
                         <CheckoutSavedAddressesSection
                           addresses={initialShippingAddresses!}
                           selectedAddressId={selectedSavedAddressId}
@@ -372,7 +378,7 @@ export const CheckoutPageView = ({
                         />
                       ) : null}
 
-                      {showAddressForm ? (
+                      {!isDigitalOnly && showAddressForm ? (
                         <CheckoutShippingAddressSection
                           form={form}
                           fieldErrors={fieldErrors}

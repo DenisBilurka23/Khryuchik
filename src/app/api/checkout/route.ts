@@ -17,6 +17,7 @@ import type {
   OrderShippingAddress,
 } from "@/types/order";
 import { isStoredCartItem } from "@/types/cart-guards";
+import { BOOK_FORMAT } from "@/constants/catalog";
 import {
   getCountryPaymentMethods,
   isIsoCountryCode,
@@ -131,9 +132,13 @@ export const POST = async (request: NextRequest) => {
   const shippingAddress = parseShippingAddress(payload.shippingAddress);
   const paymentMethod = payload.paymentMethod;
 
+  const isDigitalOnly =
+    items.length > 0 &&
+    items.every((item) => item.selections?.format === BOOK_FORMAT.digital);
+
   if (
     !customer ||
-    !shippingAddress ||
+    (!isDigitalOnly && !shippingAddress) ||
     !isPaymentMethod(paymentMethod)
   ) {
     return validationErrorResponse("invalid_payload");
@@ -153,7 +158,7 @@ export const POST = async (request: NextRequest) => {
       country,
       items,
       customer,
-      shippingAddress,
+      shippingAddress: shippingAddress ?? undefined,
       paymentMethod,
       userId,
       notes:

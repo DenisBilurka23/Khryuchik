@@ -29,7 +29,12 @@ const getBotConfig = () => {
   return { token, chatId };
 };
 
+const DIGITAL_FULFILLMENT_LABEL = "Цифровая доставка";
+
 const formatAddress = (order: OrderDocument): string => {
+  if (!order.shippingAddress) {
+    return "";
+  }
   const { line1, line2, city, region, postalCode } = order.shippingAddress;
   return [line1, line2, city, region, postalCode]
     .filter((part) => part && part.length > 0)
@@ -72,7 +77,9 @@ const buildNewOrderMessage = (order: OrderDocument): string => {
     "📦 Товары:",
     formatItems(order),
     "",
-    `📍 ${formatAddress(order)}`,
+    order.fulfillmentType === "digital"
+      ? `📍 ${DIGITAL_FULFILLMENT_LABEL}`
+      : `📍 ${formatAddress(order)}`,
     "",
     `Сумма: ${order.total.toFixed(2)} ${order.currency}`,
     order.notes ? `\n📝 Комментарий: ${order.notes}` : "",
