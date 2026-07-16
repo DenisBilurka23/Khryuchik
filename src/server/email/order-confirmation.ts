@@ -48,7 +48,7 @@ const buildOrderItemsRowsHtml = (order: OrderDocument) =>
 const buildOrderConfirmationBodyHtml = (
   strings: OrderConfirmationEmailStrings,
   order: OrderDocument,
-  accountUrl: string,
+  ordersUrl: string,
 ) => html`
                     ${buildParagraphHtml(strings.para1, 20)}
                     <table
@@ -74,15 +74,15 @@ const buildOrderConfirmationBodyHtml = (
                         </td>
                       </tr>
                     </table>
-                    ${buildButtonHtml(strings.buttonLabel, accountUrl)}
+                    ${buildButtonHtml(strings.buttonLabel, ordersUrl)}
                   </td>
                 </tr>`;
 
 const orderConfirmationEmailBuilders: Record<
   string,
-  (order: OrderDocument, accountUrl: string) => EmailContent
+  (order: OrderDocument, ordersUrl: string) => EmailContent
 > = {
-  ru: (order, accountUrl) => {
+  ru: (order, ordersUrl) => {
     const orderNumber = formatOrderNumber(order.id) ?? "";
     const strings: OrderConfirmationEmailStrings = {
       lang: "ru",
@@ -112,16 +112,16 @@ const orderConfirmationEmailBuilders: Record<
         "",
         `Итого: ${formatCurrency(order.total, order.locale, order.currency)}`,
         "",
-        `Посмотреть заказ: ${accountUrl}`,
+        `Посмотреть заказ: ${ordersUrl}`,
       ].join("\n"),
       html: buildEmailShell(
         strings,
-        buildOrderConfirmationBodyHtml(strings, order, accountUrl),
+        buildOrderConfirmationBodyHtml(strings, order, ordersUrl),
       ),
     };
   },
 
-  en: (order, accountUrl) => {
+  en: (order, ordersUrl) => {
     const orderNumber = formatOrderNumber(order.id) ?? "";
     const strings: OrderConfirmationEmailStrings = {
       lang: "en",
@@ -151,11 +151,11 @@ const orderConfirmationEmailBuilders: Record<
         "",
         `Total: ${formatCurrency(order.total, order.locale, order.currency)}`,
         "",
-        `View order: ${accountUrl}`,
+        `View order: ${ordersUrl}`,
       ].join("\n"),
       html: buildEmailShell(
         strings,
-        buildOrderConfirmationBodyHtml(strings, order, accountUrl),
+        buildOrderConfirmationBodyHtml(strings, order, ordersUrl),
       ),
     };
   },
@@ -178,11 +178,11 @@ export const sendOrderConfirmationEmail = async (
     return;
   }
 
-  const accountUrl = `${getAppOrigin()}${getLocalizedPath(order.locale, "/account")}`;
+  const ordersUrl = `${getAppOrigin()}${getLocalizedPath(order.locale, "/account?section=orders")}`;
   const builder =
     orderConfirmationEmailBuilders[order.locale] ??
     orderConfirmationEmailBuilders.en;
-  const { subject, html: bodyHtml, text } = builder(order, accountUrl);
+  const { subject, html: bodyHtml, text } = builder(order, ordersUrl);
   const transporter = createTransporter(config);
 
   try {

@@ -25,19 +25,19 @@ type OrderDeliveredEmailStrings = EmailShellStrings & {
 
 const buildOrderDeliveredBodyHtml = (
   strings: OrderDeliveredEmailStrings,
-  accountUrl: string,
+  ordersUrl: string,
 ) => html`
                     ${buildParagraphHtml(strings.para1, 14)}
                     ${buildParagraphHtml(strings.para2, 28)}
-                    ${buildButtonHtml(strings.buttonLabel, accountUrl)}
+                    ${buildButtonHtml(strings.buttonLabel, ordersUrl)}
                   </td>
                 </tr>`;
 
 const orderDeliveredEmailBuilders: Record<
   string,
-  (order: OrderDocument, accountUrl: string) => EmailContent
+  (order: OrderDocument, ordersUrl: string) => EmailContent
 > = {
-  ru: (order, accountUrl) => {
+  ru: (order, ordersUrl) => {
     const orderNumber = formatOrderNumber(order.id) ?? "";
     const strings: OrderDeliveredEmailStrings = {
       lang: "ru",
@@ -63,16 +63,16 @@ const orderDeliveredEmailBuilders: Record<
         "",
         "Будем рады вашему отзыву.",
         "",
-        `Посмотреть заказ: ${accountUrl}`,
+        `Посмотреть заказ: ${ordersUrl}`,
       ].join("\n"),
       html: buildEmailShell(
         strings,
-        buildOrderDeliveredBodyHtml(strings, accountUrl),
+        buildOrderDeliveredBodyHtml(strings, ordersUrl),
       ),
     };
   },
 
-  en: (order, accountUrl) => {
+  en: (order, ordersUrl) => {
     const orderNumber = formatOrderNumber(order.id) ?? "";
     const strings: OrderDeliveredEmailStrings = {
       lang: "en",
@@ -98,11 +98,11 @@ const orderDeliveredEmailBuilders: Record<
         "",
         "We'd love to hear your feedback.",
         "",
-        `View order: ${accountUrl}`,
+        `View order: ${ordersUrl}`,
       ].join("\n"),
       html: buildEmailShell(
         strings,
-        buildOrderDeliveredBodyHtml(strings, accountUrl),
+        buildOrderDeliveredBodyHtml(strings, ordersUrl),
       ),
     };
   },
@@ -125,10 +125,10 @@ export const sendOrderDeliveredEmail = async (
     return;
   }
 
-  const accountUrl = `${getAppOrigin()}${getLocalizedPath(order.locale, "/account")}`;
+  const ordersUrl = `${getAppOrigin()}${getLocalizedPath(order.locale, "/account?section=orders")}`;
   const builder =
     orderDeliveredEmailBuilders[order.locale] ?? orderDeliveredEmailBuilders.en;
-  const { subject, html: bodyHtml, text } = builder(order, accountUrl);
+  const { subject, html: bodyHtml, text } = builder(order, ordersUrl);
   const transporter = createTransporter(config);
 
   try {
