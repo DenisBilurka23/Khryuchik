@@ -1,7 +1,7 @@
 "use client";
 
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
-import { useId, useState, type MouseEvent } from "react";
+import { type MouseEvent, useId, useState } from "react";
 import {
   Box,
   ButtonBase,
@@ -106,9 +106,7 @@ export const HeaderSelect = ({
             },
           },
         ]}
-        sx={{
-          zIndex: (theme) => theme.zIndex.appBar + 1,
-        }}
+        sx={{ zIndex: (theme) => theme.zIndex.modal + 1 }}
       >
         <ClickAwayListener onClickAway={handleClose}>
           <Paper

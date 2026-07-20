@@ -8,6 +8,7 @@ export type SettingsSectionProps = {
   locale: Locale;
   country: CountryCode;
   availableLocales: string[];
+  availableCountries: CountryCode[];
   profileEditor: ProfileEditorState;
   authProviders: AuthProvider[];
   userEmail: string;

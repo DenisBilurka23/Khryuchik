@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { DeliveryPageView } from "@/components/delivery-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { getActiveRegionCodes } from "@/server/localization/localization.service";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const tStorefront = await getTranslations({
@@ -37,9 +38,18 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const DefaultDeliveryPage = async () => {
-  const country = await getRequestCountry();
+  const [country, availableCountries] = await Promise.all([
+    getRequestCountry(),
+    getActiveRegionCodes(),
+  ]);
 
-  return <DeliveryPageView locale={defaultLocale} country={country} />;
+  return (
+    <DeliveryPageView
+      locale={defaultLocale}
+      country={country}
+      availableCountries={availableCountries}
+    />
+  );
 };
 
 export default DefaultDeliveryPage;

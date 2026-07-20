@@ -11,6 +11,7 @@ import { defaultLocale } from "@/i18n/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import {
   getActiveLocaleCodes,
+  getActiveRegionCodes,
   isActiveLocale,
 } from "@/server/localization/localization.service";
 
@@ -34,11 +35,13 @@ const LocaleLayout = async ({
     notFound();
   }
 
-  const [country, messages, availableLocales] = await Promise.all([
-    getRequestCountry(),
-    getMessages({ locale: lang }),
-    getActiveLocaleCodes(),
-  ]);
+  const [country, messages, availableLocales, availableCountries] =
+    await Promise.all([
+      getRequestCountry(),
+      getMessages({ locale: lang }),
+      getActiveLocaleCodes(),
+      getActiveRegionCodes(),
+    ]);
   const { localizedPaths, navigationPaths } = createStorefrontHeaderViewModel(
     lang,
     availableLocales,
@@ -54,6 +57,7 @@ const LocaleLayout = async ({
           homeHref={homeHref}
           localizedPaths={localizedPaths}
           availableLocales={availableLocales}
+          availableCountries={availableCountries}
           navigationPaths={navigationPaths}
         />
         {children}

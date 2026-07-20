@@ -14,6 +14,7 @@ export const DeliveryHeroSection = ({
   mapCity,
   locale,
   country,
+  availableCountries,
   accent,
   heroGradient,
 }: DeliveryHeroSectionProps) => {
@@ -77,6 +78,7 @@ export const DeliveryHeroSection = ({
             <RegionToggle
               country={country}
               locale={locale}
+              availableCountries={availableCountries}
               accent={accent}
               toggleAriaLabel={toggleAriaLabel}
               options={options}

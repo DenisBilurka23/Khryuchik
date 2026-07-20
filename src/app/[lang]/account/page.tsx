@@ -4,6 +4,7 @@ import { AccountPageView } from "@/components/account-page-view";
 import { getShopCategories } from "@/server/catalog/services/categories.service";
 import {
   getActiveLocaleCodes,
+  getActiveRegionCodes,
   isActiveLocale,
 } from "@/server/localization/localization.service";
 import { requireAccountPageContext } from "@/server/auth/page-context";
@@ -24,14 +25,21 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
     `/${lang}/login?callbackUrl=${encodeURIComponent(`/${lang}/account`)}`,
   );
 
-  const [country, rawOrders, downloads, categories, availableLocales] =
-    await Promise.all([
-      getRequestCountry(),
-      findOrdersForUser(user.id, user.email),
-      getUserPurchasedDownloads(user.id, user.email),
-      getShopCategories(lang),
-      getActiveLocaleCodes(),
-    ]);
+  const [
+    country,
+    rawOrders,
+    downloads,
+    categories,
+    availableLocales,
+    availableCountries,
+  ] = await Promise.all([
+    getRequestCountry(),
+    findOrdersForUser(user.id, user.email),
+    getUserPurchasedDownloads(user.id, user.email),
+    getShopCategories(lang),
+    getActiveLocaleCodes(),
+    getActiveRegionCodes(),
+  ]);
   const orders = rawOrders.map((order) => toAccountOrder(order, lang));
 
   return (
@@ -40,6 +48,7 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
         locale={lang}
         country={country}
         availableLocales={availableLocales}
+        availableCountries={availableCountries}
         homeHref={lang === "en" ? "/" : `/${lang}`}
         favoriteCategoryLabels={Object.fromEntries(
           categories.map((category) => [category.key, category.label]),

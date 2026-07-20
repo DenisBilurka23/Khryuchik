@@ -7,11 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { updateCountryPreferenceClient } from "@/client-api/country";
 import { setClientCountry } from "@/utils/country/client";
-import {
-  countries,
-  getCountryDisplayName,
-  getCountryShortLabel,
-} from "@/utils";
+import { getCountryDisplayName, getCountryShortLabel } from "@/utils";
 
 import { HeaderSelect } from "../header-select";
 
@@ -20,6 +16,7 @@ import type { CountrySwitcherProps } from "./types";
 export const CountrySwitcher = ({
   country,
   locale,
+  availableCountries,
   label,
   sx,
 }: CountrySwitcherProps) => {
@@ -65,6 +62,12 @@ export const CountrySwitcher = ({
     }
   };
 
+  // A single active region leaves nothing to switch between, so hide the
+  // control entirely rather than render a one-option dropdown.
+  if (availableCountries.length <= 1) {
+    return null;
+  }
+
   return (
     <HeaderSelect
       value={selectedCountry}
@@ -73,13 +76,13 @@ export const CountrySwitcher = ({
         <PublicOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
       }
       disabled={isPending}
-      options={countries.map((targetCountry) => ({
+      options={availableCountries.map((targetCountry) => ({
         value: targetCountry,
         label: getCountryDisplayName(locale, targetCountry),
         selectedLabel: getCountryShortLabel(targetCountry),
       }))}
       onChangeAction={(value) => {
-        if (value === "BY" || value === "US") {
+        if (availableCountries.includes(value)) {
           void updateCountry(value);
         }
       }}

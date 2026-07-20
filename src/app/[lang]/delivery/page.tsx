@@ -3,7 +3,10 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { DeliveryPageView } from "@/components/delivery-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import {
+  getActiveRegionCodes,
+  isActiveLocale,
+} from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedDeliveryPageProps = {
@@ -58,9 +61,18 @@ const LocalizedDeliveryPage = async ({
     notFound();
   }
 
-  const country = await getRequestCountry();
+  const [country, availableCountries] = await Promise.all([
+    getRequestCountry(),
+    getActiveRegionCodes(),
+  ]);
 
-  return <DeliveryPageView locale={lang} country={country} />;
+  return (
+    <DeliveryPageView
+      locale={lang}
+      country={country}
+      availableCountries={availableCountries}
+    />
+  );
 };
 
 export default LocalizedDeliveryPage;

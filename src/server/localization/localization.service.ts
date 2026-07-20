@@ -13,6 +13,7 @@ import type {
 } from "@/types/admin";
 import type { LocaleDocument, RegionDocument } from "@/types/localization";
 import {
+  defaultCountry,
   getCountryDisplayName,
   getLocaleDisplayName,
   isIsoCountryCode,
@@ -84,8 +85,6 @@ const mergeWithSeed = <T extends { code: string }>(seed: T[], rows: T[]): T[] =>
   return [...byCode.values()];
 };
 
-// Wrapped in `cache` so the per-request locale validation across the layout and
-// localized pages dedupes to a single DB read.
 export const getActiveLocales = cache(
   async (): Promise<LocaleDocument[]> => {
     const merged = mergeWithSeed(localeSeedDocuments, await findAllLocales());
@@ -107,6 +106,15 @@ export const getActiveLocaleCodes = async (): Promise<string[]> =>
 
 export const isActiveLocale = async (value: string): Promise<boolean> =>
   (await getActiveLocales()).some((locale) => locale.code === value);
+
+export const getActiveRegionCodes = async (): Promise<string[]> =>
+  (await getActiveRegions()).map((region) => region.code);
+
+export const getDefaultRegionCode = async (): Promise<string> => {
+  const regions = await getActiveRegions();
+
+  return regions.find((region) => region.isDefault)?.code ?? defaultCountry;
+};
 
 const mapLocaleToAdminItem = (
   locale: LocaleDocument,

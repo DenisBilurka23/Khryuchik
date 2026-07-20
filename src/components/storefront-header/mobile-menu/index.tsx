@@ -56,6 +56,7 @@ export const MobileMenu = ({
   country,
   localizedPaths,
   availableLocales,
+  availableCountries,
   navItems,
   cartHref,
   homeHref,
@@ -133,20 +134,23 @@ export const MobileMenu = ({
           </Stack>
 
           <Box sx={{ display: "flex", gap: 1, mt: 3 }}>
-            <Box sx={{ flex: 1 }}>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mb: 0.75 }}
-              >
-                {t("countrySwitcherLabel")}
-              </Typography>
-              <CountrySwitcher
-                country={country}
-                locale={locale}
-                sx={{ minWidth: 0, width: "100%" }}
-              />
-            </Box>
+            {availableCountries.length > 1 && (
+              <Box sx={{ flex: 1 }}>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ display: "block", mb: 0.75 }}
+                >
+                  {t("countrySwitcherLabel")}
+                </Typography>
+                <CountrySwitcher
+                  country={country}
+                  locale={locale}
+                  availableCountries={availableCountries}
+                  sx={{ minWidth: 0, width: "100%" }}
+                />
+              </Box>
+            )}
             <Box sx={{ flex: 1 }}>
               <Typography
                 variant="caption"
