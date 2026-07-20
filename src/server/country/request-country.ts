@@ -3,23 +3,27 @@ import "server-only";
 import { headers } from "next/headers";
 
 import {
-  COUNTRY_HEADER,
-  defaultCountry,
-  getCountryFromCookieHeader,
-  isCountryCode,
-} from "@/utils";
+  getActiveRegionCodes,
+  getDefaultRegionCode,
+} from "@/server/localization/localization.service";
+import { COUNTRY_HEADER, readCountryCookie } from "@/utils";
 
 export const getRequestCountry = async () => {
   const requestHeaders = await headers();
-  const cookieCountry = getCountryFromCookieHeader(
-    requestHeaders.get("cookie"),
-  );
+  const [activeCodes, defaultRegion] = await Promise.all([
+    getActiveRegionCodes(),
+    getDefaultRegionCode(),
+  ]);
+  const isActive = (value: string | null | undefined): value is string =>
+    Boolean(value && activeCodes.includes(value));
 
-  if (isCountryCode(cookieCountry)) {
+  const cookieCountry = readCountryCookie(requestHeaders.get("cookie"));
+
+  if (isActive(cookieCountry)) {
     return cookieCountry;
   }
 
   const requestCountry = requestHeaders.get(COUNTRY_HEADER);
 
-  return isCountryCode(requestCountry) ? requestCountry : defaultCountry;
+  return isActive(requestCountry) ? requestCountry : defaultRegion;
 };

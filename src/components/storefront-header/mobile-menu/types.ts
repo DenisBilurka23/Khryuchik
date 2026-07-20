@@ -8,6 +8,7 @@ export type MobileMenuProps = {
   country: CountryCode;
   localizedPaths: Record<Locale, string>;
   availableLocales: string[];
+  availableCountries: CountryCode[];
   navItems: StorefrontNavItem[];
   cartHref: string;
   homeHref: string;

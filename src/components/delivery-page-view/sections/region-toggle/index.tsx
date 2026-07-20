@@ -4,12 +4,13 @@ import { Box, ButtonBase, Stack, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { updateCountryPreferenceClient } from "@/client-api/country";
-import { countries, type CountryCode } from "@/utils";
+import { type CountryCode } from "@/utils";
 import { setClientCountry } from "@/utils/country/client";
 import type { RegionToggleProps } from "./types";
 
 export const RegionToggle = ({
   country,
+  availableCountries,
   accent,
   toggleAriaLabel,
   options,
@@ -51,13 +52,19 @@ export const RegionToggle = ({
     }
   };
 
+  const regionCodes = availableCountries.filter((code) => options[code]);
+
+  if (regionCodes.length <= 1) {
+    return null;
+  }
+
   return (
     <Box
       role="tablist"
       aria-label={toggleAriaLabel}
       sx={{
         display: "grid",
-        gridTemplateColumns: "1fr 1fr",
+        gridTemplateColumns: `repeat(${Math.min(Math.max(regionCodes.length, 1), 2)}, 1fr)`,
         gap: 1.5,
         p: 1,
         borderRadius: 3,
@@ -65,7 +72,7 @@ export const RegionToggle = ({
         border: "1px solid rgba(255,255,255,0.8)",
       }}
     >
-      {countries.map((code) => {
+      {regionCodes.map((code) => {
         const option = options[code];
         const isActive = selected === code;
 

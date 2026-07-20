@@ -9,6 +9,7 @@ export type StorefrontHeaderProps = {
   homeHref: string;
   localizedPaths: Record<Locale, string>;
   availableLocales: string[];
+  availableCountries: CountryCode[];
   navigationPaths?: StorefrontNavigationPaths;
 };
 

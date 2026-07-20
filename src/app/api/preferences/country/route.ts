@@ -1,19 +1,26 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import {
-  COUNTRY_COOKIE_NAME,
-  defaultCountry,
-  isCountryCode,
-} from "@/utils";
+  getActiveRegionCodes,
+  getDefaultRegionCode,
+} from "@/server/localization/localization.service";
+import { COUNTRY_COOKIE_NAME } from "@/utils";
+
+const resolveActiveCountry = async (value: string | null | undefined) => {
+  const [activeCodes, defaultRegion] = await Promise.all([
+    getActiveRegionCodes(),
+    getDefaultRegionCode(),
+  ]);
+
+  return value && activeCodes.includes(value) ? value : defaultRegion;
+};
 
 export const POST = async (request: NextRequest) => {
-  const payload = (await request.json().catch(() => null)) as
-    | { country?: string }
-    | null;
-  const country = isCountryCode(payload?.country)
-    ? payload.country
-    : defaultCountry;
+  const payload = (await request.json().catch(() => null)) as {
+    country?: string;
+  } | null;
+  const country = await resolveActiveCountry(payload?.country);
 
   const response = NextResponse.json({ ok: true, country });
 
@@ -29,7 +36,7 @@ export const POST = async (request: NextRequest) => {
 export const GET = async (request: NextRequest) => {
   const countryParam = request.nextUrl.searchParams.get("country");
   const returnTo = request.nextUrl.searchParams.get("returnTo") ?? "/";
-  const country = isCountryCode(countryParam) ? countryParam : defaultCountry;
+  const country = await resolveActiveCountry(countryParam);
   const redirectUrl = new URL(returnTo, request.url);
   const response = NextResponse.redirect(redirectUrl);
 

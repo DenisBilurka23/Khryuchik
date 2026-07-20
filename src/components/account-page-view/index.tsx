@@ -47,6 +47,7 @@ export const AccountPageView = ({
   locale,
   country,
   availableLocales,
+  availableCountries,
   homeHref,
   favoriteCategoryLabels,
   user,
@@ -194,6 +195,7 @@ export const AccountPageView = ({
             locale={locale}
             country={country}
             availableLocales={availableLocales}
+            availableCountries={availableCountries}
             profileEditor={profileEditorState}
             authProviders={user.authProviders ?? []}
             userEmail={user.email ?? ""}

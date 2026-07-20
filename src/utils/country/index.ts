@@ -1,15 +1,12 @@
 import {
+  countries,
   COUNTRY_COOKIE_NAME,
   COUNTRY_HEADER,
-  countries,
   defaultCountry,
   geoCountryHeaderNames,
 } from "@/constants/country";
 import { ALL_COUNTRY_CODES } from "@/constants/all-country-codes";
 
-// Region and currency codes are open-ended strings so admin-managed regions
-// are not limited to the built-in set. The built-in maps below still cover the
-// seeded BY/US defaults; dynamic regions carry their own currency.
 export type CountryCode = string;
 
 export type BuiltInCountryCode = "BY" | "US";
@@ -26,7 +23,9 @@ export {
   geoCountryHeaderNames,
 };
 
-export const isCountryCode = (value: string | null | undefined): value is CountryCode =>
+export const isCountryCode = (
+  value: string | null | undefined,
+): value is CountryCode =>
   Boolean(value && countries.includes(value as BuiltInCountryCode));
 
 const countryConfig: Record<
@@ -49,8 +48,13 @@ const countryConfig: Record<
 export const getCountryShortLabel = (country: CountryCode) =>
   countryConfig[country].shortLabel;
 
-export const getCountryDisplayName = (locale: string, country: string): string => {
-  const displayName = new Intl.DisplayNames([locale], { type: "region" }).of(country);
+export const getCountryDisplayName = (
+  locale: string,
+  country: string,
+): string => {
+  const displayName = new Intl.DisplayNames([locale], { type: "region" }).of(
+    country,
+  );
 
   if (displayName) return displayName;
 
@@ -58,7 +62,8 @@ export const getCountryDisplayName = (locale: string, country: string): string =
 };
 
 export const isIsoCountryCode = (value: unknown): value is string =>
-  typeof value === "string" && (ALL_COUNTRY_CODES as readonly string[]).includes(value);
+  typeof value === "string" &&
+  (ALL_COUNTRY_CODES as readonly string[]).includes(value);
 
 export const getAllCountriesSorted = (
   locale: string,
@@ -106,8 +111,7 @@ const countryPaymentMethods: Partial<Record<CountryCode, PaymentMethod[]>> = {
 
 export const getCountryPaymentMethods = (
   country: CountryCode,
-): PaymentMethod[] =>
-  countryPaymentMethods[country] ?? defaultPaymentMethods;
+): PaymentMethod[] => countryPaymentMethods[country] ?? defaultPaymentMethods;
 
 export const isPaymentMethodAvailable = (
   country: CountryCode,
@@ -130,16 +134,26 @@ export const getCountryFromGeoHeaders = (headers: Headers) => {
   return getCountryFromGeoCode(headerValue);
 };
 
-export const getCountryFromCookieHeader = (cookieHeader: string | null) => {
+// Raw value of the country cookie, unvalidated. Region validation is left to
+// the caller so admin-managed regions beyond the built-in BY/US set are read
+// correctly (getCountryFromCookieHeader keeps the built-in narrowing for
+// callers that expect it).
+export const readCountryCookie = (cookieHeader: string | null): string | null => {
   if (!cookieHeader) {
     return null;
   }
 
-  const countryCookie = cookieHeader
-    .split(";")
-    .map((part) => part.trim())
-    .find((part) => part.startsWith(`${COUNTRY_COOKIE_NAME}=`))
-    ?.split("=")[1];
+  return (
+    cookieHeader
+      .split(";")
+      .map((part) => part.trim())
+      .find((part) => part.startsWith(`${COUNTRY_COOKIE_NAME}=`))
+      ?.split("=")[1] ?? null
+  );
+};
+
+export const getCountryFromCookieHeader = (cookieHeader: string | null) => {
+  const countryCookie = readCountryCookie(cookieHeader);
 
   return isCountryCode(countryCookie) ? countryCookie : null;
 };

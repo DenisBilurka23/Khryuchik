@@ -37,6 +37,7 @@ export const SettingsSection = ({
   locale,
   country,
   availableLocales,
+  availableCountries,
   profileEditor,
   authProviders,
   userEmail,
@@ -180,14 +181,19 @@ export const SettingsSection = ({
 
       <SectionCard title={t("languageRegion")}>
         <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <CountrySwitcher
-              country={country}
-              locale={locale}
-              sx={{ width: "100%", minWidth: 0 }}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
+          {availableCountries.length > 1 && (
+            <Grid size={{ xs: 12, md: 6 }}>
+              <CountrySwitcher
+                country={country}
+                locale={locale}
+                availableCountries={availableCountries}
+                sx={{ width: "100%", minWidth: 0 }}
+              />
+            </Grid>
+          )}
+          <Grid
+            size={{ xs: 12, md: availableCountries.length > 1 ? 6 : 12 }}
+          >
             <LocaleSwitcher
               locale={locale}
               localizedPaths={localizedAccountPaths}

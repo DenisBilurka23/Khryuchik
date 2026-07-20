@@ -24,6 +24,7 @@ export const StorefrontHeader = async ({
   homeHref,
   localizedPaths,
   availableLocales,
+  availableCountries,
   navigationPaths,
 }: StorefrontHeaderProps) => {
   const t = await getTranslations({ locale, namespace: "storefront" });
@@ -102,6 +103,7 @@ export const StorefrontHeader = async ({
                 <CountrySwitcher
                   country={country}
                   locale={locale}
+                  availableCountries={availableCountries}
                   sx={{ minWidth: 64 }}
                 />
 
@@ -118,6 +120,7 @@ export const StorefrontHeader = async ({
                 country={country}
                 localizedPaths={localizedPaths}
                 availableLocales={availableLocales}
+                availableCountries={availableCountries}
                 navItems={navItems.map(({ key, label, href }) => ({
                   key,
                   label,

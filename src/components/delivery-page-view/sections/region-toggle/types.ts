@@ -5,6 +5,7 @@ import type { CountryCode } from "@/utils";
 export type RegionToggleProps = {
   country: CountryCode;
   locale: Locale;
+  availableCountries: CountryCode[];
   accent: string;
   toggleAriaLabel: string;
   options: Record<CountryCode, DeliveryRegionOptionLabels>;

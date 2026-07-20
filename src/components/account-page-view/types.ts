@@ -19,6 +19,7 @@ export type AccountPageViewProps = {
   locale: Locale;
   country: CountryCode;
   availableLocales: string[];
+  availableCountries: CountryCode[];
   homeHref: string;
   favoriteCategoryLabels: Record<string, string>;
   user: AccountPageUser;
