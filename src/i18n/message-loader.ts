@@ -20,12 +20,25 @@ export const dictionariesByLocale: Record<Locale, SeedDictionary> = {
   ru: ruDictionary,
 };
 
+// The base dictionary holds region-neutral (international) copy, so a region
+// without its own override simply uses it. Regions listed here layer their
+// specifics on top.
 const storefrontOverrideLoaders: Partial<
   Record<
     CountryCode,
     Partial<Record<Locale, () => Promise<StorefrontDictionaryOverride>>>
   >
 > = {
+  BY: {
+    en: () =>
+      import("./overrides/BY/en.json").then(
+        (module) => module.default as StorefrontDictionaryOverride,
+      ),
+    ru: () =>
+      import("./overrides/BY/ru.json").then(
+        (module) => module.default as StorefrontDictionaryOverride,
+      ),
+  },
   US: {
     en: () =>
       import("./overrides/US/en.json").then(

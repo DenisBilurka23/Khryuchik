@@ -31,7 +31,7 @@
       "primaryAction": "Browse books",
       "secondaryAction": "Open the shop",
       "chips": [
-        "📦 Shipping across Belarus and internationally",
+        "📦 Shipping across the US, Canada and Europe",
         "🌍 RU / EN website versions",
         "🎁 Ready-made gift sets"
       ],
@@ -193,7 +193,7 @@
       "details": {
         "sku": "SKU",
         "securePayment": "Secure online payment",
-        "shipping": "Shipping across Belarus and internationally",
+        "shipping": "Shipping across the US, Canada and Europe",
         "languageSupportLabel": "{langs} version available"
       },
       "tabs": {
@@ -384,61 +384,47 @@
           }
         },
         "mapBadgeLabel": "Now selected:",
-        "mapCity": "Minsk"
+        "mapCity": ""
       },
       "payment": {
         "eyebrow": "How payment works",
-        "title": "Cash on delivery",
-        "short": "You pay at the post office on pickup",
-        "desc": "We ship the printed book across Belarus cash on delivery or by card transfer — after confirming the order with our team. The digital edition is sent once we reach out and receive the transfer.",
-        "badge": "No prepayment",
-        "receipt": {
-          "type": "Pickup receipt",
-          "num": "No. 00482",
-          "rows": [
-            {
-              "label": "Khryuchik books",
-              "value": "42.00 BYN"
-            },
-            {
-              "label": "Belposhta delivery",
-              "value": "6.00 BYN"
-            }
-          ],
-          "totalLabel": "Due at the post office",
-          "totalValue": "48.00 BYN",
-          "stamp": {
-            "line1": "Paid",
-            "line2": "on delivery"
-          }
+        "title": "Pay online · Stripe",
+        "short": "Secure card payment via Stripe",
+        "desc": "Payment is taken online at checkout — through the secure Stripe payment gateway. As soon as the payment succeeds, we prepare your parcel for dispatch.",
+        "badge": "Stripe · Visa · Mastercard · Apple Pay",
+        "stripe": {
+          "secureLabel": "Secure",
+          "totalLabel": "Total",
+          "totalValue": "32.50",
+          "cardLabel": "Card number",
+          "cardMask": "4242 4242 4242 ••••",
+          "cardBrand": "VISA",
+          "expLabel": "MM / YY",
+          "exp": "12 / 28",
+          "cvcLabel": "CVC",
+          "cvc": "•••",
+          "payLabel": "Pay now"
         }
       },
       "methods": {
         "eyebrow": "Delivery options",
-        "titlePrefix": "Belarus:",
-        "titleAccent": "how it arrives",
+        "titlePrefix": "{country}:",
+        "titleAccent": "how it ships",
         "sub": "Timeframes are counted after dispatch. We pack your order within 1–2 business days.",
         "items": [
           {
             "icon": "post",
-            "name": "Belposhta · cash on delivery",
-            "meta": "3–5 business days",
-            "price": "from 6 BYN",
-            "note": "Delivery to any branch in Belarus. Pay on pickup in cash or by card."
+            "name": "Tracked shipping",
+            "meta": "Varies by destination",
+            "price": "Shown at checkout",
+            "note": "Tracked delivery to your address. Timeframes depend on the destination country."
           },
           {
             "icon": "card",
-            "name": "Card transfer",
-            "meta": "After ordering",
-            "price": "No fee",
-            "note": "Transfer to our card after confirming the order with our team — a handy alternative to cash on delivery."
-          },
-          {
-            "icon": "pickup",
-            "name": "Pickup in Minsk",
-            "meta": "Same day",
+            "name": "Digital editions",
+            "meta": "Instantly",
             "price": "Free",
-            "note": "Collect the books at our pickup point in the city center."
+            "note": "E-books are emailed right after payment — nothing is shipped."
           }
         ]
       },
@@ -449,19 +435,19 @@
         "items": [
           {
             "title": "Choose books",
-            "desc": "Add everything you like to the cart and place your order."
+            "desc": "Add titles to your cart and proceed to checkout."
           },
           {
-            "title": "Enter the address",
-            "desc": "Enter a post office branch or home address — no payment on the site."
+            "title": "Enter shipping address",
+            "desc": "We deliver to addresses across the US, Canada and Europe."
           },
           {
-            "title": "We pack the parcel",
-            "desc": "We pack the books and ship within 1–2 business days."
+            "title": "Pay online",
+            "desc": "Secure card payment via Stripe — no account required."
           },
           {
-            "title": "Pay on pickup",
-            "desc": "At the post office branch — in cash or by card."
+            "title": "Get a tracking number",
+            "desc": "We dispatch within 1–2 business days and email tracking."
           }
         ]
       },
@@ -471,16 +457,12 @@
         "titleAccent": "what matters",
         "items": [
           {
-            "q": "What if I don't pick up the parcel?",
-            "a": "No worries: if a parcel is unclaimed within 30 days, it returns to us. You only cover the return shipping if it happened without a valid reason."
+            "q": "Is the payment secure?",
+            "a": "Yes. All payments are processed by Stripe, a PCI-DSS Level 1 certified provider. We never see or store your card details."
           },
           {
-            "q": "Can I inspect the books on pickup?",
-            "a": "Yes. At the post office you can open the parcel before paying, make sure everything is fine, and only then pay."
-          },
-          {
-            "q": "How long does the parcel take?",
-            "a": "Usually 3–5 business days across Belarus. After dispatch we send a tracking number."
+            "q": "Do you ship internationally?",
+            "a": "Yes — we ship across the United States, Canada and Europe."
           },
           {
             "q": "What about returns?",
@@ -518,9 +500,9 @@
         "eyebrow": "Ready to order?",
         "titlePrefix": "Khryuchik is already",
         "titleAccent": "packing the suitcase",
-        "titleSuffix": "and heading to you in Belarus.",
+        "titleSuffix": "and heading your way.",
         "action": "Go to the shop",
-        "sub": "Pay at the post office on pickup"
+        "sub": "Secure checkout with Stripe"
       }
     },
     "termsPage": {
@@ -688,7 +670,7 @@
         "checkoutButton": "Continue to checkout",
         "continueShopping": "Continue shopping",
         "infoTitle": "Cozy delivery",
-        "infoText": "PDF books are delivered after payment, while physical products can be shipped across Belarus and internationally."
+        "infoText": "PDF books are delivered after payment, while physical products can be shipped across the US, Canada and Europe."
       }
     },
     "checkoutPage": {
