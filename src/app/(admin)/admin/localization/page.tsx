@@ -3,11 +3,11 @@ import { Alert, Box, Checkbox, Stack, TextField } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
 import { AdminLocaleCard } from "@/components/admin-localization-page-view/locale-card";
+import { NewRegionFields } from "@/components/admin-localization-page-view/new-region-fields";
 import { AdminRegionCard } from "@/components/admin-localization-page-view/region-card";
 import {
   AdminCheckboxField,
   AdminConfirmSubmitButton,
-  AdminCurrencySelectField,
   AdminPageHero,
   AdminSectionCard,
 } from "@/components/admin-page-shared";
@@ -67,8 +67,6 @@ const AdminLocalizationPage = async ({
     newRegionDescription: tLocalization("newRegionDescription"),
     saveButton: tLocalization("saveButton"),
     savingButton: tLocalization("savingButton"),
-    currencyPlaceholder: tLocalization("currencyPlaceholder"),
-    currencyNoOptions: tLocalization("currencyNoOptions"),
     fields: {
       code: tLocalization("fields.code"),
       regionCode: tLocalization("fields.regionCode"),
@@ -150,14 +148,9 @@ const AdminLocalizationPage = async ({
         <form action={saveAdminRegionAction}>
           <Stack gap={2}>
             <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(3, minmax(0, 1fr))" }, gap: 2 }}>
-              <TextField label={labels.fields.regionCode} name="code" required />
-              <AdminCurrencySelectField
-                name="currency"
-                label={labels.fields.currency}
+              <NewRegionFields
                 locale={locale}
-                required
-                placeholder={labels.currencyPlaceholder}
-                noOptionsText={labels.currencyNoOptions}
+                excludeCodes={data.regions.map((region) => region.code)}
               />
               <TextField label={labels.fields.sortOrder} name="sortOrder" type="number" defaultValue={100} />
             </Box>
