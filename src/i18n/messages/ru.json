@@ -1285,6 +1285,8 @@
       "deleteProtectedMessage": "Запись по умолчанию нельзя удалить.",
       "deleteFailedMessage": "Не удалось сохранить запись. Проверьте код и попробуйте снова.",
       "invalidCurrencyMessage": "Введите корректный код валюты.",
+      "currencyPlaceholder": "Поиск валюты",
+      "currencyNoOptions": "Валюта не найдена",
       "languagesTitle": "Языки",
       "languagesDescription": "Языки, доступные при заполнении переводов товара.",
       "newLanguageTitle": "Добавить язык",

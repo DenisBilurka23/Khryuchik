@@ -9,6 +9,7 @@ import { ModalButton } from "@/components/modal-button";
 import {
   AdminCheckboxField,
   AdminConfirmSubmitButton,
+  AdminCurrencySelectField,
   AdminSectionCard,
   AdminStatusChip,
 } from "@/components/admin-page-shared";
@@ -17,6 +18,7 @@ import type { AdminRegionCardProps } from "./types";
 
 export const AdminRegionCard = ({
   region,
+  locale,
   saveAction,
   deleteAction,
 }: AdminRegionCardProps) => {
@@ -32,6 +34,8 @@ export const AdminRegionCard = ({
     deleteProtectedHint: tLocalization("deleteProtectedHint"),
     updateButton: tLocalization("updateButton"),
     defaultBadge: tLocalization("defaultBadge"),
+    currencyPlaceholder: tLocalization("currencyPlaceholder"),
+    currencyNoOptions: tLocalization("currencyNoOptions"),
     fields: {
       regionCode: tLocalization("fields.regionCode"),
       currency: tLocalization("fields.currency"),
@@ -81,7 +85,15 @@ export const AdminRegionCard = ({
         <Stack gap={2}>
           <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(3, minmax(0, 1fr))" }, gap: 2 }}>
             <TextField label={labels.fields.regionCode} name="code" defaultValue={region.code} required slotProps={{ input: { readOnly: true } }} />
-            <TextField label={labels.fields.currency} name="currency" defaultValue={region.currency} required />
+            <AdminCurrencySelectField
+              name="currency"
+              label={labels.fields.currency}
+              locale={locale}
+              defaultValue={region.currency}
+              required
+              placeholder={labels.currencyPlaceholder}
+              noOptionsText={labels.currencyNoOptions}
+            />
             <TextField label={labels.fields.sortOrder} name="sortOrder" type="number" defaultValue={region.sortOrder} />
           </Box>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>

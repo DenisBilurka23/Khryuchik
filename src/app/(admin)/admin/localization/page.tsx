@@ -7,6 +7,7 @@ import { AdminRegionCard } from "@/components/admin-localization-page-view/regio
 import {
   AdminCheckboxField,
   AdminConfirmSubmitButton,
+  AdminCurrencySelectField,
   AdminPageHero,
   AdminSectionCard,
 } from "@/components/admin-page-shared";
@@ -66,6 +67,8 @@ const AdminLocalizationPage = async ({
     newRegionDescription: tLocalization("newRegionDescription"),
     saveButton: tLocalization("saveButton"),
     savingButton: tLocalization("savingButton"),
+    currencyPlaceholder: tLocalization("currencyPlaceholder"),
+    currencyNoOptions: tLocalization("currencyNoOptions"),
     fields: {
       code: tLocalization("fields.code"),
       regionCode: tLocalization("fields.regionCode"),
@@ -135,6 +138,7 @@ const AdminLocalizationPage = async ({
             <AdminRegionCard
               key={item.code}
               region={item}
+              locale={locale}
               saveAction={saveAdminRegionAction}
               deleteAction={deleteAdminRegionAction}
             />
@@ -147,7 +151,14 @@ const AdminLocalizationPage = async ({
           <Stack gap={2}>
             <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(3, minmax(0, 1fr))" }, gap: 2 }}>
               <TextField label={labels.fields.regionCode} name="code" required />
-              <TextField label={labels.fields.currency} name="currency" required />
+              <AdminCurrencySelectField
+                name="currency"
+                label={labels.fields.currency}
+                locale={locale}
+                required
+                placeholder={labels.currencyPlaceholder}
+                noOptionsText={labels.currencyNoOptions}
+              />
               <TextField label={labels.fields.sortOrder} name="sortOrder" type="number" defaultValue={100} />
             </Box>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>

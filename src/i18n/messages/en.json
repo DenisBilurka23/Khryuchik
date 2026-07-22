@@ -1281,6 +1281,8 @@
       "deleteProtectedMessage": "The default entry cannot be removed.",
       "deleteFailedMessage": "Could not save the entry. Check the code and try again.",
       "invalidCurrencyMessage": "Enter a valid currency code.",
+      "currencyPlaceholder": "Search currency",
+      "currencyNoOptions": "No currencies found",
       "languagesTitle": "Languages",
       "languagesDescription": "Languages available when filling in product translations.",
       "newLanguageTitle": "Add language",

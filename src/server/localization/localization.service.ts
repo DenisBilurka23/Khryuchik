@@ -70,6 +70,8 @@ const normalizeCurrencyCode = (value: string) =>
     .toUpperCase()
     .replace(/[^A-Z]/g, "");
 
+const supportedCurrencyCodes = new Set(Intl.supportedValuesOf("currency"));
+
 const sortByOrder = <T extends { code: string; sortOrder: number }>(
   items: T[],
 ): T[] =>
@@ -220,7 +222,7 @@ export const saveAdminRegion = async (input: AdminRegionUpsertInput) => {
     throw new LocalizationError(localizationErrorCodes.InvalidCode);
   }
 
-  if (!currency) {
+  if (!currency || !supportedCurrencyCodes.has(currency)) {
     throw new LocalizationError(localizationErrorCodes.InvalidCurrency);
   }
 
