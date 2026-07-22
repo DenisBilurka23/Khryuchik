@@ -1,0 +1,121 @@
+{
+  "hero": {
+    "chips": [
+      "📦 Shipping across Belarus and internationally",
+      "🌍 RU / EN website versions",
+      "🎁 Ready-made gift sets"
+    ]
+  },
+  "productPage": {
+    "details": {
+      "shipping": "Shipping across Belarus and internationally"
+    }
+  },
+  "cartPage": {
+    "summary": {
+      "infoText": "PDF books are delivered after payment, while physical products can be shipped across Belarus and internationally."
+    }
+  },
+  "deliveryPage": {
+    "payment": {
+      "eyebrow": "How payment works",
+      "title": "Cash on delivery",
+      "short": "You pay at the post office on pickup",
+      "desc": "We ship the printed book across Belarus cash on delivery or by card transfer — after confirming the order with our team. The digital edition is sent once we reach out and receive the transfer.",
+      "badge": "No prepayment",
+      "receipt": {
+        "type": "Pickup receipt",
+        "num": "No. 00482",
+        "rows": [
+          {
+            "label": "Khryuchik books",
+            "value": "42.00 BYN"
+          },
+          {
+            "label": "Belposhta delivery",
+            "value": "6.00 BYN"
+          }
+        ],
+        "totalLabel": "Due at the post office",
+        "totalValue": "48.00 BYN",
+        "stamp": {
+          "line1": "Paid",
+          "line2": "on delivery"
+        }
+      }
+    },
+    "methods": {
+      "titleAccent": "how it arrives",
+      "items": [
+        {
+          "icon": "post",
+          "name": "Belposhta · cash on delivery",
+          "meta": "3–5 business days",
+          "price": "from 6 BYN",
+          "note": "Delivery to any branch in Belarus. Pay on pickup in cash or by card."
+        },
+        {
+          "icon": "card",
+          "name": "Card transfer",
+          "meta": "After ordering",
+          "price": "No fee",
+          "note": "Transfer to our card after confirming the order with our team — a handy alternative to cash on delivery."
+        },
+        {
+          "icon": "pickup",
+          "name": "Pickup in Minsk",
+          "meta": "Same day",
+          "price": "Free",
+          "note": "Collect the books at our pickup point in the city center."
+        }
+      ]
+    },
+    "steps": {
+      "items": [
+        {
+          "title": "Choose books",
+          "desc": "Add everything you like to the cart and place your order."
+        },
+        {
+          "title": "Enter the address",
+          "desc": "Enter a post office branch or home address — no payment on the site."
+        },
+        {
+          "title": "We pack the parcel",
+          "desc": "We pack the books and ship within 1–2 business days."
+        },
+        {
+          "title": "Pay on pickup",
+          "desc": "At the post office branch — in cash or by card."
+        }
+      ]
+    },
+    "faq": {
+      "items": [
+        {
+          "q": "What if I don't pick up the parcel?",
+          "a": "No worries: if a parcel is unclaimed within 30 days, it returns to us. You only cover the return shipping if it happened without a valid reason."
+        },
+        {
+          "q": "Can I inspect the books on pickup?",
+          "a": "Yes. At the post office you can open the parcel before paying, make sure everything is fine, and only then pay."
+        },
+        {
+          "q": "How long does the parcel take?",
+          "a": "Usually 3–5 business days across Belarus. After dispatch we send a tracking number."
+        },
+        {
+          "q": "What about returns?",
+          "a": "It depends on what you ordered — e-books, physical books, and made-to-order merch each work differently. See the full breakdown below."
+        }
+      ]
+    },
+    "finalCta": {
+      "titleSuffix": "and heading to you in Belarus.",
+      "sub": "Pay at the post office on pickup"
+    },
+    "hero": {
+      "mapCity": "Minsk"
+    }
+  }
+}

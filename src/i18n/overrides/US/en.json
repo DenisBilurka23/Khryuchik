@@ -9,6 +9,11 @@
       "price": 9
     }
   },
+  "productPage": {
+    "details": {
+      "shipping": "Shipping across the USA and internationally"
+    }
+  },
   "cartPage": {
     "summary": {
       "infoText": "PDF books are delivered after payment, while physical products can be shipped across the USA and internationally."
@@ -39,7 +44,7 @@
       }
     },
     "methods": {
-      "titlePrefix": "United States:",
+      "titlePrefix": "{country}:",
       "titleAccent": "how it ships",
       "items": [
         {
@@ -92,8 +97,8 @@
           "a": "Yes. All payments are processed by Stripe, a PCI-DSS Level 1 certified provider. We never see or store your card details."
         },
         {
-          "q": "Do you ship outside the US?",
-          "a": "Right now we ship within the United States only. International (Canada, EU) is coming soon — sign up to be notified."
+          "q": "Do you ship internationally?",
+          "a": "Yes — we ship across the United States, Canada and Europe."
         },
         {
           "q": "What about returns?",

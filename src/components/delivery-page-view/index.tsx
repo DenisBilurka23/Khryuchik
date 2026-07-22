@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
 import type { DeliveryPageLabels } from "@/i18n/types";
-import { getLocalizedPath } from "@/utils";
+import { getCountryDisplayName, getLocalizedPath } from "@/utils";
 
 import storefrontStyles from "../storefront/storefront.module.css";
 import { DeliveryCtaSection } from "./sections/delivery-cta-section";
@@ -34,6 +34,11 @@ export const DeliveryPageView = async ({
 
   const { accent, heroGradient, paymentVariant } = getDeliveryRegionTheme(country);
   const shopHref = getLocalizedPath(locale, "/shop");
+  // The methods heading names the region, so it uses a {country} placeholder
+  // instead of baking the name into each region's copy.
+  const methodsTitlePrefix = t("methods.titlePrefix", {
+    country: getCountryDisplayName(locale, country),
+  });
 
   return (
     <Box className={storefrontStyles.pageShell} sx={{ color: "text.primary" }}>
@@ -51,7 +56,11 @@ export const DeliveryPageView = async ({
           paymentVariant={paymentVariant}
           accent={accent}
         />
-        <DeliveryMethodsSection {...methods} accent={accent} />
+        <DeliveryMethodsSection
+          {...methods}
+          titlePrefix={methodsTitlePrefix}
+          accent={accent}
+        />
         <DeliveryStepsSection {...steps} accent={accent} />
         <DeliveryFaqSection {...faq} accent={accent} />
         <DeliveryReturnsSection {...returns} accent={accent} />
