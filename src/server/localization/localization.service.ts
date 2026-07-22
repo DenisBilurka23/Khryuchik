@@ -32,10 +32,6 @@ import {
   findAllRegions,
   upsertRegion,
 } from "./regions.repository";
-import {
-  localeSeedDocuments,
-  regionSeedDocuments,
-} from "./seed-data/localization.seed";
 
 export const localizationErrorCodes = {
   InvalidCode: "invalid-code",
@@ -79,34 +75,16 @@ const sortByOrder = <T extends { code: string; sortOrder: number }>(
     (a, b) => a.sortOrder - b.sortOrder || a.code.localeCompare(b.code),
   );
 
-// The built-in defaults (ru/en, BY/US) are always guaranteed: they are merged
-// with the stored rows rather than only used when the collection is empty.
-// Otherwise adding the very first admin row would make the seeded defaults
-// disappear. A stored row with the same code overrides its seed default (so the
-// admin can edit or deactivate a built-in), and rows with new codes extend it.
-const mergeWithSeed = <T extends { code: string }>(
-  seed: T[],
-  rows: T[],
-): T[] => {
-  const byCode = new Map<string, T>(seed.map((item) => [item.code, item]));
-
-  for (const row of rows) {
-    byCode.set(row.code, row);
-  }
-
-  return [...byCode.values()];
-};
-
 export const getActiveLocales = cache(async (): Promise<LocaleDocument[]> => {
-  const merged = mergeWithSeed(localeSeedDocuments, await findAllLocales());
+  const locales = await findAllLocales();
 
-  return sortByOrder(merged.filter((locale) => locale.isActive));
+  return sortByOrder(locales.filter((locale) => locale.isActive));
 });
 
 export const getActiveRegions = cache(async (): Promise<RegionDocument[]> => {
-  const merged = mergeWithSeed(regionSeedDocuments, await findAllRegions());
+  const regions = await findAllRegions();
 
-  return sortByOrder(merged.filter((region) => region.isActive));
+  return sortByOrder(regions.filter((region) => region.isActive));
 });
 
 export const getActiveLocaleCodes = async (): Promise<string[]> =>
@@ -165,8 +143,8 @@ export const getAdminLocalizationData = async (
     findAllRegions(),
   ]);
 
-  const localeItems = sortByOrder(mergeWithSeed(localeSeedDocuments, locales));
-  const regionItems = sortByOrder(mergeWithSeed(regionSeedDocuments, regions));
+  const localeItems = sortByOrder(locales);
+  const regionItems = sortByOrder(regions);
 
   return {
     locales: localeItems.map((item) => mapLocaleToAdminItem(item, locale)),
