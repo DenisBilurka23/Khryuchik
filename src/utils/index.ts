@@ -70,6 +70,7 @@ export const getCountLabel = (
 
 export { formatCurrency, getAllCurrenciesSorted } from "./format-currency";
 export type { CurrencyOption } from "./format-currency";
+export { getCurrencyForCountry } from "./country-currency";
 export { formatFileSize } from "./format-file-size";
 export { formatOrderNumber } from "./format-order-number";
 
