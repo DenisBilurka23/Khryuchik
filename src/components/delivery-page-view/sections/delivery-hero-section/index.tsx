@@ -1,4 +1,5 @@
 import { Box, Chip, Container, Typography } from "@mui/material";
+import { getCountryDisplayName } from "@/utils";
 import { RegionToggle } from "../region-toggle";
 import { RegionMap } from "./region-map";
 import type { DeliveryHeroSectionProps } from "./types";
@@ -18,7 +19,10 @@ export const DeliveryHeroSection = ({
   accent,
   heroGradient,
 }: DeliveryHeroSectionProps) => {
-  const activeOption = options[country];
+  // Regions without their own delivery copy (options only cover the built-in
+  // set) fall back to the localized country name so the page never crashes.
+  const activeCountryLabel =
+    options[country]?.country ?? getCountryDisplayName(locale, country);
 
   return (
     <Box
@@ -114,7 +118,7 @@ export const DeliveryHeroSection = ({
                 <Box component="span">
                   {mapBadgeLabel}{" "}
                   <Box component="strong" sx={{ fontWeight: 700 }}>
-                    {activeOption.country}
+                    {activeCountryLabel}
                   </Box>
                 </Box>
               }
