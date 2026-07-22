@@ -227,7 +227,10 @@ export const UnitedStatesMap = (city: string) => {
   );
 };
 
-const FallbackMap = (city: string): ReactNode => (
+// Generic globe for regions without their own map. It deliberately shows no
+// city marker: the dictionary city belongs to a specific region and would be
+// wrong here.
+const FallbackMap = (): ReactNode => (
   <svg {...svgProps}>
     <defs>
       <radialGradient id="deliveryFallbackBg" cx="50%" cy="40%" r="70%">
@@ -251,26 +254,6 @@ const FallbackMap = (city: string): ReactNode => (
       strokeWidth="1.5"
       opacity="0.45"
     />
-    <circle cx="160" cy="132" r="7" fill="#635BFF" />
-    <circle
-      cx="160"
-      cy="132"
-      r="13"
-      fill="none"
-      stroke="#635BFF"
-      strokeWidth="2"
-      opacity="0.4"
-    />
-    <text
-      x="174"
-      y="136"
-      fontSize="13"
-      fontWeight="700"
-      fill="#27272A"
-      style={labelFont}
-    >
-      {city}
-    </text>
     <g transform="translate(244 18)">
       <rect
         x="0"
