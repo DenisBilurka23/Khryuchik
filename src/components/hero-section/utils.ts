@@ -3,16 +3,15 @@ import type { StorefrontDictionary } from "@/i18n/types";
 import type { LocalizedProductSummary } from "@/types/catalog";
 import {
   formatCurrency,
-  getCountryCurrency,
   getLocalizedProductPath,
-  type CountryCode,
+  type CurrencyCode,
 } from "@/utils";
 
 import type { HeroCards } from "./types";
 
 type BuildHeroCardsArgs = {
   locale: Locale;
-  country: CountryCode;
+  currency: CurrencyCode;
   fallback: {
     featuredHit: StorefrontDictionary["hero"]["featuredHit"];
     newBook: StorefrontDictionary["hero"]["newBook"];
@@ -26,7 +25,7 @@ type BuildHeroCardsArgs = {
 // the hero looking exactly as before.
 export const buildHeroCards = ({
   locale,
-  country,
+  currency,
   fallback,
   featuredProduct,
   newBookProduct,
@@ -41,11 +40,7 @@ export const buildHeroCards = ({
         : fallback.featuredHit.title,
       price: featuredProduct
         ? formatCurrency(featuredProduct.price, locale, featuredProduct.currency)
-        : formatCurrency(
-            fallback.featuredHit.price,
-            locale,
-            getCountryCurrency(country),
-          ),
+        : formatCurrency(fallback.featuredHit.price, locale, currency),
       href: featuredProduct
         ? getLocalizedProductPath(locale, featuredProduct.slug)
         : undefined,

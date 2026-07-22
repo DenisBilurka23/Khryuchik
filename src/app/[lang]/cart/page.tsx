@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 
 import { CartPageView } from "@/components/cart-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import {
+  getRegionCurrency,
+  isActiveLocale,
+} from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedCartPageProps = {
@@ -54,8 +57,11 @@ const LocalizedCartPage = async ({ params }: LocalizedCartPageProps) => {
   }
 
   const country = await getRequestCountry();
+  const currency = await getRegionCurrency(country);
 
-  return <CartPageView locale={lang} country={country} />;
+  return (
+    <CartPageView locale={lang} country={country} currency={currency} />
+  );
 };
 
 export default LocalizedCartPage;

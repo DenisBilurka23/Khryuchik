@@ -5,6 +5,8 @@ import { HeroSection } from "../hero-section";
 import { NewsletterSection } from "../newsletter-section";
 import { OrderSection } from "../order-section";
 import { ShopSection } from "../shop-section";
+import { getRegionCurrency } from "@/server/localization/localization.service";
+
 import { createStorefrontHeaderViewModel } from "../storefront-header/navigation";
 import { StorySection } from "../story-section";
 
@@ -21,11 +23,12 @@ export const Storefront = async ({
 }: StorefrontProps) => {
   const { navigationPaths } = createStorefrontHeaderViewModel(locale);
   const { shop: shopHref, cart: cartHref } = navigationPaths;
+  const currency = await getRegionCurrency(country);
 
   return (
     <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
       <Box className={styles.pageContent}>
-        <HeroSection locale={locale} country={country} />
+        <HeroSection locale={locale} country={country} currency={currency} />
         <BookSection locale={locale} books={books} />
         <ShopSection
           locale={locale}
@@ -37,6 +40,7 @@ export const Storefront = async ({
         <OrderSection
           locale={locale}
           country={country}
+          currency={currency}
           shopHref={shopHref}
           cartHref={cartHref}
         />

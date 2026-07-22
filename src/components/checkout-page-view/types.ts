@@ -3,7 +3,7 @@ import type { ChangeEvent } from "react";
 import type { Locale } from "@/i18n/config";
 import type { CheckoutPageLabels } from "@/i18n/types";
 import type { UserShippingAddress } from "@/types/users";
-import type { CountryCode } from "@/utils";
+import type { CountryCode, CurrencyCode } from "@/utils";
 
 export type CheckoutInitialCustomer = {
   name?: string;
@@ -14,6 +14,7 @@ export type CheckoutInitialCustomer = {
 export type CheckoutPageViewProps = {
   locale: Locale;
   country: CountryCode;
+  currency: CurrencyCode;
   initialCustomer?: CheckoutInitialCustomer;
   initialShippingAddresses?: UserShippingAddress[];
   initialSelectedAddressId?: string | null;

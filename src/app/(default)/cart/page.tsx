@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { CartPageView } from "@/components/cart-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { getRegionCurrency } from "@/server/localization/localization.service";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const tStorefront = await getTranslations({
@@ -35,8 +36,15 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 const DefaultCartPage = async () => {
   const country = await getRequestCountry();
+  const currency = await getRegionCurrency(country);
 
-  return <CartPageView locale={defaultLocale} country={country} />;
+  return (
+    <CartPageView
+      locale={defaultLocale}
+      country={country}
+      currency={currency}
+    />
+  );
 };
 
 export default DefaultCartPage;

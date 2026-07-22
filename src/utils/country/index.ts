@@ -28,38 +28,13 @@ export const isCountryCode = (
 ): value is CountryCode =>
   Boolean(value && countries.includes(value as BuiltInCountryCode));
 
-const countryConfig: Record<
-  CountryCode,
-  {
-    shortLabel: string;
-    displayName: string;
-  }
-> = {
-  BY: {
-    shortLabel: "BY",
-    displayName: "Belarus",
-  },
-  US: {
-    shortLabel: "US",
-    displayName: "United States",
-  },
-};
-
-export const getCountryShortLabel = (country: CountryCode) =>
-  countryConfig[country].shortLabel;
+export const getCountryShortLabel = (country: CountryCode) => country;
 
 export const getCountryDisplayName = (
   locale: string,
   country: string,
-): string => {
-  const displayName = new Intl.DisplayNames([locale], { type: "region" }).of(
-    country,
-  );
-
-  if (displayName) return displayName;
-
-  return isCountryCode(country) ? countryConfig[country].displayName : country;
-};
+): string =>
+  new Intl.DisplayNames([locale], { type: "region" }).of(country) ?? country;
 
 export const isIsoCountryCode = (value: unknown): value is string =>
   typeof value === "string" &&
@@ -72,11 +47,6 @@ export const getAllCountriesSorted = (
     code,
     label: getCountryDisplayName(locale, code),
   })).sort((a, b) => a.label.localeCompare(b.label, locale));
-
-export const countryCurrencies: Record<CountryCode, CurrencyCode> = {
-  BY: "BYN",
-  US: "USD",
-};
 
 export const countryShippingConfig: Record<
   CountryCode,
@@ -97,8 +67,13 @@ export const countryShippingConfig: Record<
   },
 };
 
-export const getCountryCurrency = (country: CountryCode) =>
-  countryCurrencies[country];
+// Shipping config is not admin-managed yet, so unknown regions fall back to a
+// zero (free) config instead of crashing on a missing map entry.
+export const getRegionShipping = (country: CountryCode) =>
+  countryShippingConfig[country] ?? {
+    freeShippingThreshold: 0,
+    shippingPrice: 0,
+  };
 
 // New countries default to Stripe; only regions where Stripe is unavailable
 // (e.g. BY) opt into alternative methods explicitly.
@@ -123,7 +98,9 @@ export const getCountryFromGeoCode = (value: string | null | undefined) => {
     return null;
   }
 
-  return value.trim().toUpperCase() === "BY" ? "BY" : "US";
+  const code = value.trim().toUpperCase();
+
+  return isIsoCountryCode(code) ? code : null;
 };
 
 export const getCountryFromGeoHeaders = (headers: Headers) => {
@@ -134,11 +111,9 @@ export const getCountryFromGeoHeaders = (headers: Headers) => {
   return getCountryFromGeoCode(headerValue);
 };
 
-// Raw value of the country cookie, unvalidated. Region validation is left to
-// the caller so admin-managed regions beyond the built-in BY/US set are read
-// correctly (getCountryFromCookieHeader keeps the built-in narrowing for
-// callers that expect it).
-export const readCountryCookie = (cookieHeader: string | null): string | null => {
+export const readCountryCookie = (
+  cookieHeader: string | null,
+): string | null => {
   if (!cookieHeader) {
     return null;
   }

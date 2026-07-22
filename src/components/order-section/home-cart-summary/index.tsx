@@ -3,7 +3,7 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
-import { formatCurrency, getCountLabel, getCountryCurrency } from "@/utils";
+import { formatCurrency, getCountLabel } from "@/utils";
 
 import type { HomeCartSummaryProps } from "./types";
 import styles from "../order-section.module.css";
@@ -11,6 +11,7 @@ import styles from "../order-section.module.css";
 export const HomeCartSummary = ({
   locale,
   country,
+  currency,
   shopHref,
   cartHref,
 }: HomeCartSummaryProps) => {
@@ -26,11 +27,7 @@ export const HomeCartSummary = ({
   const previewItems = items.slice(0, 4);
   const hiddenItemsCount = Math.max(items.length - previewItems.length, 0);
   const shouldStretchRow = previewItems.length === 4 && hiddenItemsCount > 0;
-  const formattedSubtotal = formatCurrency(
-    subtotal,
-    locale,
-    getCountryCurrency(country),
-  );
+  const formattedSubtotal = formatCurrency(subtotal, locale, currency);
   const shouldShowItems = hasStoredItems && items.length > 0;
 
   return (

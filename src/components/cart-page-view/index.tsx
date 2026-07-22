@@ -5,14 +5,18 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { useResolvedCart } from "@/hooks/useResolvedCart";
-import { countryShippingConfig, getLocalizedPath } from "@/utils";
+import { getRegionShipping, getLocalizedPath } from "@/utils";
 
 import { CartItemCard, EmptyCartState, OrderSummaryCard } from "../cart";
 import styles from "../storefront/storefront.module.css";
 
 import type { CartPageViewProps } from "./types";
 
-export const CartPageView = ({ locale, country }: CartPageViewProps) => {
+export const CartPageView = ({
+  locale,
+  country,
+  currency,
+}: CartPageViewProps) => {
   const t = useTranslations("storefront.cartPage");
   const cartPage = {
     eyebrow: t("eyebrow"),
@@ -58,7 +62,7 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
     removeItem(id);
   };
 
-  const shippingConfig = countryShippingConfig[country];
+  const shippingConfig = getRegionShipping(country);
   const shipping =
     subtotal >= shippingConfig.freeShippingThreshold || subtotal === 0
       ? 0
@@ -156,7 +160,7 @@ export const CartPageView = ({ locale, country }: CartPageViewProps) => {
                 <Grid size={{ xs: 12, md: 5, lg: 4 }}>
                   <OrderSummaryCard
                     locale={locale}
-                    country={country}
+                    currency={currency}
                     subtotal={subtotal}
                     shipping={shipping}
                     discount={discount}

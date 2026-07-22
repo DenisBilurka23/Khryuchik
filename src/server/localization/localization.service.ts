@@ -12,6 +12,7 @@ import type {
   AdminRegionUpsertInput,
 } from "@/types/admin";
 import type { LocaleDocument, RegionDocument } from "@/types/localization";
+import type { CurrencyCode } from "@/utils";
 import {
   defaultCountry,
   getCountryDisplayName,
@@ -56,12 +57,18 @@ export class LocalizationError extends Error {
 }
 
 const normalizeLocaleCode = (value: string) =>
-  value.trim().toLowerCase().replace(/[^a-z-]/g, "");
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z-]/g, "");
 
 const normalizeRegionCode = (value: string) => value.trim().toUpperCase();
 
 const normalizeCurrencyCode = (value: string) =>
-  value.trim().toUpperCase().replace(/[^A-Z]/g, "");
+  value
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "");
 
 const sortByOrder = <T extends { code: string; sortOrder: number }>(
   items: T[],
@@ -75,7 +82,10 @@ const sortByOrder = <T extends { code: string; sortOrder: number }>(
 // Otherwise adding the very first admin row would make the seeded defaults
 // disappear. A stored row with the same code overrides its seed default (so the
 // admin can edit or deactivate a built-in), and rows with new codes extend it.
-const mergeWithSeed = <T extends { code: string }>(seed: T[], rows: T[]): T[] => {
+const mergeWithSeed = <T extends { code: string }>(
+  seed: T[],
+  rows: T[],
+): T[] => {
   const byCode = new Map<string, T>(seed.map((item) => [item.code, item]));
 
   for (const row of rows) {
@@ -85,21 +95,17 @@ const mergeWithSeed = <T extends { code: string }>(seed: T[], rows: T[]): T[] =>
   return [...byCode.values()];
 };
 
-export const getActiveLocales = cache(
-  async (): Promise<LocaleDocument[]> => {
-    const merged = mergeWithSeed(localeSeedDocuments, await findAllLocales());
+export const getActiveLocales = cache(async (): Promise<LocaleDocument[]> => {
+  const merged = mergeWithSeed(localeSeedDocuments, await findAllLocales());
 
-    return sortByOrder(merged.filter((locale) => locale.isActive));
-  },
-);
+  return sortByOrder(merged.filter((locale) => locale.isActive));
+});
 
-export const getActiveRegions = cache(
-  async (): Promise<RegionDocument[]> => {
-    const merged = mergeWithSeed(regionSeedDocuments, await findAllRegions());
+export const getActiveRegions = cache(async (): Promise<RegionDocument[]> => {
+  const merged = mergeWithSeed(regionSeedDocuments, await findAllRegions());
 
-    return sortByOrder(merged.filter((region) => region.isActive));
-  },
-);
+  return sortByOrder(merged.filter((region) => region.isActive));
+});
 
 export const getActiveLocaleCodes = async (): Promise<string[]> =>
   (await getActiveLocales()).map((locale) => locale.code);
@@ -114,6 +120,16 @@ export const getDefaultRegionCode = async (): Promise<string> => {
   const regions = await getActiveRegions();
 
   return regions.find((region) => region.isDefault)?.code ?? defaultCountry;
+};
+
+export const getRegionCurrency = async (
+  code: string,
+): Promise<CurrencyCode> => {
+  const region = (await getActiveRegions()).find(
+    (candidate) => candidate.code === code,
+  );
+
+  return region?.currency ?? "USD";
 };
 
 const mapLocaleToAdminItem = (
@@ -152,9 +168,7 @@ export const getAdminLocalizationData = async (
 
   return {
     locales: localeItems.map((item) => mapLocaleToAdminItem(item, locale)),
-    regions: regionItems.map((region) =>
-      mapRegionToAdminItem(region, locale),
-    ),
+    regions: regionItems.map((region) => mapRegionToAdminItem(region, locale)),
   };
 };
 

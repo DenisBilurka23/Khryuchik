@@ -6,6 +6,7 @@ import type { CheckoutInitialCustomer } from "@/components/checkout-page-view/ty
 import { defaultLocale, locales } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { getRegionCurrency } from "@/server/localization/localization.service";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const tStorefront = await getTranslations({
@@ -45,11 +46,13 @@ const DefaultCheckoutPage = async () => {
     getRequestCountry(),
     getServerAuthSession(),
   ]);
+  const currency = await getRegionCurrency(country);
 
   return (
     <CheckoutPageView
       locale={defaultLocale}
       country={country}
+      currency={currency}
       initialCustomer={initialCustomerFromSession(session)}
       initialShippingAddresses={session?.user?.shippingAddresses ?? []}
       initialSelectedAddressId={session?.user?.selectedShippingAddressId ?? null}
