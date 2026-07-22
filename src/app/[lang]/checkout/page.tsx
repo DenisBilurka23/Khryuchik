@@ -5,7 +5,10 @@ import { notFound } from "next/navigation";
 import { CheckoutPageView } from "@/components/checkout-page-view";
 import type { CheckoutInitialCustomer } from "@/components/checkout-page-view/types";
 import { defaultLocale, locales } from "@/i18n/config";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import {
+  getRegionCurrency,
+  isActiveLocale,
+} from "@/server/localization/localization.service";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
 
@@ -67,11 +70,13 @@ const LocalizedCheckoutPage = async ({ params }: LocalizedCheckoutPageProps) => 
     getRequestCountry(),
     getServerAuthSession(),
   ]);
+  const currency = await getRegionCurrency(country);
 
   return (
     <CheckoutPageView
       locale={lang}
       country={country}
+      currency={currency}
       initialCustomer={initialCustomerFromSession(session)}
       initialShippingAddresses={session?.user?.shippingAddresses ?? []}
       initialSelectedAddressId={session?.user?.selectedShippingAddressId ?? null}

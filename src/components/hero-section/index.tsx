@@ -23,7 +23,11 @@ import styles from "./hero-section.module.css";
 import type { HeroSectionProps } from "./types";
 import { buildHeroCards } from "./utils";
 
-export const HeroSection = async ({ locale, country }: HeroSectionProps) => {
+export const HeroSection = async ({
+  locale,
+  country,
+  currency,
+}: HeroSectionProps) => {
   const t = await getTranslations({ locale, namespace: "storefront.hero" });
   const chips = t.raw("chips") as StorefrontDictionary["hero"]["chips"];
   const character = t.raw(
@@ -57,7 +61,7 @@ export const HeroSection = async ({ locale, country }: HeroSectionProps) => {
 
   const cards = buildHeroCards({
     locale,
-    country,
+    currency,
     fallback: {
       featuredHit: t.raw(
         "featuredHit",

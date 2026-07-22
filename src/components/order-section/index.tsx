@@ -14,6 +14,7 @@ import type { OrderSectionProps } from "./types";
 export const OrderSection = async ({
   locale,
   country,
+  currency,
   shopHref,
   cartHref,
 }: OrderSectionProps) => {
@@ -49,6 +50,7 @@ export const OrderSection = async ({
             <HomeCartSummary
               locale={locale}
               country={country}
+              currency={currency}
               shopHref={shopHref}
               cartHref={cartHref}
             />

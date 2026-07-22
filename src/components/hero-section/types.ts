@@ -1,9 +1,10 @@
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/utils";
+import type { CountryCode, CurrencyCode } from "@/utils";
 
 export type HeroSectionProps = {
   locale: Locale;
   country: CountryCode;
+  currency: CurrencyCode;
 };
 
 export type HeroCards = {

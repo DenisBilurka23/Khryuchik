@@ -3,14 +3,14 @@ import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography }
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { formatCurrency, getCountryCurrency } from "@/utils";
+import { formatCurrency } from "@/utils";
 import type { CartPageLabels } from "@/i18n/types";
 
 import type { OrderSummaryCardProps } from "../types";
 
 export const OrderSummaryCard = ({
   locale,
-  country,
+  currency,
   subtotal,
   shipping,
   discount,
@@ -49,7 +49,7 @@ export const OrderSummaryCard = ({
           <Stack direction="row" justifyContent="space-between">
             <Typography color="text.secondary">{labels.itemsLabel}</Typography>
             <Typography>
-              {formatCurrency(subtotal, locale, getCountryCurrency(country))}
+              {formatCurrency(subtotal, locale, currency)}
             </Typography>
           </Stack>
 
@@ -57,7 +57,7 @@ export const OrderSummaryCard = ({
             <Stack direction="row" justifyContent="space-between">
               <Typography color="text.secondary">{labels.discountLabel}</Typography>
               <Typography>
-                {`-${formatCurrency(discount, locale, getCountryCurrency(country))}`}
+                {`-${formatCurrency(discount, locale, currency)}`}
               </Typography>
             </Stack>
           ) : null}
@@ -70,7 +70,7 @@ export const OrderSummaryCard = ({
             {labels.totalLabel}
           </Typography>
           <Typography sx={{ fontSize: 28, fontWeight: 800, color: "primary.main" }}>
-            {formatCurrency(total, locale, getCountryCurrency(country))}
+            {formatCurrency(total, locale, currency)}
           </Typography>
         </Stack>
 

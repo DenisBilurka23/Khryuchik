@@ -25,11 +25,11 @@ import type {
 } from "@/types/order";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import {
-  countryShippingConfig,
-  getCountryCurrency,
+  getRegionShipping,
   isPaymentMethodAvailable,
   type PaymentMethod,
 } from "@/utils";
+import { getRegionCurrency } from "@/server/localization/localization.service";
 
 export class OrderValidationError extends Error {
   constructor(
@@ -102,7 +102,7 @@ export const createOrder = async (
   const subtotal = round2(
     orderItems.reduce((sum, item) => sum + item.lineTotal, 0),
   );
-  const shippingConfig = countryShippingConfig[country];
+  const shippingConfig = getRegionShipping(country);
   const shipping =
     fulfillmentType === "digital" ||
     subtotal >= shippingConfig.freeShippingThreshold
@@ -117,7 +117,7 @@ export const createOrder = async (
     userId: input.userId,
     locale,
     country,
-    currency: getCountryCurrency(country),
+    currency: await getRegionCurrency(country),
     items: orderItems,
     subtotal,
     shipping,

@@ -22,11 +22,10 @@ import { useBuyNowCheckoutItems } from "@/hooks/useBuyNowCheckoutItems";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import {
   type CountryCode,
-  countryShippingConfig,
   getAllCountriesSorted,
-  getCountryCurrency,
   getCountryPaymentMethods,
   getLocalizedPath,
+  getRegionShipping,
   isIsoCountryCode,
   type PaymentMethod,
 } from "@/utils";
@@ -50,6 +49,7 @@ import { formFromAddress, validateForm } from "./utils";
 export const CheckoutPageView = ({
   locale,
   country,
+  currency,
   initialCustomer,
   initialShippingAddresses,
   initialSelectedAddressId,
@@ -124,7 +124,7 @@ export const CheckoutPageView = ({
   const confirmationHref = getLocalizedPath(locale, "/checkout/confirmation");
   const isDigitalOnly =
     items.length > 0 && items.every((item) => item.isDigital);
-  const shippingConfig = countryShippingConfig[country];
+  const shippingConfig = getRegionShipping(country);
   const shipping =
     isDigitalOnly ||
     subtotal === 0 ||
@@ -132,7 +132,6 @@ export const CheckoutPageView = ({
       ? 0
       : shippingConfig.shippingPrice;
   const total = subtotal + shipping;
-  const currency = getCountryCurrency(country);
 
   const clearFieldError = (key: FormFieldKey) => {
     setFieldErrors((prev) => {
