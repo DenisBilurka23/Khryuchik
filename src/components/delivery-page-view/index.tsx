@@ -18,7 +18,6 @@ import type { DeliveryPageViewProps } from "./types";
 export const DeliveryPageView = async ({
   locale,
   country,
-  availableCountries,
 }: DeliveryPageViewProps) => {
   const t = await getTranslations({
     locale,
@@ -47,7 +46,6 @@ export const DeliveryPageView = async ({
           {...hero}
           locale={locale}
           country={country}
-          availableCountries={availableCountries}
           accent={accent}
           heroGradient={heroGradient}
         />

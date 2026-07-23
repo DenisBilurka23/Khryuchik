@@ -4,5 +4,4 @@ import type { CountryCode } from "@/utils";
 export type DeliveryPageViewProps = {
   locale: Locale;
   country: CountryCode;
-  availableCountries: CountryCode[];
 };

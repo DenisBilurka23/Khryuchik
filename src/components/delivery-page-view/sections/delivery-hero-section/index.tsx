@@ -1,6 +1,5 @@
 import { Box, Chip, Container, Typography } from "@mui/material";
 import { getCountryDisplayName } from "@/utils";
-import { RegionToggle } from "../region-toggle";
 import { RegionMap } from "./region-map";
 import type { DeliveryHeroSectionProps } from "./types";
 
@@ -9,13 +8,11 @@ const serif = "var(--font-display, var(--font-display-fallback)), serif";
 export const DeliveryHeroSection = ({
   eyebrow,
   title,
-  toggleAriaLabel,
   options,
   mapBadgeLabel,
   mapCity,
   locale,
   country,
-  availableCountries,
   accent,
   heroGradient,
 }: DeliveryHeroSectionProps) => {
@@ -78,15 +75,6 @@ export const DeliveryHeroSection = ({
                 {title.accent}
               </Box>
             </Typography>
-
-            <RegionToggle
-              country={country}
-              locale={locale}
-              availableCountries={availableCountries}
-              accent={accent}
-              toggleAriaLabel={toggleAriaLabel}
-              options={options}
-            />
           </Box>
 
           <Box
