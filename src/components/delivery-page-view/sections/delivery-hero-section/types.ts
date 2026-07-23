@@ -5,7 +5,6 @@ import type { CountryCode } from "@/utils";
 export type DeliveryHeroSectionProps = DeliveryPageLabels["hero"] & {
   locale: Locale;
   country: CountryCode;
-  availableCountries: CountryCode[];
   accent: string;
   heroGradient: string;
 };
