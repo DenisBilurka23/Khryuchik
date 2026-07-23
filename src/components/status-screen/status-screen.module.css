@@ -1,0 +1,189 @@
+.page {
+  --bg-1: #fdf2ea;
+  --bg-2: #f9dde3;
+  --card-pink: #f6cdd6;
+  --card-warm: #f6d6bf;
+  --coral: #e8637c;
+  --coral-deep: #d94f6a;
+  --ink: #2b2a2e;
+  --muted: #8f8b93;
+  --line: rgba(42, 37, 34, 0.14);
+  --danger: #c2453f;
+  --butter: #f3e2a6;
+  --mint: #bfe8d4;
+  --serif: var(--font-display, "Cormorant Garamond", "Times New Roman", serif);
+
+  position: relative;
+  min-height: calc(100vh - 220px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 64px 24px;
+  background: linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  color: var(--ink);
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  text-align: center;
+}
+
+.scene {
+  position: relative;
+  margin-bottom: 8px;
+}
+
+.code {
+  display: block;
+  font-family: var(--serif), serif;
+  font-size: clamp(96px, 22vw, 150px);
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: 0.02em;
+  text-shadow: 0 6px 0 rgba(216, 120, 140, 0.35);
+}
+
+.blob {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.blobPink {
+  background: var(--card-pink);
+}
+.blobWarm {
+  background: var(--card-warm);
+}
+.blobOverlap {
+  width: 110px;
+  height: 110px;
+  margin: -30px auto 0;
+  font-size: 56px;
+}
+.blobStandalone {
+  width: 130px;
+  height: 130px;
+  margin: 0 auto 6px;
+  font-size: 66px;
+}
+
+.title {
+  margin: 14px 0 12px;
+  font-family: var(--serif), serif;
+  font-size: clamp(28px, 6vw, 34px);
+  font-weight: 700;
+  line-height: 1.15;
+}
+.titleDanger {
+  color: var(--danger);
+}
+
+.text {
+  margin: 0 auto 26px;
+  max-width: 420px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.cta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 14px 28px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+.btnPrimary {
+  background: var(--coral);
+  color: #fff;
+}
+.btnPrimary:hover {
+  background: var(--coral-deep);
+  transform: translateY(-1px);
+}
+.btnGhost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btnGhost:hover {
+  border-color: var(--coral);
+  color: var(--coral);
+}
+
+.footer {
+  margin-top: 26px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.footer a {
+  color: var(--coral-deep);
+  text-decoration: none;
+}
+.footer a:hover {
+  color: var(--coral);
+}
+
+.float {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.floatStar {
+  top: 14%;
+  left: 16%;
+  width: 44px;
+  height: 44px;
+  background: var(--butter);
+  font-size: 22px;
+  transform: rotate(-12deg);
+}
+.floatBook {
+  bottom: 18%;
+  right: 18%;
+  width: 36px;
+  height: 36px;
+  background: var(--mint);
+  font-size: 18px;
+  transform: rotate(10deg);
+}
+.floatSparkle {
+  top: 26%;
+  right: 22%;
+  width: 28px;
+  height: 28px;
+  background: #fff;
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .float {
+    display: none;
+  }
+}

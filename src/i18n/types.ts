@@ -297,6 +297,22 @@ export type LegalPageLabels = {
   sections: LegalPageSection[];
 };
 
+export type NotFoundPageLabels = {
+  code: string;
+  title: string;
+  text: string;
+  primaryCta: string;
+  secondaryCta: string;
+};
+
+export type ErrorPageLabels = {
+  title: string;
+  text: string;
+  retryCta: string;
+  homeCta: string;
+  helpPrefix: string;
+};
+
 export type ContactPageLabels = {
   hero: {
     eyebrow: string;
@@ -593,6 +609,8 @@ export type StorefrontDictionary = {
   storyPage: StoryPageLabels;
   deliveryPage: DeliveryPageLabels;
   contactPage: ContactPageLabels;
+  notFoundPage: NotFoundPageLabels;
+  errorPage: ErrorPageLabels;
   termsPage: LegalPageLabels;
   privacyPage: LegalPageLabels;
   cartPage: CartPageLabels;

@@ -823,6 +823,20 @@
       "successMessage": "You've been unsubscribed. We're sorry to see you go.",
       "errorMessage": "Something went wrong. Please try again."
     },
+    "notFoundPage": {
+      "code": "404",
+      "title": "Khryuchik lost this page",
+      "text": "Looks like this page wandered off for a walk. Let's head back to where the good stories are waiting for you.",
+      "primaryCta": "Go home",
+      "secondaryCta": "To the shop"
+    },
+    "errorPage": {
+      "title": "Something went wrong",
+      "text": "We've hit a small technical snag. We're already fixing it — try refreshing the page in a couple of minutes.",
+      "retryCta": "Refresh the page",
+      "homeCta": "Go home",
+      "helpPrefix": "Still stuck? Write to us:"
+    },
     "footer": {
       "description": "Gentle family stories and cozy merch for children and adults.",
       "sections": [
