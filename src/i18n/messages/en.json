@@ -91,6 +91,8 @@
       "listTitle": "Your guest wishlist",
       "guestListTitle": "Guest wishlist",
       "guestListText": "These saved products are ready now and can be attached to your account later.",
+      "emptyTitle": "Your wishlist is empty",
+      "emptyText": "Tap the heart on any book or product you want to buy later — it will show up here, and you can attach the list to your account.",
       "itemCount": {
         "one": "item",
         "few": "items",
@@ -1072,6 +1074,9 @@
     "favoritesSavedLabel": "Saved",
     "favoritesListTitle": "Wishlist",
     "favoritesAddAllToCart": "Add all to cart",
+    "favoritesEmptyTitle": "Your wishlist is empty",
+    "favoritesEmptyText": "Tap the heart on any book or product you want to buy later — it will show up here so you can come back to it any time.",
+    "favoritesEmptyAction": "Browse the catalog",
     "favoritesPriceLabel": "Price",
     "favoritesView": "View",
     "signOutTitle": "Sign out of account",
