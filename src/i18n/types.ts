@@ -91,6 +91,8 @@ export type FavoritesPageLabels = {
   listTitle: string;
   guestListTitle: string;
   guestListText: string;
+  emptyTitle: string;
+  emptyText: string;
   itemCount: CountLabelForms;
   addToCart: string;
   view: string;
@@ -801,6 +803,9 @@ export type AccountPageDictionary = {
   favoritesSavedLabel: string;
   favoritesListTitle: string;
   favoritesAddAllToCart: string;
+  favoritesEmptyTitle: string;
+  favoritesEmptyText: string;
+  favoritesEmptyAction: string;
   favoritesPriceLabel: string;
   favoritesView: string;
   signOutTitle: string;
