@@ -55,6 +55,24 @@ export type ProductPageLabels = {
     delivery: string;
     reviews: string;
   };
+  reviewForm: {
+    title: string;
+    ratingLabel: string;
+    textLabel: string;
+    textPlaceholder: string;
+    submit: string;
+    submitting: string;
+    successTitle: string;
+    successText: string;
+    loginPrompt: string;
+    loginCta: string;
+    errors: {
+      generic: string;
+      alreadyReviewed: string;
+      emptyText: string;
+      invalidRating: string;
+    };
+  };
   relatedTitle: string;
   storyConnection: {
     title: string;
@@ -839,6 +857,7 @@ export type AdminPageDictionary = {
     localization: string;
     customers: string;
     orders: string;
+    reviews: string;
   };
   shared: {
     actions: {
@@ -1135,6 +1154,33 @@ export type AdminPageDictionary = {
     paymentMethodLabels: Record<string, string>;
     paymentStatusLabels: Record<string, string>;
     statusLabels: Record<string, string>;
+    delete: {
+      button: string;
+      dialogTitle: string;
+      dialogDescription: string;
+      confirmLabel: string;
+      cancelLabel: string;
+    };
+  };
+  reviews: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    sectionTitle: string;
+    sectionDescription: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    columns: {
+      author: string;
+      product: string;
+      rating: string;
+      review: string;
+      status: string;
+      createdAt: string;
+    };
+    statusLabels: Record<string, string>;
+    approve: string;
+    reject: string;
     delete: {
       button: string;
       dialogTitle: string;

@@ -12,6 +12,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import type { Locale } from "@/i18n/config";
+import type { ProductPageLabels } from "@/i18n/types";
 import {
   formatCurrency,
   getLocalizedPath,
@@ -66,11 +67,15 @@ export const ProductPageView = async ({
   relatedProducts,
   storyProduct,
   ownedLanguages,
+  isAuthenticated,
 }: ProductPageViewProps) => {
   const tProductPage = await getTranslations({
     locale,
     namespace: "storefront.productPage",
   });
+  const reviewFormLabels = tProductPage.raw(
+    "reviewForm",
+  ) as ProductPageLabels["reviewForm"];
   const labels = {
     breadcrumbs: {
       home: tProductPage("breadcrumbs.home"),
@@ -164,7 +169,17 @@ export const ProductPageView = async ({
                 actionLabel={tProductPage("actions.viewBook")}
               />
             ) : null}
-            <ProductTabs labels={labels.tabs} product={product} />
+            <ProductTabs
+              labels={labels.tabs}
+              product={product}
+              reviewForm={{
+                isAuthenticated,
+                productId: product.productId,
+                productSlug: product.slug,
+                loginHref: getLocalizedPath(locale, "/login"),
+                labels: reviewFormLabels,
+              }}
+            />
             {relatedProductCards.length > 0 ? (
               <RelatedProducts
                 title={labels.relatedTitle}

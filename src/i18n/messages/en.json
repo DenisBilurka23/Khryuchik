@@ -204,6 +204,24 @@
         "delivery": "Delivery and payment",
         "reviews": "Reviews"
       },
+      "reviewForm": {
+        "title": "Share your review",
+        "ratingLabel": "Your rating",
+        "textLabel": "Your review",
+        "textPlaceholder": "Tell other readers what you think about this product",
+        "submit": "Submit review",
+        "submitting": "Submitting…",
+        "successTitle": "Thank you for your review!",
+        "successText": "It will appear on the page once our team approves it.",
+        "loginPrompt": "Only registered customers can leave a review.",
+        "loginCta": "Sign in to write a review",
+        "errors": {
+          "generic": "Could not submit your review. Please try again.",
+          "alreadyReviewed": "You have already reviewed this product.",
+          "emptyText": "Please write a few words about the product.",
+          "invalidRating": "Please pick a rating from 1 to 5 stars."
+        }
+      },
       "relatedTitle": "Build your own Khryuchik bundle",
       "storyConnection": {
         "title": "This product was inspired by the story '{storyTitle}'",
@@ -1109,7 +1127,8 @@
       "home": "Home page",
       "localization": "Localization",
       "customers": "Accounts",
-      "orders": "Orders"
+      "orders": "Orders",
+      "reviews": "Reviews"
     },
     "home": {
       "eyebrow": "Storefront",
@@ -1454,6 +1473,37 @@
         "button": "Delete order",
         "dialogTitle": "Delete this order?",
         "dialogDescription": "The order will be removed from the database permanently. This action cannot be undone.",
+        "confirmLabel": "Delete",
+        "cancelLabel": "Cancel"
+      }
+    },
+    "reviews": {
+      "eyebrow": "Moderation",
+      "title": "Reviews",
+      "description": "Customer reviews awaiting moderation and already published, newest first.",
+      "sectionTitle": "Review feed",
+      "sectionDescription": "Approve a review to publish it on the product page, or reject it to hide it.",
+      "emptyTitle": "No reviews yet",
+      "emptyDescription": "Once a registered customer leaves a review, it will appear here for moderation.",
+      "columns": {
+        "author": "Author",
+        "product": "Product",
+        "rating": "Rating",
+        "review": "Review",
+        "status": "Status",
+        "createdAt": "Date"
+      },
+      "statusLabels": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "approve": "Approve",
+      "reject": "Reject",
+      "delete": {
+        "button": "Delete review",
+        "dialogTitle": "Delete this review?",
+        "dialogDescription": "The review will be removed from the database permanently. This action cannot be undone.",
         "confirmLabel": "Delete",
         "cancelLabel": "Cancel"
       }

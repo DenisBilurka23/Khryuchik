@@ -15,6 +15,7 @@ export type AdminViewKey =
   | "home"
   | "localization"
   | "orders"
+  | "reviews"
   | "customers"
   | "shipping"
   | "promocodes"

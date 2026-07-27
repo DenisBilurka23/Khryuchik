@@ -22,6 +22,7 @@ import {
   findShopVisibleProducts,
 } from "../repositories/products.repository";
 import { findProductDetailsByProductId } from "../repositories/product-details.repository";
+import { getApprovedReviewsForProduct } from "@/server/reviews/services/reviews.service";
 
 const localizeProductSummaries = (
   products: ProductDocument[],
@@ -119,7 +120,21 @@ export const getProductDetails = cache(
       return null;
     }
 
-    return toProductDetails(summary, detailsDocument, locale, country);
+    const details = toProductDetails(summary, detailsDocument, locale, country);
+
+    if (!details) {
+      return null;
+    }
+
+    const approvedReviews = await getApprovedReviewsForProduct(
+      summary.id,
+      locale,
+    );
+
+    return {
+      ...details,
+      reviews: [...details.reviews, ...approvedReviews],
+    };
   },
 );
 

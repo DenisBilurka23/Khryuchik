@@ -38,6 +38,7 @@ export const AdminLayoutShell = async ({
     localization: tNav("localization"),
     customers: tNav("customers"),
     orders: tNav("orders"),
+    reviews: tNav("reviews"),
   });
 
   return (

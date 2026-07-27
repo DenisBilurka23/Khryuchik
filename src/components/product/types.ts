@@ -29,10 +29,21 @@ export type ProductInfoProps = {
   ownedLanguages?: string[];
 };
 
+export type ReviewFormViewModel = {
+  isAuthenticated: boolean;
+  productId: string;
+  productSlug: string;
+  loginHref: string;
+  labels: ProductPageLabels["reviewForm"];
+};
+
 export type ProductTabsProps = {
   labels: ProductPageLabels["tabs"];
   product: ProductDetails;
+  reviewForm: ReviewFormViewModel;
 };
+
+export type ReviewFormProps = ReviewFormViewModel;
 
 export type StoryConnectionCardProps = {
   product: StoryProductCardViewModel;
@@ -52,4 +63,5 @@ export type ProductPageViewProps = {
   relatedProducts: LocalizedProductSummary[];
   storyProduct?: LocalizedProductSummary | null;
   ownedLanguages?: string[];
+  isAuthenticated: boolean;
 };
