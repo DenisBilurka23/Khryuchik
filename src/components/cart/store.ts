@@ -213,6 +213,20 @@ export const clearCart = () => {
   setCartState(emptyState);
 };
 
+export const retainCartItems = (validIds: string[]) => {
+  const currentState = ensureStateLoaded();
+  const validIdSet = new Set(validIds);
+  const nextItems = currentState.items.filter((item) =>
+    validIdSet.has(item.id),
+  );
+
+  if (nextItems.length === currentState.items.length) {
+    return;
+  }
+
+  setCartState({ items: nextItems });
+};
+
 export const useCart = () => {
   const snapshot = useSyncExternalStore(
     subscribe,
