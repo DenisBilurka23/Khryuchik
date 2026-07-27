@@ -22,3 +22,7 @@ export {
   deleteAdminProductAction,
   saveAdminProductAction,
 } from "./products";
+export {
+  deleteAdminReviewAction,
+  updateAdminReviewStatusAction,
+} from "./reviews";

@@ -89,6 +89,7 @@ const DefaultProductPage = async ({ params }: ProductPageProps) => {
       relatedProducts={relatedProducts}
       storyProduct={storyProducts[0] ?? null}
       ownedLanguages={ownedLanguages}
+      isAuthenticated={Boolean(session?.user)}
     />
   );
 };

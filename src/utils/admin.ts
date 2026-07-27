@@ -13,7 +13,8 @@ type AdminNavLabels = Record<
   | "home"
   | "localization"
   | "customers"
-  | "orders",
+  | "orders"
+  | "reviews",
   string
 >;
 
@@ -38,6 +39,7 @@ export const createAdminNavItems = (labels: AdminNavLabels): AdminNavItem[] => [
   },
   { key: "customers", label: labels.customers, href: "/admin/customers" },
   { key: "orders", label: labels.orders, href: "/admin/orders" },
+  { key: "reviews", label: labels.reviews, href: "/admin/reviews" },
 ];
 
 export const formatAdminDate = (value: string, locale: Locale) =>

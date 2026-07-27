@@ -7,6 +7,7 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 import type { ReactNode } from "react";
 import { List, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { usePathname } from "next/navigation";
@@ -20,6 +21,7 @@ const iconByKey: Record<AdminViewKey, ReactNode> = {
   home: <HomeOutlinedIcon />,
   localization: <LanguageOutlinedIcon />,
   orders: <ShoppingBagOutlinedIcon />,
+  reviews: <RateReviewOutlinedIcon />,
   customers: <PeopleAltOutlinedIcon />,
   shipping: <ShoppingBagOutlinedIcon />,
   promocodes: <CategoryOutlinedIcon />,

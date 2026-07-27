@@ -103,6 +103,7 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
       relatedProducts={relatedProducts}
       storyProduct={storyProducts[0] ?? null}
       ownedLanguages={ownedLanguages}
+      isAuthenticated={Boolean(session?.user)}
     />
   );
 };

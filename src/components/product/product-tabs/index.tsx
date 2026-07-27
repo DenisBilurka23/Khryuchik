@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import { ReviewForm } from "../review-form";
 import type { ProductTabsProps } from "../types";
 
 type TabItem = {
@@ -20,7 +21,7 @@ type TabItem = {
   render: () => React.ReactNode;
 };
 
-export const ProductTabs = ({ labels, product }: ProductTabsProps) => {
+export const ProductTabs = ({ labels, product, reviewForm }: ProductTabsProps) => {
   const availableTabs: TabItem[] = [
     ...(product.description
       ? [{
@@ -73,30 +74,29 @@ export const ProductTabs = ({ labels, product }: ProductTabsProps) => {
           ),
         }]
       : []),
-    ...(product.reviews.length > 0
-      ? [{
-          label: labels.reviews,
-          render: () => (
-            <Box>
-              {product.reviews.map((review) => (
-                <Paper
-                  key={review.id}
-                  elevation={0}
-                  sx={{ p: 3, borderRadius: "20px", bgcolor: "#FFF8F0", mb: 2 }}
-                >
-                  <Typography sx={{ fontWeight: 700 }}>{review.author}</Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-                    {review.date} • {"★".repeat(review.rating)}
-                  </Typography>
-                  <Typography color="text.secondary" sx={{ mt: 1.5, lineHeight: 1.8 }}>
-                    {review.text}
-                  </Typography>
-                </Paper>
-              ))}
-            </Box>
-          ),
-        }]
-      : []),
+    {
+      label: labels.reviews,
+      render: () => (
+        <Box>
+          {product.reviews.map((review) => (
+            <Paper
+              key={review.id}
+              elevation={0}
+              sx={{ p: 3, borderRadius: "20px", bgcolor: "#FFF8F0", mb: 2 }}
+            >
+              <Typography sx={{ fontWeight: 700 }}>{review.author}</Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                {review.date} • {"★".repeat(review.rating)}
+              </Typography>
+              <Typography color="text.secondary" sx={{ mt: 1.5, lineHeight: 1.8 }}>
+                {review.text}
+              </Typography>
+            </Paper>
+          ))}
+          <ReviewForm {...reviewForm} />
+        </Box>
+      ),
+    },
   ];
 
   const [tab, setTab] = useState(0);

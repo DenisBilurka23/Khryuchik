@@ -2,6 +2,7 @@ import "server-only";
 
 import type { ContactMessageInput } from "@/types/contact";
 import type { OrderDocument } from "@/types/order";
+import type { ReviewDocument } from "@/types/reviews";
 
 const TELEGRAM_API = "https://api.telegram.org";
 
@@ -97,6 +98,19 @@ const buildPaidOrderMessage = (order: OrderDocument): string =>
     `Сумма: ${order.total.toFixed(2)} ${order.currency}`,
   ].join("\n");
 
+const buildNewReviewMessage = (review: ReviewDocument): string =>
+  [
+    `⭐️ Новый отзыв ${orderHeader(review.id)}`,
+    "",
+    `👤 ${review.author}`,
+    `📦 ${review.productSlug}`,
+    `${"★".repeat(review.rating)}${"☆".repeat(5 - review.rating)} (${review.rating}/5)`,
+    "",
+    review.text,
+    "",
+    "🔎 Требует модерации в админке",
+  ].join("\n");
+
 const buildContactMessage = (input: ContactMessageInput): string =>
   [
     "✉️ Новое сообщение с сайта",
@@ -151,6 +165,9 @@ export const notifyAdminNewOrder = (order: OrderDocument): Promise<void> =>
 
 export const notifyAdminOrderPaid = (order: OrderDocument): Promise<void> =>
   sendMessage(buildPaidOrderMessage(order)).then(() => undefined);
+
+export const notifyAdminNewReview = (review: ReviewDocument): Promise<void> =>
+  sendMessage(buildNewReviewMessage(review)).then(() => undefined);
 
 export const notifyAdminContactMessage = (
   input: ContactMessageInput,
