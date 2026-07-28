@@ -76,6 +76,7 @@
       "title": "Favorite Khryuchik merch",
       "actionLabel": "All merch",
       "addToCart": "Add to cart",
+      "addedToCart": "Added to cart",
       "selectOptions": "Select",
       "wishlistAriaLabel": "Add to favorites"
     },
@@ -1026,7 +1027,7 @@
   "downloadsPage": {
     "title": "Your books are ready",
     "orderLabel": "Order",
-    "lead": "Download the files below. The link from your confirmation email stays active for 90 days.",
+    "lead": "Download the files below. This link stays active for 90 days, and a copy of it is in your confirmation email.",
     "download": "Download",
     "expiredTitle": "This link is no longer active",
     "expiredText": "The download link is invalid or has expired. Sign in with the email you used at checkout to find your books in your account, or write to us and we will send a new link.",
