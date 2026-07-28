@@ -22,7 +22,7 @@ export type OrderItem = {
 
 export type OrderCustomer = {
   name: string;
-  email?: string;
+  email: string;
   phone?: string;
   telegram?: string;
 };

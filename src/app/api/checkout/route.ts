@@ -1,26 +1,22 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { createStripeCheckoutSession } from "@/server/payments/stripe";
 import {
-  createStripeCheckoutSession,
-} from "@/server/payments/stripe";
-import {
-  OrderValidationError,
   createOrder,
+  OrderValidationError,
 } from "@/server/orders/services/orders.service";
 import { updateOrderPayment } from "@/server/orders/repositories/orders.repository";
-import type {
-  OrderCustomer,
-  OrderShippingAddress,
-} from "@/types/order";
+import type { OrderCustomer, OrderShippingAddress } from "@/types/order";
 import { isStoredCartItem } from "@/types/cart-guards";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import {
   getCountryPaymentMethods,
   isIsoCountryCode,
+  normalizeOrderEmail,
   type PaymentMethod,
 } from "@/utils";
 
@@ -41,6 +37,10 @@ const parseCustomer = (value: unknown): OrderCustomer | null => {
     return null;
   }
 
+  if (typeof raw.email !== "string" || raw.email.trim().length === 0) {
+    return null;
+  }
+
   const optionalString = (key: string) =>
     typeof raw[key] === "string" && (raw[key] as string).length > 0
       ? (raw[key] as string)
@@ -48,7 +48,7 @@ const parseCustomer = (value: unknown): OrderCustomer | null => {
 
   return {
     name: raw.name.trim(),
-    email: optionalString("email"),
+    email: normalizeOrderEmail(raw.email),
     phone: optionalString("phone"),
     telegram: optionalString("telegram"),
   };
@@ -106,9 +106,10 @@ const validationErrorResponse = (code: CheckoutErrorCode, status = 400) =>
   NextResponse.json({ error: code }, { status });
 
 export const POST = async (request: NextRequest) => {
-  const payload = (await request.json().catch(() => null)) as
-    | Record<string, unknown>
-    | null;
+  const payload = (await request.json().catch(() => null)) as Record<
+    string,
+    unknown
+  > | null;
 
   if (!payload) {
     return validationErrorResponse("invalid_payload");
@@ -148,7 +149,7 @@ export const POST = async (request: NextRequest) => {
     return validationErrorResponse("unsupported_payment_method");
   }
 
-  if (customer.email && !isValidEmail(customer.email)) {
+  if (!isValidEmail(customer.email)) {
     return validationErrorResponse("invalid_email");
   }
 
@@ -168,8 +169,7 @@ export const POST = async (request: NextRequest) => {
     });
 
     if (paymentMethod === "stripe") {
-      const origin =
-        process.env.NEXT_PUBLIC_APP_URL ?? request.nextUrl.origin;
+      const origin = process.env.NEXT_PUBLIC_APP_URL ?? request.nextUrl.origin;
 
       let session;
       try {

@@ -22,6 +22,7 @@ export const CheckoutContactSection = ({
       />
       <TextField
         fullWidth
+        required
         type="email"
         label={labels.fields.email}
         value={form.email}

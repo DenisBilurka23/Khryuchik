@@ -1,7 +1,7 @@
 import type { CheckoutPageViewProps, FieldErrors, FormState } from "./types";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const requiredFields = ["name", "line1", "city", "country"] as const;
+const requiredFields = ["name", "email", "line1", "city", "country"] as const;
 
 export const formFromAddress = (
   initialCustomer: CheckoutPageViewProps["initialCustomer"],
@@ -27,7 +27,7 @@ export const validateForm = (
   const errors: FieldErrors = {};
 
   for (const field of requiredFields) {
-    if (options?.skipAddress && field !== "name") {
+    if (options?.skipAddress && field !== "name" && field !== "email") {
       continue;
     }
     if (form[field].trim().length === 0) {
@@ -35,7 +35,7 @@ export const validateForm = (
     }
   }
 
-  if (form.email.trim().length > 0 && !emailPattern.test(form.email.trim())) {
+  if (!errors.email && !emailPattern.test(form.email.trim())) {
     errors.email = messages.invalidEmail;
   }
 

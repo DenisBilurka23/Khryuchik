@@ -231,7 +231,7 @@ export const CheckoutPageView = ({
         items: buyNowItems ?? cart.items,
         customer: {
           name: form.name.trim(),
-          email: form.email.trim() || undefined,
+          email: form.email.trim(),
           phone: form.phone.trim() || undefined,
         },
         shippingAddress: isDigitalOnly
