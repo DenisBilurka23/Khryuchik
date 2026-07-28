@@ -678,6 +678,10 @@ export type AuthPageDictionary = {
   registerPrompt: string;
   registerLinkLabel: string;
   invalidCredentials: string;
+  emailNotVerified: string;
+  resendVerification: string;
+  verificationSent: string;
+  verificationResendFailed: string;
   unexpectedError: string;
   googleTitle: string;
   googleButton: string;
@@ -719,6 +723,16 @@ export type ResetPasswordPageDictionary = {
   unexpectedError: string;
 };
 
+export type VerifyEmailPageDictionary = {
+  eyebrow: string;
+  title: string;
+  lead: string;
+  successMessage: string;
+  invalidToken: string;
+  unexpectedError: string;
+  loginLinkLabel: string;
+};
+
 export type DownloadsPageDictionary = {
   title: string;
   orderLabel: string;
@@ -753,6 +767,8 @@ export type RegisterPageDictionary = {
   invalidEmail: string;
   missingFields: string;
   unexpectedError: string;
+  verificationSentTitle: string;
+  verificationSentText: string;
 };
 
 export type AccountPageDictionary = {
@@ -1338,6 +1354,7 @@ export type Dictionary = {
   registerPage: RegisterPageDictionary;
   forgotPasswordPage: ForgotPasswordPageDictionary;
   resetPasswordPage: ResetPasswordPageDictionary;
+  verifyEmailPage: VerifyEmailPageDictionary;
   downloadsPage: DownloadsPageDictionary;
   accountPage: AccountPageDictionary;
   adminPage: AdminPageDictionary;
@@ -1353,6 +1370,7 @@ export type SeedDictionary = {
   registerPage: RegisterPageDictionary;
   forgotPasswordPage: ForgotPasswordPageDictionary;
   resetPasswordPage: ResetPasswordPageDictionary;
+  verifyEmailPage: VerifyEmailPageDictionary;
   downloadsPage: DownloadsPageDictionary;
   accountPage: AccountPageDictionary;
   adminPage: AdminPageDictionary;

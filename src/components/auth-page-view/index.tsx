@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
+import { useEmailVerificationResend } from "@/hooks/useEmailVerificationResend";
+import { SignInErrorCode } from "@/types/auth";
 import {
   AuthPageIntro,
   AuthPageShell,
@@ -21,6 +23,7 @@ import type { AuthPageViewProps } from "./types";
 export const AuthPageView = ({
   callbackUrl,
   isGoogleEnabled,
+  locale,
   registerHref,
   forgotPasswordHref,
 }: AuthPageViewProps) => {
@@ -30,6 +33,15 @@ export const AuthPageView = ({
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isCredentialsLoading, setIsCredentialsLoading] = useState(false);
+  const [isEmailUnverified, setIsEmailUnverified] = useState(false);
+  const verificationResend = useEmailVerificationResend(locale);
+
+  const resendMessages: Record<string, string | null> = {
+    idle: null,
+    sending: null,
+    sent: t("verificationSent"),
+    error: t("verificationResendFailed"),
+  };
 
   const handleGoogleSignIn = async () => {
     await signIn("google", { callbackUrl });
@@ -41,6 +53,8 @@ export const AuthPageView = ({
     event.preventDefault();
     setIsCredentialsLoading(true);
     setErrorMessage(null);
+    setIsEmailUnverified(false);
+    verificationResend.reset();
 
     const result = await signIn("credentials", {
       email,
@@ -52,7 +66,12 @@ export const AuthPageView = ({
     setIsCredentialsLoading(false);
 
     if (result?.error) {
-      setErrorMessage(t("invalidCredentials"));
+      const isUnverified = result.error === SignInErrorCode.EmailNotVerified;
+
+      setIsEmailUnverified(isUnverified);
+      setErrorMessage(
+        isUnverified ? t("emailNotVerified") : t("invalidCredentials"),
+      );
       return;
     }
 
@@ -82,8 +101,14 @@ export const AuthPageView = ({
           errorMessage={errorMessage}
           isLoading={isCredentialsLoading}
           forgotPasswordHref={forgotPasswordHref}
+          canResendVerification={isEmailUnverified}
+          isResendingVerification={verificationResend.status === "sending"}
+          resendVerificationMessage={resendMessages[verificationResend.status]}
           onEmailChange={setEmail}
           onPasswordChange={setPassword}
+          onResendVerification={() => {
+            void verificationResend.resend(email);
+          }}
           onSubmit={handleCredentialsSignIn}
         />
 

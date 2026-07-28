@@ -15,6 +15,7 @@ const LoginPage = async ({ searchParams }: LoginPageProps) => {
       <AuthPageView
         callbackUrl={callbackUrl ?? "/account"}
         isGoogleEnabled={isGoogleAuthEnabled}
+        locale={defaultLocale}
         registerHref="/register"
         forgotPasswordHref="/forgot-password"
       />

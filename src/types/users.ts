@@ -42,6 +42,7 @@ export type UserDocument = {
   image?: string | null;
   avatarObjectKey?: string | null;
   passwordHash?: string | null;
+  emailVerifiedAt?: Date | null;
   authProviders: AuthProvider[];
   shippingAddresses?: UserShippingAddress[];
   selectedShippingAddressId?: string | null;
@@ -81,6 +82,15 @@ export type UpdateAdminUserInput = UpdateUserProfileInput & {
   isAdmin: boolean;
   image?: string | null;
   avatarObjectKey?: string | null;
+};
+
+export type EmailVerificationTokenDocument = {
+  _id?: ObjectId;
+  userId: ObjectId;
+  tokenHash: string;
+  createdAt: Date;
+  expiresAt: Date;
+  usedAt?: Date | null;
 };
 
 export type PasswordResetTokenDocument = {

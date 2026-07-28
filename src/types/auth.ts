@@ -8,3 +8,12 @@ export enum AuthInputErrorCode {
 export enum PasswordResetErrorReason {
   InvalidToken = "invalid_token",
 }
+
+export enum EmailVerificationErrorReason {
+  InvalidToken = "invalid_token",
+}
+
+export enum SignInErrorCode {
+  InvalidCredentials = "invalid_credentials",
+  EmailNotVerified = "email_not_verified",
+}
