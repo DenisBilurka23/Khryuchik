@@ -29,13 +29,17 @@ export const Storefront = async ({
     <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
       <Box className={styles.pageContent}>
         <HeroSection locale={locale} country={country} currency={currency} />
-        <BookSection locale={locale} books={books} />
-        <ShopSection
-          locale={locale}
-          categories={shopCategories}
-          products={shopProducts}
-          selectedFilter={selectedShopCategory}
-        />
+        {books.length > 0 ? (
+          <BookSection locale={locale} books={books} />
+        ) : null}
+        {shopCategories.length > 0 && shopProducts.length > 0 ? (
+          <ShopSection
+            locale={locale}
+            categories={shopCategories}
+            products={shopProducts}
+            selectedFilter={selectedShopCategory}
+          />
+        ) : null}
         <StorySection locale={locale} />
         <OrderSection
           locale={locale}

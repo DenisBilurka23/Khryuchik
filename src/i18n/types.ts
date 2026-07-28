@@ -92,6 +92,8 @@ export type ShopPageLabels = {
   resultsLabel: string;
   emptyTitle: string;
   emptyText: string;
+  emptyRegionTitle: string;
+  emptyRegionText: string;
   resetFilters: string;
   breadcrumbs: {
     home: string;

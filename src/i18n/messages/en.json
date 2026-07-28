@@ -243,6 +243,8 @@
       "resultsLabel": "Products found",
       "emptyTitle": "Nothing found",
       "emptyText": "Try changing your search or choosing another category.",
+      "emptyRegionTitle": "No products in your region yet",
+      "emptyRegionText": "We are still putting the catalog together for this country. Pick another region in the site header, or subscribe to hear from us when it goes live.",
       "resetFilters": "Reset filters",
       "breadcrumbs": {
         "home": "Home",
