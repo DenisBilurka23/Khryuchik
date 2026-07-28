@@ -42,7 +42,7 @@ const buildInitialRegionState = ({
 
   return Object.fromEntries(
     regionCodes.map((code) => {
-      if (isNew || !available) {
+      if (isNew) {
         return [code, true];
       }
 
