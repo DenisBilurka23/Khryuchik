@@ -1,9 +1,9 @@
 import type { Locale } from "@/i18n/config";
 import {
-  ORDER_STATUSES,
   type AccountOrder,
   type AccountOrderItem,
   type CustomerOrderStatus,
+  ORDER_STATUSES,
   type OrderDocument,
   type OrderPaymentStatus,
   type OrderStatus,
@@ -11,6 +11,9 @@ import {
 
 import { formatCurrency } from "./format-currency";
 import { formatOrderNumber } from "./format-order-number";
+
+export const normalizeOrderEmail = (email: string) =>
+  email.trim().toLowerCase();
 
 export const isOrderStatus = (value: unknown): value is OrderStatus =>
   typeof value === "string" &&
@@ -37,7 +40,9 @@ export const getCustomerOrderStatus = (order: {
 const buildItemsSummary = (order: OrderDocument): string =>
   order.items.map((item) => item.title).join(" + ");
 
-const toAccountOrderItem = (item: OrderDocument["items"][number]): AccountOrderItem => ({
+const toAccountOrderItem = (
+  item: OrderDocument["items"][number],
+): AccountOrderItem => ({
   title: item.title,
   emoji: item.emoji,
   variant: item.variant,

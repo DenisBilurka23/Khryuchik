@@ -27,7 +27,12 @@ export { formatFileSize } from "./format-file-size";
 export { formatOrderNumber } from "./format-order-number";
 export { getLocaleDisplayName, getLocaleShortLabel } from "./locale";
 export { getLocalizedPath, getLocalizedProductPath } from "./localized-path";
-export { getCustomerOrderStatus, isOrderStatus, toAccountOrder } from "./order";
+export {
+  getCustomerOrderStatus,
+  isOrderStatus,
+  normalizeOrderEmail,
+  toAccountOrder,
+} from "./order";
 export {
   isLocalizedProductSummary,
   localizeProductSummary,
