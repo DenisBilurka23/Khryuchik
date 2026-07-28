@@ -188,6 +188,7 @@ export const createEmptyAdminProductPayload = (
       availability: "in_stock",
     },
     pricing: {},
+    availableRegions: [],
     translations: buildTranslationsForLocales(localeCodes),
   },
   details: {

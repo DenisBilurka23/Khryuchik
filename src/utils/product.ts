@@ -6,7 +6,7 @@ import type {
 } from "@/types/catalog";
 import type { ProductDetails } from "@/types/product-details";
 
-import { defaultCountry, type CountryCode } from "./country";
+import type { CountryCode } from "./country";
 
 const localizeDeliveryCopy = (
   delivery: string[],
@@ -46,18 +46,12 @@ export const localizeProductSummary = (
   locale: Locale,
   country: CountryCode,
 ): LocalizedProductSummary | null => {
-  // Hidden in regions the product is not activated for.
-  if (
-    product.availableRegions &&
-    !product.availableRegions.includes(country)
-  ) {
+  if (!product.availableRegions?.includes(country)) {
     return null;
   }
-
-  // Languages without their own translation fall back to the default locale.
   const translation =
     product.translations[locale] ?? product.translations[defaultLocale];
-  const pricing = product.pricing[country] ?? product.pricing[defaultCountry];
+  const pricing = product.pricing[country];
 
   if (!translation || !pricing) {
     return null;

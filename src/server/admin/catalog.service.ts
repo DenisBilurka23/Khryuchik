@@ -530,8 +530,9 @@ const sanitizeProductPayload = (
     }
   }
 
-  const availableRegions = (payload.product.availableRegions ?? regionCodes)
-    .filter((code) => regionCodes.includes(code));
+  const availableRegions = (payload.product.availableRegions ?? []).filter(
+    (code) => regionCodes.includes(code),
+  );
 
   // Display currency is sourced from per-region pricing downstream, so the
   // per-translation currency only needs to be a valid placeholder.

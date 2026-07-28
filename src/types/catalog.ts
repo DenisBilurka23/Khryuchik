@@ -88,10 +88,7 @@ export type ProductDocument = {
   merchandising: ProductMerchandising;
   inventory: ProductInventory;
   pricing: Partial<Record<CountryCode, ProductCountryPricing>>;
-  // Region codes the product is available in. Absent means available in every
-  // active region (backward-compatible with products created before per-region
-  // activation existed).
-  availableRegions?: string[];
+  availableRegions: string[];
   hasOptions?: boolean;
   translations: Record<Locale, ProductTranslation>;
 };
