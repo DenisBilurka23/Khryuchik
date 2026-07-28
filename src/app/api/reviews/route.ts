@@ -27,6 +27,7 @@ export const POST = async (request: Request) => {
     await createReview({
       userId: access.user.id,
       author: access.user.name,
+      email: access.user.email,
       productId,
       productSlug,
       rating,
