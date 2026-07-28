@@ -2,11 +2,8 @@ import "server-only";
 
 import { findProductDetailsByProductId } from "@/server/catalog/repositories/product-details.repository";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
-import { BOOK_FORMAT } from "@/constants/catalog";
-import type {
-  AccountDownload,
-  ProductPurchaseContext,
-} from "@/types/download";
+import type { AccountDownload, ProductPurchaseContext } from "@/types/download";
+import { isDigitalOrderItem } from "@/utils";
 
 export const getUserPurchasedDownloads = async (
   userId: string | undefined,
@@ -28,10 +25,7 @@ export const getUserPurchasedDownloads = async (
 
   for (const order of paidOrders) {
     for (const item of order.items) {
-      const isDigital =
-        !item.formatSelection || item.formatSelection === BOOK_FORMAT.digital;
-
-      if (!isDigital) continue;
+      if (!isDigitalOrderItem(item)) continue;
 
       const assetLocale = item.languageSelection ?? order.locale;
       const key = `${item.productId}:${assetLocale}`;
@@ -96,10 +90,7 @@ export const getProductPurchaseContext = async (
 
       hasPurchased = true;
 
-      const isDigital =
-        !item.formatSelection || item.formatSelection === BOOK_FORMAT.digital;
-
-      if (isDigital) {
+      if (isDigitalOrderItem(item)) {
         languages.add(item.languageSelection ?? order.locale);
       }
     }
@@ -124,10 +115,7 @@ export const findPurchasedAsset = async (
 
   for (const order of paidOrders) {
     for (const item of order.items) {
-      const isDigital =
-        !item.formatSelection || item.formatSelection === BOOK_FORMAT.digital;
-
-      if (!isDigital) continue;
+      if (!isDigitalOrderItem(item)) continue;
 
       const details = await findProductDetailsByProductId(item.productId);
       const assetLocale = item.languageSelection ?? order.locale;

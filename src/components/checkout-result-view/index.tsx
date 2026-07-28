@@ -25,6 +25,7 @@ export const CheckoutResultView = ({
   kind,
   orderId,
   paymentMethod,
+  downloadsHref,
 }: CheckoutResultViewProps) => {
   const t = useTranslations("storefront.checkoutResult");
   const success = t.raw("success") as CheckoutResultLabels["success"];
@@ -95,16 +96,40 @@ export const CheckoutResultView = ({
                   <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
                     {text}
                   </Typography>
-                  {primary ? (
-                    <Link
-                      href={primary.href}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <Button component="span" variant="contained" size="large">
-                        {primary.label}
-                      </Button>
-                    </Link>
-                  ) : null}
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={1.5}
+                    alignItems={{ xs: "stretch", sm: "center" }}
+                  >
+                    {downloadsHref ? (
+                      <Link
+                        href={downloadsHref}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <Button
+                          component="span"
+                          variant="contained"
+                          size="large"
+                        >
+                          {success.downloadsAction}
+                        </Button>
+                      </Link>
+                    ) : null}
+                    {primary ? (
+                      <Link
+                        href={primary.href}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <Button
+                          component="span"
+                          variant={downloadsHref ? "outlined" : "contained"}
+                          size="large"
+                        >
+                          {primary.label}
+                        </Button>
+                      </Link>
+                    ) : null}
+                  </Stack>
                 </Stack>
               </CardContent>
             </Card>

@@ -1,5 +1,6 @@
 import { CheckoutResultView } from "@/components/checkout-result-view";
 import { defaultLocale } from "@/i18n/config";
+import { buildOrderDownloadsHref } from "@/server/downloads/order-downloads.service";
 import { confirmOrderFromStripeSession } from "@/server/orders/services/orders.service";
 
 type CheckoutSuccessPageProps = {
@@ -13,12 +14,14 @@ const CheckoutSuccessPage = async ({
   const order = session_id
     ? await confirmOrderFromStripeSession(session_id)
     : null;
+  const downloadsHref = await buildOrderDownloadsHref(order, defaultLocale);
 
   return (
     <CheckoutResultView
       locale={defaultLocale}
       kind="success"
       orderId={order?.id}
+      downloadsHref={downloadsHref ?? undefined}
     />
   );
 };

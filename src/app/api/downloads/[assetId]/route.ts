@@ -1,27 +1,24 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
-import { requireAccountApiAccess } from "@/server/auth/page-context";
 import { buildAssetDownloadResponse } from "@/server/downloads/asset-response";
-import {
-  findPurchasedAsset,
-} from "@/server/downloads/downloads.service";
+import { findOrderAssetByToken } from "@/server/downloads/order-downloads.service";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export const GET = async (
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ assetId: string }> },
 ) => {
-  const access = await requireAccountApiAccess();
+  const token = request.nextUrl.searchParams.get("token")?.trim();
 
-  if (!access) {
+  if (!token) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
   const { assetId } = await params;
-  const asset = await findPurchasedAsset(access.user.id, access.user.email, assetId);
+  const asset = await findOrderAssetByToken(token, assetId);
 
   if (!asset) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });

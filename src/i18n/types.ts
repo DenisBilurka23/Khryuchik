@@ -230,6 +230,7 @@ export type CheckoutResultLabels = {
     text: string;
     orderLabel: string;
     backToShop: string;
+    downloadsAction: string;
   };
   cancel: {
     title: string;
@@ -716,6 +717,16 @@ export type ResetPasswordPageDictionary = {
   passwordTooShort: string;
   invalidToken: string;
   unexpectedError: string;
+};
+
+export type DownloadsPageDictionary = {
+  title: string;
+  orderLabel: string;
+  lead: string;
+  download: string;
+  expiredTitle: string;
+  expiredText: string;
+  backToShop: string;
 };
 
 export type RegisterPageDictionary = {
@@ -1327,6 +1338,7 @@ export type Dictionary = {
   registerPage: RegisterPageDictionary;
   forgotPasswordPage: ForgotPasswordPageDictionary;
   resetPasswordPage: ResetPasswordPageDictionary;
+  downloadsPage: DownloadsPageDictionary;
   accountPage: AccountPageDictionary;
   adminPage: AdminPageDictionary;
 };
@@ -1341,6 +1353,7 @@ export type SeedDictionary = {
   registerPage: RegisterPageDictionary;
   forgotPasswordPage: ForgotPasswordPageDictionary;
   resetPasswordPage: ResetPasswordPageDictionary;
+  downloadsPage: DownloadsPageDictionary;
   accountPage: AccountPageDictionary;
   adminPage: AdminPageDictionary;
 };

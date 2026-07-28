@@ -1,5 +1,6 @@
 import "server-only";
 
+import { issueOrderDownloadToken } from "@/server/downloads/order-downloads.service";
 import type { OrderDocument } from "@/types/order";
 import { formatCurrency, formatOrderNumber, getLocalizedPath } from "@/utils";
 
@@ -11,9 +12,9 @@ import {
 } from "./template-shell";
 import {
   createTransporter,
+  type EmailContent,
   getAppOrigin,
   getSmtpConfig,
-  type EmailContent,
 } from "./transport";
 
 const html = String.raw;
@@ -22,6 +23,8 @@ type OrderConfirmationEmailStrings = EmailShellStrings & {
   para1: string;
   totalLabel: string;
   buttonLabel: string;
+  downloadsPara: string;
+  downloadsButtonLabel: string;
 };
 
 const buildOrderItemsRowsHtml = (order: OrderDocument) =>
@@ -45,10 +48,21 @@ const buildOrderItemsRowsHtml = (order: OrderDocument) =>
     )
     .join("");
 
+const buildDownloadsBlockHtml = (
+  strings: OrderConfirmationEmailStrings,
+  downloadsUrl: string | null,
+) =>
+  downloadsUrl
+    ? html`${buildParagraphHtml(strings.downloadsPara, 20)}
+        ${buildButtonHtml(strings.downloadsButtonLabel, downloadsUrl)}
+        <div style="height:20px;line-height:20px;">&nbsp;</div>`
+    : "";
+
 const buildOrderConfirmationBodyHtml = (
   strings: OrderConfirmationEmailStrings,
   order: OrderDocument,
   ordersUrl: string,
+  downloadsUrl: string | null,
 ) => html`
                     ${buildParagraphHtml(strings.para1, 20)}
                     <table
@@ -74,15 +88,20 @@ const buildOrderConfirmationBodyHtml = (
                         </td>
                       </tr>
                     </table>
+                    ${buildDownloadsBlockHtml(strings, downloadsUrl)}
                     ${buildButtonHtml(strings.buttonLabel, ordersUrl)}
                   </td>
                 </tr>`;
 
 const orderConfirmationEmailBuilders: Record<
   string,
-  (order: OrderDocument, ordersUrl: string) => EmailContent
+  (
+    order: OrderDocument,
+    ordersUrl: string,
+    downloadsUrl: string | null,
+  ) => EmailContent
 > = {
-  ru: (order, ordersUrl) => {
+  ru: (order, ordersUrl, downloadsUrl) => {
     const orderNumber = formatOrderNumber(order.id) ?? "";
     const strings: OrderConfirmationEmailStrings = {
       lang: "ru",
@@ -93,6 +112,9 @@ const orderConfirmationEmailBuilders: Record<
       para1: `Заказ ${orderNumber} оплачен и передан в обработку. Ниже — детали покупки.`,
       totalLabel: "Итого",
       buttonLabel: "Посмотреть заказ",
+      downloadsPara:
+        "Электронные книги из этого заказа можно скачать по ссылке ниже — она работает 90 дней и не требует входа в аккаунт.",
+      downloadsButtonLabel: "Скачать книги",
       quote: "«Каждый может стать главным героем своей истории.»",
       footerShop: "Магазин",
       footerStory: "О нас",
@@ -112,16 +134,17 @@ const orderConfirmationEmailBuilders: Record<
         "",
         `Итого: ${formatCurrency(order.total, order.locale, order.currency)}`,
         "",
+        ...(downloadsUrl ? [`Скачать книги: ${downloadsUrl}`, ""] : []),
         `Посмотреть заказ: ${ordersUrl}`,
       ].join("\n"),
       html: buildEmailShell(
         strings,
-        buildOrderConfirmationBodyHtml(strings, order, ordersUrl),
+        buildOrderConfirmationBodyHtml(strings, order, ordersUrl, downloadsUrl),
       ),
     };
   },
 
-  en: (order, ordersUrl) => {
+  en: (order, ordersUrl, downloadsUrl) => {
     const orderNumber = formatOrderNumber(order.id) ?? "";
     const strings: OrderConfirmationEmailStrings = {
       lang: "en",
@@ -132,6 +155,9 @@ const orderConfirmationEmailBuilders: Record<
       para1: `Order ${orderNumber} has been paid and is now being processed. Here are the details.`,
       totalLabel: "Total",
       buttonLabel: "View order",
+      downloadsPara:
+        "The e-books from this order are available at the link below. It stays active for 90 days and needs no account.",
+      downloadsButtonLabel: "Download your books",
       quote: "“Every hero has their own story worth telling.”",
       footerShop: "Shop",
       footerStory: "Our story",
@@ -151,11 +177,12 @@ const orderConfirmationEmailBuilders: Record<
         "",
         `Total: ${formatCurrency(order.total, order.locale, order.currency)}`,
         "",
+        ...(downloadsUrl ? [`Download your books: ${downloadsUrl}`, ""] : []),
         `View order: ${ordersUrl}`,
       ].join("\n"),
       html: buildEmailShell(
         strings,
-        buildOrderConfirmationBodyHtml(strings, order, ordersUrl),
+        buildOrderConfirmationBodyHtml(strings, order, ordersUrl, downloadsUrl),
       ),
     };
   },
@@ -169,6 +196,20 @@ export const sendOrderConfirmationEmail = async (
     return;
   }
 
+  const ordersUrl = `${getAppOrigin()}${getLocalizedPath(order.locale, "/account?section=orders")}`;
+  // The token is issued here rather than at the call sites so all three senders
+  // (Stripe webhook, admin status change, manual confirmation) stay unchanged.
+  // It happens before the SMTP guard so the link can still be picked up from
+  // the dev log on a machine without mail configured.
+  const downloadToken = await issueOrderDownloadToken(order);
+  const downloadsUrl = downloadToken
+    ? `${getAppOrigin()}${getLocalizedPath(order.locale, `/downloads/${downloadToken}`)}`
+    : null;
+
+  if (downloadsUrl && process.env.NODE_ENV !== "production") {
+    console.info(`Download URL for order ${order.id}: ${downloadsUrl}`);
+  }
+
   const config = getSmtpConfig();
 
   if (!config) {
@@ -178,11 +219,14 @@ export const sendOrderConfirmationEmail = async (
     return;
   }
 
-  const ordersUrl = `${getAppOrigin()}${getLocalizedPath(order.locale, "/account?section=orders")}`;
   const builder =
     orderConfirmationEmailBuilders[order.locale] ??
     orderConfirmationEmailBuilders.en;
-  const { subject, html: bodyHtml, text } = builder(order, ordersUrl);
+  const {
+    subject,
+    html: bodyHtml,
+    text,
+  } = builder(order, ordersUrl, downloadsUrl);
   const transporter = createTransporter(config);
 
   try {
