@@ -945,6 +945,10 @@
     "registerPrompt": "No account yet?",
     "registerLinkLabel": "Create account",
     "invalidCredentials": "Incorrect email or password.",
+    "emailNotVerified": "Confirm your email before signing in. We sent a link to your inbox.",
+    "resendVerification": "Send the link again",
+    "verificationSent": "Done — check your inbox for the confirmation link.",
+    "verificationResendFailed": "Unable to send the link right now. Try again in a moment.",
     "unexpectedError": "Unable to sign in right now. Try again in a moment.",
     "googleTitle": "Google Auth",
     "googleButton": "Continue with Google",
@@ -976,7 +980,9 @@
     "passwordTooShort": "Password must be at least 8 characters.",
     "invalidEmail": "Enter a valid email address.",
     "missingFields": "Fill in all required fields.",
-    "unexpectedError": "Unable to create account right now. Try again in a moment."
+    "unexpectedError": "Unable to create account right now. Try again in a moment.",
+    "verificationSentTitle": "Confirm your email",
+    "verificationSentText": "We sent a confirmation link to {email}. Open it to activate your account — the link is valid for 24 hours."
   },
   "forgotPasswordPage": {
     "eyebrow": "Password reset",
@@ -1007,6 +1013,15 @@
     "passwordTooShort": "Password must be at least 8 characters.",
     "invalidToken": "This reset link is invalid or has expired.",
     "unexpectedError": "Unable to reset the password right now. Try again in a moment."
+  },
+  "verifyEmailPage": {
+    "eyebrow": "Email confirmation",
+    "title": "Confirming your email",
+    "lead": "One moment while we activate your Khryuchik account.",
+    "successMessage": "Email confirmed. You can sign in now.",
+    "invalidToken": "This confirmation link is invalid or has expired. Sign in to request a new one.",
+    "unexpectedError": "Unable to confirm your email right now. Try again in a moment.",
+    "loginLinkLabel": "Go to sign in"
   },
   "downloadsPage": {
     "title": "Your books are ready",

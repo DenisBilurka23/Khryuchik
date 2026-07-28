@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
+import { buildEmailVerificationUrl } from "@/server/auth/verification-url";
+import { sendEmailVerificationEmail } from "@/server/email/email-verification";
 import { sendWelcomeEmail } from "@/server/email/welcome";
 import { registerUser } from "@/server/users/services/users.service";
 import { AuthInputErrorCode } from "@/types/auth";
@@ -13,7 +15,8 @@ export async function POST(request: Request) {
     const email = typeof body.email === "string" ? body.email.trim() : "";
     const phone = typeof body.phone === "string" ? body.phone.trim() : "";
     const password = typeof body.password === "string" ? body.password : "";
-    const requestedLocale = typeof body.locale === "string" ? body.locale : defaultLocale;
+    const requestedLocale =
+      typeof body.locale === "string" ? body.locale : defaultLocale;
     const locale = isLocale(requestedLocale) ? requestedLocale : defaultLocale;
 
     if (!name || !email || !phone || !password) {
@@ -43,10 +46,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: result.reason }, { status: 409 });
     }
 
-    void sendWelcomeEmail(email, name, locale);
+    if (!result.verificationToken) {
+      void sendWelcomeEmail(email, name, locale);
 
-    return NextResponse.json({ ok: true });
+      return NextResponse.json({ ok: true, requiresVerification: false });
+    }
+
+    void sendEmailVerificationEmail(
+      email,
+      buildEmailVerificationUrl(locale, result.verificationToken),
+      locale,
+    );
+
+    return NextResponse.json({ ok: true, requiresVerification: true });
   } catch {
-    return NextResponse.json({ error: AuthInputErrorCode.UnexpectedError }, { status: 500 });
+    return NextResponse.json(
+      { error: AuthInputErrorCode.UnexpectedError },
+      { status: 500 },
+    );
   }
 }

@@ -3,11 +3,19 @@ import "server-only";
 import { ObjectId } from "mongodb";
 
 import {
+  createEmailVerificationToken,
+  hashEmailVerificationToken,
+} from "@/server/auth/email-verification";
+import {
   createPasswordResetToken,
   hashPasswordResetToken,
 } from "@/server/auth/reset-password";
 import { hashPassword, verifyPassword } from "@/server/auth/password";
-import { PasswordResetErrorReason } from "@/types/auth";
+import {
+  EmailVerificationErrorReason,
+  PasswordResetErrorReason,
+  SignInErrorCode,
+} from "@/types/auth";
 import type {
   RegisterUserInput,
   SafeAuthUser,
@@ -34,11 +42,17 @@ import {
   findUserById,
   setSelectedUserShippingAddress,
   setUserAdminByEmail,
+  setUserEmailVerified,
   setUserPasswordHash,
   toCredentialsAuthUser,
   updateAdminUser,
   updateUserProfile,
 } from "../repositories/users.repository";
+import {
+  findActiveEmailVerificationToken,
+  markEmailVerificationTokenUsed,
+  replaceEmailVerificationTokenForUser,
+} from "../repositories/email-verification-tokens.repository";
 import {
   findActivePasswordResetToken,
   markPasswordResetTokenUsed,
@@ -46,6 +60,7 @@ import {
 } from "../repositories/password-reset-tokens.repository";
 
 const PASSWORD_RESET_TOKEN_TTL_MS = 1000 * 60 * 30;
+const EMAIL_VERIFICATION_TOKEN_TTL_MS = 1000 * 60 * 60 * 24;
 
 const resolveNextUpdatableEmail = async ({
   userId,
@@ -86,6 +101,19 @@ const resolveNextUpdatableEmail = async ({
   return { ok: true, nextEmail };
 };
 
+const issueEmailVerificationToken = async (userId: ObjectId) => {
+  const token = createEmailVerificationToken();
+  const expiresAt = new Date(Date.now() + EMAIL_VERIFICATION_TOKEN_TTL_MS);
+
+  await replaceEmailVerificationTokenForUser(
+    userId,
+    hashEmailVerificationToken(token),
+    expiresAt,
+  );
+
+  return token;
+};
+
 export const registerUser = async (input: RegisterUserInput) => {
   const existingUser = await findUserByEmail(input.email);
 
@@ -103,16 +131,22 @@ export const registerUser = async (input: RegisterUserInput) => {
         passwordHash,
       },
     );
+    const verificationToken = existingUser.emailVerifiedAt
+      ? null
+      : await issueEmailVerificationToken(existingUser._id as ObjectId);
 
-    return { ok: true as const, user };
+    return { ok: true as const, user, verificationToken };
   }
 
   const user = await createCredentialsUser({
     ...input,
     passwordHash,
   });
+  const verificationToken = await issueEmailVerificationToken(
+    new ObjectId(user.id),
+  );
 
-  return { ok: true as const, user };
+  return { ok: true as const, user, verificationToken };
 };
 
 export const authenticateCredentialsUser = async (
@@ -122,16 +156,56 @@ export const authenticateCredentialsUser = async (
   const user = await findUserByEmail(email);
 
   if (!user?.passwordHash) {
-    return null;
+    return { ok: false as const, reason: SignInErrorCode.InvalidCredentials };
   }
 
   const isValidPassword = await verifyPassword(password, user.passwordHash);
 
   if (!isValidPassword) {
+    return { ok: false as const, reason: SignInErrorCode.InvalidCredentials };
+  }
+
+  if (!user.emailVerifiedAt) {
+    return { ok: false as const, reason: SignInErrorCode.EmailNotVerified };
+  }
+
+  return { ok: true as const, user: toCredentialsAuthUser(user) };
+};
+
+export const requestEmailVerification = async (email: string) => {
+  const user = await findUserByEmail(email);
+
+  if (!user?._id || user.emailVerifiedAt) {
     return null;
   }
 
-  return toCredentialsAuthUser(user);
+  return issueEmailVerificationToken(user._id as ObjectId);
+};
+
+export const verifyEmailWithToken = async (token: string) => {
+  const tokenHash = hashEmailVerificationToken(token);
+  const verificationToken = await findActiveEmailVerificationToken(tokenHash);
+
+  if (!verificationToken?._id) {
+    return {
+      ok: false as const,
+      reason: EmailVerificationErrorReason.InvalidToken,
+    };
+  }
+
+  const user = await findUserById(verificationToken.userId);
+
+  if (!user?._id) {
+    return {
+      ok: false as const,
+      reason: EmailVerificationErrorReason.InvalidToken,
+    };
+  }
+
+  await setUserEmailVerified(user._id as ObjectId);
+  await markEmailVerificationTokenUsed(verificationToken._id as ObjectId);
+
+  return { ok: true as const, email: user.email, name: user.name };
 };
 
 export const changeAccountUserPassword = async (
@@ -241,7 +315,10 @@ export const syncGoogleUser = async (input: {
   const existingUser = await findUserByEmail(input.email);
 
   if (existingUser?._id) {
-    const user = await addGoogleToExistingUser(existingUser._id as ObjectId, input);
+    const user = await addGoogleToExistingUser(
+      existingUser._id as ObjectId,
+      input,
+    );
     return { user, isNewUser: false };
   }
 

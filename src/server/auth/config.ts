@@ -3,8 +3,13 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
 import { sendWelcomeEmail } from "@/server/email/welcome";
+import { SignInErrorCode } from "@/types/auth";
 import { resolveLocale } from "@/server/i18n/request-locale";
-import { authenticateCredentialsUser, getAccountUserByEmail, syncGoogleUser } from "@/server/users/services/users.service";
+import {
+  authenticateCredentialsUser,
+  getAccountUserByEmail,
+  syncGoogleUser,
+} from "@/server/users/services/users.service";
 
 export const isGoogleAuthEnabled = Boolean(
   process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET,
@@ -26,7 +31,17 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        return authenticateCredentialsUser(email, password);
+        const result = await authenticateCredentialsUser(email, password);
+
+        if (result.ok) {
+          return result.user;
+        }
+
+        if (result.reason === SignInErrorCode.EmailNotVerified) {
+          throw new Error(SignInErrorCode.EmailNotVerified);
+        }
+
+        return null;
       },
     }),
     ...(isGoogleAuthEnabled
@@ -85,7 +100,8 @@ export const authOptions: NextAuthOptions = {
           token.authProviders = accountUser.authProviders;
           token.picture = accountUser.image ?? undefined;
           token.shippingAddresses = accountUser.shippingAddresses;
-          token.selectedShippingAddressId = accountUser.selectedShippingAddressId;
+          token.selectedShippingAddressId =
+            accountUser.selectedShippingAddressId;
         }
       }
 
@@ -108,8 +124,10 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (session.user) {
         session.user.id = typeof token.userId === "string" ? token.userId : "";
-        session.user.email = typeof token.email === "string" ? token.email : session.user.email;
-        session.user.name = typeof token.name === "string" ? token.name : session.user.name;
+        session.user.email =
+          typeof token.email === "string" ? token.email : session.user.email;
+        session.user.name =
+          typeof token.name === "string" ? token.name : session.user.name;
         session.user.phone = typeof token.phone === "string" ? token.phone : "";
         session.user.isAdmin = Boolean(token.isAdmin);
         session.user.authProviders = Array.isArray(token.authProviders)
@@ -118,7 +136,10 @@ export const authOptions: NextAuthOptions = {
                 provider === "google" || provider === "credentials",
             )
           : [];
-        session.user.image = typeof token.picture === "string" ? token.picture : session.user.image;
+        session.user.image =
+          typeof token.picture === "string"
+            ? token.picture
+            : session.user.image;
         session.user.shippingAddresses = Array.isArray(token.shippingAddresses)
           ? token.shippingAddresses
           : [];

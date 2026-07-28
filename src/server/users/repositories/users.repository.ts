@@ -126,6 +126,7 @@ export const createCredentialsUser = async (
     phone: input.phone.trim(),
     isAdmin: false,
     passwordHash: input.passwordHash,
+    emailVerifiedAt: null,
     image: null,
     avatarObjectKey: null,
     authProviders: ["credentials"],
@@ -179,6 +180,20 @@ export const toCredentialsAuthUser = (user: UserDocument) => ({
   image: user.image ?? null,
 });
 
+export const setUserEmailVerified = async (userId: ObjectId) => {
+  const collection = await getUsersCollection();
+
+  await collection.updateOne(
+    { _id: userId },
+    {
+      $set: {
+        emailVerifiedAt: new Date(),
+        updatedAt: new Date(),
+      },
+    },
+  );
+};
+
 export const setUserPasswordHash = async (
   userId: ObjectId,
   passwordHash: string,
@@ -214,6 +229,7 @@ export const createGoogleUser = async (input: {
     image: input.image ?? null,
     avatarObjectKey: null,
     passwordHash: null,
+    emailVerifiedAt: new Date(),
     authProviders: ["google"],
     shippingAddresses: [],
     selectedShippingAddressId: null,
@@ -251,6 +267,7 @@ export const addGoogleToExistingUser = async (
         name: nextName,
         image: nextImage,
         avatarObjectKey: existingUser.avatarObjectKey ?? null,
+        emailVerifiedAt: existingUser.emailVerifiedAt ?? new Date(),
         updatedAt: new Date(),
       },
       $addToSet: {

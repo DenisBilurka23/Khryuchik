@@ -14,6 +14,14 @@ export type ResetPasswordPageProps = {
   params: Promise<{ token: string }>;
 };
 
+export type VerifyEmailPageProps = {
+  params: Promise<{ token: string }>;
+};
+
+export type LocalizedVerifyEmailPageProps = {
+  params: Promise<{ lang: string; token: string }>;
+};
+
 export type LocalizedLoginPageProps = {
   params: Promise<{ lang: string }>;
   searchParams: Promise<{ callbackUrl?: string }>;

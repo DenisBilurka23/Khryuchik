@@ -7,7 +7,12 @@ import { signIn } from "next-auth/react";
 
 import { registerUserClient } from "@/client-api/auth";
 import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
-import { AuthPageIntro, AuthPageShell } from "@/components/auth-page-shared";
+import {
+  AuthLinkPrompt,
+  AuthPageIntro,
+  AuthPageShell,
+  AuthSectionCard,
+} from "@/components/auth-page-shared";
 import { AuthInputErrorCode } from "@/types/auth";
 import { UserOperationErrorReason } from "@/types/users";
 
@@ -28,6 +33,7 @@ export const RegisterPageView = ({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVerificationPending, setIsVerificationPending] = useState(false);
 
   const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -40,7 +46,13 @@ export const RegisterPageView = ({
     setIsSubmitting(true);
     setErrorMessage(null);
 
-    const response = await registerUserClient({ name, email, phone, password, locale });
+    const response = await registerUserClient({
+      name,
+      email,
+      phone,
+      password,
+      locale,
+    });
 
     if (!response.ok) {
       switch (response.data?.error ?? AuthInputErrorCode.UnexpectedError) {
@@ -64,6 +76,12 @@ export const RegisterPageView = ({
       return;
     }
 
+    if (response.data?.requiresVerification) {
+      setIsSubmitting(false);
+      setIsVerificationPending(true);
+      return;
+    }
+
     const signInResult = await signIn("credentials", {
       email,
       password,
@@ -83,6 +101,22 @@ export const RegisterPageView = ({
     router.push(loginHref);
     router.refresh();
   };
+
+  if (isVerificationPending) {
+    return (
+      <AuthPageShell>
+        <AuthPageIntro
+          eyebrow={t("eyebrow")}
+          title={t("verificationSentTitle")}
+          lead={t("verificationSentText", { email })}
+        />
+
+        <AuthSectionCard>
+          <AuthLinkPrompt href={loginHref} label={t("loginLinkLabel")} />
+        </AuthSectionCard>
+      </AuthPageShell>
+    );
+  }
 
   return (
     <AuthPageShell>

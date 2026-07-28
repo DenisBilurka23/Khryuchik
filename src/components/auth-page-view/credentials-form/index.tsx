@@ -16,8 +16,12 @@ export const AuthCredentialsForm = ({
   errorMessage,
   isLoading,
   forgotPasswordHref,
+  canResendVerification,
+  isResendingVerification,
+  resendVerificationMessage,
   onEmailChange,
   onPasswordChange,
+  onResendVerification,
   onSubmit,
 }: AuthCredentialsFormProps) => {
   const t = useTranslations("authPage");
@@ -33,7 +37,29 @@ export const AuthCredentialsForm = ({
             iconBackground="#FFF2D6"
           />
 
-          {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
+          {errorMessage ? (
+            <Alert
+              severity="error"
+              action={
+                canResendVerification ? (
+                  <Button
+                    color="inherit"
+                    size="small"
+                    loading={isResendingVerification}
+                    onClick={onResendVerification}
+                  >
+                    {t("resendVerification")}
+                  </Button>
+                ) : null
+              }
+            >
+              {errorMessage}
+            </Alert>
+          ) : null}
+
+          {resendVerificationMessage ? (
+            <Alert severity="info">{resendVerificationMessage}</Alert>
+          ) : null}
 
           <TextField
             label={t("emailLabel")}
