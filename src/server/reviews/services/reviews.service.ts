@@ -4,8 +4,10 @@ import { randomUUID } from "node:crypto";
 
 import type { Locale } from "@/i18n/config";
 import { findProductDetailsByProductId } from "@/server/catalog/repositories/product-details.repository";
+import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
 import { notifyAdminNewReview } from "@/server/payments/telegram";
 import {
+  deleteReview,
   findApprovedReviewsByProductId,
   findReviewByUserAndProduct,
   findReviews,
@@ -16,6 +18,7 @@ import type {
   AdminReviewListItem,
   CreateReviewInput,
   ReviewDocument,
+  UserReviewSummary,
 } from "@/types/reviews";
 
 export class ReviewValidationError extends Error {
@@ -25,6 +28,7 @@ export class ReviewValidationError extends Error {
       | "invalid_rating"
       | "empty_text"
       | "product_not_found"
+      | "not_purchased"
       | "already_reviewed",
   ) {
     super(message);
@@ -35,6 +39,20 @@ export class ReviewValidationError extends Error {
 const MIN_RATING = 1;
 const MAX_RATING = 5;
 const MAX_TEXT_LENGTH = 2000;
+
+const hasPurchasedProduct = async (
+  userId: string,
+  email: string | undefined,
+  productId: string,
+): Promise<boolean> => {
+  const orders = await findOrdersForUser(userId, email);
+
+  return orders.some(
+    (order) =>
+      order.payment.status === "paid" &&
+      order.items.some((item) => item.productId === productId),
+  );
+};
 
 export const createReview = async (
   input: CreateReviewInput,
@@ -63,16 +81,33 @@ export const createReview = async (
     );
   }
 
+  const purchased = await hasPurchasedProduct(
+    input.userId,
+    input.email,
+    input.productId,
+  );
+
+  if (!purchased) {
+    throw new ReviewValidationError(
+      "User has not purchased this product",
+      "not_purchased",
+    );
+  }
+
   const existing = await findReviewByUserAndProduct(
     input.userId,
     input.productId,
   );
 
   if (existing) {
-    throw new ReviewValidationError(
-      "User has already reviewed this product",
-      "already_reviewed",
-    );
+    if (existing.status !== "rejected") {
+      throw new ReviewValidationError(
+        "User has already reviewed this product",
+        "already_reviewed",
+      );
+    }
+
+    await deleteReview(existing.id);
   }
 
   const now = new Date().toISOString();
@@ -116,6 +151,31 @@ export const getApprovedReviewsForProduct = async (
     rating: review.rating,
     text: review.text,
   }));
+};
+
+export const getUserReviewForProduct = async (
+  userId: string | undefined,
+  productId: string,
+  locale: Locale,
+): Promise<UserReviewSummary | null> => {
+  if (!userId) {
+    return null;
+  }
+
+  const existing = await findReviewByUserAndProduct(userId, productId);
+
+  if (!existing) {
+    return null;
+  }
+
+  return {
+    id: existing.id,
+    author: existing.author,
+    date: formatReviewDate(existing.createdAt, locale),
+    rating: existing.rating,
+    text: existing.text,
+    status: existing.status,
+  };
 };
 
 export const getAdminReviews = async (): Promise<AdminReviewListItem[]> => {

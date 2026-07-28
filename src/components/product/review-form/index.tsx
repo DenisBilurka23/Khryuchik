@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { type SyntheticEvent, useState } from "react";
 import {
   Alert,
   Box,
@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { submitReview } from "@/client-api/reviews";
 
@@ -21,11 +22,14 @@ type FormStatus = "idle" | "submitting" | "success";
 
 export const ReviewForm = ({
   isAuthenticated,
+  hasPurchased,
+  existingStatus,
   productId,
   productSlug,
   loginHref,
   labels,
 }: ReviewFormProps) => {
+  const router = useRouter();
   const [rating, setRating] = useState<number | null>(5);
   const [text, setText] = useState("");
   const [status, setStatus] = useState<FormStatus>("idle");
@@ -37,13 +41,29 @@ export const ReviewForm = ({
         <Stack spacing={1} alignItems="flex-start">
           <Typography variant="body2">{labels.loginPrompt}</Typography>
           <Link href={loginHref} style={{ textDecoration: "none" }}>
-            <MuiLink component="span" underline="hover" sx={{ fontWeight: 700 }}>
+            <MuiLink
+              component="span"
+              underline="hover"
+              sx={{ fontWeight: 700 }}
+            >
               {labels.loginCta}
             </MuiLink>
           </Link>
         </Stack>
       </Alert>
     );
+  }
+
+  if (!hasPurchased) {
+    return (
+      <Alert severity="info" sx={{ borderRadius: "16px" }}>
+        <Typography variant="body2">{labels.purchasePrompt}</Typography>
+      </Alert>
+    );
+  }
+
+  if (existingStatus === "pending" || existingStatus === "approved") {
+    return null;
   }
 
   if (status === "success") {
@@ -59,6 +79,8 @@ export const ReviewForm = ({
     switch (code) {
       case "already_reviewed":
         return labels.errors.alreadyReviewed;
+      case "not_purchased":
+        return labels.errors.notPurchased;
       case "empty_text":
         return labels.errors.emptyText;
       case "invalid_rating":
@@ -68,7 +90,7 @@ export const ReviewForm = ({
     }
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!rating || rating < 1) {
@@ -93,6 +115,7 @@ export const ReviewForm = ({
 
     if (response.ok && response.data?.ok) {
       setStatus("success");
+      router.refresh();
       return;
     }
 

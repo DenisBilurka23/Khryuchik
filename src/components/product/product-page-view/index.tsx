@@ -68,6 +68,8 @@ export const ProductPageView = async ({
   storyProduct,
   ownedLanguages,
   isAuthenticated,
+  hasPurchased,
+  userReview,
 }: ProductPageViewProps) => {
   const tProductPage = await getTranslations({
     locale,
@@ -172,8 +174,13 @@ export const ProductPageView = async ({
             <ProductTabs
               labels={labels.tabs}
               product={product}
+              ownPendingReview={
+                userReview?.status === "pending" ? userReview : null
+              }
               reviewForm={{
                 isAuthenticated,
+                hasPurchased,
+                existingStatus: userReview?.status ?? null,
                 productId: product.productId,
                 productSlug: product.slug,
                 loginHref: getLocalizedPath(locale, "/login"),

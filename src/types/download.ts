@@ -8,3 +8,8 @@ export type AccountDownload = {
   sizeBytes?: number;
   downloadUrl: string;
 };
+
+export type ProductPurchaseContext = {
+  ownedLanguages: string[];
+  hasPurchased: boolean;
+};

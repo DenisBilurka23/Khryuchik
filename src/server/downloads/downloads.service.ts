@@ -3,7 +3,10 @@ import "server-only";
 import { findProductDetailsByProductId } from "@/server/catalog/repositories/product-details.repository";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
 import { BOOK_FORMAT } from "@/constants/catalog";
-import type { AccountDownload } from "@/types/download";
+import type {
+  AccountDownload,
+  ProductPurchaseContext,
+} from "@/types/download";
 
 export const getUserPurchasedDownloads = async (
   userId: string | undefined,
@@ -76,30 +79,33 @@ export const getUserPurchasedDownloads = async (
   return downloads;
 };
 
-export const getOwnedProductLanguages = async (
+export const getProductPurchaseContext = async (
   userId: string | undefined,
   email: string | undefined,
   productId: string,
-): Promise<string[]> => {
+): Promise<ProductPurchaseContext> => {
   const orders = await findOrdersForUser(userId, email);
   const paidOrders = orders.filter((o) => o.payment.status === "paid");
 
   const languages = new Set<string>();
+  let hasPurchased = false;
 
   for (const order of paidOrders) {
     for (const item of order.items) {
       if (item.productId !== productId) continue;
 
+      hasPurchased = true;
+
       const isDigital =
         !item.formatSelection || item.formatSelection === BOOK_FORMAT.digital;
 
-      if (!isDigital) continue;
-
-      languages.add(item.languageSelection ?? order.locale);
+      if (isDigital) {
+        languages.add(item.languageSelection ?? order.locale);
+      }
     }
   }
 
-  return [...languages];
+  return { ownedLanguages: [...languages], hasPurchased };
 };
 
 export type PurchasedAsset = {

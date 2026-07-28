@@ -66,9 +66,11 @@ export type ProductPageLabels = {
     successText: string;
     loginPrompt: string;
     loginCta: string;
+    purchasePrompt: string;
     errors: {
       generic: string;
       alreadyReviewed: string;
+      notPurchased: string;
       emptyText: string;
       invalidRating: string;
     };

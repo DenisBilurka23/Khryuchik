@@ -1,7 +1,12 @@
 import type { Locale } from "@/i18n/config";
 import type { ProductPageLabels } from "@/i18n/types";
 import type { LocalizedProductSummary } from "@/types/catalog";
-import type { ProductDetails, ProductImage } from "@/types/product-details";
+import type {
+  ProductDetails,
+  ProductImage,
+  ProductReview,
+} from "@/types/product-details";
+import type { ReviewStatus, UserReviewSummary } from "@/types/reviews";
 
 export type StoryProductCardViewModel = {
   href: string;
@@ -31,6 +36,8 @@ export type ProductInfoProps = {
 
 export type ReviewFormViewModel = {
   isAuthenticated: boolean;
+  hasPurchased: boolean;
+  existingStatus: ReviewStatus | null;
   productId: string;
   productSlug: string;
   loginHref: string;
@@ -41,6 +48,7 @@ export type ProductTabsProps = {
   labels: ProductPageLabels["tabs"];
   product: ProductDetails;
   reviewForm: ReviewFormViewModel;
+  ownPendingReview: ProductReview | null;
 };
 
 export type ReviewFormProps = ReviewFormViewModel;
@@ -64,4 +72,6 @@ export type ProductPageViewProps = {
   storyProduct?: LocalizedProductSummary | null;
   ownedLanguages?: string[];
   isAuthenticated: boolean;
+  hasPurchased: boolean;
+  userReview: UserReviewSummary | null;
 };
