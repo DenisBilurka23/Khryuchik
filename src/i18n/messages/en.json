@@ -771,7 +771,8 @@
         "title": "Payment received",
         "text": "Thank you! We've started preparing your parcel and will email tracking details once it ships.",
         "orderLabel": "Order",
-        "backToShop": "Back to the shop"
+        "backToShop": "Back to the shop",
+        "downloadsAction": "Download your books"
       },
       "cancel": {
         "title": "Payment cancelled",
@@ -1006,6 +1007,15 @@
     "passwordTooShort": "Password must be at least 8 characters.",
     "invalidToken": "This reset link is invalid or has expired.",
     "unexpectedError": "Unable to reset the password right now. Try again in a moment."
+  },
+  "downloadsPage": {
+    "title": "Your books are ready",
+    "orderLabel": "Order",
+    "lead": "Download the files below. The link from your confirmation email stays active for 90 days.",
+    "download": "Download",
+    "expiredTitle": "This link is no longer active",
+    "expiredText": "The download link is invalid or has expired. Sign in with the email you used at checkout to find your books in your account, or write to us and we will send a new link.",
+    "backToShop": "Back to shop"
   },
   "accountPage": {
     "account": "Account",

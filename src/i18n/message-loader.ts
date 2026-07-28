@@ -131,6 +131,7 @@ export const loadMessages = async (
     registerPage: dictionary.registerPage,
     forgotPasswordPage: dictionary.forgotPasswordPage,
     resetPasswordPage: dictionary.resetPasswordPage,
+    downloadsPage: dictionary.downloadsPage,
     accountPage: dictionary.accountPage,
     adminPage: dictionary.adminPage,
   };

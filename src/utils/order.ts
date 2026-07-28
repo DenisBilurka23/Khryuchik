@@ -1,3 +1,4 @@
+import { BOOK_FORMAT } from "@/constants/catalog";
 import type { Locale } from "@/i18n/config";
 import {
   type AccountOrder,
@@ -5,6 +6,7 @@ import {
   type CustomerOrderStatus,
   ORDER_STATUSES,
   type OrderDocument,
+  type OrderItem,
   type OrderPaymentStatus,
   type OrderStatus,
 } from "@/types/order";
@@ -14,6 +16,9 @@ import { formatOrderNumber } from "./format-order-number";
 
 export const normalizeOrderEmail = (email: string) =>
   email.trim().toLowerCase();
+
+export const isDigitalOrderItem = (item: OrderItem) =>
+  !item.formatSelection || item.formatSelection === BOOK_FORMAT.digital;
 
 export const isOrderStatus = (value: unknown): value is OrderStatus =>
   typeof value === "string" &&

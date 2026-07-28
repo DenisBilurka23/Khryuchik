@@ -29,6 +29,7 @@ export { getLocaleDisplayName, getLocaleShortLabel } from "./locale";
 export { getLocalizedPath, getLocalizedProductPath } from "./localized-path";
 export {
   getCustomerOrderStatus,
+  isDigitalOrderItem,
   isOrderStatus,
   normalizeOrderEmail,
   toAccountOrder,
