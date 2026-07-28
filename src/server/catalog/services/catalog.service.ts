@@ -55,7 +55,7 @@ export const getProductsForPlacement = cache(
       limit?: number;
     },
   ) => {
-    const products = await findProductsForPlacement(placement, options);
+    const products = await findProductsForPlacement(placement, country, options);
 
     return localizeProductSummaries(products, locale, country);
   },
@@ -63,7 +63,7 @@ export const getProductsForPlacement = cache(
 
 export const getLatestBookSummary = cache(
   async (locale: Locale, country: CountryCode) => {
-    const product = await findLatestBook();
+    const product = await findLatestBook(country);
 
     if (!product) {
       return null;
@@ -84,7 +84,7 @@ export const getShopProducts = cache(
       limit?: number;
     },
   ) => {
-    const products = await findShopVisibleProducts(options);
+    const products = await findShopVisibleProducts(country, options);
 
     return localizeProductSummaries(products, locale, country);
   },
