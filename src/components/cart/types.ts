@@ -11,6 +11,11 @@ export type CartSnapshot = {
   totalCount: number;
 };
 
+export type CartToastSnapshot = {
+  open: boolean;
+  addedCount: number;
+};
+
 export type CartItemInput = {
   productId: string;
   quantity?: number;
