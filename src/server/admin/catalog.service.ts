@@ -283,17 +283,21 @@ export const getAdminProductEditorData = async (
   productId?: string,
   locale: Locale = defaultLocale,
 ): Promise<AdminProductEditorData> => {
-  const [categories, activeLocales, activeRegions, initialRelatedProductOptions] =
-    await Promise.all([
-      findAllCategories(),
-      getActiveLocales(),
-      getActiveRegions(),
-      getAdminProductOptions({
-        locale,
-        excludeProductId: productId,
-        limit: 10,
-      }),
-    ]);
+  const [
+    categories,
+    activeLocales,
+    activeRegions,
+    initialRelatedProductOptions,
+  ] = await Promise.all([
+    findAllCategories(),
+    getActiveLocales(),
+    getActiveRegions(),
+    getAdminProductOptions({
+      locale,
+      excludeProductId: productId,
+      limit: 10,
+    }),
+  ]);
   const localeCodes = activeLocales.map((item) => item.code);
   const regionCodes = activeRegions.map((item) => item.code);
 
@@ -373,9 +377,12 @@ const resolveAdminCategoryKey = async (
 
   const categories = await findAllCategories();
   const takenKeys = new Set(categories.map((category) => category.key));
-  const generatedBaseKey = normalizeIdentifierPart(translations.en.label) || "category";
+  const generatedBaseKey =
+    normalizeIdentifierPart(translations.en.label) || "category";
 
-  return buildUniqueValue(generatedBaseKey, (candidate) => takenKeys.has(candidate));
+  return buildUniqueValue(generatedBaseKey, (candidate) =>
+    takenKeys.has(candidate),
+  );
 };
 
 export const saveAdminCategory = async (input: AdminCategoryUpsertInput) => {
