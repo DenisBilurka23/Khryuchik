@@ -9,7 +9,7 @@ export const getUserPurchasedDownloads = async (
   userId: string | undefined,
   email: string | undefined,
 ): Promise<AccountDownload[]> => {
-  const orders = await findOrdersForUser(userId, email);
+  const orders = await findOrdersForUser(userId, email, { limit: null });
   const paidOrders = orders.filter((o) => o.payment.status === "paid");
 
   if (paidOrders.length === 0) {
@@ -78,7 +78,7 @@ export const getProductPurchaseContext = async (
   email: string | undefined,
   productId: string,
 ): Promise<ProductPurchaseContext> => {
-  const orders = await findOrdersForUser(userId, email);
+  const orders = await findOrdersForUser(userId, email, { limit: null });
   const paidOrders = orders.filter((o) => o.payment.status === "paid");
 
   const languages = new Set<string>();
@@ -110,7 +110,7 @@ export const findPurchasedAsset = async (
   email: string | undefined,
   assetId: string,
 ): Promise<PurchasedAsset | null> => {
-  const orders = await findOrdersForUser(userId, email);
+  const orders = await findOrdersForUser(userId, email, { limit: null });
   const paidOrders = orders.filter((o) => o.payment.status === "paid");
 
   for (const order of paidOrders) {

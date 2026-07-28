@@ -15,7 +15,9 @@ const getOrdersCollection = async () => {
   return db.collection<OrderDocument>(collectionName);
 };
 
-export const insertOrder = async (order: OrderDocument): Promise<OrderDocument> => {
+export const insertOrder = async (
+  order: OrderDocument,
+): Promise<OrderDocument> => {
   const collection = await getOrdersCollection();
 
   await collection.insertOne(order);
@@ -43,7 +45,7 @@ export const findOrderByStripeSessionId = async (
 };
 
 export type FindOrdersOptions = {
-  limit?: number;
+  limit?: number | null;
 };
 
 export const findOrdersForUser = async (
@@ -67,14 +69,17 @@ export const findOrdersForUser = async (
   const collection = await getOrdersCollection();
   const { limit = 50 } = options;
 
-  return collection
-    .find(
-      conditions.length === 1 ? conditions[0] : { $or: conditions },
-      { projection: { _id: 0 } },
-    )
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .toArray();
+  const cursor = collection
+    .find(conditions.length === 1 ? conditions[0] : { $or: conditions }, {
+      projection: { _id: 0 },
+    })
+    .sort({ createdAt: -1 });
+
+  if (typeof limit === "number") {
+    cursor.limit(limit);
+  }
+
+  return cursor.toArray();
 };
 
 export const findOrders = async (
@@ -83,11 +88,15 @@ export const findOrders = async (
   const collection = await getOrdersCollection();
   const { limit = 100 } = options;
 
-  return collection
+  const cursor = collection
     .find({}, { projection: { _id: 0 } })
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .toArray();
+    .sort({ createdAt: -1 });
+
+  if (typeof limit === "number") {
+    cursor.limit(limit);
+  }
+
+  return cursor.toArray();
 };
 
 export const updateOrderPayment = async (

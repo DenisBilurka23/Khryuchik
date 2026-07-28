@@ -45,7 +45,7 @@ const hasPurchasedProduct = async (
   email: string | undefined,
   productId: string,
 ): Promise<boolean> => {
-  const orders = await findOrdersForUser(userId, email);
+  const orders = await findOrdersForUser(userId, email, { limit: null });
 
   return orders.some(
     (order) =>
