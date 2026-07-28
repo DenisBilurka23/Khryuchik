@@ -42,6 +42,7 @@ export const ShopPageView = async ({
     ? initialCategoryParam
     : "all";
   const search = initialQuery ?? "";
+  const isRegionEmpty = products.length === 0;
   const { homeHref, shopHref, filters, filteredProducts } =
     createShopPageViewModel({
       locale,
@@ -161,16 +162,18 @@ export const ShopPageView = async ({
                 }}
               >
                 <Typography sx={{ fontSize: 22, fontWeight: 800 }}>
-                  {tShopPage("emptyTitle")}
+                  {tShopPage(isRegionEmpty ? "emptyRegionTitle" : "emptyTitle")}
                 </Typography>
                 <Typography color="text.secondary" sx={{ mt: 1.5 }}>
-                  {tShopPage("emptyText")}
+                  {tShopPage(isRegionEmpty ? "emptyRegionText" : "emptyText")}
                 </Typography>
-                <Link href={shopHref}>
-                  <Button variant="contained" component="span" sx={{ mt: 3 }}>
-                    {tShopPage("resetFilters")}
-                  </Button>
-                </Link>
+                {isRegionEmpty ? null : (
+                  <Link href={shopHref}>
+                    <Button variant="contained" component="span" sx={{ mt: 3 }}>
+                      {tShopPage("resetFilters")}
+                    </Button>
+                  </Link>
+                )}
               </Box>
             ) : null}
           </Container>
@@ -182,4 +185,8 @@ export const ShopPageView = async ({
   );
 };
 
-export type { CreateShopPageViewModelParams, ShopFilterValue, ShopPageViewProps } from "./types";
+export type {
+  CreateShopPageViewModelParams,
+  ShopFilterValue,
+  ShopPageViewProps,
+} from "./types";

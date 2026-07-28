@@ -120,6 +120,26 @@ export const findShopVisibleProducts = async (
   return cursor.toArray();
 };
 
+export const findCategoryKeysWithProducts = async (country: CountryCode) => {
+  const db = await getMongoDb();
+
+  const categoryGroups = await db
+    .collection<ProductDocument>("products")
+    .aggregate<{ _id: string }>([
+      {
+        $match: {
+          "status.isActive": true,
+          "status.visibleInShop": true,
+          availableRegions: country,
+        },
+      },
+      { $group: { _id: "$classification.category" } },
+    ])
+    .toArray();
+
+  return categoryGroups.map((group) => group._id);
+};
+
 export const findActiveProductsByIds = async (productIds: string[]) => {
   if (productIds.length === 0) {
     return [];

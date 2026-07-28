@@ -63,7 +63,7 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
   const country = await getRequestCountry();
   const [books, shopCategories] = await Promise.all([
     getProductsForPlacement(lang, country, "home-books"),
-    getHomeTabCategories(lang),
+    getHomeTabCategories(lang, country),
   ]);
 
   const defaultShopCategory = shopCategories[0]?.key ?? "all";

@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { ShopPageView } from "@/components/shop-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getShopProducts } from "@/server/catalog/services/catalog.service";
-import { getShopCategories } from "@/server/catalog/services/categories.service";
+import { getShopCategoriesForRegion } from "@/server/catalog/services/categories.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
 type DefaultShopPageProps = {
@@ -42,7 +42,7 @@ const DefaultShopPage = async ({ searchParams }: DefaultShopPageProps) => {
   const { category, q } = await searchParams;
   const country = await getRequestCountry();
   const [categories, products] = await Promise.all([
-    getShopCategories(defaultLocale),
+    getShopCategoriesForRegion(defaultLocale, country),
     getShopProducts(defaultLocale, country),
   ]);
 

@@ -44,7 +44,7 @@ const HomePage = async ({ searchParams }: HomePageProps) => {
   const country = await getRequestCountry();
   const [books, shopCategories] = await Promise.all([
     getProductsForPlacement(defaultLocale, country, "home-books"),
-    getHomeTabCategories(defaultLocale),
+    getHomeTabCategories(defaultLocale, country),
   ]);
 
   const defaultShopCategory = shopCategories[0]?.key ?? "all";

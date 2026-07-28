@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ShopPageView } from "@/components/shop-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getShopProducts } from "@/server/catalog/services/catalog.service";
-import { getShopCategories } from "@/server/catalog/services/categories.service";
+import { getShopCategoriesForRegion } from "@/server/catalog/services/categories.service";
 import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 
@@ -64,7 +64,7 @@ const LocalizedShopPage = async ({
 
   const country = await getRequestCountry();
   const [categories, products] = await Promise.all([
-    getShopCategories(lang),
+    getShopCategoriesForRegion(lang, country),
     getShopProducts(lang, country),
   ]);
 
