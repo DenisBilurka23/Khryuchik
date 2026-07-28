@@ -3,6 +3,7 @@ import "server-only";
 import type { Locale } from "@/i18n/config";
 import { getMongoDb } from "@/server/db/mongodb";
 import type { ProductDocument, ProductPlacement } from "@/types/catalog";
+import type { CountryCode } from "@/utils";
 
 const escapeRegex = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -40,6 +41,7 @@ export const findActiveProductBySlug = async (
 
 export const findProductsForPlacement = async (
   placement: ProductPlacement,
+  country: CountryCode,
   options?: ProductPlacementQueryOptions,
 ) => {
   const db = await getMongoDb();
@@ -51,6 +53,7 @@ export const findProductsForPlacement = async (
     .find(
       {
         "status.isActive": true,
+        availableRegions: country,
         ...(placement === "shop"
           ? { "status.visibleInShop": true }
           : {
@@ -71,7 +74,7 @@ export const findProductsForPlacement = async (
   return cursor.toArray();
 };
 
-export const findLatestBook = async () => {
+export const findLatestBook = async (country: CountryCode) => {
   const db = await getMongoDb();
 
   return db
@@ -80,6 +83,7 @@ export const findLatestBook = async () => {
       {
         "status.isActive": true,
         "classification.type": "book",
+        availableRegions: country,
       },
       { projection: { _id: 0 } },
     )
@@ -89,6 +93,7 @@ export const findLatestBook = async () => {
 };
 
 export const findShopVisibleProducts = async (
+  country: CountryCode,
   options?: ShopProductsQueryOptions,
 ) => {
   const db = await getMongoDb();
@@ -101,6 +106,7 @@ export const findShopVisibleProducts = async (
       {
         "status.isActive": true,
         "status.visibleInShop": true,
+        availableRegions: country,
         ...(category ? { "classification.category": category } : {}),
       },
       { projection: { _id: 0 } },
