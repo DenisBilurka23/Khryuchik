@@ -37,7 +37,6 @@ export type ProductPageLabels = {
   };
   actions: {
     addToCart: string;
-    addedToCart: string;
     buyNow: string;
     viewBook: string;
     alreadyOwned: string;
@@ -515,6 +514,9 @@ export type StorefrontDictionary = {
   localeSwitcherLabel: string;
   countrySwitcherLabel: string;
   cartLabel: string;
+  cartToast: {
+    addedToCart: string;
+  };
   userMenu: {
     account: string;
     signIn: string;

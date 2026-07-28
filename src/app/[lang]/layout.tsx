@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
 
+import { CartToast } from "@/components/cart";
 import { FooterSection } from "@/components/footer-section";
 import { IntlClientProvider } from "@/components/providers/intl-client-provider";
 import { StorefrontHeader } from "@/components/storefront-header";
@@ -61,6 +62,7 @@ const LocaleLayout = async ({
           navigationPaths={navigationPaths}
         />
         {children}
+        <CartToast />
         <FooterSection locale={lang} country={country} />
       </StorefrontThemeProvider>
     </IntlClientProvider>

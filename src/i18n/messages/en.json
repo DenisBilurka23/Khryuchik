@@ -12,6 +12,9 @@
     "localeSwitcherLabel": "Language switcher",
     "countrySwitcherLabel": "Country switcher",
     "cartLabel": "Cart",
+    "cartToast": {
+      "addedToCart": "Added to cart"
+    },
     "userMenu": {
       "account": "Account",
       "signIn": "Sign in"
@@ -76,7 +79,6 @@
       "title": "Favorite Khryuchik merch",
       "actionLabel": "All merch",
       "addToCart": "Add to cart",
-      "addedToCart": "Added to cart",
       "selectOptions": "Select",
       "wishlistAriaLabel": "Add to favorites"
     },
@@ -187,7 +189,6 @@
       },
       "actions": {
         "addToCart": "Add to cart",
-        "addedToCart": "Added to cart",
         "buyNow": "Buy now",
         "viewBook": "View the book",
         "alreadyOwned": "Already in your library",

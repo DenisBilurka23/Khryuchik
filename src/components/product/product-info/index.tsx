@@ -13,7 +13,6 @@ import {
   Chip,
   IconButton,
   MenuItem,
-  Snackbar,
   Stack,
   TextField,
   Typography,
@@ -26,6 +25,7 @@ import { formatCurrency, getLocalizedPath } from "@/utils";
 
 import { useWishlist } from "@/hooks/useWishlist";
 import { BOOK_FORMAT } from "@/constants/catalog";
+import { showCartToast } from "../../cart/cart-toast-store";
 import { useCart } from "../../cart/store";
 import { setBuyNowItem } from "../../cart/buy-now-store";
 import type { ProductInfoProps } from "../types";
@@ -45,7 +45,6 @@ export const ProductInfo = ({
   const [format, setFormat] = useState(product.formats?.[0]?.value || "");
   const [size, setSize] = useState(product.sizes?.[0]?.value || "");
   const [color, setColor] = useState(product.colors?.[0]?.value || "");
-  const [toastOpen, setToastOpen] = useState(false);
   const isWishlisted = isInWishlist(product.productId);
   const hasMetaChips = Boolean(product.badge || product.storyLabel);
   const isDigital = format === BOOK_FORMAT.digital;
@@ -62,7 +61,7 @@ export const ProductInfo = ({
         color: color || undefined,
       },
     });
-    setToastOpen(true);
+    showCartToast();
   };
 
   const handleBuyNow = () => {
@@ -288,22 +287,6 @@ export const ProductInfo = ({
           </Button>
         </Stack>
       )}
-
-      <Snackbar
-        open={toastOpen}
-        autoHideDuration={3000}
-        onClose={() => setToastOpen(false)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setToastOpen(false)}
-          severity="success"
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {tProductPage("actions.addedToCart")}
-        </Alert>
-      </Snackbar>
     </Box>
   );
 };

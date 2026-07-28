@@ -2,6 +2,7 @@
 
 import { Button } from "@mui/material";
 
+import { showCartToast } from "@/components/cart/cart-toast-store";
 import { useCart } from "@/components/cart/store";
 
 import type { AddToCartButtonProps } from "./types";
@@ -17,6 +18,7 @@ export const AddToCartButton = ({
     addItem({
       productId,
     });
+    showCartToast();
   };
 
   return (

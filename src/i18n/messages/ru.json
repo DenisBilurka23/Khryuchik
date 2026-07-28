@@ -12,6 +12,9 @@
     "localeSwitcherLabel": "Выбор языка",
     "countrySwitcherLabel": "Выбор страны",
     "cartLabel": "Корзина",
+    "cartToast": {
+      "addedToCart": "Добавлено в корзину"
+    },
     "userMenu": {
       "account": "Личный кабинет",
       "signIn": "Войти"
@@ -76,7 +79,6 @@
       "title": "Любимый мерч с Хрючиком",
       "actionLabel": "Весь мерч",
       "addToCart": "В корзину",
-      "addedToCart": "Добавлено в корзину",
       "selectOptions": "Выбрать",
       "wishlistAriaLabel": "Добавить в избранное"
     },
@@ -187,7 +189,6 @@
       },
       "actions": {
         "addToCart": "В корзину",
-        "addedToCart": "Добавлено в корзину",
         "buyNow": "Купить сейчас",
         "viewBook": "Смотреть книгу",
         "alreadyOwned": "Уже в вашей библиотеке",
