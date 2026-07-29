@@ -1287,7 +1287,8 @@
         "status": "Status",
         "sortOrder": "Sort order",
         "action": "Action"
-      }
+      },
+      "importFromPrintify": "Import from Printify"
     },
     "categories": {
       "eyebrow": "Categories",
@@ -1664,7 +1665,47 @@
         "relatedProductIds": "Related product IDs",
         "thumbnail": "Thumbnail",
         "gallery": "Gallery"
-      }
+      },
+      "printifySectionTitle": "Printify",
+      "printifySectionDescription": "Variants come from Printify. Pricing and copy stay under your control here.",
+      "printifyProductIdLabel": "Printify product",
+      "printifySyncedAtLabel": "Last synced",
+      "printifySyncButton": "Sync variants",
+      "printifyRelinkButton": "Re-link in Printify",
+      "printifySynced": "Variants synced from Printify.",
+      "printifyRelinked": "Product re-linked in Printify.",
+      "printifyActionFailed": "Printify request failed",
+      "printifyImportedMessage": "Imported from Printify. Check the category — it is only a default. Then set the price, regions and translations and make it visible.",
+      "printifyColumns": {
+        "variant": "Variant",
+        "selections": "Size / colour",
+        "sku": "SKU",
+        "cost": "Cost",
+        "retailPrice": "Printify price",
+        "status": "Status"
+      },
+      "printifyVariantDisabled": "Disabled in Printify",
+      "printifyManagedStock": "Managed by Printify — updated on sync"
+    },
+    "printify": {
+      "eyebrow": "Printify",
+      "title": "Import from Printify",
+      "description": "Pull merch and gifts from the connected Printify shop into the catalogue.",
+      "sectionTitle": "Printify products",
+      "sectionDescription": "Products in the shop",
+      "columns": {
+        "product": "Product",
+        "variants": "Variants",
+        "action": "Action"
+      },
+      "importButton": "Import",
+      "importingButton": "Importing…",
+      "openImported": "Open in catalogue",
+      "backToProducts": "Back to products",
+      "emptyTitle": "No products in Printify",
+      "emptyDescription": "Create a product in Printify first, then import it here.",
+      "loadFailed": "Could not load products from Printify. Check PRINTIFY_API_TOKEN and PRINTIFY_SHOP_ID.",
+      "importFailed": "Import failed"
     }
   }
 }

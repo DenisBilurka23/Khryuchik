@@ -671,9 +671,19 @@ const getRemovedObjectKeys = ({
 
 export const saveAdminProduct = async (payload: AdminProductPayload) => {
   const sanitizedPayload = sanitizeProductPayload(payload);
-  const previousDetails = await findProductDetailsByProductId(
-    sanitizedPayload.product.productId,
-  );
+  const [previousDetails, previousProduct] = await Promise.all([
+    findProductDetailsByProductId(sanitizedPayload.product.productId),
+    findProductById(sanitizedPayload.product.productId),
+  ]);
+
+  if (!sanitizedPayload.product.printify && previousProduct?.printify) {
+    sanitizedPayload.product.printify = previousProduct.printify;
+  }
+
+  if (sanitizedPayload.product.printify && previousProduct) {
+    sanitizedPayload.product.inventory = previousProduct.inventory;
+  }
+
   const removedObjectKeys = getRemovedObjectKeys({
     previousPayload: previousDetails,
     nextPayload: sanitizedPayload,

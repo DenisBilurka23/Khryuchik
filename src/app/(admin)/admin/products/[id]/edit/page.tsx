@@ -7,11 +7,16 @@ import { getAdminProductEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
-import { deleteAdminProductAction, saveAdminProductAction } from "../../../actions";
+import {
+  deleteAdminProductAction,
+  relinkPrintifyProductAction,
+  saveAdminProductAction,
+  syncPrintifyProductAction,
+} from "../../../actions";
 
 type EditAdminProductPageProps = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ saved?: string; error?: string }>;
+  searchParams: Promise<{ saved?: string; error?: string; imported?: string }>;
 };
 
 export const generateMetadata = async ({
@@ -38,7 +43,7 @@ const EditAdminProductPage = async ({
   searchParams,
 }: EditAdminProductPageProps) => {
   const { id } = await params;
-  const { saved, error } = await searchParams;
+  const { saved, error, imported } = await searchParams;
   const locale = await resolveLocale("admin");
   const tProductForm = await getTranslations({
     locale,
@@ -49,6 +54,9 @@ const EditAdminProductPage = async ({
   return (
     <Stack gap={2}>
       {saved === "1" ? <Alert severity="success">{tProductForm("savedMessage")}</Alert> : null}
+      {imported === "1" ? (
+        <Alert severity="info">{tProductForm("printifyImportedMessage")}</Alert>
+      ) : null}
       <AdminProductForm
         key={`${id}:${saved ?? "0"}:${error ?? "ok"}`}
         locale={locale}
@@ -61,6 +69,8 @@ const EditAdminProductPage = async ({
         selectedStoryProductOption={editorData.selectedStoryProductOption}
         action={saveAdminProductAction}
         deleteAction={deleteAdminProductAction}
+        syncPrintifyAction={syncPrintifyProductAction}
+        relinkPrintifyAction={relinkPrintifyProductAction}
         isNew={false}
         errorCode={error}
       />

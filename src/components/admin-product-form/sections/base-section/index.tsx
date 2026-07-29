@@ -27,6 +27,7 @@ export const AdminProductBaseSection = ({
 }: AdminProductBaseSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
   const tShared = useTranslations("adminPage.shared");
+  const isPrintifyManaged = Boolean(payload.product.printify);
 
   return (
     <AdminSectionCard
@@ -107,6 +108,10 @@ export const AdminProductBaseSection = ({
           label={tForm("fields.availability")}
           name="availability"
           defaultValue={payload.product.inventory.availability}
+          disabled={isPrintifyManaged}
+          helperText={
+            isPrintifyManaged ? tForm("printifyManagedStock") : undefined
+          }
         >
           <MenuItem value="in_stock">
             {tShared("status.availability.in_stock")}
@@ -126,6 +131,7 @@ export const AdminProductBaseSection = ({
           name="quantity"
           type="number"
           defaultValue={payload.product.inventory.quantity ?? ""}
+          disabled={isPrintifyManaged}
         />
       </Box>
       {selectedType === "book" && (
