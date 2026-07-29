@@ -70,6 +70,16 @@ export const fetchAllPrintifyProducts = async (
   return products;
 };
 
+export const fetchPrintifyProduct = (
+  shopId: string,
+  printifyProductId: string,
+  options?: { token?: string },
+) =>
+  printifyRequest<PrintifyProduct>(
+    `/shops/${shopId}/products/${printifyProductId}.json`,
+    options,
+  );
+
 export const startPrintifyPublish = (
   shopId: string,
   printifyProductId: string,

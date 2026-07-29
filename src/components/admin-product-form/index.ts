@@ -4,6 +4,7 @@ export {
 	AdminProductBaseSection,
 	AdminProductLocaleSection,
 	AdminProductPricingSection,
+	AdminProductPrintifySection,
 	AdminProductRelatedSection,
 } from "./sections";
 export { AdminFileUploadField } from "./file-upload-field";
@@ -23,6 +24,11 @@ export type {
 export type {
 	AdminProductPricingSectionProps,
 } from "./sections/pricing-section";
+export type {
+	AdminPrintifyAction,
+	AdminPrintifyActionResult,
+	AdminProductPrintifySectionProps,
+} from "./sections/printify-section";
 export type {
 	AdminProductRelatedSectionProps,
 } from "./sections/related-section";

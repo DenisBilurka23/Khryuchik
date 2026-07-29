@@ -80,6 +80,31 @@ export type ProductCountryPricing = {
   oldPrice?: number;
 };
 
+export type PrintifyVariantSelections = {
+  size?: string;
+  color?: string;
+};
+
+export type PrintifyVariantLink = {
+  variantId: number;
+  sku: string;
+  title: string;
+  selections: PrintifyVariantSelections;
+  costCents: number;
+  retailPriceCents: number;
+  isEnabled: boolean;
+  isAvailable: boolean;
+};
+
+export type ProductPrintifyLink = {
+  shopId: string;
+  printifyProductId: string;
+  blueprintId: number;
+  printProviderId: number;
+  variants: PrintifyVariantLink[];
+  syncedAt: string;
+};
+
 export type ProductDocument = {
   productId: string;
   slug: string;
@@ -90,6 +115,7 @@ export type ProductDocument = {
   pricing: Partial<Record<CountryCode, ProductCountryPricing>>;
   availableRegions: string[];
   hasOptions?: boolean;
+  printify?: ProductPrintifyLink;
   translations: Record<Locale, ProductTranslation>;
 };
 

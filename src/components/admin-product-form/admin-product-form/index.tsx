@@ -21,6 +21,7 @@ import {
   AdminProductBaseSection,
   AdminProductLocaleSection,
   AdminProductPricingSection,
+  AdminProductPrintifySection,
   AdminProductRelatedSection,
 } from "../sections";
 import {
@@ -40,6 +41,8 @@ const AdminProductFormInner = ({
   selectedStoryProductOption,
   action,
   deleteAction,
+  syncPrintifyAction,
+  relinkPrintifyAction,
   isNew,
   errorCode,
 }: AdminProductFormProps) => {
@@ -206,6 +209,16 @@ const AdminProductFormInner = ({
             isRegionActive={isRegionActive}
             onToggleRegion={toggleRegion}
           />
+
+          {payload.product.printify ? (
+            <AdminProductPrintifySection
+              productId={payload.product.productId}
+              locale={locale}
+              link={payload.product.printify}
+              syncAction={syncPrintifyAction}
+              relinkAction={relinkPrintifyAction}
+            />
+          ) : null}
 
           {activeLocales.map((activeLocale) => (
             <AdminProductLocaleSection

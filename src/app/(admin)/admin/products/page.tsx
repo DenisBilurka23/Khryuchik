@@ -82,9 +82,14 @@ const AdminProductsPage = async ({ searchParams }: AdminProductsPageProps) => {
         title={tProducts("title")}
         description={tProducts("description")}
         actions={
-          <Button href="/admin/products/new" variant="contained">
-            {tProducts("newProduct")}
-          </Button>
+          <Stack direction="row" gap={1} flexWrap="wrap">
+            <Button href="/admin/products/printify" variant="outlined">
+              {tProducts("importFromPrintify")}
+            </Button>
+            <Button href="/admin/products/new" variant="contained">
+              {tProducts("newProduct")}
+            </Button>
+          </Stack>
         }
       />
       {deleted === "1" ? (

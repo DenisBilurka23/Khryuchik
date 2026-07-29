@@ -1318,7 +1318,28 @@
         "status": "Статус",
         "sortOrder": "Сортировка",
         "action": "Действие"
-      }
+      },
+      "importFromPrintify": "Импорт из Printify"
+    },
+    "printify": {
+      "eyebrow": "Printify",
+      "title": "Импорт из Printify",
+      "description": "Перенос мерча и подарков из подключённого магазина Printify в каталог.",
+      "sectionTitle": "Товары Printify",
+      "sectionDescription": "Товаров в магазине",
+      "columns": {
+        "product": "Товар",
+        "variants": "Варианты",
+        "action": "Действие"
+      },
+      "importButton": "Импортировать",
+      "importingButton": "Импорт…",
+      "openImported": "Открыть в каталоге",
+      "backToProducts": "К товарам",
+      "emptyTitle": "В Printify нет товаров",
+      "emptyDescription": "Сначала создайте товар в Printify, затем импортируйте его здесь.",
+      "loadFailed": "Не удалось загрузить товары из Printify. Проверьте PRINTIFY_API_TOKEN и PRINTIFY_SHOP_ID.",
+      "importFailed": "Ошибка импорта"
     },
     "categories": {
       "eyebrow": "Категории",
@@ -1577,6 +1598,26 @@
       "retryButton": "Повторить"
     },
     "productForm": {
+      "printifySectionTitle": "Printify",
+      "printifySectionDescription": "Варианты приходят из Printify. Цены и тексты остаются под вашим контролем здесь.",
+      "printifyProductIdLabel": "Товар в Printify",
+      "printifySyncedAtLabel": "Синхронизировано",
+      "printifySyncButton": "Синхронизировать варианты",
+      "printifyRelinkButton": "Перепривязать в Printify",
+      "printifySynced": "Варианты синхронизированы из Printify.",
+      "printifyRelinked": "Товар перепривязан в Printify.",
+      "printifyActionFailed": "Запрос в Printify не прошёл",
+      "printifyImportedMessage": "Импортировано из Printify. Проверьте категорию — она проставлена по умолчанию. Затем укажите цену, регионы и переводы и включите видимость.",
+      "printifyColumns": {
+        "variant": "Вариант",
+        "selections": "Размер / цвет",
+        "sku": "SKU",
+        "cost": "Себестоимость",
+        "retailPrice": "Цена в Printify",
+        "status": "Статус"
+      },
+      "printifyVariantDisabled": "Выключен в Printify",
+      "printifyManagedStock": "Управляется Printify — обновляется при синхронизации",
       "newTitle": "Новый товар",
       "newDescription": "Создание товара на отдельной странице со всеми реальными полями каталога.",
       "editTitlePrefix": "Редактирование",

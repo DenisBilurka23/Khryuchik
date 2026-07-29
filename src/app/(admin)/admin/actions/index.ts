@@ -19,6 +19,11 @@ export {
   updateAdminOrderStatusAction,
 } from "./orders";
 export {
+  importPrintifyProductAction,
+  relinkPrintifyProductAction,
+  syncPrintifyProductAction,
+} from "./printify";
+export {
   deleteAdminProductAction,
   saveAdminProductAction,
 } from "./products";

@@ -75,6 +75,15 @@ export type AdminProductOption = {
   slug: string;
 };
 
+export type AdminPrintifyImportItem = {
+  printifyProductId: string;
+  title: string;
+  enabledVariantsCount: number;
+  previewImageSrc?: string;
+  importedProductId?: string;
+  importedSlug?: string;
+};
+
 export type AdminCategoryListItem = {
   key: string;
   isActive: boolean;

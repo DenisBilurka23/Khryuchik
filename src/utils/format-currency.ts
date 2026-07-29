@@ -6,11 +6,13 @@ export const formatCurrency = (
   value: number,
   locale: Locale,
   currency: CurrencyCode = "BYN",
+  fractionDigits = 0,
 ) =>
   new Intl.NumberFormat(locale === "ru" ? "ru-RU" : "en-US", {
     style: "currency",
     currency,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
   }).format(value);
 
 export type CurrencyOption = {
