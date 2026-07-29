@@ -10,6 +10,7 @@
     "admin:grant": "node --env-file=.env.local --import tsx ./scripts/grant-admin.ts",
     "lint": "eslint .",
     "seed:mongodb": "node --env-file=.env.local --import tsx ./scripts/seed-mongodb.ts",
+    "printify:publish": "node --env-file=.env.local --import tsx ./scripts/printify-publish.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
