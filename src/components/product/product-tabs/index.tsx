@@ -14,12 +14,7 @@ import {
 } from "@mui/material";
 
 import { ReviewForm } from "../review-form";
-import type { ProductTabsProps } from "../types";
-
-type TabItem = {
-  label: string;
-  render: () => React.ReactNode;
-};
+import type { ProductTabsProps, TabItem } from "../types";
 
 export const ProductTabs = ({
   labels,

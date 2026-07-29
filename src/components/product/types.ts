@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import type { Locale } from "@/i18n/config";
 import type { ProductPageLabels } from "@/i18n/types";
 import type { LocalizedProductSummary } from "@/types/catalog";
@@ -75,3 +77,10 @@ export type ProductPageViewProps = {
   hasPurchased: boolean;
   userReview: UserReviewSummary | null;
 };
+
+export type TabItem = {
+  label: string;
+  render: () => ReactNode;
+};
+
+export type FormStatus = "idle" | "submitting" | "success";

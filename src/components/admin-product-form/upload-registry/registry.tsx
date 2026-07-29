@@ -9,12 +9,10 @@ import {
   type ReactNode,
 } from "react";
 
-export type AdminProductUploadRunner = () => Promise<void>;
-
-type AdminProductUploadRegistryValue = {
-  register: (runner: AdminProductUploadRunner) => () => void;
-  runAll: () => Promise<void>;
-};
+import type {
+  AdminProductUploadRegistryValue,
+  AdminProductUploadRunner,
+} from "./types";
 
 const AdminProductUploadRegistryContext =
   createContext<AdminProductUploadRegistryValue | null>(null);
