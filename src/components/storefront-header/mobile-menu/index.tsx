@@ -34,13 +34,7 @@ import { Logo } from "../../logo";
 import { CountrySwitcher } from "../country-switcher";
 import { LocaleSwitcher } from "../locale-switcher";
 
-import type { MobileMenuProps } from "./types";
-
-type MobileMenuItem = MobileMenuProps["navItems"][number] | {
-  key: "account" | "favorites";
-  label: string;
-  href: string;
-};
+import type { MobileMenuItem, MobileMenuProps } from "./types";
 
 const iconByKey: Record<MobileMenuItem["key"], React.ReactNode> = {
   shop: <StorefrontOutlinedIcon fontSize="small" />,

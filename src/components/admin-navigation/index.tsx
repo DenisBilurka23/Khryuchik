@@ -9,10 +9,16 @@ import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 import type { ReactNode } from "react";
-import { List, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import {
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import { usePathname } from "next/navigation";
 
-import type { AdminNavItem, AdminViewKey } from "@/types/admin";
+import type { AdminViewKey } from "@/types/admin";
+import type { AdminNavigationProps } from "./types";
 
 const iconByKey: Record<AdminViewKey, ReactNode> = {
   dashboard: <DashboardOutlinedIcon />,
@@ -26,10 +32,6 @@ const iconByKey: Record<AdminViewKey, ReactNode> = {
   shipping: <ShoppingBagOutlinedIcon />,
   promocodes: <CategoryOutlinedIcon />,
   settings: <DashboardOutlinedIcon />,
-};
-
-type AdminNavigationProps = {
-  items: AdminNavItem[];
 };
 
 export const AdminNavigation = ({ items }: AdminNavigationProps) => {

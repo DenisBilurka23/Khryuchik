@@ -16,9 +16,7 @@ import { useRouter } from "next/navigation";
 
 import { submitReview } from "@/client-api/reviews";
 
-import type { ReviewFormProps } from "../types";
-
-type FormStatus = "idle" | "submitting" | "success";
+import type { FormStatus, ReviewFormProps } from "../types";
 
 export const ReviewForm = ({
   isAuthenticated,

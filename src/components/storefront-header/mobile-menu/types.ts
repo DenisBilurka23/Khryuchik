@@ -14,3 +14,11 @@ export type MobileMenuProps = {
   homeHref: string;
   favoritesHref: string;
 };
+
+export type MobileMenuItem =
+  | MobileMenuProps["navItems"][number]
+  | {
+      key: "account" | "favorites";
+      label: string;
+      href: string;
+    };

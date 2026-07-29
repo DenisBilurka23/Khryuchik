@@ -1,7 +1,6 @@
 import { Box } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
-import type { StorefrontDictionary } from "@/i18n/types";
 import { getLocalizedPath } from "@/utils";
 
 import { NewsletterSection } from "../newsletter-section";
@@ -10,9 +9,7 @@ import { StorySeriesSection } from "../story-series-section";
 import { StoryTimelineSection } from "../story-timeline-section";
 import { StoryValuesSection } from "../story-values-section";
 import storefrontStyles from "../storefront/storefront.module.css";
-import type { StoryPageViewProps } from "./types";
-
-type StoryPageDictionary = StorefrontDictionary["storyPage"];
+import type { StoryPageDictionary, StoryPageViewProps } from "./types";
 
 export const StoryPageView = async ({ locale }: StoryPageViewProps) => {
   const t = await getTranslations({
