@@ -35,8 +35,10 @@ export {
   normalizeOrderEmail,
   toAccountOrder,
 } from "./order";
+export { convertFromUsd } from "./price-conversion";
 export {
   isLocalizedProductSummary,
+  localizeProductOptionGroups,
   localizeProductSummary,
   resolveOptionPrice,
   toProductDetails,

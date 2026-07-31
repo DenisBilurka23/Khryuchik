@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { ProductPageView } from "@/components/product";
+import {
+  ProductPageView,
+  ProductPricingUnavailable,
+} from "@/components/product";
 import { defaultLocale, locales } from "@/i18n/config";
 import {
   getProductDetails,
@@ -23,9 +26,9 @@ export const generateMetadata = async ({
 }: ProductPageProps): Promise<Metadata> => {
   const { slug } = await params;
   const country = await getRequestCountry();
-  const product = await getProductDetails(defaultLocale, country, slug);
+  const result = await getProductDetails(defaultLocale, country, slug);
 
-  if (!product) {
+  if (result.status === "not-found") {
     notFound();
   }
 
@@ -34,9 +37,13 @@ export const generateMetadata = async ({
     namespace: "storefront.brand",
   });
 
+  const title = result.status === "ok" ? result.product.title : result.title;
+  const description =
+    result.status === "ok" ? result.product.description : undefined;
+
   return {
-    title: `${product.title} | ${tBrand("title")}`,
-    description: product.description,
+    title: `${title} | ${tBrand("title")}`,
+    description,
     alternates: {
       canonical: `/products/${slug}`,
       languages: Object.fromEntries(
@@ -51,8 +58,8 @@ export const generateMetadata = async ({
     openGraph: {
       type: "website",
       locale: defaultLocale,
-      title: product.title,
-      description: product.description,
+      title,
+      description,
       siteName: tBrand("title"),
     },
   };
@@ -61,12 +68,19 @@ export const generateMetadata = async ({
 const DefaultProductPage = async ({ params }: ProductPageProps) => {
   const { slug } = await params;
   const country = await getRequestCountry();
-  const product = await getProductDetails(defaultLocale, country, slug);
+  const result = await getProductDetails(defaultLocale, country, slug);
 
-  if (!product) {
+  if (result.status === "not-found") {
     notFound();
   }
 
+  if (result.status === "pricing-unavailable") {
+    return (
+      <ProductPricingUnavailable locale={defaultLocale} title={result.title} />
+    );
+  }
+
+  const product = result.product;
   const session = await getServerAuthSession();
 
   const [relatedProducts, storyProducts, purchaseContext, userReview] =

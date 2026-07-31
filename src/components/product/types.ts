@@ -31,6 +31,11 @@ export type ProductGalleryProps = {
   images: ProductImage[];
 };
 
+export type ProductPricingUnavailableProps = {
+  locale: Locale;
+  title: string;
+};
+
 export type ProductInfoProps = {
   locale: Locale;
   country: CountryCode;

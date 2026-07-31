@@ -78,11 +78,8 @@ export const CheckoutPageView = ({
   const cart = useCart();
   const buyNowItems = useBuyNowCheckoutItems();
 
-  const { items, subtotal, isLoading, hasStoredItems } = useResolvedCart(
-    locale,
-    country,
-    buyNowItems ?? undefined,
-  );
+  const { items, subtotal, isLoading, isPricingUnavailable, hasStoredItems } =
+    useResolvedCart(locale, country, buyNowItems ?? undefined);
 
   const availableMethods = useMemo(
     () => getCountryPaymentMethods(country),
@@ -197,6 +194,8 @@ export const CheckoutPageView = ({
         return labels.errors.invalidEmail;
       case "unsupported_payment_method":
         return labels.errors.unsupportedMethod;
+      case "pricing_unavailable":
+        return labels.errors.pricingUnavailable;
       case "payment_failed":
       case "stripe_session_missing_url":
         return labels.errors.paymentFailed;
@@ -207,6 +206,12 @@ export const CheckoutPageView = ({
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
+
+    if (isPricingUnavailable) {
+      setError(labels.errors.pricingUnavailable);
+      return;
+    }
+
     const validationErrors = validateForm(form, labels.fieldErrors, {
       skipAddress: isDigitalOnly,
     });
@@ -405,8 +410,13 @@ export const CheckoutPageView = ({
                       total={total}
                       currency={currency}
                       locale={locale}
-                      error={error}
+                      error={
+                        isPricingUnavailable
+                          ? labels.errors.pricingUnavailable
+                          : error
+                      }
                       isSubmitting={isSubmitting}
+                      isBlocked={isPricingUnavailable}
                       hasStoredItems={hasStoredItems}
                       paymentMethod={paymentMethod}
                       labels={labels}

@@ -21,6 +21,7 @@ export const CheckoutOrderSummarySection = ({
   locale,
   error,
   isSubmitting,
+  isBlocked,
   hasStoredItems,
   paymentMethod,
   labels,
@@ -115,7 +116,7 @@ export const CheckoutOrderSummarySection = ({
         fullWidth
         variant="contained"
         size="large"
-        disabled={isSubmitting || !hasStoredItems}
+        disabled={isSubmitting || isBlocked || !hasStoredItems}
         sx={{ mt: 3 }}
       >
         {isSubmitting ? labels.submit.loading : labels.submit[paymentMethod]}
