@@ -19,8 +19,8 @@ export const AdminProductBaseSection = ({
   selectedType,
   selectedCategory,
   merchCategories,
-  onTypeChange,
-  onCategoryChange,
+  onTypeChangeAction,
+  onCategoryChangeAction,
   availableLocales,
   availableRegions,
   initialLanguages,
@@ -70,7 +70,7 @@ export const AdminProductBaseSection = ({
           name="type"
           value={selectedType}
           onChange={(event) =>
-            onTypeChange(event.target.value as typeof selectedType)
+            onTypeChangeAction(event.target.value as typeof selectedType)
           }
         >
           <MenuItem value="book">
@@ -88,7 +88,7 @@ export const AdminProductBaseSection = ({
             label={tForm("fields.category")}
             name="category"
             value={selectedCategory}
-            onChange={(event) => onCategoryChange(event.target.value)}
+            onChange={(event) => onCategoryChangeAction(event.target.value)}
           >
             {merchCategories.map((category) => (
               <MenuItem key={category.key} value={category.key}>

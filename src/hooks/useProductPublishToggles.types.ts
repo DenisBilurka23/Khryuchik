@@ -14,5 +14,4 @@ export type UseProductPublishTogglesResult = {
   toggleLocale: (code: string) => void;
   toggleRegion: (code: string) => void;
   isLocaleActive: (code: string) => boolean;
-  isRegionActive: (code: string) => boolean;
 };

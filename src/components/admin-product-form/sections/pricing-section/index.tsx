@@ -15,8 +15,8 @@ import type { AdminProductPricingSectionProps } from "./types";
 export const AdminProductPricingSection = ({
   payload,
   regions,
-  isRegionActive,
-  onToggleRegion,
+  activeRegions,
+  onToggleRegionAction,
 }: AdminProductPricingSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
 
@@ -37,7 +37,7 @@ export const AdminProductPricingSection = ({
       >
         {regions.map((region) => {
           const regionPricing = payload.product.pricing[region.code];
-          const active = isRegionActive(region.code);
+          const active = Boolean(activeRegions[region.code]);
 
           return (
             <Stack
@@ -56,7 +56,7 @@ export const AdminProductPricingSection = ({
                   <Checkbox
                     name={`region.${region.code}.active`}
                     checked={active}
-                    onChange={() => onToggleRegion(region.code)}
+                    onChange={() => onToggleRegionAction(region.code)}
                   />
                 }
                 label={`${region.code} (${region.currency}) — ${tForm(
