@@ -9,6 +9,7 @@ export {
 } from "./sections";
 export { AdminFileUploadField } from "./file-upload-field";
 export { AdminImageUploadField } from "./image-upload-field";
+export { AdminOptionPriceDeltaField } from "./option-price-delta-field";
 export { AdminOptionsField } from "./options-field";
 export { AdminReviewsField } from "./reviews-field";
 export { AdminSpecsField } from "./specs-field";
@@ -34,6 +35,7 @@ export type {
 } from "./sections/related-section";
 export type { AdminFileUploadFieldProps } from "./file-upload-field";
 export type { AdminImageUploadFieldProps, PreviewImage } from "./image-upload-field";
+export type { AdminOptionPriceDeltaFieldProps } from "./option-price-delta-field";
 export type { AdminOptionsFieldProps } from "./options-field";
 export type { AdminReviewsFieldProps } from "./reviews-field";
 export type { AdminSpecsFieldProps } from "./specs-field";

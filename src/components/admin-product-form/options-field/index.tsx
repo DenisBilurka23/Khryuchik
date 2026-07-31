@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { Box, Chip, Stack, Typography } from "@mui/material";
-
+import type { ProductOptionPriceDelta } from "@/types/product-details";
+import { AdminOptionPriceDeltaField } from "../option-price-delta-field";
 import type { AdminOptionsFieldProps } from "./types";
 
 const toOptionValue = (label: string) =>
@@ -17,11 +18,24 @@ export const AdminOptionsField = ({
   name,
   title,
   helperText,
+  priceDeltaHelperText,
   initialOptions,
   itemLabel,
+  regions,
 }: AdminOptionsFieldProps) => {
   const [options, setOptions] = useState(initialOptions);
   const [draftValue, setDraftValue] = useState("");
+
+  const setPriceDelta = (
+    value: string,
+    priceDelta: ProductOptionPriceDelta | undefined,
+  ) => {
+    setOptions((currentOptions) =>
+      currentOptions.map((option) =>
+        option.value === value ? { ...option, priceDelta } : option,
+      ),
+    );
+  };
 
   const commitDraftValue = () => {
     const label = draftValue.trim();
@@ -33,7 +47,13 @@ export const AdminOptionsField = ({
     const value = toOptionValue(label);
 
     setOptions((currentOptions) => {
-      if (currentOptions.some((option) => option.value === value || option.label.toLowerCase() === label.toLowerCase())) {
+      if (
+        currentOptions.some(
+          (option) =>
+            option.value === value ||
+            option.label.toLowerCase() === label.toLowerCase(),
+        )
+      ) {
         return currentOptions;
       }
 
@@ -51,6 +71,7 @@ export const AdminOptionsField = ({
         value={JSON.stringify(
           options
             .map((option) => ({
+              ...option,
               label: option.label.trim(),
               value: option.value.trim() || toOptionValue(option.label),
             }))
@@ -58,7 +79,10 @@ export const AdminOptionsField = ({
         )}
       />
       <Stack gap={0.75}>
-        <Typography variant="h6" sx={{ fontWeight: 800, fontSize: 18, color: "text.primary" }}>
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: 800, fontSize: 18, color: "text.primary" }}
+        >
           {title}
         </Typography>
         <Box
@@ -74,7 +98,7 @@ export const AdminOptionsField = ({
             gap: 1,
             bgcolor: "#fff",
             transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-            '&:focus-within': {
+            "&:focus-within": {
               borderColor: "#D96C82",
               boxShadow: "0 0 0 3px rgba(217,108,130,0.12)",
             },
@@ -85,9 +109,15 @@ export const AdminOptionsField = ({
               key={`${name}-${option.value}`}
               label={option.label}
               onDelete={() => {
-                setOptions((currentOptions) => currentOptions.filter((item) => item.value !== option.value));
+                setOptions((currentOptions) =>
+                  currentOptions.filter((item) => item.value !== option.value),
+                );
               }}
-              sx={{ borderRadius: "999px", fontWeight: 600, bgcolor: "#FFF4F6" }}
+              sx={{
+                borderRadius: "999px",
+                fontWeight: 600,
+                bgcolor: "#FFF4F6",
+              }}
             />
           ))}
           <Box
@@ -121,6 +151,25 @@ export const AdminOptionsField = ({
         <Typography variant="body2" color="text.secondary">
           {helperText}
         </Typography>
+
+        {regions.length > 0 && options.length > 0 ? (
+          <Stack gap={1} sx={{ mt: 0.5 }}>
+            {options.map((option) => (
+              <AdminOptionPriceDeltaField
+                key={`${name}-${option.value}-delta`}
+                label={option.label}
+                regions={regions}
+                priceDelta={option.priceDelta}
+                onChangeAction={(priceDelta) =>
+                  setPriceDelta(option.value, priceDelta)
+                }
+              />
+            ))}
+            <Typography variant="body2" color="text.secondary">
+              {priceDeltaHelperText}
+            </Typography>
+          </Stack>
+        ) : null}
       </Stack>
     </Stack>
   );

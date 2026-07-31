@@ -4,7 +4,12 @@ import type {
   ProductDetailDocument,
   ProductDocument,
 } from "@/types/catalog";
-import type { ProductDetails } from "@/types/product-details";
+import type { CartSelections } from "@/types/cart";
+import type {
+  ProductDetails,
+  ProductOption,
+  ProductOptionGroups,
+} from "@/types/product-details";
 
 import type { CountryCode } from "./country";
 
@@ -84,6 +89,40 @@ export const localizeProductSummary = (
     currency: pricing.currency,
     oldPrice: pricing.oldPrice,
   };
+};
+
+const getOptionPriceDelta = (
+  options: ProductOption[] | undefined,
+  value: string | undefined,
+  country: CountryCode,
+) => {
+  if (!value) {
+    return 0;
+  }
+
+  return (
+    options?.find((option) => option.value === value)?.priceDelta?.[country] ??
+    0
+  );
+};
+
+export const resolveOptionPrice = (
+  basePrice: number,
+  options: ProductOptionGroups,
+  selections: CartSelections | undefined,
+  country: CountryCode,
+) => {
+  if (!selections) {
+    return basePrice;
+  }
+
+  const delta =
+    getOptionPriceDelta(options.languages, selections.language, country) +
+    getOptionPriceDelta(options.formats, selections.format, country) +
+    getOptionPriceDelta(options.sizes, selections.size, country) +
+    getOptionPriceDelta(options.colors, selections.color, country);
+
+  return Math.max(0, Math.round((basePrice + delta) * 100) / 100);
 };
 
 export const isLocalizedProductSummary = (

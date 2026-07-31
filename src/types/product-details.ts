@@ -1,4 +1,4 @@
-import type { CurrencyCode } from "@/utils";
+import type { CountryCode, CurrencyCode } from "@/utils";
 
 export type ProductImage = {
   id: string;
@@ -20,9 +20,19 @@ export type ProductFileAsset = {
   url?: string;
 };
 
+export type ProductOptionPriceDelta = Partial<Record<CountryCode, number>>;
+
 export type ProductOption = {
   label: string;
   value: string;
+  priceDelta?: ProductOptionPriceDelta;
+};
+
+export type ProductOptionGroups = {
+  languages?: ProductOption[];
+  formats?: ProductOption[];
+  sizes?: ProductOption[];
+  colors?: ProductOption[];
 };
 
 export type ProductReview = {

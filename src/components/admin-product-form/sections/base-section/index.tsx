@@ -22,6 +22,7 @@ export const AdminProductBaseSection = ({
   onTypeChange,
   onCategoryChange,
   availableLocales,
+  availableRegions,
   initialLanguages,
   initialFormats,
 }: AdminProductBaseSectionProps) => {
@@ -155,9 +156,11 @@ export const AdminProductBaseSection = ({
             name="formatsJson"
             title={tForm("fields.formats")}
             helperText={tForm("helpers.formatsRule")}
+            priceDeltaHelperText={tForm("helpers.optionPriceDeltaRule")}
             printedLabel={tForm("fields.formatPrinted")}
             digitalLabel={tForm("fields.formatDigital")}
             initialFormats={initialFormats}
+            regions={availableRegions}
           />
         </Box>
       )}

@@ -113,6 +113,7 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
   return (
     <ProductPageView
       locale={lang}
+      country={country}
       product={product}
       relatedProducts={relatedProducts}
       storyProduct={storyProducts[0] ?? null}

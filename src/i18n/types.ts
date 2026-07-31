@@ -1283,6 +1283,7 @@ export type AdminPageDictionary = {
       storyProductId: string;
       mediaRule: string;
       optionsRule: string;
+      optionPriceDeltaRule: string;
       specsRule: string;
       reviewsRule: string;
       filesRule: string;
@@ -1309,6 +1310,7 @@ export type AdminPageDictionary = {
       notifySubscribers: string;
       regionPrice: string;
       regionOldPrice: string;
+      optionPriceDelta: string;
       slug: string;
       title: string;
       shortTitle: string;
