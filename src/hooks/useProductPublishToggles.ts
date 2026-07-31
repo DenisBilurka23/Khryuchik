@@ -82,6 +82,5 @@ export const useProductPublishToggles = (
     toggleRegion,
     isLocaleActive: (code) =>
       code === defaultLocale ? true : Boolean(activeLocales[code]),
-    isRegionActive: (code) => Boolean(activeRegions[code]),
   };
 };

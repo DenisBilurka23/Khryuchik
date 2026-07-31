@@ -11,7 +11,7 @@ export type AdminProductLocaleSectionProps = {
   label: string;
   isActive: boolean;
   canToggle: boolean;
-  onToggleActive: () => void;
+  onToggleActiveAction: () => void;
   translation: ProductTranslation;
   details: ProductDetailTranslation;
   productId?: string;

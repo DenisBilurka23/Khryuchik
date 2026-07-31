@@ -12,8 +12,8 @@ export type AdminProductBaseSectionProps = {
   selectedType: ProductType;
   selectedCategory: string;
   merchCategories: CategoryDocument[];
-  onTypeChange: (value: ProductType) => void;
-  onCategoryChange: (value: string) => void;
+  onTypeChangeAction: (value: ProductType) => void;
+  onCategoryChangeAction: (value: string) => void;
   availableLocales: LocaleDocument[];
   availableRegions: RegionDocument[];
   initialLanguages: ProductOption[];

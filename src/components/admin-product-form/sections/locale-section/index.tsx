@@ -25,7 +25,7 @@ export const AdminProductLocaleSection = ({
   label,
   isActive,
   canToggle,
-  onToggleActive,
+  onToggleActiveAction,
   translation,
   details,
   productId,
@@ -63,7 +63,7 @@ export const AdminProductLocaleSection = ({
             control={
               <Switch
                 checked={isActive}
-                onChange={onToggleActive}
+                onChange={onToggleActiveAction}
                 disabled={!canToggle}
               />
             }

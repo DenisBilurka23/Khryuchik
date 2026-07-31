@@ -52,7 +52,7 @@ const AdminProductFormInner = ({
     toggleLocale,
     toggleRegion,
     isLocaleActive,
-    isRegionActive,
+    activeRegions: activeRegionFlags,
   } = useProductPublishToggles({
     payload,
     localeCodes: activeLocales.map((item) => item.code),
@@ -196,8 +196,8 @@ const AdminProductFormInner = ({
             selectedType={selectedType}
             selectedCategory={selectedCategory}
             merchCategories={merchCategories}
-            onTypeChange={handleTypeChange}
-            onCategoryChange={setSelectedCategory}
+            onTypeChangeAction={handleTypeChange}
+            onCategoryChangeAction={setSelectedCategory}
             availableLocales={activeLocales}
             availableRegions={activeRegions}
             initialLanguages={payload.details.translations[defaultLocale]?.languages ?? []}
@@ -207,8 +207,8 @@ const AdminProductFormInner = ({
           <AdminProductPricingSection
             payload={payload}
             regions={activeRegions}
-            isRegionActive={isRegionActive}
-            onToggleRegion={toggleRegion}
+            activeRegions={activeRegionFlags}
+            onToggleRegionAction={toggleRegion}
           />
 
           {payload.product.printify ? (
@@ -228,7 +228,7 @@ const AdminProductFormInner = ({
               label={getLocaleDisplayName(activeLocale.code, locale)}
               isActive={isLocaleActive(activeLocale.code)}
               canToggle={activeLocale.code !== defaultLocale}
-              onToggleActive={() => toggleLocale(activeLocale.code)}
+              onToggleActiveAction={() => toggleLocale(activeLocale.code)}
               translation={payload.product.translations[activeLocale.code]}
               details={payload.details.translations[activeLocale.code]}
               productId={isNew ? undefined : payload.product.productId}

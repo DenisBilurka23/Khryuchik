@@ -4,6 +4,6 @@ import type { RegionDocument } from "@/types/localization";
 export type AdminProductPricingSectionProps = {
   payload: AdminProductPayload;
   regions: RegionDocument[];
-  isRegionActive: (code: string) => boolean;
-  onToggleRegion: (code: string) => void;
+  activeRegions: Record<string, boolean>;
+  onToggleRegionAction: (code: string) => void;
 };
