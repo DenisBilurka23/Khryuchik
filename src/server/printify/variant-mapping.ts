@@ -2,7 +2,10 @@ import type {
   PrintifyVariantLink,
   PrintifyVariantSelections,
 } from "@/types/catalog";
-import type { ProductOption } from "@/types/product-details";
+import type {
+  ProductOption,
+  ProductOptionPriceDelta,
+} from "@/types/product-details";
 import { normalizeIdentifierPart } from "@/utils/admin";
 
 import type { PrintifyProduct, PrintifyProductOption } from "./types";
@@ -86,13 +89,89 @@ export const buildPrintifyVariantLinks = (
   });
 };
 
-/**
- * Storefront options for the product detail page, built from the same slugs as
- * the variant links so a cart selection always resolves to a variant. Only
- * values backed by an enabled variant are offered.
- */
-export const buildPrintifyProductOptions = (product: PrintifyProduct) => {
+export const getPrintifyBaseRetailCents = (product: PrintifyProduct) => {
+  const enabledPrices = product.variants
+    .filter((variant) => variant.is_enabled)
+    .map((variant) => variant.price);
+
+  return enabledPrices.length > 0 ? Math.min(...enabledPrices) : 0;
+};
+
+const buildOptionPriceDeltaCents = (
+  product: PrintifyProduct,
+  optionValueIndex: Map<number, OptionValueEntry>,
+) => {
+  const enabledVariants = product.variants.filter(
+    (variant) => variant.is_enabled,
+  );
+  const baseCents = getPrintifyBaseRetailCents(product);
+  const collect = (pick: (current: number, price: number) => number) => {
+    const pricesByValueId = new Map<number, number>();
+
+    for (const variant of enabledVariants) {
+      for (const optionValueId of variant.options) {
+        if (!optionValueIndex.has(optionValueId)) {
+          continue;
+        }
+
+        const current = pricesByValueId.get(optionValueId);
+        pricesByValueId.set(
+          optionValueId,
+          current === undefined ? variant.price : pick(current, variant.price),
+        );
+      }
+    }
+
+    return new Map(
+      [...pricesByValueId].map(([optionValueId, price]) => [
+        optionValueId,
+        price - baseCents,
+      ]),
+    );
+  };
+
+  const deltaByValueId = collect(Math.min);
+  const isAdditive = enabledVariants.every(
+    (variant) =>
+      baseCents +
+        variant.options.reduce(
+          (sum, optionValueId) =>
+            sum + (deltaByValueId.get(optionValueId) ?? 0),
+          0,
+        ) ===
+      variant.price,
+  );
+
+  if (isAdditive) {
+    return deltaByValueId;
+  }
+
+  console.warn(
+    `Printify product ${product.id} prices variants along more than one option; option deltas were seeded from the most expensive variant.`,
+  );
+
+  return collect(Math.max);
+};
+
+const toPriceDelta = (
+  deltaCents: number,
+  regionCodes: string[],
+): ProductOptionPriceDelta | undefined => {
+  if (deltaCents === 0 || regionCodes.length === 0) {
+    return undefined;
+  }
+
+  return Object.fromEntries(
+    regionCodes.map((code) => [code, deltaCents / 100]),
+  );
+};
+
+export const buildPrintifyProductOptions = (
+  product: PrintifyProduct,
+  priceDeltaRegionCodes: string[] = [],
+) => {
   const optionValueIndex = buildOptionValueIndex(product.options);
+  const deltaByValueId = buildOptionPriceDeltaCents(product, optionValueIndex);
   const offeredValues = new Set(
     product.variants
       .filter((variant) => variant.is_enabled)
@@ -110,9 +189,16 @@ export const buildPrintifyProductOptions = (product: PrintifyProduct) => {
     }
 
     seenValues.add(entry.value);
+
+    const priceDelta = toPriceDelta(
+      deltaByValueId.get(optionValueId) ?? 0,
+      priceDeltaRegionCodes,
+    );
+
     optionsByKey[entry.selectionKey].push({
       label: entry.label,
       value: entry.value,
+      ...(priceDelta ? { priceDelta } : {}),
     });
   }
 
@@ -127,8 +213,6 @@ export const findPrintifyVariant = (
     variant.selections.size === selections.size &&
     variant.selections.color === selections.color;
 
-  // A product with a single variant has no options to select, so an empty
-  // selection still resolves.
   if (!selections.size && !selections.color && variants.length === 1) {
     return variants[0];
   }

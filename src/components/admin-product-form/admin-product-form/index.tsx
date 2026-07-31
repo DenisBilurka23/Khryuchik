@@ -199,6 +199,7 @@ const AdminProductFormInner = ({
             onTypeChange={handleTypeChange}
             onCategoryChange={setSelectedCategory}
             availableLocales={activeLocales}
+            availableRegions={activeRegions}
             initialLanguages={payload.details.translations[defaultLocale]?.languages ?? []}
             initialFormats={payload.details.translations[defaultLocale]?.formats ?? []}
           />
@@ -232,6 +233,7 @@ const AdminProductFormInner = ({
               details={payload.details.translations[activeLocale.code]}
               productId={isNew ? undefined : payload.product.productId}
               selectedType={selectedType}
+              availableRegions={activeRegions}
             />
           ))}
 

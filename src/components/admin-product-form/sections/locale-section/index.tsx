@@ -30,6 +30,7 @@ export const AdminProductLocaleSection = ({
   details,
   productId,
   selectedType,
+  availableRegions,
 }: AdminProductLocaleSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
   const uploadStatusLabels = {
@@ -218,15 +219,19 @@ export const AdminProductLocaleSection = ({
               name={`${locale}.sizesJson`}
               title={tForm("fields.sizes")}
               helperText={tForm("helpers.optionsRule")}
+              priceDeltaHelperText={tForm("helpers.optionPriceDeltaRule")}
               initialOptions={details.sizes ?? []}
               itemLabel={tForm("fields.sizes")}
+              regions={availableRegions}
             />
             <AdminOptionsField
               name={`${locale}.colorsJson`}
               title={tForm("fields.colors")}
               helperText={tForm("helpers.optionsRule")}
+              priceDeltaHelperText={tForm("helpers.optionPriceDeltaRule")}
               initialOptions={details.colors ?? []}
               itemLabel={tForm("fields.colors")}
+              regions={availableRegions}
             />
           </Box>
         )}

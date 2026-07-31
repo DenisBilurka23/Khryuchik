@@ -38,5 +38,6 @@ export {
 export {
   isLocalizedProductSummary,
   localizeProductSummary,
+  resolveOptionPrice,
   toProductDetails,
 } from "./product";

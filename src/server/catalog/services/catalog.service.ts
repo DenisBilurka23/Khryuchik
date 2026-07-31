@@ -2,14 +2,20 @@ import "server-only";
 
 import { cache } from "react";
 
-import type { Locale } from "@/i18n/config";
+import { defaultLocale, type Locale } from "@/i18n/config";
 import {
   type CountryCode,
   isLocalizedProductSummary,
   localizeProductSummary,
+  resolveOptionPrice,
   toProductDetails,
 } from "@/utils";
-import type { ProductDocument, ProductPlacement } from "@/types/catalog";
+import type {
+  ProductDetailDocument,
+  ProductDetailTranslation,
+  ProductDocument,
+  ProductPlacement,
+} from "@/types/catalog";
 import type { CartItem, StoredCartItem } from "@/types/cart";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import type { ProductOption } from "@/types/product-details";
@@ -149,13 +155,18 @@ const getSelectionLabel = (
   return options?.find((option) => option.value === value)?.label ?? value;
 };
 
+const getDetailTranslation = (
+  detailsDocument: ProductDetailDocument | null,
+  locale: Locale,
+) =>
+  detailsDocument?.translations[locale] ??
+  detailsDocument?.translations[defaultLocale] ??
+  null;
+
 const buildVariantLabel = (
   item: StoredCartItem,
-  detailsDocument: Awaited<ReturnType<typeof findProductDetailsByProductId>>,
-  locale: Locale,
+  translation: ProductDetailTranslation | null,
 ) => {
-  const translation = detailsDocument?.translations[locale];
-
   if (!translation || !item.selections) {
     return undefined;
   }
@@ -197,23 +208,31 @@ export const resolveCartItems = async (
       return [];
     }
 
+    const translation = getDetailTranslation(
+      detailsById.get(item.productId) ?? null,
+      locale,
+    );
+
     return [
       {
         id: item.id,
         productId: item.productId,
         slug: summary.slug,
         title: summary.title,
-        price: summary.price,
+        price: translation
+          ? resolveOptionPrice(
+              summary.price,
+              translation,
+              item.selections,
+              country,
+            )
+          : summary.price,
         currency: summary.currency,
         emoji: summary.emoji,
         thumbnail: summary.thumbnail,
         thumbnailBackgroundColor: summary.thumbnailBackgroundColor,
         quantity: item.quantity,
-        variant: buildVariantLabel(
-          item,
-          detailsById.get(item.productId) ?? null,
-          locale,
-        ),
+        variant: buildVariantLabel(item, translation),
         isDigital: item.selections?.format === BOOK_FORMAT.digital,
       },
     ];

@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 
 import { formatCurrency, getLocalizedPath } from "@/utils";
 
+import { useProductPrice } from "@/hooks/useProductPrice";
 import { useWishlist } from "@/hooks/useWishlist";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import { showCartToast } from "../../cart/cart-toast-store";
@@ -32,6 +33,7 @@ import type { ProductInfoProps } from "../types";
 
 export const ProductInfo = ({
   locale,
+  country,
   product,
   ownedLanguages = [],
 }: ProductInfoProps) => {
@@ -41,25 +43,21 @@ export const ProductInfo = ({
   const { isInWishlist, toggleWishlist } = useWishlist();
   const router = useRouter();
   const [quantity, setQuantity] = useState(1);
-  const [language, setLanguage] = useState(product.languages?.[0]?.value || "");
-  const [format, setFormat] = useState(product.formats?.[0]?.value || "");
-  const [size, setSize] = useState(product.sizes?.[0]?.value || "");
-  const [color, setColor] = useState(product.colors?.[0]?.value || "");
+  const { selections, cartSelections, selectOption, price } = useProductPrice({
+    product,
+    country,
+  });
   const isWishlisted = isInWishlist(product.productId);
   const hasMetaChips = Boolean(product.badge || product.storyLabel);
-  const isDigital = format === BOOK_FORMAT.digital;
-  const alreadyOwned = isDigital && ownedLanguages.includes(language);
+  const isDigital = selections.format === BOOK_FORMAT.digital;
+  const alreadyOwned =
+    isDigital && ownedLanguages.includes(selections.language);
 
   const handleAddToCart = () => {
     addItem({
       productId: product.productId,
       quantity,
-      selections: {
-        language: language || undefined,
-        format: format || undefined,
-        size: size || undefined,
-        color: color || undefined,
-      },
+      selections: cartSelections,
     });
     showCartToast();
   };
@@ -68,12 +66,7 @@ export const ProductInfo = ({
     setBuyNowItem({
       productId: product.productId,
       quantity: isDigital ? 1 : quantity,
-      selections: {
-        language: language || undefined,
-        format: format || undefined,
-        size: size || undefined,
-        color: color || undefined,
-      },
+      selections: cartSelections,
     });
     router.push(getLocalizedPath(locale, "/checkout?buyNow=1"));
   };
@@ -142,7 +135,7 @@ export const ProductInfo = ({
         <Typography
           sx={{ fontSize: 32, fontWeight: 800, color: "primary.main" }}
         >
-          {formatCurrency(product.price, locale, product.currency)}
+          {formatCurrency(price, locale, product.currency)}
         </Typography>
         {product.oldPrice ? (
           <Typography
@@ -162,8 +155,8 @@ export const ProductInfo = ({
           <TextField
             select
             label={tProductPage("selectors.language")}
-            value={language}
-            onChange={(event) => setLanguage(event.target.value)}
+            value={selections.language}
+            onChange={(event) => selectOption("language", event.target.value)}
             fullWidth
             slotProps={{ select: { sx: { textTransform: "capitalize" } } }}
           >
@@ -183,8 +176,8 @@ export const ProductInfo = ({
           <TextField
             select
             label={tProductPage("selectors.format")}
-            value={format}
-            onChange={(event) => setFormat(event.target.value)}
+            value={selections.format}
+            onChange={(event) => selectOption("format", event.target.value)}
             fullWidth
           >
             {product.formats.map((option) => (
@@ -199,8 +192,8 @@ export const ProductInfo = ({
           <TextField
             select
             label={tProductPage("selectors.size")}
-            value={size}
-            onChange={(event) => setSize(event.target.value)}
+            value={selections.size}
+            onChange={(event) => selectOption("size", event.target.value)}
             fullWidth
           >
             {product.sizes.map((option) => (
@@ -215,8 +208,8 @@ export const ProductInfo = ({
           <TextField
             select
             label={tProductPage("selectors.color")}
-            value={color}
-            onChange={(event) => setColor(event.target.value)}
+            value={selections.color}
+            onChange={(event) => selectOption("color", event.target.value)}
             fullWidth
           >
             {product.colors.map((option) => (

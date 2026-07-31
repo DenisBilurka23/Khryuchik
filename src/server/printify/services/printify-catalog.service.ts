@@ -32,6 +32,7 @@ import type { PrintifyProduct } from "../types";
 import {
   buildPrintifyProductOptions,
   buildPrintifyVariantLinks,
+  getPrintifyBaseRetailCents,
 } from "../variant-mapping";
 
 const MAX_IMPORTED_IMAGES = 6;
@@ -187,28 +188,24 @@ const buildPrintifyLink = (
   syncedAt: new Date().toISOString(),
 });
 
-const buildSeedPricing = (
-  link: ProductPrintifyLink,
-  regions: RegionDocument[],
-): ProductDocument["pricing"] => {
-  const retailCents = Math.max(
-    0,
-    ...link.variants
-      .filter((variant) => variant.isEnabled)
-      .map((variant) => variant.retailPriceCents),
-  );
+const getPrintifyRegionCodes = (regions: RegionDocument[]) =>
+  regions
+    .filter((region) => region.currency === PRINTIFY_CURRENCY)
+    .map((region) => region.code);
 
-  if (retailCents === 0) {
+const buildSeedPricing = (
+  baseRetailCents: number,
+  regionCodes: string[],
+): ProductDocument["pricing"] => {
+  if (baseRetailCents === 0) {
     return {};
   }
 
   return Object.fromEntries(
-    regions
-      .filter((region) => region.currency === PRINTIFY_CURRENCY)
-      .map((region) => [
-        region.code,
-        { price: retailCents / 100, currency: PRINTIFY_CURRENCY },
-      ]),
+    regionCodes.map((code) => [
+      code,
+      { price: baseRetailCents / 100, currency: PRINTIFY_CURRENCY },
+    ]),
   );
 };
 
@@ -306,7 +303,8 @@ export const importPrintifyProduct = async (printifyProductId: string) => {
 
   const description = htmlToPlainText(printifyProduct.description);
   const title = printifyProduct.title.trim();
-  const options = buildPrintifyProductOptions(printifyProduct);
+  const regionCodes = getPrintifyRegionCodes(await getActiveRegions());
+  const options = buildPrintifyProductOptions(printifyProduct, regionCodes);
   const link = buildPrintifyLink(shopId, printifyProduct);
   const basePayload = createEmptyAdminProductPayload([defaultLocale]);
 
@@ -326,8 +324,8 @@ export const importPrintifyProduct = async (printifyProductId: string) => {
   };
   basePayload.product.availableRegions = [];
   basePayload.product.pricing = buildSeedPricing(
-    link,
-    await getActiveRegions(),
+    getPrintifyBaseRetailCents(printifyProduct),
+    regionCodes,
   );
   basePayload.product.printify = link;
   basePayload.product.slug = title;
@@ -387,7 +385,10 @@ export const syncPrintifyProduct = async (productId: string) => {
   }
 
   const link = buildPrintifyLink(shopId, printifyProduct);
-  const options = buildPrintifyProductOptions(printifyProduct);
+  const options = buildPrintifyProductOptions(
+    printifyProduct,
+    getPrintifyRegionCodes(await getActiveRegions()),
+  );
   const details = await findProductDetailsByProductId(productId);
 
   const nextProduct: ProductDocument = {
