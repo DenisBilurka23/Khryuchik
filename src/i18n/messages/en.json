@@ -180,6 +180,11 @@
         "home": "Home",
         "shop": "Shop"
       },
+      "pricingUnavailable": {
+        "title": "Price unavailable right now",
+        "text": "We could not get an up-to-date exchange rate, so this product cannot be priced for your region. Please try again in a few minutes.",
+        "action": "Back to shop"
+      },
       "selectors": {
         "language": "Language",
         "format": "Format",
@@ -684,6 +689,7 @@
         "variantLabel": "Variant",
         "removeLabel": "Remove item"
       },
+      "pricingUnavailable": "Some items cannot be priced right now — we could not get an up-to-date exchange rate. Please try again in a few minutes.",
       "summary": {
         "title": "Your order",
         "promoPlaceholder": "Promo code",
@@ -758,7 +764,8 @@
         "invalidPayload": "Please fill in all required fields.",
         "invalidEmail": "Please enter a valid email address.",
         "paymentFailed": "Payment provider could not process the request. Please try again.",
-        "unsupportedMethod": "This payment method isn't available for the selected country."
+        "unsupportedMethod": "This payment method isn't available for the selected country.",
+        "pricingUnavailable": "We could not get an up-to-date exchange rate, so your order cannot be priced right now. Please try again in a few minutes."
       },
       "fieldErrors": {
         "required": "Required field",

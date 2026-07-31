@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { ProductPageView } from "@/components/product";
+import {
+  ProductPageView,
+  ProductPricingUnavailable,
+} from "@/components/product";
 import { defaultLocale, locales } from "@/i18n/config";
 import {
   getProductDetails,
@@ -29,9 +32,9 @@ export const generateMetadata = async ({
   }
 
   const country = await getRequestCountry();
-  const product = await getProductDetails(lang, country, slug);
+  const result = await getProductDetails(lang, country, slug);
 
-  if (!product) {
+  if (result.status === "not-found") {
     notFound();
   }
 
@@ -40,9 +43,13 @@ export const generateMetadata = async ({
     namespace: "storefront.brand",
   });
 
+  const title = result.status === "ok" ? result.product.title : result.title;
+  const description =
+    result.status === "ok" ? result.product.description : undefined;
+
   return {
-    title: `${product.title} | ${tBrand("title")}`,
-    description: product.description,
+    title: `${title} | ${tBrand("title")}`,
+    description,
     alternates: {
       canonical:
         lang === defaultLocale
@@ -60,8 +67,8 @@ export const generateMetadata = async ({
     openGraph: {
       type: "website",
       locale: lang,
-      title: product.title,
-      description: product.description,
+      title,
+      description,
       siteName: tBrand("title"),
     },
   };
@@ -75,12 +82,17 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
   }
 
   const country = await getRequestCountry();
-  const product = await getProductDetails(lang, country, slug);
+  const result = await getProductDetails(lang, country, slug);
 
-  if (!product) {
+  if (result.status === "not-found") {
     notFound();
   }
 
+  if (result.status === "pricing-unavailable") {
+    return <ProductPricingUnavailable locale={lang} title={result.title} />;
+  }
+
+  const product = result.product;
   const session = await getServerAuthSession();
 
   const [relatedProducts, storyProducts, purchaseContext, userReview] =

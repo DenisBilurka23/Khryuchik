@@ -12,6 +12,7 @@ export type OrderSummarySectionProps = {
   locale: Locale;
   error: string | null;
   isSubmitting: boolean;
+  isBlocked: boolean;
   hasStoredItems: boolean;
   paymentMethod: PaymentMethod;
   labels: CheckoutLabels;

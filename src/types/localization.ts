@@ -23,3 +23,19 @@ export type RegionDocument = {
   isDefault: boolean;
   sortOrder: number;
 };
+
+export type RegionPricingConversion = {
+  currency: CurrencyCode;
+  rate: number;
+  sourceCountry: string;
+};
+
+// How a region gets its prices. Printify quotes everything in USD, so a region
+// billed in another currency has no stored price for imported products and
+// derives one from the default region at read time. `unavailable` means the
+// exchange rate could not be established — those products are not priced at
+// all rather than priced wrongly.
+export type RegionPricing =
+  | { status: "native" }
+  | { status: "converted"; conversion: RegionPricingConversion }
+  | { status: "unavailable"; currency: CurrencyCode };

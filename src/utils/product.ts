@@ -1,10 +1,12 @@
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   LocalizedProductSummary,
+  ProductCountryPricing,
   ProductDetailDocument,
   ProductDocument,
 } from "@/types/catalog";
 import type { CartSelections } from "@/types/cart";
+import type { RegionPricing } from "@/types/localization";
 import type {
   ProductDetails,
   ProductOption,
@@ -12,6 +14,9 @@ import type {
 } from "@/types/product-details";
 
 import type { CountryCode } from "./country";
+import { convertFromUsd } from "./price-conversion";
+
+const nativePricing: RegionPricing = { status: "native" };
 
 const localizeDeliveryCopy = (
   delivery: string[],
@@ -46,17 +51,53 @@ const localizeDeliveryCopy = (
   });
 };
 
+// A price entered for the region always wins — books are priced by hand per
+// region and must not drift with the exchange rate. Only a product with no
+// price of its own falls back to the default region's USD price, and only
+// where the region is one the admin already opened the product to.
+const resolveCountryPricing = (
+  product: ProductDocument,
+  country: CountryCode,
+  regionPricing: RegionPricing,
+): ProductCountryPricing | null => {
+  const stored = product.pricing[country];
+
+  if (stored) {
+    return stored;
+  }
+
+  if (regionPricing.status !== "converted") {
+    return null;
+  }
+
+  const { currency, rate, sourceCountry } = regionPricing.conversion;
+  const source = product.pricing[sourceCountry];
+
+  if (!source) {
+    return null;
+  }
+
+  return {
+    price: convertFromUsd(source.price, rate),
+    currency,
+    ...(source.oldPrice === undefined
+      ? {}
+      : { oldPrice: convertFromUsd(source.oldPrice, rate) }),
+  };
+};
+
 export const localizeProductSummary = (
   product: ProductDocument,
   locale: Locale,
   country: CountryCode,
+  regionPricing: RegionPricing = nativePricing,
 ): LocalizedProductSummary | null => {
   if (!product.availableRegions?.includes(country)) {
     return null;
   }
   const translation =
     product.translations[locale] ?? product.translations[defaultLocale];
-  const pricing = product.pricing[country];
+  const pricing = resolveCountryPricing(product, country, regionPricing);
 
   if (!translation || !pricing) {
     return null;
@@ -90,6 +131,53 @@ export const localizeProductSummary = (
     oldPrice: pricing.oldPrice,
   };
 };
+
+// Deltas are converted one by one and each rounded up on its own, so a
+// converted option can land up to one currency unit above the exact conversion
+// of base + delta. That is always in the shop's favour and invisible at the
+// scale of a single unit, which beats threading the source price through every
+// caller just to round the sum once.
+const localizeOptionPrices = (
+  options: ProductOption[] | undefined,
+  country: CountryCode,
+  regionPricing: RegionPricing,
+): ProductOption[] | undefined => {
+  if (!options || regionPricing.status !== "converted") {
+    return options;
+  }
+
+  const { rate, sourceCountry } = regionPricing.conversion;
+
+  return options.map((option) => {
+    const sourceDelta = option.priceDelta?.[sourceCountry];
+
+    if (
+      option.priceDelta?.[country] !== undefined ||
+      sourceDelta === undefined
+    ) {
+      return option;
+    }
+
+    return {
+      ...option,
+      priceDelta: {
+        ...option.priceDelta,
+        [country]: convertFromUsd(sourceDelta, rate),
+      },
+    };
+  });
+};
+
+export const localizeProductOptionGroups = (
+  options: ProductOptionGroups,
+  country: CountryCode,
+  regionPricing: RegionPricing = nativePricing,
+): ProductOptionGroups => ({
+  languages: localizeOptionPrices(options.languages, country, regionPricing),
+  formats: localizeOptionPrices(options.formats, country, regionPricing),
+  sizes: localizeOptionPrices(options.sizes, country, regionPricing),
+  colors: localizeOptionPrices(options.colors, country, regionPricing),
+});
 
 const getOptionPriceDelta = (
   options: ProductOption[] | undefined,
@@ -134,6 +222,7 @@ export const toProductDetails = (
   detailsDocument: ProductDetailDocument,
   locale: Locale,
   country: CountryCode,
+  regionPricing: RegionPricing = nativePricing,
 ): ProductDetails | null => {
   const translation =
     detailsDocument.translations[locale] ??
@@ -142,6 +231,14 @@ export const toProductDetails = (
   if (!translation) {
     return null;
   }
+
+  // Options carry their deltas to the client, where the price picker adds them
+  // to the base price, so they have to arrive already in the region's currency.
+  const options = localizeProductOptionGroups(
+    translation,
+    country,
+    regionPricing,
+  );
 
   return {
     productId: summary.id,
@@ -158,10 +255,10 @@ export const toProductDetails = (
     sku: detailsDocument.sku,
     description: translation.description,
     images: translation.images,
-    languages: translation.languages,
-    formats: translation.formats,
-    sizes: translation.sizes,
-    colors: translation.colors,
+    languages: options.languages,
+    formats: options.formats,
+    sizes: options.sizes,
+    colors: options.colors,
     specs: translation.specs,
     delivery: localizeDeliveryCopy(translation.delivery, locale, country),
     reviews: translation.reviews,

@@ -22,10 +22,12 @@ export const useResolvedCart = (
   const storedItems = itemsOverride ?? cart.items;
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPricingUnavailable, setIsPricingUnavailable] = useState(false);
 
   useEffect(() => {
     if (storedItems.length === 0) {
       setItems([]);
+      setIsPricingUnavailable(false);
       setIsLoading(false);
       return;
     }
@@ -61,6 +63,7 @@ export const useResolvedCart = (
         }
 
         setItems(payload.items);
+        setIsPricingUnavailable(payload.isPricingUnavailable);
 
         if (!itemsOverride) {
           retainCartItems(payload.items.map((item) => item.id));
@@ -94,6 +97,7 @@ export const useResolvedCart = (
     items,
     subtotal,
     isLoading,
+    isPricingUnavailable,
     hasStoredItems: storedItems.length > 0,
   };
 };

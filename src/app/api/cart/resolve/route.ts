@@ -19,8 +19,8 @@ export const POST = async (request: NextRequest) => {
     ? payload.items.filter(isStoredCartItem)
     : [];
   const country = await getRequestCountry();
-  const resolvedItems = await resolveCartItems(locale, country, items);
-  const response = NextResponse.json({ items: resolvedItems });
+  const resolvedCart = await resolveCartItems(locale, country, items);
+  const response = NextResponse.json(resolvedCart);
 
   response.headers.set("Cache-Control", "no-store, max-age=0");
 

@@ -6,6 +6,7 @@ import { defaultLocale, type Locale } from "@/i18n/config";
 import {
   type CountryCode,
   isLocalizedProductSummary,
+  localizeProductOptionGroups,
   localizeProductSummary,
   resolveOptionPrice,
   toProductDetails,
@@ -16,6 +17,9 @@ import type {
   ProductDocument,
   ProductPlacement,
 } from "@/types/catalog";
+import type { RegionPricing } from "@/types/localization";
+import { getRegionPricing } from "@/server/localization/localization.service";
+import type { ProductDetails } from "@/types/product-details";
 import type { CartItem, StoredCartItem } from "@/types/cart";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import type { ProductOption } from "@/types/product-details";
@@ -34,22 +38,13 @@ const localizeProductSummaries = (
   products: ProductDocument[],
   locale: Locale,
   country: CountryCode,
+  regionPricing: RegionPricing,
 ) =>
   products
-    .map((product) => localizeProductSummary(product, locale, country))
+    .map((product) =>
+      localizeProductSummary(product, locale, country, regionPricing),
+    )
     .filter(isLocalizedProductSummary);
-
-const getProductSummaryBySlug = cache(
-  async (locale: Locale, country: CountryCode, slug: string) => {
-    const product = await findActiveProductBySlug(locale, slug);
-
-    if (!product) {
-      return null;
-    }
-
-    return localizeProductSummary(product, locale, country);
-  },
-);
 
 export const getProductsForPlacement = cache(
   async (
@@ -61,9 +56,12 @@ export const getProductsForPlacement = cache(
       limit?: number;
     },
   ) => {
-    const products = await findProductsForPlacement(placement, country, options);
+    const [products, regionPricing] = await Promise.all([
+      findProductsForPlacement(placement, country, options),
+      getRegionPricing(country),
+    ]);
 
-    return localizeProductSummaries(products, locale, country);
+    return localizeProductSummaries(products, locale, country, regionPricing);
   },
 );
 
@@ -75,7 +73,12 @@ export const getLatestBookSummary = cache(
       return null;
     }
 
-    const summary = localizeProductSummary(product, locale, country);
+    const summary = localizeProductSummary(
+      product,
+      locale,
+      country,
+      await getRegionPricing(country),
+    );
 
     return isLocalizedProductSummary(summary) ? summary : null;
   },
@@ -90,9 +93,12 @@ export const getShopProducts = cache(
       limit?: number;
     },
   ) => {
-    const products = await findShopVisibleProducts(country, options);
+    const [products, regionPricing] = await Promise.all([
+      findShopVisibleProducts(country, options),
+      getRegionPricing(country),
+    ]);
 
-    return localizeProductSummaries(products, locale, country);
+    return localizeProductSummaries(products, locale, country, regionPricing);
   },
 );
 
@@ -101,8 +107,16 @@ export const getProductSummariesByIds = async (
   country: CountryCode,
   productIds: string[],
 ) => {
-  const products = await findActiveProductsByIds(productIds);
-  const summaries = localizeProductSummaries(products, locale, country);
+  const [products, regionPricing] = await Promise.all([
+    findActiveProductsByIds(productIds),
+    getRegionPricing(country),
+  ]);
+  const summaries = localizeProductSummaries(
+    products,
+    locale,
+    country,
+    regionPricing,
+  );
   const productsById = new Map(
     summaries.map((product) => [product.id, product]),
   );
@@ -112,24 +126,69 @@ export const getProductSummariesByIds = async (
     .filter(isLocalizedProductSummary);
 };
 
+// A product the region carries but cannot be priced — the exchange rate is
+// unreachable and it has no price of its own — is not a missing product, so it
+// is reported separately instead of collapsing into a 404.
+export type ProductDetailsResult =
+  | { status: "ok"; product: ProductDetails }
+  | { status: "not-found" }
+  | { status: "pricing-unavailable"; title: string };
+
 export const getProductDetails = cache(
-  async (locale: Locale, country: CountryCode, slug: string) => {
-    const summary = await getProductSummaryBySlug(locale, country, slug);
+  async (
+    locale: Locale,
+    country: CountryCode,
+    slug: string,
+  ): Promise<ProductDetailsResult> => {
+    const product = await findActiveProductBySlug(locale, slug);
+
+    if (!product) {
+      return { status: "not-found" };
+    }
+
+    const regionPricing = await getRegionPricing(country);
+    const summary = localizeProductSummary(
+      product,
+      locale,
+      country,
+      regionPricing,
+    );
 
     if (!summary) {
-      return null;
+      const isPriceable =
+        regionPricing.status === "unavailable" &&
+        product.availableRegions?.includes(country) &&
+        !product.pricing[country];
+
+      if (!isPriceable) {
+        return { status: "not-found" };
+      }
+
+      const translation =
+        product.translations[locale] ?? product.translations[defaultLocale];
+
+      return {
+        status: "pricing-unavailable",
+        title: translation?.title ?? product.slug,
+      };
     }
 
     const detailsDocument = await findProductDetailsByProductId(summary.id);
 
     if (!detailsDocument) {
-      return null;
+      return { status: "not-found" };
     }
 
-    const details = toProductDetails(summary, detailsDocument, locale, country);
+    const details = toProductDetails(
+      summary,
+      detailsDocument,
+      locale,
+      country,
+      regionPricing,
+    );
 
     if (!details) {
-      return null;
+      return { status: "not-found" };
     }
 
     const approvedReviews = await getApprovedReviewsForProduct(
@@ -138,8 +197,11 @@ export const getProductDetails = cache(
     );
 
     return {
-      ...details,
-      reviews: [...details.reviews, ...approvedReviews],
+      status: "ok",
+      product: {
+        ...details,
+        reviews: [...details.reviews, ...approvedReviews],
+      },
     };
   },
 );
@@ -183,13 +245,24 @@ const buildVariantLabel = (
   return variant || undefined;
 };
 
+export type ResolvedCart = {
+  items: CartItem[];
+  // True when items dropped out because the region's exchange rate could not be
+  // established, which is a temporary failure the customer should see rather
+  // than a cart that quietly lost a line.
+  isPricingUnavailable: boolean;
+};
+
 export const resolveCartItems = async (
   locale: Locale,
   country: CountryCode,
   items: StoredCartItem[],
-): Promise<CartItem[]> => {
+): Promise<ResolvedCart> => {
   const productIds = Array.from(new Set(items.map((item) => item.productId)));
-  const summaries = await getProductSummariesByIds(locale, country, productIds);
+  const [summaries, regionPricing] = await Promise.all([
+    getProductSummariesByIds(locale, country, productIds),
+    getRegionPricing(country),
+  ]);
   const summaryById = new Map(
     summaries.map((summary) => [summary.id, summary]),
   );
@@ -201,7 +274,7 @@ export const resolveCartItems = async (
   );
   const detailsById = new Map(detailsEntries);
 
-  return items.flatMap((item) => {
+  const resolvedItems = items.flatMap((item) => {
     const summary = summaryById.get(item.productId);
 
     if (!summary) {
@@ -222,7 +295,7 @@ export const resolveCartItems = async (
         price: translation
           ? resolveOptionPrice(
               summary.price,
-              translation,
+              localizeProductOptionGroups(translation, country, regionPricing),
               item.selections,
               country,
             )
@@ -237,6 +310,13 @@ export const resolveCartItems = async (
       },
     ];
   });
+
+  return {
+    items: resolvedItems,
+    isPricingUnavailable:
+      regionPricing.status === "unavailable" &&
+      productIds.some((productId) => !summaryById.has(productId)),
+  };
 };
 
 export const getProductSlugs = cache(async () => findActiveProductSlugs());

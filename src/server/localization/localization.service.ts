@@ -11,7 +11,11 @@ import type {
   AdminRegionListItem,
   AdminRegionUpsertInput,
 } from "@/types/admin";
-import type { LocaleDocument, RegionDocument } from "@/types/localization";
+import type {
+  LocaleDocument,
+  RegionDocument,
+  RegionPricing,
+} from "@/types/localization";
 import type { CurrencyCode } from "@/utils";
 import {
   defaultCountry,
@@ -20,6 +24,7 @@ import {
   isIsoCountryCode,
 } from "@/utils";
 
+import { BASE_CURRENCY, getUsdRate } from "./exchange-rates.service";
 import {
   clearDefaultLocaleExcept,
   deleteLocaleByCode,
@@ -111,6 +116,37 @@ export const getRegionCurrency = async (
 
   return region?.currency ?? "USD";
 };
+
+// Resolved once per request and passed down to the pricing helpers, so a page
+// that lists many products still asks for the exchange rate a single time.
+export const getRegionPricing = cache(
+  async (code: string): Promise<RegionPricing> => {
+    const currency = await getRegionCurrency(code);
+
+    if (currency === BASE_CURRENCY) {
+      return { status: "native" };
+    }
+
+    const sourceCountry = await getDefaultRegionCode();
+
+    // Converted prices are derived from the default region, so there is
+    // nothing to derive them from unless that region is priced in USD.
+    if ((await getRegionCurrency(sourceCountry)) !== BASE_CURRENCY) {
+      return { status: "native" };
+    }
+
+    const rate = await getUsdRate(currency);
+
+    if (rate === null) {
+      return { status: "unavailable", currency };
+    }
+
+    return {
+      status: "converted",
+      conversion: { currency, rate, sourceCountry },
+    };
+  },
+);
 
 const mapLocaleToAdminItem = (
   locale: LocaleDocument,

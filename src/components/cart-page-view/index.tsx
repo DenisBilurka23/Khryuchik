@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "@mui/material";
+import { Alert, Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -25,9 +25,17 @@ export const CartPageView = ({
     breadcrumbs: t.raw("breadcrumbs") as ReturnType<typeof t.raw>,
     emptyState: t.raw("emptyState") as ReturnType<typeof t.raw>,
     itemCard: t.raw("itemCard") as ReturnType<typeof t.raw>,
+    pricingUnavailable: t("pricingUnavailable"),
   };
-  const { items, subtotal, updateQuantity, removeItem, isLoading, hasStoredItems } =
-    useResolvedCart(locale, country);
+  const {
+    items,
+    subtotal,
+    updateQuantity,
+    removeItem,
+    isLoading,
+    isPricingUnavailable,
+    hasStoredItems,
+  } = useResolvedCart(locale, country);
 
   const homeHref = getLocalizedPath(locale, "/");
   const shopHref = getLocalizedPath(locale, "/shop");
@@ -119,6 +127,12 @@ export const CartPageView = ({
                 {cartPage.lead}
               </Typography>
             </Box>
+
+            {isPricingUnavailable ? (
+              <Alert severity="warning" sx={{ mb: 3, borderRadius: "16px" }}>
+                {cartPage.pricingUnavailable}
+              </Alert>
+            ) : null}
 
             {!hasStoredItems && !isLoading ? (
               <EmptyCartState

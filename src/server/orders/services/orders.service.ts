@@ -37,7 +37,8 @@ export class OrderValidationError extends Error {
     readonly code:
       | "empty_cart"
       | "unsupported_payment_method"
-      | "unresolved_items",
+      | "unresolved_items"
+      | "pricing_unavailable",
   ) {
     super(message);
     this.name = "OrderValidationError";
@@ -66,7 +67,20 @@ export const createOrder = async (
     );
   }
 
-  const resolved = await resolveCartItems(locale, country, items);
+  const { items: resolved, isPricingUnavailable } = await resolveCartItems(
+    locale,
+    country,
+    items,
+  );
+
+  // An unreachable exchange rate is temporary, so the order is refused rather
+  // than created at whatever prices happened to survive resolution.
+  if (isPricingUnavailable) {
+    throw new OrderValidationError(
+      "Prices could not be established for this region",
+      "pricing_unavailable",
+    );
+  }
 
   if (resolved.length === 0) {
     throw new OrderValidationError(

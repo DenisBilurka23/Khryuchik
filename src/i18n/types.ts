@@ -28,6 +28,11 @@ export type ProductPageLabels = {
     home: string;
     shop: string;
   };
+  pricingUnavailable: {
+    title: string;
+    text: string;
+    action: string;
+  };
   selectors: {
     language: string;
     format: string;
@@ -141,6 +146,7 @@ export type CartPageLabels = {
     variantLabel: string;
     removeLabel: string;
   };
+  pricingUnavailable: string;
   summary: {
     title: string;
     promoPlaceholder: string;
@@ -213,6 +219,7 @@ export type CheckoutPageLabels = {
     invalidEmail: string;
     paymentFailed: string;
     unsupportedMethod: string;
+    pricingUnavailable: string;
   };
   fieldErrors: {
     required: string;
