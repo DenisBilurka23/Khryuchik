@@ -24,11 +24,8 @@ import type {
   OrderPaymentInfo,
 } from "@/types/order";
 import { BOOK_FORMAT } from "@/constants/catalog";
-import {
-  getRegionShipping,
-  isPaymentMethodAvailable,
-  type PaymentMethod,
-} from "@/utils";
+import { isPaymentMethodAvailable, type PaymentMethod } from "@/utils";
+import { calculateOrderShipping } from "@/server/orders/services/shipping.service";
 import { getRegionCurrency } from "@/server/localization/localization.service";
 
 export class OrderValidationError extends Error {
@@ -38,7 +35,9 @@ export class OrderValidationError extends Error {
       | "empty_cart"
       | "unsupported_payment_method"
       | "unresolved_items"
-      | "pricing_unavailable",
+      | "pricing_unavailable"
+      | "shipping_unavailable"
+      | "shipping_unsupported_destination",
   ) {
     super(message);
     this.name = "OrderValidationError";
@@ -73,8 +72,6 @@ export const createOrder = async (
     items,
   );
 
-  // An unreachable exchange rate is temporary, so the order is refused rather
-  // than created at whatever prices happened to survive resolution.
   if (isPricingUnavailable) {
     throw new OrderValidationError(
       "Prices could not be established for this region",
@@ -116,12 +113,35 @@ export const createOrder = async (
   const subtotal = round2(
     orderItems.reduce((sum, item) => sum + item.lineTotal, 0),
   );
-  const shippingConfig = getRegionShipping(country);
-  const shipping =
-    fulfillmentType === "digital" ||
-    subtotal >= shippingConfig.freeShippingThreshold
-      ? 0
-      : shippingConfig.shippingPrice;
+
+  const shippingResult = await calculateOrderShipping({
+    country,
+    items: resolved.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+      selections: selectionsById.get(item.id),
+    })),
+    subtotal,
+    isDigitalOnly: fulfillmentType === "digital",
+    address: input.shippingAddress && {
+      country: input.shippingAddress.country,
+      region: input.shippingAddress.region,
+      city: input.shippingAddress.city,
+      postalCode: input.shippingAddress.postalCode,
+      line1: input.shippingAddress.line1,
+    },
+  });
+
+  if (shippingResult.status !== "ok") {
+    throw new OrderValidationError(
+      `Shipping could not be calculated (${shippingResult.status})`,
+      shippingResult.status === "unsupported-destination"
+        ? "shipping_unsupported_destination"
+        : "shipping_unavailable",
+    );
+  }
+
+  const shipping = shippingResult.shipping;
   const discount = 0;
   const total = round2(subtotal + shipping - discount);
 

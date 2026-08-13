@@ -117,8 +117,6 @@ export const getRegionCurrency = async (
   return region?.currency ?? "USD";
 };
 
-// Resolved once per request and passed down to the pricing helpers, so a page
-// that lists many products still asks for the exchange rate a single time.
 export const getRegionPricing = cache(
   async (code: string): Promise<RegionPricing> => {
     const currency = await getRegionCurrency(code);
@@ -129,8 +127,6 @@ export const getRegionPricing = cache(
 
     const sourceCountry = await getDefaultRegionCode();
 
-    // Converted prices are derived from the default region, so there is
-    // nothing to derive them from unless that region is priced in USD.
     if ((await getRegionCurrency(sourceCountry)) !== BASE_CURRENCY) {
       return { status: "native" };
     }

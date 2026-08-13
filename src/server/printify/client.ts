@@ -21,6 +21,13 @@ export class PrintifyApiError extends Error {
   }
 }
 
+export class PrintifyTimeoutError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "PrintifyTimeoutError";
+  }
+}
+
 export class PrintifyConfigError extends Error {
   constructor(message: string) {
     super(message);
@@ -41,9 +48,6 @@ export const getPrintifyConfig = (): PrintifyConfig | null => {
   };
 };
 
-// Printify error bodies are not always JSON, so an unparsable response falls
-// back to the raw text — it still carries the reason we surface in the error
-// message. That contract is specific to this client; do not generalise it.
 const parsePrintifyBody = (raw: string): unknown => {
   if (!raw) {
     return null;
@@ -86,6 +90,7 @@ export type PrintifyRequestOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE";
   body?: unknown;
   token?: string;
+  timeoutMs?: number;
 };
 
 export const printifyRequest = async <TResponse>(
@@ -98,11 +103,22 @@ export const printifyRequest = async <TResponse>(
     throw new PrintifyConfigError("PRINTIFY_API_TOKEN is not set");
   }
 
-  const { method = "GET", body } = options;
+  const { method = "GET", body, timeoutMs } = options;
+  const deadline = timeoutMs === undefined ? null : Date.now() + timeoutMs;
 
   for (let attempt = 0; ; attempt += 1) {
+    const remainingMs = deadline === null ? null : deadline - Date.now();
+
+    if (remainingMs !== null && remainingMs <= 0) {
+      throw new PrintifyTimeoutError(
+        `Printify ${method} ${path} ran out of its ${timeoutMs}ms budget`,
+      );
+    }
+
     const response = await fetch(`${PRINTIFY_API_BASE}${path}`, {
       method,
+      signal:
+        remainingMs === null ? undefined : AbortSignal.timeout(remainingMs),
       headers: {
         Authorization: `Bearer ${token}`,
         "User-Agent": PRINTIFY_USER_AGENT,
@@ -116,8 +132,12 @@ export const printifyRequest = async <TResponse>(
     });
 
     if (response.status === 429 && attempt < RATE_LIMIT_RETRY_ATTEMPTS) {
-      await delay(getRetryDelayMs(response, attempt));
-      continue;
+      const retryDelayMs = getRetryDelayMs(response, attempt);
+
+      if (remainingMs === null || retryDelayMs < remainingMs) {
+        await delay(retryDelayMs);
+        continue;
+      }
     }
 
     const parsedBody = parsePrintifyBody(await response.text());

@@ -697,6 +697,7 @@
         "itemsLabel": "Items",
         "shippingLabel": "Shipping",
         "freeShipping": "Free",
+        "shippingAtCheckout": "Calculated at checkout",
         "discountLabel": "Discount",
         "totalLabel": "Total",
         "checkoutButton": "Continue to checkout",
@@ -750,6 +751,8 @@
         "itemsLabel": "Items",
         "shippingLabel": "Shipping",
         "freeShipping": "Free",
+        "shippingCalculating": "Calculating…",
+        "shippingPending": "Enter your address",
         "totalLabel": "Total"
       },
       "submit": {
@@ -765,7 +768,9 @@
         "invalidEmail": "Please enter a valid email address.",
         "paymentFailed": "Payment provider could not process the request. Please try again.",
         "unsupportedMethod": "This payment method isn't available for the selected country.",
-        "pricingUnavailable": "We could not get an up-to-date exchange rate, so your order cannot be priced right now. Please try again in a few minutes."
+        "pricingUnavailable": "We could not get an up-to-date exchange rate, so your order cannot be priced right now. Please try again in a few minutes.",
+        "shippingUnavailable": "We could not work out the shipping cost for this address. Please try again in a few minutes.",
+        "shippingUnsupportedDestination": "Unfortunately these items cannot be shipped to the address you entered."
       },
       "fieldErrors": {
         "required": "Required field",

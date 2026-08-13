@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { useResolvedCart } from "@/hooks/useResolvedCart";
-import { getRegionShipping, getLocalizedPath } from "@/utils";
+import { getLocalizedPath } from "@/utils";
 
 import { CartItemCard, EmptyCartState, OrderSummaryCard } from "../cart";
 import styles from "../storefront/storefront.module.css";
@@ -36,6 +36,9 @@ export const CartPageView = ({
     isPricingUnavailable,
     hasStoredItems,
   } = useResolvedCart(locale, country);
+
+  const isDigitalOnly =
+    items.length > 0 && items.every((item) => item.isDigital);
 
   const homeHref = getLocalizedPath(locale, "/");
   const shopHref = getLocalizedPath(locale, "/shop");
@@ -70,11 +73,6 @@ export const CartPageView = ({
     removeItem(id);
   };
 
-  const shippingConfig = getRegionShipping(country);
-  const shipping =
-    subtotal >= shippingConfig.freeShippingThreshold || subtotal === 0
-      ? 0
-      : shippingConfig.shippingPrice;
   const discount = 0;
 
   return (
@@ -176,8 +174,8 @@ export const CartPageView = ({
                     locale={locale}
                     currency={currency}
                     subtotal={subtotal}
-                    shipping={shipping}
                     discount={discount}
+                    isDigitalOnly={isDigitalOnly}
                     continueShoppingHref={shopHref}
                     checkoutHref={checkoutHref}
                   />

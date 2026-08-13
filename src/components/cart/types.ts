@@ -26,8 +26,8 @@ export type OrderSummaryCardProps = {
   locale: Locale;
   currency: CurrencyCode;
   subtotal: number;
-  shipping: number;
   discount: number;
+  isDigitalOnly: boolean;
   continueShoppingHref: string;
   checkoutHref: string;
 };

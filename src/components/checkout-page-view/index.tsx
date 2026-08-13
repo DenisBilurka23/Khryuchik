@@ -20,12 +20,12 @@ import { EmptyCartState } from "@/components/cart";
 import storefrontStyles from "@/components/storefront/storefront.module.css";
 import { useBuyNowCheckoutItems } from "@/hooks/useBuyNowCheckoutItems";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
+import { useShippingQuote } from "@/hooks/useShippingQuote";
 import {
   type CountryCode,
   getAllCountriesSorted,
   getCountryPaymentMethods,
   getLocalizedPath,
-  getRegionShipping,
   isIsoCountryCode,
   type PaymentMethod,
 } from "@/utils";
@@ -121,14 +121,35 @@ export const CheckoutPageView = ({
   const confirmationHref = getLocalizedPath(locale, "/checkout/confirmation");
   const isDigitalOnly =
     items.length > 0 && items.every((item) => item.isDigital);
-  const shippingConfig = getRegionShipping(country);
-  const shipping =
-    isDigitalOnly ||
-    subtotal === 0 ||
-    subtotal >= shippingConfig.freeShippingThreshold
-      ? 0
-      : shippingConfig.shippingPrice;
+
+  const checkoutItems = buyNowItems ?? cart.items;
+  const shippingQuote = useShippingQuote({
+    locale,
+    items: checkoutItems,
+    address: isIsoCountryCode(form.country)
+      ? {
+          country: form.country,
+          region: form.region.trim() || undefined,
+          city: form.city.trim() || undefined,
+          postalCode: form.postalCode.trim() || undefined,
+          line1: form.line1.trim() || undefined,
+        }
+      : null,
+    isEnabled: !isDigitalOnly && checkoutItems.length > 0,
+  });
+
+  const shipping = shippingQuote.shipping ?? 0;
   const total = subtotal + shipping;
+  const isShippingBlocking =
+    shippingQuote.status === "loading" ||
+    shippingQuote.status === "unavailable" ||
+    shippingQuote.status === "unsupported-destination";
+  const shippingErrorMessage =
+    shippingQuote.status === "unsupported-destination"
+      ? labels.errors.shippingUnsupportedDestination
+      : shippingQuote.status === "unavailable"
+        ? labels.errors.shippingUnavailable
+        : null;
 
   const clearFieldError = (key: FormFieldKey) => {
     setFieldErrors((prev) => {
@@ -196,6 +217,10 @@ export const CheckoutPageView = ({
         return labels.errors.unsupportedMethod;
       case "pricing_unavailable":
         return labels.errors.pricingUnavailable;
+      case "shipping_unavailable":
+        return labels.errors.shippingUnavailable;
+      case "shipping_unsupported_destination":
+        return labels.errors.shippingUnsupportedDestination;
       case "payment_failed":
       case "stripe_session_missing_url":
         return labels.errors.paymentFailed;
@@ -209,6 +234,11 @@ export const CheckoutPageView = ({
 
     if (isPricingUnavailable) {
       setError(labels.errors.pricingUnavailable);
+      return;
+    }
+
+    if (isShippingBlocking) {
+      setError(shippingErrorMessage);
       return;
     }
 
@@ -407,16 +437,19 @@ export const CheckoutPageView = ({
                     <CheckoutOrderSummarySection
                       items={items}
                       subtotal={subtotal}
+                      shipping={shipping}
+                      shippingStatus={shippingQuote.status}
+                      isDigitalOnly={isDigitalOnly}
                       total={total}
                       currency={currency}
                       locale={locale}
                       error={
                         isPricingUnavailable
                           ? labels.errors.pricingUnavailable
-                          : error
+                          : (shippingErrorMessage ?? error)
                       }
                       isSubmitting={isSubmitting}
-                      isBlocked={isPricingUnavailable}
+                      isBlocked={isPricingUnavailable || isShippingBlocking}
                       hasStoredItems={hasStoredItems}
                       paymentMethod={paymentMethod}
                       labels={labels}

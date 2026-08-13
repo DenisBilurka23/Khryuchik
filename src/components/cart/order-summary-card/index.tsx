@@ -1,5 +1,14 @@
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
-import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -12,14 +21,14 @@ export const OrderSummaryCard = ({
   locale,
   currency,
   subtotal,
-  shipping,
   discount,
+  isDigitalOnly,
   continueShoppingHref,
   checkoutHref,
 }: OrderSummaryCardProps) => {
   const t = useTranslations("storefront.cartPage");
   const labels = t.raw("summary") as CartPageLabels["summary"];
-  const total = subtotal + shipping - discount;
+  const total = subtotal - discount;
 
   return (
     <Card
@@ -53,9 +62,22 @@ export const OrderSummaryCard = ({
             </Typography>
           </Stack>
 
+          {isDigitalOnly ? null : (
+            <Stack direction="row" justifyContent="space-between">
+              <Typography color="text.secondary">
+                {labels.shippingLabel}
+              </Typography>
+              <Typography color="text.secondary">
+                {labels.shippingAtCheckout}
+              </Typography>
+            </Stack>
+          )}
+
           {discount > 0 ? (
             <Stack direction="row" justifyContent="space-between">
-              <Typography color="text.secondary">{labels.discountLabel}</Typography>
+              <Typography color="text.secondary">
+                {labels.discountLabel}
+              </Typography>
               <Typography>
                 {`-${formatCurrency(discount, locale, currency)}`}
               </Typography>
@@ -65,11 +87,17 @@ export const OrderSummaryCard = ({
 
         <Divider sx={{ my: 3 }} />
 
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography sx={{ fontSize: 20, fontWeight: 800 }}>
             {labels.totalLabel}
           </Typography>
-          <Typography sx={{ fontSize: 28, fontWeight: 800, color: "primary.main" }}>
+          <Typography
+            sx={{ fontSize: 28, fontWeight: 800, color: "primary.main" }}
+          >
             {formatCurrency(total, locale, currency)}
           </Typography>
         </Stack>

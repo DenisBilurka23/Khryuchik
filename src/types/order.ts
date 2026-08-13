@@ -1,10 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
-import type {
-  CountryCode,
-  CurrencyCode,
-  PaymentMethod,
-} from "@/utils/country";
+import type { CountryCode, CurrencyCode, PaymentMethod } from "@/utils/country";
 
 export type OrderItem = {
   productId: string;
@@ -36,11 +32,7 @@ export type OrderShippingAddress = {
   country: string;
 };
 
-export type OrderPaymentStatus =
-  | "pending"
-  | "paid"
-  | "failed"
-  | "cod_pending";
+export type OrderPaymentStatus = "pending" | "paid" | "failed" | "cod_pending";
 
 export const ORDER_STATUSES = [
   "new",
@@ -119,3 +111,20 @@ export type CreateOrderInput = {
   userId?: string;
   notes?: string;
 };
+
+export type ShippingQuoteRequest = {
+  locale: Locale;
+  items: StoredCartItem[];
+  address: {
+    country: string;
+    region?: string;
+    city?: string;
+    postalCode?: string;
+    line1?: string;
+  };
+};
+
+export type ShippingQuoteResponse =
+  | { status: "ok"; shipping: number }
+  | { status: "unsupported-destination" }
+  | { status: "unavailable" };

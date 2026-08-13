@@ -16,6 +16,9 @@ import type { OrderSummarySectionProps } from "./types";
 export const CheckoutOrderSummarySection = ({
   items,
   subtotal,
+  shipping,
+  shippingStatus,
+  isDigitalOnly,
   total,
   currency,
   locale,
@@ -90,6 +93,27 @@ export const CheckoutOrderSummarySection = ({
           </Typography>
           <Typography>{formatCurrency(subtotal, locale, currency)}</Typography>
         </Stack>
+
+        {isDigitalOnly ? null : (
+          <Stack direction="row" justifyContent="space-between">
+            <Typography color="text.secondary">
+              {labels.summary.shippingLabel}
+            </Typography>
+            <Typography
+              color={shippingStatus === "ok" ? undefined : "text.secondary"}
+            >
+              {shippingStatus === "ok"
+                ? shipping === 0
+                  ? labels.summary.freeShipping
+                  : formatCurrency(shipping, locale, currency)
+                : shippingStatus === "loading"
+                  ? labels.summary.shippingCalculating
+                  : shippingStatus === "idle"
+                    ? labels.summary.shippingPending
+                    : "—"}
+            </Typography>
+          </Stack>
+        )}
       </Stack>
 
       <Divider sx={{ my: 2 }} />

@@ -1,8 +1,3 @@
-// Shapes returned by the Printify REST API (https://developers.printify.com).
-// Field names stay snake_case on purpose so responses can be typed as-is
-// without an extra mapping layer; the mapping into our own catalog documents
-// happens in the printify services.
-
 export type PrintifyShop = {
   id: number;
   title: string;
@@ -24,13 +19,10 @@ export type PrintifyProductVariant = {
   id: number;
   sku: string;
   title: string;
-  /** Production cost charged by the print provider, in cents. */
   cost: number;
-  /** Retail price configured inside Printify, in cents. */
   price: number;
   is_enabled: boolean;
   is_available: boolean;
-  /** Ids of the option values this variant is built from. */
   options: number[];
 };
 
@@ -41,7 +33,6 @@ export type PrintifyProductImage = {
   is_default: boolean;
 };
 
-/** Link back to the product page on the merchant's own storefront. */
 export type PrintifyExternalLink = {
   id?: string;
   handle?: string;
@@ -68,7 +59,41 @@ export type PrintifyPaginatedResponse<TItem> = {
   data: TItem[];
 };
 
-/** Flags telling Printify which fields the storefront picked up on publish. */
+export type PrintifyShippingLineItem = {
+  product_id: string;
+  variant_id: number;
+  quantity: number;
+};
+
+export type PrintifyShippingAddress = {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  country: string;
+  region: string;
+  address1: string;
+  address2?: string;
+  city: string;
+  zip: string;
+};
+
+export type PrintifyShippingRequest = {
+  line_items: PrintifyShippingLineItem[];
+  address_to: PrintifyShippingAddress;
+};
+
+// Costs in cents, quoted in the shop's currency (USD for this shop — the API
+// states no currency of its own). Only the methods the print providers offer
+// for the destination come back, so every field is optional.
+export type PrintifyShippingResponse = {
+  standard?: number;
+  express?: number;
+  priority?: number;
+  printify_express?: number;
+  economy?: number;
+};
+
 export type PrintifyPublishScope = {
   title: boolean;
   description: boolean;
