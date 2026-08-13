@@ -48,33 +48,6 @@ export const getAllCountriesSorted = (
     label: getCountryDisplayName(locale, code),
   })).sort((a, b) => a.label.localeCompare(b.label, locale));
 
-export const countryShippingConfig: Record<
-  CountryCode,
-  {
-    freeShippingThreshold: number;
-    shippingPrice: number;
-  }
-> = {
-  // Shipping pricing is not finalised yet — keep at 0 so totals stay clean
-  // until the real rates are wired in.
-  BY: {
-    freeShippingThreshold: 80,
-    shippingPrice: 0,
-  },
-  US: {
-    freeShippingThreshold: 35,
-    shippingPrice: 0,
-  },
-};
-
-// Shipping config is not admin-managed yet, so unknown regions fall back to a
-// zero (free) config instead of crashing on a missing map entry.
-export const getRegionShipping = (country: CountryCode) =>
-  countryShippingConfig[country] ?? {
-    freeShippingThreshold: 0,
-    shippingPrice: 0,
-  };
-
 // New countries default to Stripe; only regions where Stripe is unavailable
 // (e.g. BY) opt into alternative methods explicitly.
 const defaultPaymentMethods: PaymentMethod[] = ["stripe"];

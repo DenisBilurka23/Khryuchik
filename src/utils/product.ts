@@ -51,10 +51,6 @@ const localizeDeliveryCopy = (
   });
 };
 
-// A price entered for the region always wins — books are priced by hand per
-// region and must not drift with the exchange rate. Only a product with no
-// price of its own falls back to the default region's USD price, and only
-// where the region is one the admin already opened the product to.
 const resolveCountryPricing = (
   product: ProductDocument,
   country: CountryCode,

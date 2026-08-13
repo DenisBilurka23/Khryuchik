@@ -22,15 +22,8 @@ type CachedRates = {
   fetchedAt: number;
 };
 
-// The provider refreshes once a day, so the response is held for that long
-// instead of being re-fetched per request.
 let cachedRates: CachedRates | null = null;
 
-// A rate that was fetched successfully at least once is remembered for the
-// lifetime of the process and reused only when a later fetch fails. There is
-// deliberately no hardcoded rate to fall back on: a stale-but-real rate is off
-// by a fraction of a percent, while a rate baked into the source silently
-// misprices the whole catalogue for as long as nobody notices it.
 const lastKnownRates = new Map<CurrencyCode, number>();
 
 const requestRates = async (): Promise<Record<string, number> | null> => {
@@ -80,9 +73,6 @@ const getRates = async (): Promise<Record<string, number> | null> => {
   return rates;
 };
 
-// Returns how many units of `currency` one US dollar buys, or null when the
-// rate could not be established at all — callers surface that as an error
-// rather than pricing anything with a guessed number.
 export const getUsdRate = async (
   currency: CurrencyCode,
 ): Promise<number | null> => {

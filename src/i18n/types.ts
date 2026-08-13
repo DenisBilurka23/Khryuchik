@@ -154,6 +154,7 @@ export type CartPageLabels = {
     itemsLabel: string;
     shippingLabel: string;
     freeShipping: string;
+    shippingAtCheckout: string;
     discountLabel: string;
     totalLabel: string;
     checkoutButton: string;
@@ -204,6 +205,8 @@ export type CheckoutPageLabels = {
     itemsLabel: string;
     shippingLabel: string;
     freeShipping: string;
+    shippingCalculating: string;
+    shippingPending: string;
     totalLabel: string;
   };
   submit: {
@@ -220,6 +223,8 @@ export type CheckoutPageLabels = {
     paymentFailed: string;
     unsupportedMethod: string;
     pricingUnavailable: string;
+    shippingUnavailable: string;
+    shippingUnsupportedDestination: string;
   };
   fieldErrors: {
     required: string;

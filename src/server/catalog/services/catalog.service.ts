@@ -19,10 +19,9 @@ import type {
 } from "@/types/catalog";
 import type { RegionPricing } from "@/types/localization";
 import { getRegionPricing } from "@/server/localization/localization.service";
-import type { ProductDetails } from "@/types/product-details";
+import type { ProductDetails, ProductOption } from "@/types/product-details";
 import type { CartItem, StoredCartItem } from "@/types/cart";
 import { BOOK_FORMAT } from "@/constants/catalog";
-import type { ProductOption } from "@/types/product-details";
 import {
   findActiveProductBySlug,
   findActiveProductsByIds,
@@ -126,9 +125,6 @@ export const getProductSummariesByIds = async (
     .filter(isLocalizedProductSummary);
 };
 
-// A product the region carries but cannot be priced — the exchange rate is
-// unreachable and it has no price of its own — is not a missing product, so it
-// is reported separately instead of collapsing into a 404.
 export type ProductDetailsResult =
   | { status: "ok"; product: ProductDetails }
   | { status: "not-found" }
