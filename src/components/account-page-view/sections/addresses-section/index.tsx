@@ -8,12 +8,8 @@ import {
   ButtonBase,
   Chip,
   CircularProgress,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Stack,
   TextField,
   Typography,
@@ -33,8 +29,12 @@ import {
   getUserShippingAddressLines,
   getUserShippingAddressTitle,
 } from "@/utils/account-page";
-import { getAllCountriesSorted, isIsoCountryCode } from "@/utils";
-import { scrollMenuToKeyChar } from "@/utils/menu";
+import {
+  getAllCountriesSorted,
+  isIsoCountryCode,
+  isPostalCodeValid,
+} from "@/utils";
+import { CountrySelect } from "@/components/country-select";
 
 import { SectionCard } from "../../shared";
 
@@ -87,6 +87,9 @@ export const AddressesSection = ({
       case UserOperationErrorReason.InvalidCountry:
       case "invalid_country":
         return t("addressInvalidCountry");
+      case UserOperationErrorReason.InvalidPostalCode:
+      case "invalid_postal_code":
+        return t("addressInvalidPostalCode");
       case UserOperationErrorReason.AddressNotFound:
       case "address_not_found":
         return t("addressNotFound");
@@ -136,6 +139,11 @@ export const AddressesSection = ({
 
     if (!isIsoCountryCode(addressForm.country)) {
       setAddressError(t("addressInvalidCountry"));
+      return;
+    }
+
+    if (!isPostalCodeValid(addressForm.postalCode ?? "")) {
+      setAddressError(t("addressInvalidPostalCode"));
       return;
     }
 
@@ -258,6 +266,7 @@ export const AddressesSection = ({
               <Grid size={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
+                  required
                   label={tCheckoutFields("postalCode")}
                   value={addressForm.postalCode ?? ""}
                   onChange={(e) =>
@@ -266,21 +275,13 @@ export const AddressesSection = ({
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <FormControl fullWidth required>
-                  <InputLabel>{t("addressCountryLabel")}</InputLabel>
-                  <Select
-                    value={addressForm.country}
-                    label={t("addressCountryLabel")}
-                    onChange={(e) => handleAddressFieldChange("country", e.target.value)}
-                    MenuProps={{ disablePortal: true, PaperProps: { sx: { maxHeight: 280 } }, MenuListProps: { onKeyDown: scrollMenuToKeyChar } }}
-                  >
-                    {allCountries.map(({ code, label }) => (
-                      <MenuItem key={code} value={code}>
-                        {label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <CountrySelect
+                  required
+                  value={addressForm.country}
+                  options={allCountries}
+                  label={t("addressCountryLabel")}
+                  onChange={(code) => handleAddressFieldChange("country", code)}
+                />
               </Grid>
             </Grid>
 

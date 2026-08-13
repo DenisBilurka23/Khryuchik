@@ -8,6 +8,7 @@ export enum UserOperationErrorReason {
   EmailManagedByGoogle = "email_managed_by_google",
   MissingFields = "missing_fields",
   InvalidCountry = "invalid_country",
+  InvalidPostalCode = "invalid_postal_code",
   AddressNotFound = "address_not_found",
   CannotDemoteSelf = "cannot_demote_self",
   CannotDeleteSelf = "cannot_delete_self",

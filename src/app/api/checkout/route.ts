@@ -16,6 +16,7 @@ import { BOOK_FORMAT } from "@/constants/catalog";
 import {
   getCountryPaymentMethods,
   isIsoCountryCode,
+  isPostalCodeValid,
   normalizeOrderEmail,
   type PaymentMethod,
 } from "@/utils";
@@ -76,6 +77,13 @@ const parseShippingAddress = (value: unknown): OrderShippingAddress | null => {
     return null;
   }
 
+  if (
+    typeof raw.postalCode !== "string" ||
+    !isPostalCodeValid(raw.postalCode)
+  ) {
+    return null;
+  }
+
   const optional = (key: string) =>
     typeof raw[key] === "string" && (raw[key] as string).length > 0
       ? (raw[key] as string)
@@ -86,7 +94,7 @@ const parseShippingAddress = (value: unknown): OrderShippingAddress | null => {
     line2: optional("line2"),
     city: raw.city.trim(),
     region: optional("region"),
-    postalCode: optional("postalCode"),
+    postalCode: raw.postalCode.trim(),
     country: countryValue,
   };
 };

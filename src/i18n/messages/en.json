@@ -723,8 +723,8 @@
         "name": "Full name",
         "email": "Email",
         "phone": "Phone",
-        "line1": "Street, building",
-        "line2": "Apartment, entrance (optional)",
+        "line1": "Address line 1",
+        "line2": "Address line 2 (optional)",
         "city": "City",
         "region": "Region (optional)",
         "postalCode": "Postal code",
@@ -774,7 +774,8 @@
       },
       "fieldErrors": {
         "required": "Required field",
-        "invalidEmail": "Enter a valid email address"
+        "invalidEmail": "Enter a valid email address",
+        "invalidPostalCode": "Enter a valid postal code"
       },
       "emptyState": {
         "title": "Your cart is empty",
@@ -1091,6 +1092,7 @@
     "addressCountryLabel": "Country",
     "addressMissingFields": "Add an address name, street address, and city.",
     "addressInvalidCountry": "Choose a valid country for this address.",
+    "addressInvalidPostalCode": "Enter a valid postal code for this address.",
     "addressNotFound": "This address is no longer available.",
     "allOrders": "All orders",
     "noOrders": "You don't have any orders yet. Your first order will appear here.",

@@ -30,6 +30,7 @@ export {
   normalizeOrderEmail,
   toAccountOrder,
 } from "./order";
+export { isPostalCodeValid } from "./postal-code";
 export { convertFromUsd } from "./price-conversion";
 export {
   isLocalizedProductSummary,

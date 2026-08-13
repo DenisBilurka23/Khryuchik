@@ -1,7 +1,16 @@
+import { isPostalCodeValid } from "@/utils";
+
 import type { CheckoutPageViewProps, FieldErrors, FormState } from "./types";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const requiredFields = ["name", "email", "line1", "city", "country"] as const;
+const requiredFields = [
+  "name",
+  "email",
+  "line1",
+  "city",
+  "postalCode",
+  "country",
+] as const;
 
 export const formFromAddress = (
   initialCustomer: CheckoutPageViewProps["initialCustomer"],
@@ -21,7 +30,11 @@ export const formFromAddress = (
 
 export const validateForm = (
   form: FormState,
-  messages: { required: string; invalidEmail: string },
+  messages: {
+    required: string;
+    invalidEmail: string;
+    invalidPostalCode: string;
+  },
   options?: { skipAddress?: boolean },
 ): FieldErrors => {
   const errors: FieldErrors = {};
@@ -37,6 +50,14 @@ export const validateForm = (
 
   if (!errors.email && !emailPattern.test(form.email.trim())) {
     errors.email = messages.invalidEmail;
+  }
+
+  if (
+    !options?.skipAddress &&
+    !errors.postalCode &&
+    !isPostalCodeValid(form.postalCode)
+  ) {
+    errors.postalCode = messages.invalidPostalCode;
   }
 
   return errors;
