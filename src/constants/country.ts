@@ -7,8 +7,6 @@ export const geoCountryHeaderNames = [
   "x-geo-country",
 ] as const;
 
-export const countries = ["BY", "US"] as const;
-
 export const defaultCountry = "US" as const;
 
 export const COUNTRY_COOKIE_NAME = "khryuchik-country";

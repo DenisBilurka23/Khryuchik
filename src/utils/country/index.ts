@@ -1,5 +1,4 @@
 import {
-  countries,
   COUNTRY_COOKIE_NAME,
   COUNTRY_HEADER,
   defaultCountry,
@@ -9,8 +8,6 @@ import { ALL_COUNTRY_CODES } from "@/constants/all-country-codes";
 
 export type CountryCode = string;
 
-export type BuiltInCountryCode = "BY" | "US";
-
 export type CurrencyCode = string;
 
 export type PaymentMethod = "stripe" | "cod" | "telegram_transfer";
@@ -18,17 +15,9 @@ export type PaymentMethod = "stripe" | "cod" | "telegram_transfer";
 export {
   COUNTRY_COOKIE_NAME,
   COUNTRY_HEADER,
-  countries,
   defaultCountry,
   geoCountryHeaderNames,
 };
-
-export const isCountryCode = (
-  value: string | null | undefined,
-): value is CountryCode =>
-  Boolean(value && countries.includes(value as BuiltInCountryCode));
-
-export const getCountryShortLabel = (country: CountryCode) => country;
 
 export const getCountryDisplayName = (
   locale: string,
@@ -98,10 +87,4 @@ export const readCountryCookie = (
       .find((part) => part.startsWith(`${COUNTRY_COOKIE_NAME}=`))
       ?.split("=")[1] ?? null
   );
-};
-
-export const getCountryFromCookieHeader = (cookieHeader: string | null) => {
-  const countryCookie = readCountryCookie(cookieHeader);
-
-  return isCountryCode(countryCookie) ? countryCookie : null;
 };

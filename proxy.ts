@@ -1,12 +1,12 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 import {
   ADMIN_LOCALE_COOKIE_NAME,
   ADMIN_LOCALE_QUERY_PARAM,
-  LOCALE_HEADER,
   defaultLocale,
   isLocale,
+  LOCALE_HEADER,
   locales,
 } from "@/i18n/config";
 import {
@@ -14,7 +14,7 @@ import {
   COUNTRY_HEADER,
   defaultCountry,
   getCountryFromGeoHeaders,
-  isCountryCode,
+  isIsoCountryCode,
 } from "@/utils";
 
 const isAdminPath = (pathname: string) =>
@@ -44,7 +44,7 @@ const getPreferredLocale = (request: NextRequest) => {
 const getPreferredCountry = (request: NextRequest) => {
   const cookieCountry = request.cookies.get(COUNTRY_COOKIE_NAME)?.value;
 
-  if (isCountryCode(cookieCountry)) {
+  if (isIsoCountryCode(cookieCountry)) {
     return cookieCountry;
   }
 
@@ -86,7 +86,9 @@ export const proxy = (request: NextRequest) => {
   const country = getPreferredCountry(request);
 
   if (isAdminPath(pathname)) {
-    const queryLocale = request.nextUrl.searchParams.get(ADMIN_LOCALE_QUERY_PARAM);
+    const queryLocale = request.nextUrl.searchParams.get(
+      ADMIN_LOCALE_QUERY_PARAM,
+    );
 
     if (queryLocale && isLocale(queryLocale)) {
       const redirectedUrl = request.nextUrl.clone();
