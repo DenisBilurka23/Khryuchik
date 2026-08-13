@@ -4,6 +4,7 @@ import type {
   PrintifyPaginatedResponse,
   PrintifyProduct,
   PrintifyPublishScope,
+  PrintifyShop,
 } from "./types";
 
 const PRODUCTS_PAGE_SIZE = 50;
@@ -36,10 +37,7 @@ const FULL_PUBLISH_SCOPE: PrintifyPublishScope = {
 };
 
 export const fetchPrintifyShops = (options?: { token?: string }) =>
-  printifyRequest<Array<{ id: number; title: string; sales_channel: string }>>(
-    "/shops.json",
-    options,
-  );
+  printifyRequest<PrintifyShop[]>("/shops.json", options);
 
 export const fetchPrintifyProductsPage = (
   shopId: string,
