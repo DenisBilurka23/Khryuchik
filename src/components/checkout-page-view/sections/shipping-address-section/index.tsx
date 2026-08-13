@@ -1,15 +1,6 @@
-import {
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Grid, Stack, TextField } from "@mui/material";
 
-import { scrollMenuToKeyChar } from "@/utils/menu";
+import { CountrySelect } from "@/components/country-select";
 
 import { CheckoutSectionCard } from "../../section-card";
 import type { ShippingAddressSectionProps } from "./types";
@@ -62,40 +53,24 @@ export const CheckoutShippingAddressSection = ({
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             fullWidth
+            required
             label={labels.fields.postalCode}
             value={form.postalCode}
             onChange={onField("postalCode")}
+            error={Boolean(fieldErrors.postalCode)}
+            helperText={fieldErrors.postalCode}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <FormControl fullWidth required error={Boolean(fieldErrors.country)}>
-            <InputLabel>{labels.fields.country}</InputLabel>
-            <Select
-              value={form.country}
-              label={labels.fields.country}
-              onChange={(event) => onCountryChange(event.target.value)}
-              MenuProps={{
-                disablePortal: true,
-                PaperProps: { sx: { maxHeight: 280 } },
-                MenuListProps: { onKeyDown: scrollMenuToKeyChar },
-              }}
-            >
-              {countries.map(({ code, label }) => (
-                <MenuItem key={code} value={code}>
-                  {label}
-                </MenuItem>
-              ))}
-            </Select>
-            {fieldErrors.country ? (
-              <Typography
-                variant="caption"
-                color="error"
-                sx={{ mt: 0.5, ml: 1.75 }}
-              >
-                {fieldErrors.country}
-              </Typography>
-            ) : null}
-          </FormControl>
+          <CountrySelect
+            required
+            value={form.country}
+            options={countries}
+            label={labels.fields.country}
+            onChange={onCountryChange}
+            error={Boolean(fieldErrors.country)}
+            helperText={fieldErrors.country}
+          />
         </Grid>
       </Grid>
       <TextField

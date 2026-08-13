@@ -229,6 +229,7 @@ export type CheckoutPageLabels = {
   fieldErrors: {
     required: string;
     invalidEmail: string;
+    invalidPostalCode: string;
   };
   emptyState: {
     title: string;
@@ -830,6 +831,7 @@ export type AccountPageDictionary = {
   addressCountryLabel: string;
   addressMissingFields: string;
   addressInvalidCountry: string;
+  addressInvalidPostalCode: string;
   addressNotFound: string;
   allOrders: string;
   noOrders: string;
