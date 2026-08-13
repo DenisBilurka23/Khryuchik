@@ -1,5 +1,6 @@
 import "server-only";
 
+import { PRINTIFY_RESTRICTED_COUNTRIES } from "@/constants/printify";
 import { findProductsByIds } from "@/server/catalog/repositories/products.repository";
 import type { CartSelections } from "@/types/cart";
 
@@ -155,6 +156,10 @@ export const getPrintifyShippingQuote = async (
 
   if (lineItems.length === 0) {
     return { status: "no-merch" };
+  }
+
+  if (PRINTIFY_RESTRICTED_COUNTRIES.includes(address.country.toUpperCase())) {
+    return { status: "unsupported-destination" };
   }
 
   const shopId = getPrintifyConfig()?.shopId;
