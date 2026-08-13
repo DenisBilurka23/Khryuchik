@@ -37,12 +37,9 @@ export const getAllCountriesSorted = (
     label: getCountryDisplayName(locale, code),
   })).sort((a, b) => a.label.localeCompare(b.label, locale));
 
-// New countries default to Stripe; only regions where Stripe is unavailable
-// (e.g. BY) opt into alternative methods explicitly.
 const defaultPaymentMethods: PaymentMethod[] = ["stripe"];
 
 const countryPaymentMethods: Partial<Record<CountryCode, PaymentMethod[]>> = {
-  US: defaultPaymentMethods,
   BY: ["cod", "telegram_transfer"],
 };
 
