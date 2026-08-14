@@ -33,6 +33,7 @@ import {
   buildPrintifyProductOptions,
   buildPrintifyVariantLinks,
   getPrintifyBaseRetailCents,
+  mergePrintifyProductOptions,
 } from "../variant-mapping";
 
 const MAX_IMPORTED_IMAGES = 6;
@@ -405,7 +406,14 @@ export const syncPrintifyProduct = async (productId: string) => {
       translations: Object.fromEntries(
         Object.entries(details.translations).map(([locale, translation]) => [
           locale,
-          { ...translation, sizes: options.size, colors: options.color },
+          {
+            ...translation,
+            sizes: mergePrintifyProductOptions(options.size, translation.sizes),
+            colors: mergePrintifyProductOptions(
+              options.color,
+              translation.colors,
+            ),
+          },
         ]),
       ) as typeof details.translations,
     });
