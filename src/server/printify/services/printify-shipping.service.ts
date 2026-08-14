@@ -4,7 +4,12 @@ import { PRINTIFY_RESTRICTED_COUNTRIES } from "@/constants/printify";
 import { findProductsByIds } from "@/server/catalog/repositories/products.repository";
 import type { CartSelections } from "@/types/cart";
 
-import { getPrintifyConfig, printifyRequest } from "../client";
+import {
+  getPrintifyConfig,
+  PrintifyApiError,
+  PrintifyConfigError,
+  printifyRequest,
+} from "../client";
 import type {
   PrintifyShippingLineItem,
   PrintifyShippingRequest,
@@ -15,6 +20,9 @@ import { findPrintifyVariant } from "../variant-mapping";
 const QUOTE_TIMEOUT_MS = 4_000;
 const QUOTE_RETRY_ATTEMPTS = 1;
 const QUOTE_CACHE_TTL_MS = 10 * 60 * 1000;
+// A failed quote is cached briefly so a shopper still editing the address stops
+// re-sending the same doomed request on every keystroke.
+const FAILED_QUOTE_CACHE_TTL_MS = 30 * 1000;
 const QUOTE_CACHE_MAX_ENTRIES = 200;
 
 export type ShippingQuoteItem = {
@@ -39,7 +47,7 @@ export type PrintifyShippingQuote =
 
 type CachedQuote = {
   quote: PrintifyShippingQuote;
-  cachedAt: number;
+  expiresAt: number;
 };
 
 const quoteCache = new Map<string, CachedQuote>();
@@ -63,7 +71,7 @@ const readCache = (key: string) => {
     return null;
   }
 
-  if (Date.now() - cached.cachedAt > QUOTE_CACHE_TTL_MS) {
+  if (Date.now() > cached.expiresAt) {
     quoteCache.delete(key);
 
     return null;
@@ -72,7 +80,11 @@ const readCache = (key: string) => {
   return cached.quote;
 };
 
-const writeCache = (key: string, quote: PrintifyShippingQuote) => {
+const writeCache = (
+  key: string,
+  quote: PrintifyShippingQuote,
+  ttlMs: number,
+) => {
   if (quoteCache.size >= QUOTE_CACHE_MAX_ENTRIES) {
     const oldestKey = quoteCache.keys().next().value;
 
@@ -81,7 +93,7 @@ const writeCache = (key: string, quote: PrintifyShippingQuote) => {
     }
   }
 
-  quoteCache.set(key, { quote, cachedAt: Date.now() });
+  quoteCache.set(key, { quote, expiresAt: Date.now() + ttlMs });
 };
 
 const buildLineItems = async (
@@ -124,6 +136,18 @@ const buildLineItems = async (
   return lineItems;
 };
 
+const isRetryableError = (error: unknown) => {
+  if (error instanceof PrintifyConfigError) {
+    return false;
+  }
+
+  if (error instanceof PrintifyApiError) {
+    return error.status === 429 || error.status >= 500;
+  }
+
+  return true;
+};
+
 const requestQuote = async (
   shopId: string,
   payload: PrintifyShippingRequest,
@@ -135,7 +159,7 @@ const requestQuote = async (
         { method: "POST", body: payload, timeoutMs: QUOTE_TIMEOUT_MS },
       );
     } catch (error) {
-      if (attempt >= QUOTE_RETRY_ATTEMPTS) {
+      if (attempt >= QUOTE_RETRY_ATTEMPTS || !isRetryableError(error)) {
         console.error("Printify shipping quote failed", error);
 
         return null;
@@ -193,7 +217,11 @@ export const getPrintifyShippingQuote = async (
   });
 
   if (!response) {
-    return { status: "unavailable" };
+    const failure: PrintifyShippingQuote = { status: "unavailable" };
+
+    writeCache(cacheKey, failure, FAILED_QUOTE_CACHE_TTL_MS);
+
+    return failure;
   }
 
   const quote: PrintifyShippingQuote =
@@ -201,7 +229,7 @@ export const getPrintifyShippingQuote = async (
       ? { status: "quoted", amountCents: response.standard }
       : { status: "unsupported-destination" };
 
-  writeCache(cacheKey, quote);
+  writeCache(cacheKey, quote, QUOTE_CACHE_TTL_MS);
 
   return quote;
 };
