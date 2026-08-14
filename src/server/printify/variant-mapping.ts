@@ -209,13 +209,16 @@ export const findPrintifyVariant = (
   variants: PrintifyVariantLink[],
   selections: PrintifyVariantSelections,
 ) => {
+  const sellable = variants.filter(
+    (variant) => variant.isEnabled && variant.isAvailable,
+  );
   const matches = (variant: PrintifyVariantLink) =>
     variant.selections.size === selections.size &&
     variant.selections.color === selections.color;
 
-  if (!selections.size && !selections.color && variants.length === 1) {
-    return variants[0];
+  if (!selections.size && !selections.color && sellable.length === 1) {
+    return sellable[0];
   }
 
-  return variants.find(matches);
+  return sellable.find(matches);
 };

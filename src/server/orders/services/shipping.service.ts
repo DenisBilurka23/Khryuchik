@@ -20,6 +20,7 @@ export type OrderShippingInput = {
 export type OrderShippingResult =
   | { status: "ok"; shipping: number }
   | { status: "unsupported-destination" }
+  | { status: "unsupported-variant" }
   | { status: "unavailable" };
 
 export const calculateOrderShipping = async ({
@@ -46,9 +47,10 @@ export const calculateOrderShipping = async ({
     return { status: "unsupported-destination" };
   }
 
-  // Books ship by hand and are not charged for — no rate has been set for them
-  // — so a cart without merch costs nothing to deliver and never reaches
-  // Printify at all.
+  if (quote.status === "unsupported-variant") {
+    return { status: "unsupported-variant" };
+  }
+
   if (quote.status === "no-merch") {
     return { status: "ok", shipping: 0 };
   }

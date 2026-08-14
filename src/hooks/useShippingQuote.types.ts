@@ -7,6 +7,7 @@ export type ShippingQuoteStatus =
   | "loading"
   | "ok"
   | "unsupported-destination"
+  | "unsupported-variant"
   | "unavailable";
 
 export type UseShippingQuoteParams = {

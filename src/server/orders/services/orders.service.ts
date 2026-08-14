@@ -25,7 +25,10 @@ import type {
 } from "@/types/order";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import { isPaymentMethodAvailable, type PaymentMethod } from "@/utils";
-import { calculateOrderShipping } from "@/server/orders/services/shipping.service";
+import {
+  calculateOrderShipping,
+  type OrderShippingResult,
+} from "@/server/orders/services/shipping.service";
 import { getRegionCurrency } from "@/server/localization/localization.service";
 
 export class OrderValidationError extends Error {
@@ -37,7 +40,8 @@ export class OrderValidationError extends Error {
       | "unresolved_items"
       | "pricing_unavailable"
       | "shipping_unavailable"
-      | "shipping_unsupported_destination",
+      | "shipping_unsupported_destination"
+      | "unsupported_variant",
   ) {
     super(message);
     this.name = "OrderValidationError";
@@ -49,6 +53,19 @@ const round2 = (value: number) => Math.round(value * 100) / 100;
 const initialPaymentStatus = (
   method: PaymentMethod,
 ): OrderPaymentInfo["status"] => (method === "cod" ? "cod_pending" : "pending");
+
+const shippingErrorCode = (
+  status: Exclude<OrderShippingResult["status"], "ok">,
+): OrderValidationError["code"] => {
+  switch (status) {
+    case "unsupported-destination":
+      return "shipping_unsupported_destination";
+    case "unsupported-variant":
+      return "unsupported_variant";
+    default:
+      return "shipping_unavailable";
+  }
+};
 
 export const createOrder = async (
   input: CreateOrderInput,
@@ -135,9 +152,7 @@ export const createOrder = async (
   if (shippingResult.status !== "ok") {
     throw new OrderValidationError(
       `Shipping could not be calculated (${shippingResult.status})`,
-      shippingResult.status === "unsupported-destination"
-        ? "shipping_unsupported_destination"
-        : "shipping_unavailable",
+      shippingErrorCode(shippingResult.status),
     );
   }
 

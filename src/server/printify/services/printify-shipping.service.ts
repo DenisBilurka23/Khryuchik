@@ -43,6 +43,7 @@ export type PrintifyShippingQuote =
   | { status: "no-merch" }
   | { status: "quoted"; amountCents: number }
   | { status: "unsupported-destination" }
+  | { status: "unsupported-variant" }
   | { status: "unavailable" };
 
 type CachedQuote = {
@@ -175,7 +176,7 @@ export const getPrintifyShippingQuote = async (
   const lineItems = await buildLineItems(items);
 
   if (lineItems === null) {
-    return { status: "unavailable" };
+    return { status: "unsupported-variant" };
   }
 
   if (lineItems.length === 0) {
