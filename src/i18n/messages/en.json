@@ -771,7 +771,7 @@
         "pricingUnavailable": "We could not get an up-to-date exchange rate, so your order cannot be priced right now. Please try again in a few minutes.",
         "shippingUnavailable": "We could not work out the shipping cost for this address. Please try again in a few minutes.",
         "shippingUnsupportedDestination": "Unfortunately these items cannot be shipped to the address you entered.",
-        "unsupportedVariant": "This size and colour combination is not available. Please pick another one in your cart."
+        "unsupportedVariant": "This size and color combination is not available. Please pick another one in your cart."
       },
       "fieldErrors": {
         "required": "Required field",
