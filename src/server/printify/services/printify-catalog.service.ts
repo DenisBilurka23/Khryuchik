@@ -11,6 +11,7 @@ import {
 } from "@/server/catalog/repositories/product-details.repository";
 import {
   findAllProducts,
+  findPrintifyLinkedProductIds,
   findProductById,
   upsertProduct,
 } from "@/server/catalog/repositories/products.repository";
@@ -38,6 +39,10 @@ import {
 
 const MAX_IMPORTED_IMAGES = 6;
 const SHORT_DESCRIPTION_MAX_LENGTH = 160;
+
+// Netlify caps a synchronous function at 60s. What is left over the budget is
+// headroom for the product still in flight when the batch runs out of time.
+const PRINTIFY_SYNC_BUDGET_MS = 45_000;
 
 // Printify quotes every product in USD regardless of the billing currency.
 const PRINTIFY_CURRENCY = "USD";
@@ -420,6 +425,50 @@ export const syncPrintifyProduct = async (productId: string) => {
   }
 
   return { variantsCount: link.variants.length };
+};
+
+export type PrintifyCatalogSyncSummary = {
+  synced: number;
+  failed: { productId: string; error: string }[];
+  nextCursor: string | null;
+};
+
+export const syncPrintifyCatalog = async (
+  cursor?: string,
+): Promise<PrintifyCatalogSyncSummary> => {
+  requireShopId();
+
+  const productIds = await findPrintifyLinkedProductIds(cursor);
+  const deadline = Date.now() + PRINTIFY_SYNC_BUDGET_MS;
+  const failed: PrintifyCatalogSyncSummary["failed"] = [];
+  let processed = 0;
+  let synced = 0;
+  let nextCursor: string | null = null;
+
+  for (const productId of productIds) {
+    // One product is always processed before the budget can end the batch,
+    // otherwise a caller resuming from this cursor would get it straight back.
+    if (processed > 0 && Date.now() >= deadline) {
+      nextCursor = productIds[processed - 1];
+      break;
+    }
+
+    try {
+      await syncPrintifyProduct(productId);
+      synced += 1;
+    } catch (error) {
+      console.error(`Printify sync failed for ${productId}`, error);
+
+      failed.push({
+        productId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+
+    processed += 1;
+  }
+
+  return { synced, failed, nextCursor };
 };
 
 export const relinkPrintifyProduct = async (productId: string) => {

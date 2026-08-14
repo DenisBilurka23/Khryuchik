@@ -1,0 +1,92 @@
+name: Printify catalog sync
+
+on:
+  schedule:
+    # Every 6 hours, UTC.
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Trigger catalog sync
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          # Each request syncs products until it runs out of its time budget and
+          # hands back a cursor. Guards against an endless loop on a bad cursor.
+          MAX_BATCHES: 20
+          # A batch that dies mid-flight is retried from the same cursor, so an
+          # interrupted request costs a repeat of that batch, not of the run.
+          MAX_ATTEMPTS: 3
+          RETRY_BACKOFF_SECONDS: 10
+        run: |
+          endpoint="${SITE_URL%/}/api/cron/printify-sync"
+          cursor=""
+          synced=0
+          failed=0
+          batch=0
+
+          while [ "$batch" -lt "$MAX_BATCHES" ]; do
+            batch=$((batch + 1))
+            attempt=0
+
+            while true; do
+              attempt=$((attempt + 1))
+              rm -f response.json
+
+              status=$(curl -sS --max-time 120 --get \
+                -H "Authorization: Bearer $CRON_SECRET" \
+                ${cursor:+--data-urlencode "cursor=$cursor"} \
+                -o response.json -w "%{http_code}" \
+                "$endpoint") || status="000"
+
+              echo "--- batch $batch, attempt $attempt: HTTP $status"
+              cat response.json 2>/dev/null || true
+              echo
+
+              if [ "$status" = "200" ]; then
+                break
+              fi
+
+              # 000 means the request never completed: connection error or the
+              # host cutting the function off mid-run. Those are worth retrying,
+              # 401 and 404 are not — they need a human.
+              case "$status" in
+                000 | 429 | 5*) ;;
+                *)
+                  echo "::error::Sync endpoint returned HTTP $status"
+                  exit 1
+                  ;;
+              esac
+
+              if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+                echo "::error::Sync endpoint still failing after $MAX_ATTEMPTS attempts (HTTP $status)"
+                exit 1
+              fi
+
+              sleep $((attempt * RETRY_BACKOFF_SECONDS))
+            done
+
+            synced=$((synced + $(jq '.synced' response.json)))
+            failed=$((failed + $(jq '.failed | length' response.json)))
+            cursor=$(jq -r '.nextCursor // empty' response.json)
+
+            if [ -z "$cursor" ]; then
+              break
+            fi
+          done
+
+          echo "Synced $synced product(s) in $batch batch(es), $failed failed"
+
+          if [ -n "$cursor" ]; then
+            echo "::error::Catalog still unfinished after $MAX_BATCHES batches"
+            exit 1
+          fi
+
+          if [ "$failed" -gt 0 ]; then
+            echo "::error::$failed product(s) failed to sync"
+            exit 1
+          fi
