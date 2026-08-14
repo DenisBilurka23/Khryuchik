@@ -127,4 +127,5 @@ export type ShippingQuoteRequest = {
 export type ShippingQuoteResponse =
   | { status: "ok"; shipping: number }
   | { status: "unsupported-destination" }
+  | { status: "unsupported-variant" }
   | { status: "unavailable" };

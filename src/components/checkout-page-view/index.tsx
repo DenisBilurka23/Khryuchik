@@ -143,13 +143,16 @@ export const CheckoutPageView = ({
   const isShippingBlocking =
     shippingQuote.status === "loading" ||
     shippingQuote.status === "unavailable" ||
-    shippingQuote.status === "unsupported-destination";
+    shippingQuote.status === "unsupported-destination" ||
+    shippingQuote.status === "unsupported-variant";
   const shippingErrorMessage =
     shippingQuote.status === "unsupported-destination"
       ? labels.errors.shippingUnsupportedDestination
-      : shippingQuote.status === "unavailable"
-        ? labels.errors.shippingUnavailable
-        : null;
+      : shippingQuote.status === "unsupported-variant"
+        ? labels.errors.unsupportedVariant
+        : shippingQuote.status === "unavailable"
+          ? labels.errors.shippingUnavailable
+          : null;
 
   const clearFieldError = (key: FormFieldKey) => {
     setFieldErrors((prev) => {
@@ -221,6 +224,8 @@ export const CheckoutPageView = ({
         return labels.errors.shippingUnavailable;
       case "shipping_unsupported_destination":
         return labels.errors.shippingUnsupportedDestination;
+      case "unsupported_variant":
+        return labels.errors.unsupportedVariant;
       case "payment_failed":
       case "stripe_session_missing_url":
         return labels.errors.paymentFailed;

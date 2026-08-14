@@ -225,6 +225,7 @@ export type CheckoutPageLabels = {
     pricingUnavailable: string;
     shippingUnavailable: string;
     shippingUnsupportedDestination: string;
+    unsupportedVariant: string;
   };
   fieldErrors: {
     required: string;
