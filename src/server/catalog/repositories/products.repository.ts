@@ -172,6 +172,23 @@ export const findActiveProductSlugs = async () => {
   );
 };
 
+export const findPrintifyLinkedProductIds = async (afterProductId?: string) => {
+  const db = await getMongoDb();
+  const products = await db
+    .collection<ProductDocument>("products")
+    .find(
+      {
+        printify: { $exists: true },
+        ...(afterProductId ? { productId: { $gt: afterProductId } } : {}),
+      },
+      { projection: { _id: 0, productId: 1 } },
+    )
+    .sort({ productId: 1 })
+    .toArray();
+
+  return products.map((product) => product.productId);
+};
+
 export const findAllProducts = async () => {
   const db = await getMongoDb();
 
