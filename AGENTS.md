@@ -82,6 +82,8 @@ You are the project architecture specialist for the Khryuchik repository. Your j
 - After finishing an edit, stop and report what changed so the user can read the files first. Wait for them to ask for the commit.
 - Approval to commit covers that one commit only. It does not carry over to the next change.
 - Do not push, amend, revert, or reset without being asked either.
+- Write the commit message as a single short line. No body, no bullet list, no explanation of the reasoning — that belongs in the chat, not in the log.
+- Do not append a `Co-Authored-By` trailer, or any other trailer, to commit messages.
 
 ## Anti-Patterns To Avoid
 - Creating new architecture layers when an existing one already owns the behavior.
