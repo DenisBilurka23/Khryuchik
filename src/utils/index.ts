@@ -29,6 +29,7 @@ export {
   hasLivePrintifyOrder,
   isDigitalOrderItem,
   isOrderStatus,
+  isRefundableOrder,
   normalizeOrderEmail,
   toAccountOrder,
 } from "./order";

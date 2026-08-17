@@ -1114,7 +1114,8 @@
       "shipped": "В доставке",
       "delivered": "Доставлен",
       "cancelled": "Отменён",
-      "completed": "Доступен для скачивания"
+      "completed": "Доступен для скачивания",
+      "refunded": "Деньги возвращены"
     },
     "showAll": "Показать все",
     "removeAll": "Очистить",
@@ -1539,7 +1540,8 @@
         "pending": "Ожидает оплаты",
         "paid": "Оплачен",
         "failed": "Ошибка",
-        "cod_pending": "При получении"
+        "cod_pending": "При получении",
+        "refunded": "Возвращён"
       },
       "statusLabels": {
         "new": "Новый",
@@ -1558,6 +1560,14 @@
       },
       "printifyFailed": "Не удалось отправить в Printify: {reason}",
       "printifyCancelFailed": "Не удалось отменить в Printify: {reason}. Если заказ только что создан, подождите несколько секунд и повторите.",
+      "refundedAmountLabel": "Возврат: {amount}",
+      "refund": {
+        "button": "Вернуть деньги",
+        "dialogTitle": "Вернуть оплату?",
+        "dialogDescription": "{amount} вернутся на карту покупателя. Свою комиссию Stripe при возврате не отдаёт, так что возврат обойдётся вам в неё. Частичный возврат делается в дашборде Stripe.",
+        "confirmLabel": "Вернуть",
+        "cancelLabel": "Закрыть"
+      },
       "cancelPrintify": {
         "button": "Отменить печать",
         "dialogTitle": "Отменить заказ в Printify?",

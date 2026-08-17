@@ -45,6 +45,17 @@ export const findOrderByStripeSessionId = async (
   );
 };
 
+export const findOrderByStripePaymentIntentId = async (
+  stripePaymentIntentId: string,
+): Promise<OrderDocument | null> => {
+  const collection = await getOrdersCollection();
+
+  return collection.findOne(
+    { "payment.stripePaymentIntentId": stripePaymentIntentId },
+    { projection: { _id: 0 } },
+  );
+};
+
 export type FindOrdersOptions = {
   limit?: number | null;
 };

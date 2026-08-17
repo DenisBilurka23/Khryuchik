@@ -18,6 +18,7 @@ const paymentStatusLabels: Record<string, string> = {
   paid: "Оплачен",
   failed: "Ошибка оплаты",
   cod_pending: "Оплата при получении",
+  refunded: "Возвращён",
 };
 
 const getBotConfig = () => {

@@ -19,6 +19,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { deleteAdminOrderAction } from "@/app/(admin)/admin/actions";
 import {
   AdminOrderDeleteButton,
+  AdminOrderRefundButton,
   AdminOrderStatusSelect,
 } from "@/components/admin-orders-page-view";
 import {
@@ -37,6 +38,7 @@ import {
   formatOrderNumber,
   formatPersonName,
   hasLivePrintifyOrder,
+  isRefundableOrder,
 } from "@/utils";
 import type { AdminPageDictionary } from "@/i18n/types";
 
@@ -196,6 +198,17 @@ const ViewAdminCustomerPage = async ({
                           {paymentStatusLabels[order.payment.status] ??
                             order.payment.status}
                         </Typography>
+                        {order.payment.refundedAmount !== undefined && (
+                          <Typography variant="caption" color="text.secondary">
+                            {tOrders("refundedAmountLabel", {
+                              amount: formatCurrency(
+                                order.payment.refundedAmount,
+                                locale,
+                                order.currency,
+                              ),
+                            })}
+                          </Typography>
+                        )}
                       </Stack>
                     </TableCell>
                     <TableCell>
@@ -205,6 +218,16 @@ const ViewAdminCustomerPage = async ({
                       />
                     </TableCell>
                     <TableCell align="right">
+                      {isRefundableOrder(order) && (
+                        <AdminOrderRefundButton
+                          orderId={order.id}
+                          amount={formatCurrency(
+                            order.total,
+                            locale,
+                            order.currency,
+                          )}
+                        />
+                      )}
                       <AdminOrderDeleteButton
                         orderId={order.id}
                         action={deleteAdminOrderAction}

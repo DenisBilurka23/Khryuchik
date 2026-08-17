@@ -39,7 +39,12 @@ export type OrderShippingAddress = {
   country: string;
 };
 
-export type OrderPaymentStatus = "pending" | "paid" | "failed" | "cod_pending";
+export type OrderPaymentStatus =
+  | "pending"
+  | "paid"
+  | "failed"
+  | "cod_pending"
+  | "refunded";
 
 export const ORDER_STATUSES = [
   "new",
@@ -57,6 +62,9 @@ export type OrderPaymentInfo = {
   stripeSessionId?: string;
   stripePaymentIntentId?: string;
   paidAt?: string;
+  refundedAmount?: number;
+  refundedAt?: string;
+  lastRefundId?: string;
 };
 
 export type OrderFulfillmentType = "digital" | "physical";
@@ -97,7 +105,8 @@ export type CustomerOrderStatus =
   | "shipped"
   | "delivered"
   | "cancelled"
-  | "completed";
+  | "completed"
+  | "refunded";
 
 export type AccountOrderItem = {
   title: string;

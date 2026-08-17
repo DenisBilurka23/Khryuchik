@@ -79,6 +79,15 @@ export const retrieveStripeCheckoutSession = (
 ): Promise<Stripe.Checkout.Session> =>
   stripeClient.checkout.sessions.retrieve(sessionId);
 
+export const refundStripePayment = (
+  paymentIntentId: string,
+  orderId: string,
+): Promise<Stripe.Refund> =>
+  stripeClient.refunds.create(
+    { payment_intent: paymentIntentId, reason: "requested_by_customer" },
+    { idempotencyKey: `refund_${orderId}` },
+  );
+
 export const verifyStripeWebhook = (
   rawBody: string,
   signature: string | null,
