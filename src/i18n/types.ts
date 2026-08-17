@@ -850,6 +850,7 @@ export type AccountPageDictionary = {
     delivered: string;
     cancelled: string;
     completed: string;
+    refunded: string;
   };
   showAll: string;
   removeAll: string;
@@ -1221,6 +1222,14 @@ export type AdminPageDictionary = {
     };
     printifyFailed: string;
     printifyCancelFailed: string;
+    refundedAmountLabel: string;
+    refund: {
+      button: string;
+      dialogTitle: string;
+      dialogDescription: string;
+      confirmLabel: string;
+      cancelLabel: string;
+    };
     cancelPrintify: {
       button: string;
       dialogTitle: string;

@@ -31,6 +31,19 @@ export const hasLivePrintifyOrder = (order: {
   Boolean(order.printifyOrder?.printifyOrderId) &&
   !order.printifyOrder?.cancelledAt;
 
+export const isRefundableOrder = (order: {
+  payment: {
+    method: string;
+    status: OrderPaymentStatus;
+    refundedAmount?: number;
+    stripePaymentIntentId?: string;
+  };
+}) =>
+  order.payment.method === "stripe" &&
+  order.payment.status === "paid" &&
+  order.payment.refundedAmount === undefined &&
+  Boolean(order.payment.stripePaymentIntentId);
+
 export const isOrderStatus = (value: unknown): value is OrderStatus =>
   typeof value === "string" &&
   (ORDER_STATUSES as readonly string[]).includes(value);
@@ -41,6 +54,9 @@ export const getCustomerOrderStatus = (order: {
   fulfillmentType?: string;
 }): CustomerOrderStatus => {
   if (order.status === "cancelled") return "cancelled";
+  // Ahead of the shipping states on purpose: once the money is back, that
+  // matters more to the customer than where the parcel is.
+  if (order.payment.status === "refunded") return "refunded";
   if (order.status === "delivered") return "delivered";
   if (order.status === "shipped") return "shipped";
   if (order.status === "processing") return "confirmed";

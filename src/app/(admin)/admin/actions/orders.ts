@@ -16,8 +16,14 @@ import {
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { requireAdminApiAccess } from "@/server/admin/auth";
+import { applyStripeRefund } from "@/server/orders/services/orders.service";
+import { refundStripePayment } from "@/server/payments/stripe";
 import type { OrderStatus } from "@/types/order";
-import { hasLivePrintifyOrder, isOrderStatus } from "@/utils";
+import {
+  hasLivePrintifyOrder,
+  isOrderStatus,
+  isRefundableOrder,
+} from "@/utils";
 
 import type { AdminActionResult } from "./types";
 
@@ -158,6 +164,38 @@ export const cancelAdminOrderPrintifyAction = async (
       cancelError: error instanceof Error ? error.message : String(error),
     }).catch(() => undefined);
     revalidateOrderDependentPaths();
+    return { ok: false, error: "failed" };
+  }
+
+  revalidateOrderDependentPaths();
+  return { ok: true };
+};
+
+export const refundAdminOrderPaymentAction = async (
+  orderId: string,
+): Promise<AdminActionResult<"not_refundable">> => {
+  const session = await requireAdminApiAccess();
+  if (!session) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const order = await findOrderById(orderId);
+  const paymentIntentId = order?.payment.stripePaymentIntentId;
+
+  if (!order || !paymentIntentId || !isRefundableOrder(order)) {
+    return { ok: false, error: "not_refundable" };
+  }
+
+  try {
+    const refund = await refundStripePayment(paymentIntentId, order.id);
+
+    await applyStripeRefund(order.id, {
+      amountRefundedMinor: refund.amount,
+      isFullyRefunded: true,
+      refundId: refund.id,
+    });
+  } catch (error) {
+    console.error("refundAdminOrderPaymentAction failed", error);
     return { ok: false, error: "failed" };
   }
 

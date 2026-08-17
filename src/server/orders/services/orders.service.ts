@@ -207,6 +207,24 @@ export const createOrder = async (
   return saved;
 };
 
+export type StripeRefundResult = {
+  amountRefundedMinor: number;
+  isFullyRefunded: boolean;
+  refundId?: string;
+};
+
+export const applyStripeRefund = async (
+  orderId: string,
+  refund: StripeRefundResult,
+): Promise<void> => {
+  await updateOrderPayment(orderId, {
+    status: refund.isFullyRefunded ? "refunded" : "paid",
+    refundedAmount: round2(refund.amountRefundedMinor / 100),
+    refundedAt: new Date().toISOString(),
+    lastRefundId: refund.refundId,
+  });
+};
+
 export const confirmOrderFromStripeSession = async (
   sessionId: string,
 ): Promise<OrderDocument | null> => {

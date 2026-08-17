@@ -4,9 +4,11 @@ import type Stripe from "stripe";
 
 import {
   findOrderById,
+  findOrderByStripePaymentIntentId,
   updateOrderPayment,
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
+import { applyStripeRefund } from "@/server/orders/services/orders.service";
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { submitOrderToPrintify } from "@/server/orders/services/fulfillment.service";
@@ -91,6 +93,31 @@ const handleCheckoutExpired = async (session: Stripe.Checkout.Session) => {
   }
 };
 
+const handleChargeRefunded = async (charge: Stripe.Charge) => {
+  const paymentIntentId =
+    typeof charge.payment_intent === "string"
+      ? charge.payment_intent
+      : charge.payment_intent?.id;
+
+  if (!paymentIntentId) {
+    console.warn(`charge.refunded without a payment intent (${charge.id})`);
+    return;
+  }
+
+  const order = await findOrderByStripePaymentIntentId(paymentIntentId);
+
+  if (!order) {
+    console.warn(`No order found for payment intent ${paymentIntentId}`);
+    return;
+  }
+
+  await applyStripeRefund(order.id, {
+    amountRefundedMinor: charge.amount_refunded,
+    isFullyRefunded: charge.refunded,
+    refundId: charge.refunds?.data?.[0]?.id,
+  });
+};
+
 export const POST = async (request: NextRequest) => {
   const rawBody = await request.text();
   const signature = request.headers.get("stripe-signature");
@@ -109,6 +136,8 @@ export const POST = async (request: NextRequest) => {
       await handleCheckoutCompleted(event.data.object);
     } else if (event.type === "checkout.session.expired") {
       await handleCheckoutExpired(event.data.object);
+    } else if (event.type === "charge.refunded") {
+      await handleChargeRefunded(event.data.object);
     }
   } catch (error) {
     console.error(`Failed to process Stripe event ${event.type}`, error);

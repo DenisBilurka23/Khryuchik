@@ -20,6 +20,7 @@ import {
   AdminOrderPaymentConfirmButton,
   AdminOrderPrintifyCancelButton,
   AdminOrderProductionButton,
+  AdminOrderRefundButton,
   AdminOrderStatusSelect,
 } from "@/components/admin-orders-page-view";
 import {
@@ -36,6 +37,7 @@ import {
   formatCustomerName,
   formatOrderNumber,
   hasLivePrintifyOrder,
+  isRefundableOrder,
 } from "@/utils";
 
 type OrderColumns = AdminPageDictionary["orders"]["columns"];
@@ -140,6 +142,17 @@ const AdminOrdersPage = async () => {
                           {paymentStatusLabels[order.payment.status] ??
                             order.payment.status}
                         </Typography>
+                        {order.payment.refundedAmount !== undefined && (
+                          <Typography variant="caption" color="text.secondary">
+                            {tOrders("refundedAmountLabel", {
+                              amount: formatCurrency(
+                                order.payment.refundedAmount,
+                                locale,
+                                order.currency,
+                              ),
+                            })}
+                          </Typography>
+                        )}
                       </Stack>
                     </TableCell>
                     <TableCell>
@@ -168,6 +181,16 @@ const AdminOrdersPage = async () => {
                               lastError={order.printifyOrder.lastError}
                             />
                           )}
+                        {isRefundableOrder(order) && (
+                          <AdminOrderRefundButton
+                            orderId={order.id}
+                            amount={formatCurrency(
+                              order.total,
+                              locale,
+                              order.currency,
+                            )}
+                          />
+                        )}
                         {order.printifyOrder?.printifyOrderId &&
                           !order.printifyOrder.sentToProductionAt &&
                           !order.printifyOrder.cancelledAt && (

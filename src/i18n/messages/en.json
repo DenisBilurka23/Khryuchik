@@ -1110,7 +1110,8 @@
       "shipped": "In transit",
       "delivered": "Delivered",
       "cancelled": "Cancelled",
-      "completed": "Available for download"
+      "completed": "Available for download",
+      "refunded": "Refunded"
     },
     "showAll": "Show all",
     "removeAll": "Clear",
@@ -1515,7 +1516,8 @@
         "pending": "Pending",
         "paid": "Paid",
         "failed": "Failed",
-        "cod_pending": "Pay on delivery"
+        "cod_pending": "Pay on delivery",
+        "refunded": "Refunded"
       },
       "statusLabels": {
         "new": "New",
@@ -1534,6 +1536,14 @@
       },
       "printifyFailed": "Printify submission failed: {reason}",
       "printifyCancelFailed": "Printify cancellation failed: {reason}. If the order was just created, wait a few seconds and try again.",
+      "refundedAmountLabel": "Refunded: {amount}",
+      "refund": {
+        "button": "Refund payment",
+        "dialogTitle": "Refund this payment?",
+        "dialogDescription": "{amount} goes back to the customer's card. Stripe keeps its processing fee, so a refund costs you that fee. Partial refunds are done in the Stripe dashboard.",
+        "confirmLabel": "Refund",
+        "cancelLabel": "Close"
+      },
       "cancelPrintify": {
         "button": "Cancel printing",
         "dialogTitle": "Cancel this order in Printify?",
