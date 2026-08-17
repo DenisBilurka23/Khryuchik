@@ -4,6 +4,7 @@ import { getMongoDb } from "@/server/db/mongodb";
 import type {
   OrderDocument,
   OrderPaymentInfo,
+  OrderPrintifyInfo,
   OrderStatus,
 } from "@/types/order";
 
@@ -117,6 +118,43 @@ export const updateOrderPayment = async (
   }
 
   await collection.updateOne({ id }, { $set });
+};
+
+export type OrderPrintifyInfoPatch = {
+  [Key in keyof OrderPrintifyInfo]?: OrderPrintifyInfo[Key] | null;
+};
+
+export const updateOrderPrintifyOrder = async (
+  id: string,
+  patch: OrderPrintifyInfoPatch,
+): Promise<void> => {
+  const collection = await getOrdersCollection();
+  const $set: Record<string, unknown> = {};
+  const $unset: Record<string, "" | 1 | true> = {};
+
+  for (const [key, value] of Object.entries(patch)) {
+    if (value === undefined) {
+      continue;
+    }
+
+    if (value === null) {
+      $unset[`printifyOrder.${key}`] = "";
+    } else {
+      $set[`printifyOrder.${key}`] = value;
+    }
+  }
+
+  if (Object.keys($set).length === 0 && Object.keys($unset).length === 0) {
+    return;
+  }
+
+  await collection.updateOne(
+    { id },
+    {
+      ...(Object.keys($set).length > 0 ? { $set } : {}),
+      ...(Object.keys($unset).length > 0 ? { $unset } : {}),
+    },
+  );
 };
 
 export const updateOrderStatus = async (

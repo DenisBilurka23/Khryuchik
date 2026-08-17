@@ -16,6 +16,7 @@ export {
 export {
   confirmAdminOrderPaymentAction,
   deleteAdminOrderAction,
+  sendAdminOrderToProductionAction,
   updateAdminOrderStatusAction,
 } from "./orders";
 export {

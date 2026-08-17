@@ -11,15 +11,26 @@ export const CheckoutContactSection = ({
 }: ContactSectionProps) => (
   <CheckoutSectionCard title={labels.contactTitle}>
     <Stack spacing={2}>
-      <TextField
-        fullWidth
-        required
-        label={labels.fields.name}
-        value={form.name}
-        onChange={onField("name")}
-        error={Boolean(fieldErrors.name)}
-        helperText={fieldErrors.name}
-      />
+      <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+        <TextField
+          fullWidth
+          required
+          label={labels.fields.firstName}
+          value={form.firstName}
+          onChange={onField("firstName")}
+          error={Boolean(fieldErrors.firstName)}
+          helperText={fieldErrors.firstName}
+        />
+        <TextField
+          fullWidth
+          required
+          label={labels.fields.lastName}
+          value={form.lastName}
+          onChange={onField("lastName")}
+          error={Boolean(fieldErrors.lastName)}
+          helperText={fieldErrors.lastName}
+        />
+      </Stack>
       <TextField
         fullWidth
         required

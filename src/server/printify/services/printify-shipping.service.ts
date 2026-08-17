@@ -1,8 +1,6 @@
 import "server-only";
 
 import { PRINTIFY_RESTRICTED_COUNTRIES } from "@/constants/printify";
-import { findProductsByIds } from "@/server/catalog/repositories/products.repository";
-import type { CartSelections } from "@/types/cart";
 
 import {
   getPrintifyConfig,
@@ -10,12 +8,15 @@ import {
   PrintifyConfigError,
   printifyRequest,
 } from "../client";
+import {
+  type PrintifyLineItemInput,
+  resolvePrintifyLineItems,
+} from "../line-items";
 import type {
-  PrintifyShippingLineItem,
+  PrintifyLineItem,
   PrintifyShippingRequest,
   PrintifyShippingResponse,
 } from "../types";
-import { findPrintifyVariant } from "../variant-mapping";
 
 const QUOTE_TIMEOUT_MS = 4_000;
 const QUOTE_RETRY_ATTEMPTS = 1;
@@ -25,11 +26,7 @@ const QUOTE_CACHE_TTL_MS = 10 * 60 * 1000;
 const FAILED_QUOTE_CACHE_TTL_MS = 30 * 1000;
 const QUOTE_CACHE_MAX_ENTRIES = 200;
 
-export type ShippingQuoteItem = {
-  productId: string;
-  quantity: number;
-  selections?: CartSelections;
-};
+export type ShippingQuoteItem = PrintifyLineItemInput;
 
 export type ShippingQuoteAddress = {
   country: string;
@@ -54,7 +51,7 @@ type CachedQuote = {
 const quoteCache = new Map<string, CachedQuote>();
 
 const buildCacheKey = (
-  lineItems: PrintifyShippingLineItem[],
+  lineItems: PrintifyLineItem[],
   address: ShippingQuoteAddress,
 ) =>
   [
@@ -97,46 +94,6 @@ const writeCache = (
   quoteCache.set(key, { quote, expiresAt: Date.now() + ttlMs });
 };
 
-const buildLineItems = async (
-  items: ShippingQuoteItem[],
-): Promise<PrintifyShippingLineItem[] | null> => {
-  const productIds = Array.from(new Set(items.map((item) => item.productId)));
-  const products = await findProductsByIds(productIds);
-  const productById = new Map(
-    products.map((product) => [product.productId, product]),
-  );
-  const lineItems: PrintifyShippingLineItem[] = [];
-
-  for (const item of items) {
-    const printify = productById.get(item.productId)?.printify;
-
-    if (!printify) {
-      continue;
-    }
-
-    const variant = findPrintifyVariant(printify.variants, {
-      size: item.selections?.size,
-      color: item.selections?.color,
-    });
-
-    if (!variant) {
-      console.error(
-        `No Printify variant matches product ${item.productId} for the selected options`,
-      );
-
-      return null;
-    }
-
-    lineItems.push({
-      product_id: printify.printifyProductId,
-      variant_id: variant.variantId,
-      quantity: item.quantity,
-    });
-  }
-
-  return lineItems;
-};
-
 const isRetryableError = (error: unknown) => {
   if (error instanceof PrintifyConfigError) {
     return false;
@@ -173,11 +130,13 @@ export const getPrintifyShippingQuote = async (
   items: ShippingQuoteItem[],
   address: ShippingQuoteAddress,
 ): Promise<PrintifyShippingQuote> => {
-  const lineItems = await buildLineItems(items);
+  const resolution = await resolvePrintifyLineItems(items);
 
-  if (lineItems === null) {
+  if (resolution === null) {
     return { status: "unsupported-variant" };
   }
+
+  const { lineItems } = resolution;
 
   if (lineItems.length === 0) {
     return { status: "no-merch" };

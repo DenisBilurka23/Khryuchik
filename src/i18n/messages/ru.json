@@ -724,7 +724,8 @@
       "paymentTitle": "Способ оплаты",
       "summaryTitle": "Ваш заказ",
       "fields": {
-        "name": "Имя и фамилия",
+        "firstName": "Имя",
+        "lastName": "Фамилия",
         "email": "Email",
         "phone": "Телефон",
         "line1": "Адрес, строка 1",
@@ -1544,6 +1545,8 @@
         "cancelled": "Отменён"
       },
       "confirmPayment": "Подтвердить оплату",
+      "sendToProduction": "Отправить в производство",
+      "printifyFailed": "Не удалось отправить в Printify: {reason}",
       "delete": {
         "button": "Удалить заказ",
         "dialogTitle": "Удалить заказ?",

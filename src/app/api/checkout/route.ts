@@ -34,7 +34,15 @@ const parseCustomer = (value: unknown): OrderCustomer | null => {
 
   const raw = value as Record<string, unknown>;
 
-  if (typeof raw.name !== "string" || raw.name.trim().length === 0) {
+  const requiredString = (key: string) =>
+    typeof raw[key] === "string" && (raw[key] as string).trim().length > 0
+      ? (raw[key] as string).trim()
+      : null;
+
+  const firstName = requiredString("firstName");
+  const lastName = requiredString("lastName");
+
+  if (!firstName || !lastName) {
     return null;
   }
 
@@ -48,7 +56,8 @@ const parseCustomer = (value: unknown): OrderCustomer | null => {
       : undefined;
 
   return {
-    name: raw.name.trim(),
+    firstName,
+    lastName,
     email: normalizeOrderEmail(raw.email),
     phone: optionalString("phone"),
     telegram: optionalString("telegram"),

@@ -6,6 +6,7 @@ import {
   type CustomerOrderStatus,
   ORDER_STATUSES,
   type OrderDocument,
+  type OrderCustomer,
   type OrderItem,
   type OrderPaymentStatus,
   type OrderStatus,
@@ -16,6 +17,9 @@ import { formatOrderNumber } from "./format-order-number";
 
 export const normalizeOrderEmail = (email: string) =>
   email.trim().toLowerCase();
+
+export const formatCustomerName = (customer: OrderCustomer) =>
+  [customer.firstName, customer.lastName].filter(Boolean).join(" ");
 
 export const isDigitalOrderItem = (item: OrderItem) =>
   !item.formatSelection || item.formatSelection === BOOK_FORMAT.digital;

@@ -59,7 +59,7 @@ export type PrintifyPaginatedResponse<TItem> = {
   data: TItem[];
 };
 
-export type PrintifyShippingLineItem = {
+export type PrintifyLineItem = {
   product_id: string;
   variant_id: number;
   quantity: number;
@@ -79,13 +79,23 @@ export type PrintifyShippingAddress = {
 };
 
 export type PrintifyShippingRequest = {
-  line_items: PrintifyShippingLineItem[];
+  line_items: PrintifyLineItem[];
   address_to: PrintifyShippingAddress;
 };
 
-// Costs in cents, quoted in the shop's currency (USD for this shop — the API
-// states no currency of its own). Only the methods the print providers offer
-// for the destination come back, so every field is optional.
+export type PrintifyOrderRequest = {
+  external_id: string;
+  label?: string;
+  line_items: PrintifyLineItem[];
+  shipping_method: number;
+  send_shipping_notification: boolean;
+  address_to: PrintifyShippingAddress;
+};
+
+export type PrintifyOrderCreatedResponse = {
+  id: string;
+};
+
 export type PrintifyShippingResponse = {
   standard?: number;
   express?: number;

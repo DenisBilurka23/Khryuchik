@@ -3,6 +3,7 @@ import "server-only";
 import type { ContactMessageInput } from "@/types/contact";
 import type { OrderDocument } from "@/types/order";
 import type { ReviewDocument } from "@/types/reviews";
+import { formatCustomerName } from "@/utils";
 
 const TELEGRAM_API = "https://api.telegram.org";
 
@@ -70,7 +71,7 @@ const buildNewOrderMessage = (order: OrderDocument): string => {
   return [
     `🆕 Новый заказ ${orderHeader(order.id)}`,
     "",
-    `👤 ${order.customer.name}`,
+    `👤 ${formatCustomerName(order.customer)}`,
     `📞 ${formatContact(order)}`,
     `🌍 ${order.country} · ${order.currency}`,
     `💳 ${payment} (${status})`,
@@ -93,9 +94,24 @@ const buildPaidOrderMessage = (order: OrderDocument): string =>
   [
     `✅ Заказ ${orderHeader(order.id)} оплачен`,
     "",
-    `👤 ${order.customer.name}`,
+    `👤 ${formatCustomerName(order.customer)}`,
     `💳 ${paymentMethodLabels[order.payment.method] ?? order.payment.method}`,
     `Сумма: ${order.total.toFixed(2)} ${order.currency}`,
+  ].join("\n");
+
+const buildPrintifyFailureMessage = (
+  order: OrderDocument,
+  reason: string,
+): string =>
+  [
+    `⚠️ Заказ ${orderHeader(order.id)} не ушёл в Printify`,
+    "",
+    `👤 ${formatCustomerName(order.customer)}`,
+    `📍 ${formatAddress(order)}`,
+    "",
+    `Причина: ${reason}`,
+    "",
+    "🖐 Требуется ручная отправка через дашборд Printify",
   ].join("\n");
 
 const buildNewReviewMessage = (review: ReviewDocument): string =>
@@ -165,6 +181,12 @@ export const notifyAdminNewOrder = (order: OrderDocument): Promise<void> =>
 
 export const notifyAdminOrderPaid = (order: OrderDocument): Promise<void> =>
   sendMessage(buildPaidOrderMessage(order)).then(() => undefined);
+
+export const notifyAdminPrintifyOrderFailed = (
+  order: OrderDocument,
+  reason: string,
+): Promise<void> =>
+  sendMessage(buildPrintifyFailureMessage(order, reason)).then(() => undefined);
 
 export const notifyAdminNewReview = (review: ReviewDocument): Promise<void> =>
   sendMessage(buildNewReviewMessage(review)).then(() => undefined);
