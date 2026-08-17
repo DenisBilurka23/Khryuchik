@@ -5,6 +5,7 @@ import {
   createReview,
   ReviewValidationError,
 } from "@/server/reviews/services/reviews.service";
+import { formatPersonName } from "@/utils";
 
 export const POST = async (request: Request) => {
   const access = await requireAccountApiAccess();
@@ -26,7 +27,7 @@ export const POST = async (request: Request) => {
   try {
     await createReview({
       userId: access.user.id,
-      author: access.user.name,
+      author: formatPersonName(access.user.firstName, access.user.lastName),
       email: access.user.email,
       productId,
       productSlug,

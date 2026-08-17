@@ -21,7 +21,8 @@ export const requestPasswordResetClient = async (
   });
 
 export const registerUserClient = async (payload: {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   password: string;

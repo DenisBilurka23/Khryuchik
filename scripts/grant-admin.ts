@@ -51,7 +51,8 @@ const main = async () => {
           user: {
             id: existingUser._id.toString(),
             email,
-            name: existingUser.name,
+            firstName: existingUser.firstName,
+            lastName: existingUser.lastName,
             isAdmin: true,
           },
         },

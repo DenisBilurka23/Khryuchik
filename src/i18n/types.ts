@@ -771,8 +771,10 @@ export type RegisterPageDictionary = {
   title: string;
   lead: string;
   chips: string[];
-  nameLabel: string;
-  namePlaceholder: string;
+  firstNameLabel: string;
+  firstNamePlaceholder: string;
+  lastNameLabel: string;
+  lastNamePlaceholder: string;
   emailLabel: string;
   emailPlaceholder: string;
   phoneLabel: string;
@@ -1112,7 +1114,8 @@ export type AdminPageDictionary = {
       profileTitle: string;
       profileDescription: string;
       fields: {
-        name: string;
+        firstName: string;
+        lastName: string;
         email: string;
         phone: string;
         role: string;
@@ -1150,7 +1153,8 @@ export type AdminPageDictionary = {
       fields: {
         userId: string;
         email: string;
-        name: string;
+        firstName: string;
+        lastName: string;
         phone: string;
         avatar: string;
         providers: string;

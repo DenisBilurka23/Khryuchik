@@ -37,7 +37,8 @@ export type UserShippingAddressInput = Omit<UserShippingAddress, "id">;
 export type UserDocument = {
   _id?: ObjectId;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   isAdmin?: boolean;
   image?: string | null;
@@ -55,7 +56,8 @@ export type UserDocument = {
 export type SafeAuthUser = {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   isAdmin: boolean;
   authProviders: AuthProvider[];
@@ -66,14 +68,16 @@ export type SafeAuthUser = {
 
 export type RegisterUserInput = {
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   password: string;
 };
 
 export type UpdateUserProfileInput = {
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   image?: string | null;
   avatarObjectKey?: string | null;

@@ -7,7 +7,6 @@ import { defaultLocale, locales } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import { getRegionCurrency } from "@/server/localization/localization.service";
-import { splitName } from "@/utils/account-page";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const tStorefront = await getTranslations({
@@ -35,12 +34,9 @@ const initialCustomerFromSession = (
 ): CheckoutInitialCustomer | undefined => {
   const user = session?.user;
   if (!user) return undefined;
-  // The session carries one name string, so it is split once here rather than
-  // anywhere downstream — the order itself stores the halves.
-  const { firstName, lastName } = splitName(user.name);
   return {
-    firstName: firstName || undefined,
-    lastName: lastName || undefined,
+    firstName: user.firstName || undefined,
+    lastName: user.lastName || undefined,
     email: user.email ?? undefined,
     phone: user.phone || undefined,
   };

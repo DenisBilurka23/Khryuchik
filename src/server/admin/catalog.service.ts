@@ -190,7 +190,8 @@ export const getAdminCustomers = async (
   return users.map((user) => ({
     id: user.id,
     email: user.email,
-    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     phone: user.phone,
     isAdmin: user.isAdmin,
     authProviders: user.authProviders,
@@ -207,7 +208,8 @@ export const saveAdminCustomer = async (
   userId: string,
   input: {
     email: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     phone: string;
     isAdmin: boolean;
     image?: string | null;

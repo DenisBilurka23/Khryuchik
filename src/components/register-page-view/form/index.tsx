@@ -11,7 +11,8 @@ import {
 import type { RegisterFormProps } from "./types";
 
 export const RegisterForm = ({
-  name,
+  firstName,
+  lastName,
   email,
   phone,
   password,
@@ -19,7 +20,8 @@ export const RegisterForm = ({
   errorMessage,
   isSubmitting,
   loginHref,
-  onNameChange,
+  onFirstNameChange,
+  onLastNameChange,
   onEmailChange,
   onPhoneChange,
   onPasswordChange,
@@ -41,11 +43,20 @@ export const RegisterForm = ({
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
 
           <TextField
-            label={t("nameLabel")}
-            placeholder={t("namePlaceholder")}
-            value={name}
-            onChange={(event) => onNameChange(event.target.value)}
-            autoComplete="name"
+            label={t("firstNameLabel")}
+            placeholder={t("firstNamePlaceholder")}
+            value={firstName}
+            onChange={(event) => onFirstNameChange(event.target.value)}
+            autoComplete="given-name"
+            required
+            fullWidth
+          />
+          <TextField
+            label={t("lastNameLabel")}
+            placeholder={t("lastNamePlaceholder")}
+            value={lastName}
+            onChange={(event) => onLastNameChange(event.target.value)}
+            autoComplete="family-name"
             required
             fullWidth
           />

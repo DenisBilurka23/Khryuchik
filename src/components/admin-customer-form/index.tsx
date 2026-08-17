@@ -23,6 +23,7 @@ import {
   AdminStatusChip,
 } from "@/components/admin-page-shared";
 import { AdminCustomerFormErrorCode } from "@/server/admin/customer-form-state";
+import { formatPersonName } from "@/utils";
 import { formatAdminDate, getAdminAuthProviderLabel } from "@/utils/admin";
 
 import { AdminCustomerAvatarUploadField } from "./avatar-upload-field";
@@ -67,7 +68,8 @@ export const AdminCustomerForm = async ({
         return undefined;
     }
   })();
-  const title = customer.name || customer.email;
+  const title =
+    formatPersonName(customer.firstName, customer.lastName) || customer.email;
   const authProviderLabels = {
     google: tAuthProviders("google"),
     credentials: tAuthProviders("credentials"),
@@ -223,9 +225,18 @@ export const AdminCustomerForm = async ({
                     <Grid size={{ xs: 12, md: 6 }}>
                       <TextField
                         fullWidth
-                        name="name"
-                        label={tForm("fields.name")}
-                        defaultValue={customer.name}
+                        name="firstName"
+                        label={tForm("fields.firstName")}
+                        defaultValue={customer.firstName}
+                        required
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <TextField
+                        fullWidth
+                        name="lastName"
+                        label={tForm("fields.lastName")}
+                        defaultValue={customer.lastName}
                         required
                       />
                     </Grid>

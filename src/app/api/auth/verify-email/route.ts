@@ -4,6 +4,7 @@ import { defaultLocale, isLocale } from "@/i18n/config";
 import { sendWelcomeEmail } from "@/server/email/welcome";
 import { verifyEmailWithToken } from "@/server/users/services/users.service";
 import { AuthInputErrorCode } from "@/types/auth";
+import { formatPersonName } from "@/utils";
 
 export async function POST(request: Request) {
   try {
@@ -26,7 +27,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: result.reason }, { status: 400 });
     }
 
-    void sendWelcomeEmail(result.email, result.name, locale);
+    void sendWelcomeEmail(
+      result.email,
+      formatPersonName(result.firstName, result.lastName),
+      locale,
+    );
 
     return NextResponse.json({ ok: true });
   } catch {

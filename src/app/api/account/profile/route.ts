@@ -39,11 +39,16 @@ export async function PATCH(request: Request) {
 
     const body = isJsonRequest ? await request.json() : null;
     const formData = isJsonRequest ? null : await request.formData();
-    const name = isJsonRequest
-      ? typeof body?.name === "string"
-        ? body.name.trim()
+    const firstName = isJsonRequest
+      ? typeof body?.firstName === "string"
+        ? body.firstName.trim()
         : ""
-      : getTrimmedFormValue(formData!, "name");
+      : getTrimmedFormValue(formData!, "firstName");
+    const lastName = isJsonRequest
+      ? typeof body?.lastName === "string"
+        ? body.lastName.trim()
+        : ""
+      : getTrimmedFormValue(formData!, "lastName");
     const email = isJsonRequest
       ? typeof body?.email === "string"
         ? body.email.trim().toLowerCase()
@@ -59,7 +64,7 @@ export async function PATCH(request: Request) {
     const rawAvatar = formData?.get("avatar") ?? null;
     const avatarFile = isUploadedFile(rawAvatar) ? rawAvatar : null;
 
-    if (!name || !email) {
+    if (!firstName || !lastName || !email) {
       return NextResponse.json({ error: "missing_fields" }, { status: 400 });
     }
 
@@ -81,7 +86,8 @@ export async function PATCH(request: Request) {
     }
 
     const result = await updateAccountUserProfile(session.user.id, {
-      name,
+      firstName,
+      lastName,
       email,
       phone,
       ...(uploadedAvatar

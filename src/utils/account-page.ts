@@ -3,21 +3,6 @@ import type { UserShippingAddress, UserShippingAddressInput } from "@/types/user
 
 import { getCountryDisplayName } from "./country";
 
-export const splitName = (value: string | null | undefined) => {
-  const normalizedName = value?.trim() ?? "";
-
-  if (!normalizedName) {
-    return { firstName: "", lastName: "" };
-  }
-
-  const [firstName = "", ...lastNameParts] = normalizedName.split(/\s+/);
-
-  return {
-    firstName,
-    lastName: lastNameParts.join(" "),
-  };
-};
-
 export const getUserShippingAddressLines = (
   address: UserShippingAddress,
   locale: Locale,

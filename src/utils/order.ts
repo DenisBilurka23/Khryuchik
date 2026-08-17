@@ -14,12 +14,13 @@ import {
 
 import { formatCurrency } from "./format-currency";
 import { formatOrderNumber } from "./format-order-number";
+import { formatPersonName } from "./person-name";
 
 export const normalizeOrderEmail = (email: string) =>
   email.trim().toLowerCase();
 
 export const formatCustomerName = (customer: OrderCustomer) =>
-  [customer.firstName, customer.lastName].filter(Boolean).join(" ");
+  formatPersonName(customer.firstName, customer.lastName);
 
 export const isDigitalOrderItem = (item: OrderItem) =>
   !item.formatSelection || item.formatSelection === BOOK_FORMAT.digital;

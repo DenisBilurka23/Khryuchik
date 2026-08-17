@@ -6,7 +6,8 @@ import type { CountryCode } from "@/utils";
 
 export type AccountPageUser = {
   id?: string;
-  name?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   email?: string | null;
   phone?: string | null;
   image?: string | null;

@@ -205,7 +205,12 @@ export const verifyEmailWithToken = async (token: string) => {
   await setUserEmailVerified(user._id as ObjectId);
   await markEmailVerificationTokenUsed(verificationToken._id as ObjectId);
 
-  return { ok: true as const, email: user.email, name: user.name };
+  return {
+    ok: true as const,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+  };
 };
 
 export const changeAccountUserPassword = async (
@@ -244,7 +249,8 @@ export const changeAccountUserPassword = async (
 
   if (!hasCredentials) {
     await addCredentialsToExistingUser(user._id as ObjectId, {
-      name: user.name ?? "",
+      firstName: user.firstName ?? "",
+      lastName: user.lastName ?? "",
       email: user.email,
       phone: user.phone ?? "",
       passwordHash,
@@ -309,7 +315,8 @@ export const resetPasswordWithToken = async (
 
 export const syncGoogleUser = async (input: {
   email: string;
-  name?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   image?: string | null;
 }) => {
   const existingUser = await findUserByEmail(input.email);
@@ -335,7 +342,8 @@ export const getAccountUserByEmail = async (email: string) => {
 
   return {
     id: (user._id as ObjectId).toString(),
-    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     email: user.email,
     phone: user.phone,
     isAdmin: Boolean(user.isAdmin),
@@ -359,7 +367,8 @@ export const getAccountUserById = async (userId: string) => {
 
   return {
     id: user._id.toString(),
-    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     email: user.email,
     phone: user.phone,
     isAdmin: Boolean(user.isAdmin),
@@ -516,7 +525,8 @@ export const getAdminUsers = async (limit?: number) => {
   return users.map((user) => ({
     id: (user._id as ObjectId).toString(),
     email: user.email,
-    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     phone: user.phone,
     isAdmin: Boolean(user.isAdmin),
     image: user.image ?? null,
@@ -540,7 +550,8 @@ export const getAdminUserEditorData = async (userId: string) => {
   return {
     id: user._id.toString(),
     email: user.email,
-    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     phone: user.phone,
     isAdmin: Boolean(user.isAdmin),
     image: user.image ?? null,
@@ -604,7 +615,8 @@ export const updateAdminUserAccount = async (
     user: {
       id: user._id?.toString() ?? userId,
       email: user.email,
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       phone: user.phone,
       isAdmin: Boolean(user.isAdmin),
       image: user.image ?? null,
@@ -655,7 +667,8 @@ export const deleteAdminUserAccount = async (
     user: {
       id: deletedUser._id.toString(),
       email: deletedUser.email,
-      name: deletedUser.name,
+      firstName: deletedUser.firstName,
+      lastName: deletedUser.lastName,
       isAdmin: Boolean(deletedUser.isAdmin),
     },
     avatarObjectKey: deletedUser.avatarObjectKey ?? null,
@@ -735,7 +748,8 @@ export const grantAdminRoleToUserByEmail = async (email: string) => {
   return {
     id: user._id.toString(),
     email: user.email,
-    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     isAdmin: Boolean(user.isAdmin),
   };
 };
