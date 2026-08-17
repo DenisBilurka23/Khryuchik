@@ -32,7 +32,7 @@ import { createAdminMetadata } from "@/server/admin/metadata";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { formatAdminDate } from "@/utils/admin";
-import { formatCurrency, formatOrderNumber } from "@/utils";
+import { formatCurrency, formatOrderNumber, formatPersonName } from "@/utils";
 import type { AdminPageDictionary } from "@/i18n/types";
 
 type ViewAdminCustomerPageProps = {
@@ -91,7 +91,7 @@ const ViewAdminCustomerPage = async ({ params }: ViewAdminCustomerPageProps) => 
     <Stack gap={3}>
       <AdminPageHero
         eyebrow={tCustomerView("eyebrow")}
-        title={`${tCustomerView("title")}: ${customer.name || customer.email}`}
+        title={`${tCustomerView("title")}: ${formatPersonName(customer.firstName, customer.lastName) || customer.email}`}
         description={tCustomerView("description")}
       />
 
@@ -124,8 +124,12 @@ const ViewAdminCustomerPage = async ({ params }: ViewAdminCustomerPageProps) => 
       >
         <Stack gap={1.5}>
           <Typography>
-            <strong>{tCustomerView("fields.name")}: </strong>
-            {customer.name || "—"}
+            <strong>{tCustomerView("fields.firstName")}: </strong>
+            {customer.firstName || "—"}
+          </Typography>
+          <Typography>
+            <strong>{tCustomerView("fields.lastName")}: </strong>
+            {customer.lastName || "—"}
           </Typography>
           <Typography>
             <strong>{tCustomerView("fields.email")}: </strong>

@@ -26,7 +26,8 @@ export const RegisterPageView = ({
 }: RegisterPageViewProps) => {
   const t = useTranslations("registerPage");
   const router = useRouter();
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -47,7 +48,8 @@ export const RegisterPageView = ({
     setErrorMessage(null);
 
     const response = await registerUserClient({
-      name,
+      firstName,
+      lastName,
       email,
       phone,
       password,
@@ -128,7 +130,8 @@ export const RegisterPageView = ({
       />
 
       <RegisterForm
-        name={name}
+        firstName={firstName}
+        lastName={lastName}
         email={email}
         phone={phone}
         password={password}
@@ -136,7 +139,8 @@ export const RegisterPageView = ({
         errorMessage={errorMessage}
         isSubmitting={isSubmitting}
         loginHref={loginHref}
-        onNameChange={setName}
+        onFirstNameChange={setFirstName}
+        onLastNameChange={setLastName}
         onEmailChange={setEmail}
         onPhoneChange={setPhone}
         onPasswordChange={setPassword}

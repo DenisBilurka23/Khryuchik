@@ -90,7 +90,8 @@ const toSafeAuthUser = (user: UserDocument): SafeAuthUser => {
   return {
     id: (user._id ?? new ObjectId()).toString(),
     email: normalizeEmail(user.email),
-    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     phone: user.phone,
     isAdmin: Boolean(user.isAdmin),
     authProviders: user.authProviders,
@@ -122,7 +123,8 @@ export const createCredentialsUser = async (
   const now = new Date();
   const document: UserDocument = {
     email: normalizeEmail(input.email),
-    name: input.name.trim(),
+    firstName: input.firstName.trim(),
+    lastName: input.lastName.trim(),
     phone: input.phone.trim(),
     isAdmin: false,
     passwordHash: input.passwordHash,
@@ -152,7 +154,8 @@ export const addCredentialsToExistingUser = async (
     {
       $set: {
         email: normalizeEmail(input.email),
-        name: input.name.trim(),
+        firstName: input.firstName.trim(),
+        lastName: input.lastName.trim(),
         phone: input.phone.trim(),
         passwordHash: input.passwordHash,
         updatedAt: now,
@@ -174,7 +177,8 @@ export const addCredentialsToExistingUser = async (
 
 export const toCredentialsAuthUser = (user: UserDocument) => ({
   id: (user._id ?? new ObjectId()).toString(),
-  name: user.name,
+  firstName: user.firstName,
+  lastName: user.lastName,
   email: normalizeEmail(user.email),
   isAdmin: Boolean(user.isAdmin),
   image: user.image ?? null,
@@ -216,14 +220,16 @@ export const setUserPasswordHash = async (
 
 export const createGoogleUser = async (input: {
   email: string;
-  name?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
   image?: string | null;
 }) => {
   const collection = await getUsersCollection();
   const now = new Date();
   const document: UserDocument = {
     email: normalizeEmail(input.email),
-    name: input.name?.trim() || "",
+    firstName: input.firstName?.trim() || "",
+    lastName: input.lastName?.trim() || "",
     phone: "",
     isAdmin: false,
     image: input.image ?? null,
@@ -245,7 +251,8 @@ export const addGoogleToExistingUser = async (
   userId: ObjectId,
   input: {
     email: string;
-    name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
     image?: string | null;
   },
 ) => {
@@ -256,7 +263,8 @@ export const addGoogleToExistingUser = async (
     throw new Error("Failed to load existing user");
   }
 
-  const nextName = existingUser.name || input.name?.trim() || "";
+  const nextFirstName = existingUser.firstName || input.firstName?.trim() || "";
+  const nextLastName = existingUser.lastName || input.lastName?.trim() || "";
   const nextImage = existingUser.image ?? input.image ?? null;
 
   await collection.updateOne(
@@ -264,7 +272,8 @@ export const addGoogleToExistingUser = async (
     {
       $set: {
         email: normalizeEmail(input.email),
-        name: nextName,
+        firstName: nextFirstName,
+        lastName: nextLastName,
         image: nextImage,
         avatarObjectKey: existingUser.avatarObjectKey ?? null,
         emailVerifiedAt: existingUser.emailVerifiedAt ?? new Date(),
@@ -293,7 +302,8 @@ export const updateUserProfile = async (
 
   const updateSet: Partial<UserDocument> & { updatedAt: Date } = {
     email: normalizeEmail(input.email),
-    name: input.name.trim(),
+    firstName: input.firstName.trim(),
+    lastName: input.lastName.trim(),
     phone: input.phone.trim(),
     updatedAt: new Date(),
   };
@@ -324,7 +334,8 @@ export const updateAdminUser = async (
 
   const updateSet: Partial<UserDocument> & { updatedAt: Date } = {
     email: normalizeEmail(input.email),
-    name: input.name.trim(),
+    firstName: input.firstName.trim(),
+    lastName: input.lastName.trim(),
     phone: input.phone.trim(),
     isAdmin: input.isAdmin,
     updatedAt: new Date(),

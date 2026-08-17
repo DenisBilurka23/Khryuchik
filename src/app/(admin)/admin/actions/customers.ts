@@ -55,7 +55,8 @@ export const saveAdminCustomerAction = async (formData: FormData) => {
   const rawUserId = formData.get("userId");
   const userId = typeof rawUserId === "string" ? rawUserId.trim() : "";
   const rawEmail = formData.get("email");
-  const rawName = formData.get("name");
+  const rawFirstName = formData.get("firstName");
+  const rawLastName = formData.get("lastName");
   const rawPhone = formData.get("phone");
   const rawIsAdmin = formData.get("isAdmin");
   const rawRemoveAvatar = formData.get("removeAvatar");
@@ -106,7 +107,8 @@ export const saveAdminCustomerAction = async (formData: FormData) => {
 
     result = await saveAdminCustomer(session.user.id, userId, {
       email: typeof rawEmail === "string" ? rawEmail.trim() : "",
-      name: typeof rawName === "string" ? rawName.trim() : "",
+      firstName: typeof rawFirstName === "string" ? rawFirstName.trim() : "",
+      lastName: typeof rawLastName === "string" ? rawLastName.trim() : "",
       phone: typeof rawPhone === "string" ? rawPhone.trim() : "",
       isAdmin: rawIsAdmin === "on" || rawIsAdmin === "true",
       ...(uploadedAvatar

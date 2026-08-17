@@ -1,7 +1,8 @@
 import type { SyntheticEvent } from "react";
 
 export type RegisterFormProps = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   password: string;
@@ -9,7 +10,8 @@ export type RegisterFormProps = {
   errorMessage: string | null;
   isSubmitting: boolean;
   loginHref: string;
-  onNameChange: (value: string) => void;
+  onFirstNameChange: (value: string) => void;
+  onLastNameChange: (value: string) => void;
   onEmailChange: (value: string) => void;
   onPhoneChange: (value: string) => void;
   onPasswordChange: (value: string) => void;

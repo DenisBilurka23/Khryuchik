@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { updateAccountProfileClient } from "@/client-api/account";
 import type { Locale } from "@/i18n/config";
 import { UserOperationErrorReason } from "@/types/users";
-import { splitName } from "@/utils/account-page";
+import { formatPersonName } from "@/utils";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
 import type { AccountPageUser } from "@/components/account-page-view/types";
@@ -20,10 +20,9 @@ export const useProfileEditor = (
   const t = useTranslations("accountPage");
   const { update } = useSession();
 
-  const { firstName: initialFirstName, lastName: initialLastName } = splitName(user.name);
   const [profileUser, setProfileUser] = useState(user);
-  const [firstName, setFirstName] = useState(initialFirstName);
-  const [lastName, setLastName] = useState(initialLastName);
+  const [firstName, setFirstName] = useState(user.firstName ?? "");
+  const [lastName, setLastName] = useState(user.lastName ?? "");
   const [email, setEmail] = useState(user.email ?? "");
   const [phone, setPhone] = useState(user.phone ?? "");
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -34,7 +33,9 @@ export const useProfileEditor = (
   const [avatarPreviewSrc, setAvatarPreviewSrc] = useState(user.image ?? null);
   const avatarPreviewUrlRef = useRef<string | null>(null);
 
-  const userName = profileUser.name || (locale === "ru" ? "Пользователь" : "User");
+  const userName =
+    formatPersonName(profileUser.firstName, profileUser.lastName) ||
+    (locale === "ru" ? "Пользователь" : "User");
   const userEmail = profileUser.email || "email@example.com";
   const userInitial = userName.charAt(0).toUpperCase();
   const isEmailEditable = !(profileUser.authProviders ?? []).includes("google");
@@ -61,10 +62,8 @@ export const useProfileEditor = (
   };
 
   const cancelProfileEditing = () => {
-    const { firstName: nextFirstName, lastName: nextLastName } = splitName(profileUser.name);
-
-    setFirstName(nextFirstName);
-    setLastName(nextLastName);
+    setFirstName(profileUser.firstName ?? "");
+    setLastName(profileUser.lastName ?? "");
     setEmail(profileUser.email ?? "");
     setPhone(profileUser.phone ?? "");
     clearAvatarPreviewUrl();
@@ -87,9 +86,10 @@ export const useProfileEditor = (
     event?.preventDefault();
 
     const normalizedEmail = email.trim().toLowerCase();
-    const normalizedName = `${firstName.trim()} ${lastName.trim()}`.trim();
+    const normalizedFirstName = firstName.trim();
+    const normalizedLastName = lastName.trim();
 
-    if (!normalizedName || !normalizedEmail) {
+    if (!normalizedFirstName || !normalizedLastName || !normalizedEmail) {
       setProfileError(t("missingFields"));
       setProfileSuccess(null);
       return;
@@ -106,7 +106,8 @@ export const useProfileEditor = (
     setProfileSuccess(null);
 
     const response = await updateAccountProfileClient({
-      name: normalizedName,
+      firstName: normalizedFirstName,
+      lastName: normalizedLastName,
       email: normalizedEmail,
       phone,
       avatar: avatarFile,
@@ -138,8 +139,8 @@ export const useProfileEditor = (
     const savedUser = response.data.user;
 
     setProfileUser(savedUser);
-    setFirstName(splitName(savedUser.name).firstName);
-    setLastName(splitName(savedUser.name).lastName);
+    setFirstName(savedUser.firstName);
+    setLastName(savedUser.lastName);
     setEmail(savedUser.email);
     setPhone(savedUser.phone);
     clearAvatarPreviewUrl();
@@ -151,7 +152,8 @@ export const useProfileEditor = (
     await update({
       user: {
         id: savedUser.id,
-        name: savedUser.name,
+        firstName: savedUser.firstName,
+        lastName: savedUser.lastName,
         email: savedUser.email,
         phone: savedUser.phone,
         authProviders: savedUser.authProviders,

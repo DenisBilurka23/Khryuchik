@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { CONTACT_EMAIL } from "@/constants/contact";
 import type { ContactPageLabels } from "@/i18n/types";
 import { getServerAuthSession } from "@/server/auth/config";
+import { formatPersonName } from "@/utils";
 import { getFooterItemHref } from "@/utils/footer";
 import styles from "./contact-page-view.module.css";
 import { ContactChannelsSection } from "./sections/contact-channels-section";
@@ -23,7 +24,10 @@ export const ContactPageView = async ({
   const form = t.raw("form") as ContactPageLabels["form"];
 
   const session = await getServerAuthSession();
-  const defaultName = session?.user?.name ?? "";
+  const defaultName = formatPersonName(
+    session?.user?.firstName,
+    session?.user?.lastName,
+  );
   const defaultEmail = session?.user?.email ?? "";
 
   const instagramHref = getFooterItemHref("instagram", locale, country);

@@ -5,6 +5,7 @@ import GoogleProvider from "next-auth/providers/google";
 import { sendWelcomeEmail } from "@/server/email/welcome";
 import { SignInErrorCode } from "@/types/auth";
 import { resolveLocale } from "@/server/i18n/request-locale";
+import { formatPersonName } from "@/utils";
 import {
   authenticateCredentialsUser,
   getAccountUserByEmail,
@@ -54,6 +55,13 @@ export const authOptions: NextAuthOptions = {
                 prompt: "select_account",
               },
             },
+            profile: (profile) => ({
+              id: profile.sub,
+              email: profile.email,
+              image: profile.picture,
+              firstName: profile.given_name?.trim() ?? "",
+              lastName: profile.family_name?.trim() ?? "",
+            }),
           }),
         ]
       : []),
@@ -76,13 +84,18 @@ export const authOptions: NextAuthOptions = {
 
       const { isNewUser } = await syncGoogleUser({
         email: user.email,
-        name: user.name,
+        firstName: user.firstName,
+        lastName: user.lastName,
         image: user.image,
       });
 
       if (isNewUser) {
         const locale = await resolveLocale("storefront");
-        void sendWelcomeEmail(user.email, user.name ?? "", locale);
+        void sendWelcomeEmail(
+          user.email,
+          formatPersonName(user.firstName, user.lastName),
+          locale,
+        );
       }
 
       return true;
@@ -94,7 +107,8 @@ export const authOptions: NextAuthOptions = {
         if (accountUser) {
           token.userId = accountUser.id;
           token.email = accountUser.email;
-          token.name = accountUser.name;
+          token.firstName = accountUser.firstName;
+          token.lastName = accountUser.lastName;
           token.phone = accountUser.phone;
           token.isAdmin = accountUser.isAdmin;
           token.authProviders = accountUser.authProviders;
@@ -107,7 +121,8 @@ export const authOptions: NextAuthOptions = {
 
       if (trigger === "update" && session?.user) {
         token.email = session.user.email ?? token.email;
-        token.name = session.user.name ?? token.name;
+        token.firstName = session.user.firstName ?? token.firstName;
+        token.lastName = session.user.lastName ?? token.lastName;
         token.phone = session.user.phone ?? token.phone;
         token.isAdmin = session.user.isAdmin ?? token.isAdmin;
         token.authProviders = session.user.authProviders ?? token.authProviders;
@@ -126,8 +141,10 @@ export const authOptions: NextAuthOptions = {
         session.user.id = typeof token.userId === "string" ? token.userId : "";
         session.user.email =
           typeof token.email === "string" ? token.email : session.user.email;
-        session.user.name =
-          typeof token.name === "string" ? token.name : session.user.name;
+        session.user.firstName =
+          typeof token.firstName === "string" ? token.firstName : "";
+        session.user.lastName =
+          typeof token.lastName === "string" ? token.lastName : "";
         session.user.phone = typeof token.phone === "string" ? token.phone : "";
         session.user.isAdmin = Boolean(token.isAdmin);
         session.user.authProviders = Array.isArray(token.authProviders)

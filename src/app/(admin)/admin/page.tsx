@@ -16,6 +16,7 @@ import { getTranslations } from "next-intl/server";
 import { getAdminSummaryData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
+import { formatPersonName } from "@/utils";
 import {
   formatAdminDate,
   getAdminAuthProviderLabel,
@@ -253,7 +254,8 @@ const AdminDashboardPage = async () => {
                 >
                   <Box>
                     <Typography sx={{ fontWeight: 700 }}>
-                      {customer.name || tShared("placeholders.noName")}
+                      {formatPersonName(customer.firstName, customer.lastName) ||
+                        tShared("placeholders.noName")}
                     </Typography>
                     <Typography
                       variant="body2"

@@ -30,7 +30,8 @@ export type AdminNavItem = {
 export type AdminCustomerListItem = {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   isAdmin: boolean;
   authProviders: AuthProvider[];
@@ -40,7 +41,8 @@ export type AdminCustomerListItem = {
 export type AdminCustomerEditorData = {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   isAdmin: boolean;
   image?: string | null;

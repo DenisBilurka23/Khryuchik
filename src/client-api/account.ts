@@ -17,7 +17,8 @@ type NewsletterSubscriptionResponse = ErrorResponse & {
 type AccountClientUser = {
   id: string;
   email: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   authProviders: Array<"google" | "credentials">;
   image?: string | null;
@@ -37,7 +38,8 @@ type UpdateAccountAddressesResponse = ErrorResponse & {
 };
 
 export const updateAccountProfileClient = async (payload: {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   avatar?: File | null;
@@ -45,7 +47,8 @@ export const updateAccountProfileClient = async (payload: {
 }) => {
   const body = new FormData();
 
-  body.set("name", payload.name);
+  body.set("firstName", payload.firstName);
+  body.set("lastName", payload.lastName);
   body.set("email", payload.email);
   body.set("phone", payload.phone);
   body.set("removeAvatar", payload.removeAvatar ? "1" : "0");
