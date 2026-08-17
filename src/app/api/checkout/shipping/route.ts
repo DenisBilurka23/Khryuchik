@@ -70,9 +70,8 @@ export const POST = async (request: NextRequest) => {
 
   const result = await calculateOrderShipping({
     country,
-    // Only resolved lines are quoted, so the preview matches what the order
-    // will charge for.
     items: resolved.map((item) => ({
+      id: item.id,
       productId: item.productId,
       quantity: item.quantity,
       selections: selectionsById.get(item.id),

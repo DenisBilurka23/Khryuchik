@@ -18,6 +18,7 @@ import { deleteAdminOrderAction } from "@/app/(admin)/admin/actions";
 import {
   AdminOrderDeleteButton,
   AdminOrderPaymentConfirmButton,
+  AdminOrderProductionButton,
   AdminOrderStatusSelect,
 } from "@/components/admin-orders-page-view";
 import {
@@ -29,7 +30,7 @@ import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { findOrders } from "@/server/orders/repositories/orders.repository";
 import type { AdminPageDictionary } from "@/i18n/types";
-import { formatCurrency, formatOrderNumber } from "@/utils";
+import { formatCurrency, formatCustomerName, formatOrderNumber } from "@/utils";
 
 type OrderColumns = AdminPageDictionary["orders"]["columns"];
 
@@ -111,7 +112,9 @@ const AdminOrdersPage = async () => {
                     </TableCell>
                     <TableCell>
                       <Stack>
-                        <Typography>{order.customer.name}</Typography>
+                        <Typography>
+                          {formatCustomerName(order.customer)}
+                        </Typography>
                         <Typography variant="caption" color="text.secondary">
                           {order.customer.email ?? order.customer.phone ?? ""}
                         </Typography>
@@ -149,6 +152,13 @@ const AdminOrdersPage = async () => {
                           order.payment.method !== "stripe" && (
                             <AdminOrderPaymentConfirmButton
                               orderId={order.id}
+                            />
+                          )}
+                        {order.printifyOrder &&
+                          !order.printifyOrder.sentToProductionAt && (
+                            <AdminOrderProductionButton
+                              orderId={order.id}
+                              lastError={order.printifyOrder.lastError}
                             />
                           )}
                         <AdminOrderDeleteButton

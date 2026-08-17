@@ -12,6 +12,7 @@ import {
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
 import { retrieveStripeCheckoutSession } from "@/server/payments/stripe";
+import { resolvePrintifyLineItems } from "@/server/printify/line-items";
 import {
   notifyAdminNewOrder,
   notifyAdminOrderPaid,
@@ -107,6 +108,22 @@ export const createOrder = async (
     items.map((item) => [item.id, item.selections]),
   );
 
+  const printifyItems = resolved.map((item) => ({
+    id: item.id,
+    productId: item.productId,
+    quantity: item.quantity,
+    selections: selectionsById.get(item.id),
+  }));
+
+  const printifyResolution = await resolvePrintifyLineItems(printifyItems);
+
+  if (printifyResolution === null) {
+    throw new OrderValidationError(
+      "No Printify variant matches the selected options",
+      "unsupported_variant",
+    );
+  }
+
   const orderItems: OrderItem[] = resolved.map((item) => ({
     productId: item.productId,
     slug: item.slug,
@@ -119,6 +136,7 @@ export const createOrder = async (
     unitPrice: item.price,
     quantity: item.quantity,
     lineTotal: round2(item.price * item.quantity),
+    printify: printifyResolution.linkByItemId.get(item.id),
   }));
 
   const fulfillmentType: OrderFulfillmentType = orderItems.every(
@@ -133,11 +151,7 @@ export const createOrder = async (
 
   const shippingResult = await calculateOrderShipping({
     country,
-    items: resolved.map((item) => ({
-      productId: item.productId,
-      quantity: item.quantity,
-      selections: selectionsById.get(item.id),
-    })),
+    items: printifyItems,
     subtotal,
     isDigitalOnly: fulfillmentType === "digital",
     address: input.shippingAddress && {

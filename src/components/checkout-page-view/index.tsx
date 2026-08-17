@@ -270,7 +270,8 @@ export const CheckoutPageView = ({
         locale,
         items: buyNowItems ?? cart.items,
         customer: {
-          name: form.name.trim(),
+          firstName: form.firstName.trim(),
+          lastName: form.lastName.trim(),
           email: form.email.trim(),
           phone: form.phone.trim() || undefined,
         },

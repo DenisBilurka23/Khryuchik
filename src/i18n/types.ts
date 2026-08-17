@@ -187,7 +187,8 @@ export type CheckoutPageLabels = {
   paymentTitle: string;
   summaryTitle: string;
   fields: {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     phone: string;
     line1: string;
@@ -1206,6 +1207,9 @@ export type AdminPageDictionary = {
     paymentMethodLabels: Record<string, string>;
     paymentStatusLabels: Record<string, string>;
     statusLabels: Record<string, string>;
+    confirmPayment: string;
+    sendToProduction: string;
+    printifyFailed: string;
     delete: {
       button: string;
       dialogTitle: string;

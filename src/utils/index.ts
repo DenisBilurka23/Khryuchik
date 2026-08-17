@@ -24,6 +24,7 @@ export { formatOrderNumber } from "./format-order-number";
 export { getLocaleDisplayName, getLocaleShortLabel } from "./locale";
 export { getLocalizedPath, getLocalizedProductPath } from "./localized-path";
 export {
+  formatCustomerName,
   getCustomerOrderStatus,
   isDigitalOrderItem,
   isOrderStatus,

@@ -2,6 +2,11 @@ import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
 import type { CountryCode, CurrencyCode, PaymentMethod } from "@/utils/country";
 
+export type OrderItemPrintifyLink = {
+  printifyProductId: string;
+  variantId: number;
+};
+
 export type OrderItem = {
   productId: string;
   slug: string;
@@ -14,10 +19,12 @@ export type OrderItem = {
   unitPrice: number;
   quantity: number;
   lineTotal: number;
+  printify?: OrderItemPrintifyLink;
 };
 
 export type OrderCustomer = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone?: string;
   telegram?: string;
@@ -54,6 +61,15 @@ export type OrderPaymentInfo = {
 
 export type OrderFulfillmentType = "digital" | "physical";
 
+// `printifyOrderId` and `createdAt` are absent when the submission failed
+// before Printify accepted the order — `lastError` then holds the reason.
+export type OrderPrintifyInfo = {
+  printifyOrderId?: string;
+  createdAt?: string;
+  sentToProductionAt?: string;
+  lastError?: string;
+};
+
 export type OrderDocument = {
   id: string;
   createdAt: string;
@@ -71,6 +87,7 @@ export type OrderDocument = {
   payment: OrderPaymentInfo;
   status: OrderStatus;
   fulfillmentType?: OrderFulfillmentType;
+  printifyOrder?: OrderPrintifyInfo;
   notes?: string;
 };
 

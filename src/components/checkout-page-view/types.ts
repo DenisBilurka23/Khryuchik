@@ -6,7 +6,8 @@ import type { UserShippingAddress } from "@/types/users";
 import type { CountryCode, CurrencyCode } from "@/utils";
 
 export type CheckoutInitialCustomer = {
-  name?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   phone?: string;
 };
@@ -21,7 +22,8 @@ export type CheckoutPageViewProps = {
 };
 
 export type FormState = {
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   line1: string;

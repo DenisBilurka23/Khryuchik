@@ -4,6 +4,8 @@
 // shipping-restrictions article in the Printify Help Center
 // (https://help.printify.com, search "shipping restrictions").
 //
+export const PRINTIFY_STANDARD_SHIPPING_METHOD = 1;
+
 export const PRINTIFY_RESTRICTED_COUNTRIES = [
   "BY",
   "CU",

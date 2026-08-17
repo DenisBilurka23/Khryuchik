@@ -724,7 +724,8 @@
       "paymentTitle": "Payment method",
       "summaryTitle": "Your order",
       "fields": {
-        "name": "Full name",
+        "firstName": "First name",
+        "lastName": "Last name",
         "email": "Email",
         "phone": "Phone",
         "line1": "Address line 1",
@@ -1520,6 +1521,8 @@
         "cancelled": "Cancelled"
       },
       "confirmPayment": "Confirm payment",
+      "sendToProduction": "Send to production",
+      "printifyFailed": "Printify submission failed: {reason}",
       "delete": {
         "button": "Delete order",
         "dialogTitle": "Delete this order?",

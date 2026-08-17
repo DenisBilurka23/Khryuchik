@@ -6,8 +6,10 @@ import {
   deleteOrder,
   findOrderById,
   updateOrderPayment,
+  updateOrderPrintifyOrder,
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
+import { sendPrintifyOrderToProduction } from "@/server/printify/services/printify-order.service";
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { requireAdminApiAccess } from "@/server/admin/auth";
@@ -77,6 +79,44 @@ export const confirmAdminOrderPaymentAction = async (
     }
   } catch (error) {
     console.error("confirmAdminOrderPaymentAction failed", error);
+    return { ok: false, error: "failed" };
+  }
+
+  revalidateOrderDependentPaths();
+  return { ok: true };
+};
+
+export const sendAdminOrderToProductionAction = async (
+  orderId: string,
+): Promise<AdminActionResult<"not_submitted">> => {
+  const session = await requireAdminApiAccess();
+  if (!session) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const order = await findOrderById(orderId);
+  const printifyOrderId = order?.printifyOrder?.printifyOrderId;
+
+  if (!printifyOrderId) {
+    return { ok: false, error: "not_submitted" };
+  }
+
+  if (order?.printifyOrder?.sentToProductionAt) {
+    return { ok: true };
+  }
+
+  try {
+    await sendPrintifyOrderToProduction(printifyOrderId);
+    await updateOrderPrintifyOrder(orderId, {
+      sentToProductionAt: new Date().toISOString(),
+      lastError: null,
+    });
+  } catch (error) {
+    console.error("sendAdminOrderToProductionAction failed", error);
+    await updateOrderPrintifyOrder(orderId, {
+      lastError: error instanceof Error ? error.message : String(error),
+    }).catch(() => undefined);
+    revalidateOrderDependentPaths();
     return { ok: false, error: "failed" };
   }
 

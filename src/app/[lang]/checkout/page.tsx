@@ -11,6 +11,7 @@ import {
 } from "@/server/localization/localization.service";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { splitName } from "@/utils/account-page";
 
 type LocalizedCheckoutPageProps = {
   params: Promise<{ lang: string }>;
@@ -52,8 +53,12 @@ const initialCustomerFromSession = (
 ): CheckoutInitialCustomer | undefined => {
   const user = session?.user;
   if (!user) return undefined;
+  // The session carries one name string, so it is split once here rather than
+  // anywhere downstream — the order itself stores the halves.
+  const { firstName, lastName } = splitName(user.name);
   return {
-    name: user.name ?? undefined,
+    firstName: firstName || undefined,
+    lastName: lastName || undefined,
     email: user.email ?? undefined,
     phone: user.phone || undefined,
   };
