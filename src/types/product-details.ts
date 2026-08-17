@@ -35,6 +35,29 @@ export type ProductOptionGroups = {
   colors?: ProductOption[];
 };
 
+export type ProductVariantCombination = {
+  size?: string;
+  color?: string;
+  isSoldOut?: boolean;
+};
+
+export type ProductVariantAxis = "size" | "color";
+
+export type ProductVariantAvailability =
+  | "available"
+  | "sold-out"
+  | "unavailable";
+
+export type ProductVariantValueState = {
+  availability: ProductVariantAvailability;
+  isSelectable: boolean;
+};
+
+export type ProductVariantOptions = Pick<
+  ProductOptionGroups,
+  "sizes" | "colors"
+>;
+
 export type ProductReview = {
   id: string;
   author: string;
@@ -62,6 +85,7 @@ export type ProductDetails = {
   formats?: ProductOption[];
   sizes?: ProductOption[];
   colors?: ProductOption[];
+  variantMatrix?: ProductVariantCombination[];
   specs: Array<{ label: string; value: string }>;
   delivery: string[];
   reviews: ProductReview[];

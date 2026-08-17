@@ -1,6 +1,7 @@
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   LocalizedProductSummary,
+  PrintifyVariantLink,
   ProductCountryPricing,
   ProductDetailDocument,
   ProductDocument,
@@ -15,6 +16,10 @@ import type {
 
 import type { CountryCode } from "./country";
 import { convertFromUsd } from "./price-conversion";
+import {
+  buildProductVariantMatrix,
+  filterOfferedVariantOptions,
+} from "./variant-matrix";
 
 const nativePricing: RegionPricing = { status: "native" };
 
@@ -128,11 +133,6 @@ export const localizeProductSummary = (
   };
 };
 
-// Deltas are converted one by one and each rounded up on its own, so a
-// converted option can land up to one currency unit above the exact conversion
-// of base + delta. That is always in the shop's favour and invisible at the
-// scale of a single unit, which beats threading the source price through every
-// caller just to round the sum once.
 const localizeOptionPrices = (
   options: ProductOption[] | undefined,
   country: CountryCode,
@@ -216,6 +216,7 @@ export const isLocalizedProductSummary = (
 export const toProductDetails = (
   summary: LocalizedProductSummary,
   detailsDocument: ProductDetailDocument,
+  printifyVariants: PrintifyVariantLink[] | undefined,
   locale: Locale,
   country: CountryCode,
   regionPricing: RegionPricing = nativePricing,
@@ -228,13 +229,13 @@ export const toProductDetails = (
     return null;
   }
 
-  // Options carry their deltas to the client, where the price picker adds them
-  // to the base price, so they have to arrive already in the region's currency.
   const options = localizeProductOptionGroups(
     translation,
     country,
     regionPricing,
   );
+  const variantMatrix = buildProductVariantMatrix(printifyVariants);
+  const offered = filterOfferedVariantOptions(variantMatrix, options);
 
   return {
     productId: summary.id,
@@ -253,8 +254,9 @@ export const toProductDetails = (
     images: translation.images,
     languages: options.languages,
     formats: options.formats,
-    sizes: options.sizes,
-    colors: options.colors,
+    sizes: offered.sizes,
+    colors: offered.colors,
+    variantMatrix,
     specs: translation.specs,
     delivery: localizeDeliveryCopy(translation.delivery, locale, country),
     reviews: translation.reviews,

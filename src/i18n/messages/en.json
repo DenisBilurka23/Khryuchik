@@ -190,14 +190,18 @@
         "format": "Format",
         "size": "Size",
         "color": "Color",
-        "quantity": "Quantity"
+        "quantity": "Quantity",
+        "soldOut": "Sold out",
+        "unavailable": "Unavailable"
       },
       "actions": {
         "addToCart": "Add to cart",
         "buyNow": "Buy now",
         "viewBook": "View the book",
         "alreadyOwned": "Already in your library",
-        "viewInLibrary": "Open library"
+        "viewInLibrary": "Open library",
+        "unavailableSelection": "This size and color are not offered together. Pick another combination to continue.",
+        "soldOutSelection": "This size and color combination is sold out. Pick another combination to continue."
       },
       "details": {
         "sku": "SKU",

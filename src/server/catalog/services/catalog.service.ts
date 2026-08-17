@@ -178,6 +178,7 @@ export const getProductDetails = cache(
     const details = toProductDetails(
       summary,
       detailsDocument,
+      product.printify?.variants,
       locale,
       country,
       regionPricing,

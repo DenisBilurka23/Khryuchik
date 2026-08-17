@@ -39,3 +39,11 @@ export {
   resolveOptionPrice,
   toProductDetails,
 } from "./product";
+export {
+  buildProductVariantMatrix,
+  filterOfferedVariantOptions,
+  getVariantSelectionAvailability,
+  getVariantValueState,
+  isProductVariantAxis,
+  resolveVariantSelections,
+} from "./variant-matrix";
