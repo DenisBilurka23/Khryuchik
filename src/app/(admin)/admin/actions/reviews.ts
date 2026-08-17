@@ -10,9 +10,7 @@ import {
 } from "@/server/reviews/repositories/reviews.repository";
 import { REVIEW_STATUSES, type ReviewStatus } from "@/types/reviews";
 
-type UpdateReviewStatusResult =
-  | { ok: true }
-  | { ok: false; error: "unauthorized" | "invalid_status" | "failed" };
+import type { AdminActionResult } from "./types";
 
 const revalidateReviewDependentPaths = () => {
   revalidatePath("/admin/reviews");
@@ -23,7 +21,7 @@ const revalidateReviewDependentPaths = () => {
 export const updateAdminReviewStatusAction = async (
   reviewId: string,
   status: ReviewStatus,
-): Promise<UpdateReviewStatusResult> => {
+): Promise<AdminActionResult<"invalid_status">> => {
   const session = await requireAdminApiAccess();
   if (!session) {
     return { ok: false, error: "unauthorized" };

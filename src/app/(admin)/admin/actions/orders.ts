@@ -14,9 +14,7 @@ import { requireAdminApiAccess } from "@/server/admin/auth";
 import type { OrderStatus } from "@/types/order";
 import { isOrderStatus } from "@/utils";
 
-type UpdateOrderStatusResult =
-  | { ok: true }
-  | { ok: false; error: "unauthorized" | "invalid_status" | "failed" };
+import type { AdminActionResult } from "./types";
 
 const revalidateOrderDependentPaths = () => {
   revalidatePath("/admin/orders");
@@ -26,7 +24,7 @@ const revalidateOrderDependentPaths = () => {
 export const updateAdminOrderStatusAction = async (
   orderId: string,
   status: OrderStatus,
-): Promise<UpdateOrderStatusResult> => {
+): Promise<AdminActionResult<"invalid_status">> => {
   const session = await requireAdminApiAccess();
   if (!session) {
     return { ok: false, error: "unauthorized" };
@@ -55,13 +53,9 @@ export const updateAdminOrderStatusAction = async (
   return { ok: true };
 };
 
-type ConfirmOrderPaymentResult =
-  | { ok: true }
-  | { ok: false; error: "unauthorized" | "failed" };
-
 export const confirmAdminOrderPaymentAction = async (
   orderId: string,
-): Promise<ConfirmOrderPaymentResult> => {
+): Promise<AdminActionResult> => {
   const session = await requireAdminApiAccess();
   if (!session) {
     return { ok: false, error: "unauthorized" };
