@@ -39,6 +39,8 @@ export type ProductPageLabels = {
     size: string;
     color: string;
     quantity: string;
+    soldOut: string;
+    unavailable: string;
   };
   actions: {
     addToCart: string;
@@ -46,6 +48,8 @@ export type ProductPageLabels = {
     viewBook: string;
     alreadyOwned: string;
     viewInLibrary: string;
+    unavailableSelection: string;
+    soldOutSelection: string;
   };
   details: {
     sku: string;

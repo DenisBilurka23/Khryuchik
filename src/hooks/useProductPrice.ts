@@ -2,7 +2,15 @@
 
 import { useCallback, useMemo, useState } from "react";
 
-import { resolveOptionPrice } from "@/utils";
+import {
+  getVariantSelectionAvailability,
+  getVariantValueState,
+  isProductVariantAxis,
+  resolveOptionPrice,
+  resolveVariantSelections,
+} from "@/utils";
+
+import type { ProductVariantValueState } from "@/types/product-details";
 
 import type {
   ProductSelectionKey,
@@ -11,17 +19,22 @@ import type {
   UseProductPriceResult,
 } from "./useProductPrice.types";
 
-const toInitialSelections = ({
-  languages,
-  formats,
-  sizes,
-  colors,
-}: UseProductPriceParams["product"]): ProductSelectionState => ({
-  language: languages?.[0]?.value ?? "",
-  format: formats?.[0]?.value ?? "",
-  size: sizes?.[0]?.value ?? "",
-  color: colors?.[0]?.value ?? "",
-});
+const toInitialSelections = (
+  product: UseProductPriceParams["product"],
+): ProductSelectionState => {
+  const { languages, formats, sizes, colors, variantMatrix } = product;
+  const selections = {
+    language: languages?.[0]?.value ?? "",
+    format: formats?.[0]?.value ?? "",
+    size: sizes?.[0]?.value ?? "",
+    color: colors?.[0]?.value ?? "",
+  };
+
+  return {
+    ...selections,
+    ...resolveVariantSelections(variantMatrix, product, selections, "size"),
+  };
+};
 
 export const useProductPrice = ({
   product,
@@ -36,6 +49,25 @@ export const useProductPrice = ({
       setSelections((current) => ({ ...current, [key]: value }));
     },
     [],
+  );
+
+  const getOptionState = useCallback(
+    (key: ProductSelectionKey, value: string): ProductVariantValueState =>
+      isProductVariantAxis(key)
+        ? getVariantValueState(
+            product.variantMatrix,
+            product,
+            key,
+            value,
+            selections,
+          )
+        : { availability: "available", isSelectable: true },
+    [product, selections],
+  );
+
+  const selectionAvailability = useMemo(
+    () => getVariantSelectionAvailability(product.variantMatrix, selections),
+    [product, selections],
   );
 
   const cartSelections = useMemo(
@@ -53,5 +85,12 @@ export const useProductPrice = ({
     [product, cartSelections, country],
   );
 
-  return { selections, cartSelections, selectOption, price };
+  return {
+    selections,
+    cartSelections,
+    selectOption,
+    getOptionState,
+    selectionAvailability,
+    price,
+  };
 };

@@ -43,7 +43,14 @@ export const ProductInfo = ({
   const { isInWishlist, toggleWishlist } = useWishlist();
   const router = useRouter();
   const [quantity, setQuantity] = useState(1);
-  const { selections, cartSelections, selectOption, price } = useProductPrice({
+  const {
+    selections,
+    cartSelections,
+    selectOption,
+    getOptionState,
+    selectionAvailability,
+    price,
+  } = useProductPrice({
     product,
     country,
   });
@@ -196,11 +203,35 @@ export const ProductInfo = ({
             onChange={(event) => selectOption("size", event.target.value)}
             fullWidth
           >
-            {product.sizes.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
+            {product.sizes.map((option) => {
+              const { availability, isSelectable } = getOptionState(
+                "size",
+                option.value,
+              );
+
+              return (
+                <MenuItem
+                  key={option.value}
+                  value={option.value}
+                  disabled={!isSelectable}
+                >
+                  {option.label}
+                  {availability === "available" ? null : (
+                    <Typography
+                      component="span"
+                      color="text.secondary"
+                      sx={{ ml: 1, fontSize: 13 }}
+                    >
+                      {tProductPage(
+                        availability === "sold-out"
+                          ? "selectors.soldOut"
+                          : "selectors.unavailable",
+                      )}
+                    </Typography>
+                  )}
+                </MenuItem>
+              );
+            })}
           </TextField>
         ) : null}
 
@@ -212,11 +243,35 @@ export const ProductInfo = ({
             onChange={(event) => selectOption("color", event.target.value)}
             fullWidth
           >
-            {product.colors.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
+            {product.colors.map((option) => {
+              const { availability, isSelectable } = getOptionState(
+                "color",
+                option.value,
+              );
+
+              return (
+                <MenuItem
+                  key={option.value}
+                  value={option.value}
+                  disabled={!isSelectable}
+                >
+                  {option.label}
+                  {availability === "available" ? null : (
+                    <Typography
+                      component="span"
+                      color="text.secondary"
+                      sx={{ ml: 1, fontSize: 13 }}
+                    >
+                      {tProductPage(
+                        availability === "sold-out"
+                          ? "selectors.soldOut"
+                          : "selectors.unavailable",
+                      )}
+                    </Typography>
+                  )}
+                </MenuItem>
+              );
+            })}
           </TextField>
         ) : null}
 
@@ -255,29 +310,38 @@ export const ProductInfo = ({
           </Button>
         </Stack>
       ) : (
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          sx={{ mt: 4 }}
-        >
-          <Button
-            variant="contained"
-            size="large"
-            startIcon={<ShoppingBagOutlinedIcon />}
-            sx={{ flex: 1 }}
-            onClick={handleAddToCart}
-          >
-            {tProductPage("actions.addToCart")}
-          </Button>
-          <Button
-            variant="outlined"
-            color="inherit"
-            size="large"
-            sx={{ flex: 1, borderColor: "#E8D6BF", bgcolor: "#fff" }}
-            onClick={handleBuyNow}
-          >
-            {tProductPage("actions.buyNow")}
-          </Button>
+        <Stack spacing={2} sx={{ mt: 4 }}>
+          {selectionAvailability === "available" ? null : (
+            <Alert severity="warning">
+              {tProductPage(
+                selectionAvailability === "sold-out"
+                  ? "actions.soldOutSelection"
+                  : "actions.unavailableSelection",
+              )}
+            </Alert>
+          )}
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
+            <Button
+              variant="contained"
+              size="large"
+              startIcon={<ShoppingBagOutlinedIcon />}
+              sx={{ flex: 1 }}
+              disabled={selectionAvailability !== "available"}
+              onClick={handleAddToCart}
+            >
+              {tProductPage("actions.addToCart")}
+            </Button>
+            <Button
+              variant="outlined"
+              color="inherit"
+              size="large"
+              sx={{ flex: 1, borderColor: "#E8D6BF", bgcolor: "#fff" }}
+              disabled={selectionAvailability !== "available"}
+              onClick={handleBuyNow}
+            >
+              {tProductPage("actions.buyNow")}
+            </Button>
+          </Stack>
         </Stack>
       )}
     </Box>
