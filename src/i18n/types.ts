@@ -1213,13 +1213,28 @@ export type AdminPageDictionary = {
     statusLabels: Record<string, string>;
     confirmPayment: string;
     sendToProduction: string;
+    sendToProductionConfirm: {
+      dialogTitle: string;
+      dialogDescription: string;
+      confirmLabel: string;
+      cancelLabel: string;
+    };
     printifyFailed: string;
+    printifyCancelFailed: string;
+    cancelPrintify: {
+      button: string;
+      dialogTitle: string;
+      dialogDescription: string;
+      confirmLabel: string;
+      cancelLabel: string;
+    };
     delete: {
       button: string;
       dialogTitle: string;
       dialogDescription: string;
       confirmLabel: string;
       cancelLabel: string;
+      blockedByPrintify: string;
     };
   };
   reviews: {

@@ -14,6 +14,7 @@ export {
   saveAdminRegionAction,
 } from "./localization";
 export {
+  cancelAdminOrderPrintifyAction,
   confirmAdminOrderPaymentAction,
   deleteAdminOrderAction,
   sendAdminOrderToProductionAction,
@@ -24,10 +25,7 @@ export {
   relinkPrintifyProductAction,
   syncPrintifyProductAction,
 } from "./printify";
-export {
-  deleteAdminProductAction,
-  saveAdminProductAction,
-} from "./products";
+export { deleteAdminProductAction, saveAdminProductAction } from "./products";
 export {
   deleteAdminReviewAction,
   updateAdminReviewStatusAction,

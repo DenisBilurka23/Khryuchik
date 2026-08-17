@@ -1526,13 +1526,28 @@
       },
       "confirmPayment": "Confirm payment",
       "sendToProduction": "Send to production",
+      "sendToProductionConfirm": {
+        "dialogTitle": "Send this order to production?",
+        "dialogDescription": "Printify will start printing and charge the payment method on file. This is real money and the order can no longer be cancelled afterwards.",
+        "confirmLabel": "Send to production",
+        "cancelLabel": "Close"
+      },
       "printifyFailed": "Printify submission failed: {reason}",
+      "printifyCancelFailed": "Printify cancellation failed: {reason}. If the order was just created, wait a few seconds and try again.",
+      "cancelPrintify": {
+        "button": "Cancel printing",
+        "dialogTitle": "Cancel this order in Printify?",
+        "dialogDescription": "Printify will stop the order and it will not be printed. The payment is not refunded — use the refund action for that.",
+        "confirmLabel": "Cancel printing",
+        "cancelLabel": "Close"
+      },
       "delete": {
         "button": "Delete order",
         "dialogTitle": "Delete this order?",
         "dialogDescription": "The order will be removed from the database permanently. This action cannot be undone.",
         "confirmLabel": "Delete",
-        "cancelLabel": "Cancel"
+        "cancelLabel": "Cancel",
+        "blockedByPrintify": "Cancel printing first — otherwise the Printify order stays on hold with nothing linking back to it."
       }
     },
     "reviews": {

@@ -121,3 +121,14 @@ export const sendPrintifyOrderToProduction = async (
     { method: "POST", timeoutMs: ORDER_TIMEOUT_MS },
   );
 };
+
+export const cancelPrintifyOrder = async (
+  printifyOrderId: string,
+): Promise<void> => {
+  const shopId = requireShopId();
+
+  await printifyRequest(
+    `/shops/${shopId}/orders/${printifyOrderId}/cancel.json`,
+    { method: "POST", timeoutMs: ORDER_TIMEOUT_MS },
+  );
+};

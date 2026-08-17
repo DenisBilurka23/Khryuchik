@@ -1550,13 +1550,28 @@
       },
       "confirmPayment": "Подтвердить оплату",
       "sendToProduction": "Отправить в производство",
+      "sendToProductionConfirm": {
+        "dialogTitle": "Отправить заказ в производство?",
+        "dialogDescription": "Printify начнёт печать и спишет деньги с привязанного способа оплаты. Это реальные деньги, и отменить заказ после этого уже нельзя.",
+        "confirmLabel": "Отправить в производство",
+        "cancelLabel": "Закрыть"
+      },
       "printifyFailed": "Не удалось отправить в Printify: {reason}",
+      "printifyCancelFailed": "Не удалось отменить в Printify: {reason}. Если заказ только что создан, подождите несколько секунд и повторите.",
+      "cancelPrintify": {
+        "button": "Отменить печать",
+        "dialogTitle": "Отменить заказ в Printify?",
+        "dialogDescription": "Printify остановит заказ, и он не будет напечатан. Деньги при этом не возвращаются — для возврата есть отдельное действие.",
+        "confirmLabel": "Отменить печать",
+        "cancelLabel": "Закрыть"
+      },
       "delete": {
         "button": "Удалить заказ",
         "dialogTitle": "Удалить заказ?",
         "dialogDescription": "Заказ будет окончательно удалён из базы. Это действие нельзя отменить.",
         "confirmLabel": "Удалить",
-        "cancelLabel": "Отмена"
+        "cancelLabel": "Отмена",
+        "blockedByPrintify": "Сначала отмените печать — иначе заказ останется висеть в Printify, и связи с ним уже не будет."
       }
     },
     "reviews": {
