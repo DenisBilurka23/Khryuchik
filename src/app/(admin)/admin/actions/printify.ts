@@ -13,10 +13,7 @@ import {
 } from "@/server/printify/services/printify-catalog.service";
 
 import { requireAdmin } from "./shared";
-
-type PrintifyActionResult =
-  | { ok: true }
-  | { ok: false; error: "unauthorized" | "failed" | PrintifyImportErrorCode };
+import type { AdminActionResult } from "./types";
 
 const readProductId = (formData: FormData, key: string) => {
   const value = formData.get(key);
@@ -62,7 +59,7 @@ export const importPrintifyProductAction = async (formData: FormData) => {
 
 export const syncPrintifyProductAction = async (
   productId: string,
-): Promise<PrintifyActionResult> => {
+): Promise<AdminActionResult<PrintifyImportErrorCode>> => {
   // Called from a click handler, so an unauthorised caller gets a message
   // rather than the redirect `requireAdmin` would throw.
   const session = await requireAdminApiAccess();
@@ -89,7 +86,7 @@ export const syncPrintifyProductAction = async (
 
 export const relinkPrintifyProductAction = async (
   productId: string,
-): Promise<PrintifyActionResult> => {
+): Promise<AdminActionResult<PrintifyImportErrorCode>> => {
   // Called from a click handler, so an unauthorised caller gets a message
   // rather than the redirect `requireAdmin` would throw.
   const session = await requireAdminApiAccess();
