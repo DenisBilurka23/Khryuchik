@@ -9,12 +9,15 @@ import {
   updateOrderPrintifyOrder,
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
-import { sendPrintifyOrderToProduction } from "@/server/printify/services/printify-order.service";
+import {
+  cancelPrintifyOrder,
+  sendPrintifyOrderToProduction,
+} from "@/server/printify/services/printify-order.service";
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { requireAdminApiAccess } from "@/server/admin/auth";
 import type { OrderStatus } from "@/types/order";
-import { isOrderStatus } from "@/utils";
+import { hasLivePrintifyOrder, isOrderStatus } from "@/utils";
 
 import type { AdminActionResult } from "./types";
 
@@ -124,6 +127,44 @@ export const sendAdminOrderToProductionAction = async (
   return { ok: true };
 };
 
+export const cancelAdminOrderPrintifyAction = async (
+  orderId: string,
+): Promise<AdminActionResult<"not_submitted">> => {
+  const session = await requireAdminApiAccess();
+  if (!session) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const order = await findOrderById(orderId);
+  const printifyOrderId = order?.printifyOrder?.printifyOrderId;
+
+  if (!printifyOrderId) {
+    return { ok: false, error: "not_submitted" };
+  }
+
+  if (order?.printifyOrder?.cancelledAt) {
+    return { ok: true };
+  }
+
+  try {
+    await cancelPrintifyOrder(printifyOrderId);
+    await updateOrderPrintifyOrder(orderId, {
+      cancelledAt: new Date().toISOString(),
+      cancelError: null,
+    });
+  } catch (error) {
+    console.error("cancelAdminOrderPrintifyAction failed", error);
+    await updateOrderPrintifyOrder(orderId, {
+      cancelError: error instanceof Error ? error.message : String(error),
+    }).catch(() => undefined);
+    revalidateOrderDependentPaths();
+    return { ok: false, error: "failed" };
+  }
+
+  revalidateOrderDependentPaths();
+  return { ok: true };
+};
+
 export const deleteAdminOrderAction = async (formData: FormData) => {
   const session = await requireAdminApiAccess();
   if (!session) {
@@ -136,6 +177,15 @@ export const deleteAdminOrderAction = async (formData: FormData) => {
   }
 
   try {
+    const order = await findOrderById(orderId);
+
+    if (order && hasLivePrintifyOrder(order)) {
+      console.warn(
+        `Refused to delete order ${orderId}: its Printify order is still live`,
+      );
+      return;
+    }
+
     await deleteOrder(orderId);
   } catch (error) {
     console.error("deleteAdminOrderAction failed", error);

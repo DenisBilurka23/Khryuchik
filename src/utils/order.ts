@@ -5,8 +5,8 @@ import {
   type AccountOrderItem,
   type CustomerOrderStatus,
   ORDER_STATUSES,
-  type OrderDocument,
   type OrderCustomer,
+  type OrderDocument,
   type OrderItem,
   type OrderPaymentStatus,
   type OrderStatus,
@@ -25,13 +25,16 @@ export const formatCustomerName = (customer: OrderCustomer) =>
 export const isDigitalOrderItem = (item: OrderItem) =>
   !item.formatSelection || item.formatSelection === BOOK_FORMAT.digital;
 
+export const hasLivePrintifyOrder = (order: {
+  printifyOrder?: { printifyOrderId?: string; cancelledAt?: string };
+}) =>
+  Boolean(order.printifyOrder?.printifyOrderId) &&
+  !order.printifyOrder?.cancelledAt;
+
 export const isOrderStatus = (value: unknown): value is OrderStatus =>
   typeof value === "string" &&
   (ORDER_STATUSES as readonly string[]).includes(value);
 
-// Maps the internal (admin) order/payment state to a single status the customer
-// sees. Digital-only paid orders jump straight to "completed"; physical orders
-// follow the normal shipping flow.
 export const getCustomerOrderStatus = (order: {
   status: OrderStatus;
   payment: { status: OrderPaymentStatus };

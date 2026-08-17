@@ -10,6 +10,7 @@ import type { AdminOrderDeleteButtonProps } from "./types";
 export const AdminOrderDeleteButton = ({
   orderId,
   action,
+  disabledReason,
   icon,
   iconOnly = true,
   size = "small",
@@ -35,8 +36,9 @@ export const AdminOrderDeleteButton = ({
         dialogDescription={tDelete("dialogDescription")}
         confirmLabel={tDelete("confirmLabel")}
         cancelLabel={tDelete("cancelLabel")}
-        tooltip={label}
+        tooltip={disabledReason ?? label}
         ariaLabel={label}
+        disabled={Boolean(disabledReason)}
         icon={icon}
         iconOnly={iconOnly}
         size={size}

@@ -18,6 +18,7 @@ import { deleteAdminOrderAction } from "@/app/(admin)/admin/actions";
 import {
   AdminOrderDeleteButton,
   AdminOrderPaymentConfirmButton,
+  AdminOrderPrintifyCancelButton,
   AdminOrderProductionButton,
   AdminOrderStatusSelect,
 } from "@/components/admin-orders-page-view";
@@ -30,7 +31,12 @@ import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { findOrders } from "@/server/orders/repositories/orders.repository";
 import type { AdminPageDictionary } from "@/i18n/types";
-import { formatCurrency, formatCustomerName, formatOrderNumber } from "@/utils";
+import {
+  formatCurrency,
+  formatCustomerName,
+  formatOrderNumber,
+  hasLivePrintifyOrder,
+} from "@/utils";
 
 type OrderColumns = AdminPageDictionary["orders"]["columns"];
 
@@ -155,15 +161,29 @@ const AdminOrdersPage = async () => {
                             />
                           )}
                         {order.printifyOrder &&
-                          !order.printifyOrder.sentToProductionAt && (
+                          !order.printifyOrder.sentToProductionAt &&
+                          !order.printifyOrder.cancelledAt && (
                             <AdminOrderProductionButton
                               orderId={order.id}
                               lastError={order.printifyOrder.lastError}
                             />
                           )}
+                        {order.printifyOrder?.printifyOrderId &&
+                          !order.printifyOrder.sentToProductionAt &&
+                          !order.printifyOrder.cancelledAt && (
+                            <AdminOrderPrintifyCancelButton
+                              orderId={order.id}
+                              cancelError={order.printifyOrder.cancelError}
+                            />
+                          )}
                         <AdminOrderDeleteButton
                           orderId={order.id}
                           action={deleteAdminOrderAction}
+                          disabledReason={
+                            hasLivePrintifyOrder(order)
+                              ? tOrders("delete.blockedByPrintify")
+                              : undefined
+                          }
                           icon={
                             <DeleteOutlineOutlinedIcon key="delete-order-icon" />
                           }

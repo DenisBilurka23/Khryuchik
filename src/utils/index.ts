@@ -26,6 +26,7 @@ export { getLocalizedPath, getLocalizedProductPath } from "./localized-path";
 export {
   formatCustomerName,
   getCustomerOrderStatus,
+  hasLivePrintifyOrder,
   isDigitalOrderItem,
   isOrderStatus,
   normalizeOrderEmail,

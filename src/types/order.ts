@@ -61,13 +61,13 @@ export type OrderPaymentInfo = {
 
 export type OrderFulfillmentType = "digital" | "physical";
 
-// `printifyOrderId` and `createdAt` are absent when the submission failed
-// before Printify accepted the order — `lastError` then holds the reason.
 export type OrderPrintifyInfo = {
   printifyOrderId?: string;
   createdAt?: string;
   sentToProductionAt?: string;
+  cancelledAt?: string;
   lastError?: string;
+  cancelError?: string;
 };
 
 export type OrderDocument = {

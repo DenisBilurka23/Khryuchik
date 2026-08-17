@@ -32,7 +32,12 @@ import { createAdminMetadata } from "@/server/admin/metadata";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { formatAdminDate } from "@/utils/admin";
-import { formatCurrency, formatOrderNumber, formatPersonName } from "@/utils";
+import {
+  formatCurrency,
+  formatOrderNumber,
+  formatPersonName,
+  hasLivePrintifyOrder,
+} from "@/utils";
 import type { AdminPageDictionary } from "@/i18n/types";
 
 type ViewAdminCustomerPageProps = {
@@ -42,10 +47,7 @@ type ViewAdminCustomerPageProps = {
 export const generateMetadata = async ({
   params,
 }: ViewAdminCustomerPageProps): Promise<Metadata> => {
-  const [locale, { id }] = await Promise.all([
-    resolveLocale("admin"),
-    params,
-  ]);
+  const [locale, { id }] = await Promise.all([resolveLocale("admin"), params]);
   const tCustomerView = await getTranslations({
     locale,
     namespace: "adminPage.customers.view",
@@ -60,11 +62,10 @@ export const generateMetadata = async ({
 
 type OrderColumns = AdminPageDictionary["orders"]["columns"];
 
-const ViewAdminCustomerPage = async ({ params }: ViewAdminCustomerPageProps) => {
-  const [{ id }, locale] = await Promise.all([
-    params,
-    resolveLocale("admin"),
-  ]);
+const ViewAdminCustomerPage = async ({
+  params,
+}: ViewAdminCustomerPageProps) => {
+  const [{ id }, locale] = await Promise.all([params, resolveLocale("admin")]);
 
   await requireAdminPageAccess("/admin/customers");
 
@@ -80,12 +81,14 @@ const ViewAdminCustomerPage = async ({ params }: ViewAdminCustomerPageProps) => 
   ]);
 
   const columns = tOrders.raw("columns") as OrderColumns;
-  const paymentMethodLabels = tOrders.raw(
-    "paymentMethodLabels",
-  ) as Record<string, string>;
-  const paymentStatusLabels = tOrders.raw(
-    "paymentStatusLabels",
-  ) as Record<string, string>;
+  const paymentMethodLabels = tOrders.raw("paymentMethodLabels") as Record<
+    string,
+    string
+  >;
+  const paymentStatusLabels = tOrders.raw("paymentStatusLabels") as Record<
+    string,
+    string
+  >;
 
   return (
     <Stack gap={3}>
@@ -96,10 +99,7 @@ const ViewAdminCustomerPage = async ({ params }: ViewAdminCustomerPageProps) => 
       />
 
       <Stack direction="row" gap={1.5} flexWrap="wrap">
-        <Link
-          href="/admin/customers"
-          style={{ textDecoration: "none" }}
-        >
+        <Link href="/admin/customers" style={{ textDecoration: "none" }}>
           <Button component="span" variant="outlined">
             {tCustomerView("backToList")}
           </Button>
@@ -208,6 +208,11 @@ const ViewAdminCustomerPage = async ({ params }: ViewAdminCustomerPageProps) => 
                       <AdminOrderDeleteButton
                         orderId={order.id}
                         action={deleteAdminOrderAction}
+                        disabledReason={
+                          hasLivePrintifyOrder(order)
+                            ? tOrders("delete.blockedByPrintify")
+                            : undefined
+                        }
                         icon={
                           <DeleteOutlineOutlinedIcon key="delete-order-icon" />
                         }
