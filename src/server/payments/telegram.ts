@@ -3,7 +3,7 @@ import "server-only";
 import type { ContactMessageInput } from "@/types/contact";
 import type { OrderDocument } from "@/types/order";
 import type { ReviewDocument } from "@/types/reviews";
-import { formatCustomerName } from "@/utils";
+import { formatCustomerName, hasLivePrintifyOrder } from "@/utils";
 
 const TELEGRAM_API = "https://api.telegram.org";
 
@@ -100,6 +100,23 @@ const buildPaidOrderMessage = (order: OrderDocument): string =>
     `Сумма: ${order.total.toFixed(2)} ${order.currency}`,
   ].join("\n");
 
+const buildRefundedOrderMessage = (order: OrderDocument): string => {
+  const isFullyRefunded = order.payment.status === "refunded";
+  const refunded = order.payment.refundedAmount ?? 0;
+
+  return [
+    `💸 Заказ ${orderHeader(order.id)} — ${isFullyRefunded ? "возврат" : "частичный возврат"}`,
+    "",
+    `👤 ${formatCustomerName(order.customer)}`,
+    `Возвращено: ${refunded.toFixed(2)} из ${order.total.toFixed(2)} ${order.currency}`,
+    hasLivePrintifyOrder(order)
+      ? "\n🖐 Печать в Printify не отменена — заказ там всё ещё в работе"
+      : "",
+  ]
+    .filter((line) => line !== "")
+    .join("\n");
+};
+
 const buildPrintifyFailureMessage = (
   order: OrderDocument,
   reason: string,
@@ -182,6 +199,9 @@ export const notifyAdminNewOrder = (order: OrderDocument): Promise<void> =>
 
 export const notifyAdminOrderPaid = (order: OrderDocument): Promise<void> =>
   sendMessage(buildPaidOrderMessage(order)).then(() => undefined);
+
+export const notifyAdminOrderRefunded = (order: OrderDocument): Promise<void> =>
+  sendMessage(buildRefundedOrderMessage(order)).then(() => undefined);
 
 export const notifyAdminPrintifyOrderFailed = (
   order: OrderDocument,
