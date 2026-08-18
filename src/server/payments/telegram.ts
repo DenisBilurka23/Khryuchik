@@ -156,6 +156,19 @@ const buildShopDisconnectedMessage = (shopId: string): string =>
     "🖐 Новые заказы туда не уйдут, пока подключение не восстановлено",
   ].join("\n");
 
+const buildPrintifyUnknownStatusMessage = (
+  order: OrderDocument,
+  status: string,
+): string =>
+  [
+    `⚠️ Printify сообщает непонятный статус по заказу ${orderHeader(order.id)}`,
+    "",
+    `👤 ${formatCustomerName(order.customer)}`,
+    `Статус в Printify: ${status}`,
+    "",
+    "🖐 Статус заказа на сайте не изменён и письмо покупателю не ушло — проверьте заказ в дашборде Printify",
+  ].join("\n");
+
 const buildNewReviewMessage = (review: ReviewDocument): string =>
   [
     `⭐️ Новый отзыв ${orderHeader(review.id)}`,
@@ -246,6 +259,14 @@ export const notifyAdminPrintifyShopDisconnected = (
   shopId: string,
 ): Promise<void> =>
   sendMessage(buildShopDisconnectedMessage(shopId)).then(() => undefined);
+
+export const notifyAdminPrintifyUnknownStatus = (
+  order: OrderDocument,
+  status: string,
+): Promise<void> =>
+  sendMessage(buildPrintifyUnknownStatusMessage(order, status)).then(
+    () => undefined,
+  );
 
 export const notifyAdminNewReview = (review: ReviewDocument): Promise<void> =>
   sendMessage(buildNewReviewMessage(review)).then(() => undefined);

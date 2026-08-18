@@ -4,6 +4,7 @@ import { orderStatusRank } from "@/constants/order";
 import {
   PRINTIFY_CANCELLED_ORDER_STATUSES,
   PRINTIFY_ORDER_STATUS_MAP,
+  PRINTIFY_QUIET_ORDER_STATUSES,
 } from "@/constants/printify";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import {
@@ -16,6 +17,7 @@ import {
 import {
   notifyAdminPrintifyOrderCancelled,
   notifyAdminPrintifyOrderFailed,
+  notifyAdminPrintifyUnknownStatus,
 } from "@/server/payments/telegram";
 import {
   createPrintifyOrder,
@@ -170,11 +172,11 @@ export const syncOrderFromPrintify = async (
     printifyOrder.status,
   );
 
-  if (!isCancelled && !PRINTIFY_ORDER_STATUS_MAP[printifyOrder.status]) {
-    console.info(
-      `Printify order ${printifyOrder.id} reports an unmapped status "${printifyOrder.status}"`,
-    );
-  }
+  const needsAttention =
+    !isCancelled &&
+    !PRINTIFY_ORDER_STATUS_MAP[printifyOrder.status] &&
+    !PRINTIFY_QUIET_ORDER_STATUSES.includes(printifyOrder.status) &&
+    current.status !== printifyOrder.status;
 
   const patch = buildPrintifyPatch(
     current,
@@ -186,6 +188,13 @@ export const syncOrderFromPrintify = async (
 
   if (Object.keys(patch).length > 0) {
     await updateOrderPrintifyOrder(order.id, patch);
+  }
+
+  if (needsAttention) {
+    console.warn(
+      `Printify order ${printifyOrder.id} reports an unmapped status "${printifyOrder.status}"`,
+    );
+    await notifyAdminPrintifyUnknownStatus(order, printifyOrder.status);
   }
 
   if (isCancelled && !current.cancelledAt) {

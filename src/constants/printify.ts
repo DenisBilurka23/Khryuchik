@@ -35,6 +35,8 @@ export const PRINTIFY_ORDER_STATUS_MAP: Partial<Record<string, OrderStatus>> = {
   delivered: "delivered",
 };
 
+export const PRINTIFY_QUIET_ORDER_STATUSES = ["pending", "on-hold"];
+
 export const PRINTIFY_CANCELLED_ORDER_STATUSES = [
   "canceled",
   "cancelled",
