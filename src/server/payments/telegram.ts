@@ -6,6 +6,7 @@ import type { ReviewDocument } from "@/types/reviews";
 import { formatCustomerName, hasLivePrintifyOrder } from "@/utils";
 
 const TELEGRAM_API = "https://api.telegram.org";
+const TELEGRAM_TIMEOUT_MS = 5_000;
 
 const paymentMethodLabels: Record<string, string> = {
   stripe: "Карта · Stripe",
@@ -199,6 +200,7 @@ const sendMessage = async (text: string): Promise<boolean> => {
           text,
           disable_web_page_preview: true,
         }),
+        signal: AbortSignal.timeout(TELEGRAM_TIMEOUT_MS),
       },
     );
 
