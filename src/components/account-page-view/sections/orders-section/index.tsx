@@ -1,10 +1,10 @@
-import { Chip, Paper, Stack, Typography } from "@mui/material";
+import { Chip, Link, Paper, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { customerOrderStatusColors } from "@/constants/order";
+import { formatOrderTracking } from "@/utils";
 
 import { SectionCard } from "../../shared";
-
 import type { OrdersSectionProps } from "./types";
 
 export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
@@ -40,7 +40,9 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
             >
               <Stack spacing={1}>
                 <Stack direction="row" spacing={1} alignItems="baseline">
-                  <Typography sx={{ fontWeight: 800 }}>{order.number}</Typography>
+                  <Typography sx={{ fontWeight: 800 }}>
+                    {order.number}
+                  </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {new Date(order.createdAt).toLocaleDateString(locale)}
                   </Typography>
@@ -50,32 +52,56 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
                   {order.items.map((item, i) => (
                     <Stack key={i} spacing={0.5}>
                       <Typography>
-                        {item.quantity > 1 ? `${item.title} ×${item.quantity}` : item.title}
+                        {item.quantity > 1
+                          ? `${item.title} ×${item.quantity}`
+                          : item.title}
                       </Typography>
                       <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                        {item.variant
-                          ? item.variant.split("/").map((part) => part.trim()).filter(Boolean).map((part, j) => (
+                        {item.variant ? (
+                          item.variant
+                            .split("/")
+                            .map((part) => part.trim())
+                            .filter(Boolean)
+                            .map((part, j) => (
                               <Chip
                                 key={j}
                                 label={part}
                                 size="small"
-                                sx={{ bgcolor: "#F5F0EB", fontWeight: 500, height: 22, fontSize: "0.7rem" }}
+                                sx={{
+                                  bgcolor: "#F5F0EB",
+                                  fontWeight: 500,
+                                  height: 22,
+                                  fontSize: "0.7rem",
+                                }}
                               />
                             ))
-                          : item.formatSelection ? (
-                              <Chip
-                                label={item.formatSelection === "digital" ? t("orderFormatDigital") : t("orderFormatPrinted")}
-                                size="small"
-                                sx={{ bgcolor: "#F5F0EB", fontWeight: 500, height: 22, fontSize: "0.7rem" }}
-                              />
-                            ) : null}
+                        ) : item.formatSelection ? (
+                          <Chip
+                            label={
+                              item.formatSelection === "digital"
+                                ? t("orderFormatDigital")
+                                : t("orderFormatPrinted")
+                            }
+                            size="small"
+                            sx={{
+                              bgcolor: "#F5F0EB",
+                              fontWeight: 500,
+                              height: 22,
+                              fontSize: "0.7rem",
+                            }}
+                          />
+                        ) : null}
                       </Stack>
                     </Stack>
                   ))}
                 </Stack>
               </Stack>
 
-              <Stack alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1.25} flexShrink={0}>
+              <Stack
+                alignItems={{ xs: "flex-start", md: "flex-end" }}
+                spacing={1.25}
+                flexShrink={0}
+              >
                 <Chip
                   label={tStatus(order.status)}
                   sx={{
@@ -84,6 +110,31 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
                   }}
                 />
                 <Typography sx={{ fontWeight: 800 }}>{order.total}</Typography>
+                {order.tracking && (
+                  <Stack
+                    alignItems={{ xs: "flex-start", md: "flex-end" }}
+                    spacing={0.25}
+                  >
+                    <Typography variant="caption" color="text.secondary">
+                      {t("orderTrackingLabel")}
+                    </Typography>
+                    {order.tracking.url ? (
+                      <Link
+                        href={order.tracking.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        variant="body2"
+                        sx={{ fontWeight: 700 }}
+                      >
+                        {formatOrderTracking(order.tracking)}
+                      </Link>
+                    ) : (
+                      <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                        {formatOrderTracking(order.tracking)}
+                      </Typography>
+                    )}
+                  </Stack>
+                )}
               </Stack>
             </Stack>
           </Paper>

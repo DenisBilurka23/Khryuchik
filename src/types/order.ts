@@ -74,8 +74,20 @@ export type OrderPrintifyInfo = {
   createdAt?: string;
   sentToProductionAt?: string;
   cancelledAt?: string;
+  status?: string;
+  carrier?: string;
+  trackingNumber?: string;
+  trackingUrl?: string;
+  shippedAt?: string;
+  deliveredAt?: string;
   lastError?: string;
   cancelError?: string;
+};
+
+export type OrderTracking = {
+  carrier?: string;
+  number: string;
+  url?: string;
 };
 
 export type OrderDocument = {
@@ -125,6 +137,7 @@ export type AccountOrder = {
   items: AccountOrderItem[];
   total: string;
   status: CustomerOrderStatus;
+  tracking?: OrderTracking;
 };
 
 export type CreateOrderInput = {

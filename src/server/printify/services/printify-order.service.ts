@@ -12,6 +12,7 @@ import type {
   PrintifyLineItem,
   PrintifyOrderCreatedResponse,
   PrintifyOrderRequest,
+  PrintifyOrderResponse,
   PrintifyShippingAddress,
 } from "../types";
 
@@ -109,6 +110,17 @@ export const createPrintifyOrder = async (
   );
 
   return response.id;
+};
+
+export const fetchPrintifyOrder = async (
+  printifyOrderId: string,
+): Promise<PrintifyOrderResponse> => {
+  const shopId = requireShopId();
+
+  return printifyRequest<PrintifyOrderResponse>(
+    `/shops/${shopId}/orders/${printifyOrderId}.json`,
+    { timeoutMs: ORDER_TIMEOUT_MS },
+  );
 };
 
 export const sendPrintifyOrderToProduction = async (

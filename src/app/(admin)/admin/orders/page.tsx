@@ -19,6 +19,7 @@ import {
   AdminOrderDeleteButton,
   AdminOrderPaymentConfirmButton,
   AdminOrderPrintifyCancelButton,
+  AdminOrderPrintifyStatus,
   AdminOrderProductionButton,
   AdminOrderRefundButton,
   AdminOrderStatusSelect,
@@ -156,10 +157,15 @@ const AdminOrdersPage = async () => {
                       </Stack>
                     </TableCell>
                     <TableCell>
-                      <AdminOrderStatusSelect
-                        orderId={order.id}
-                        currentStatus={order.status}
-                      />
+                      <Stack spacing={0.5}>
+                        <AdminOrderStatusSelect
+                          orderId={order.id}
+                          currentStatus={order.status}
+                        />
+                        <AdminOrderPrintifyStatus
+                          printifyOrder={order.printifyOrder}
+                        />
+                      </Stack>
                     </TableCell>
                     <TableCell align="right">
                       <Stack

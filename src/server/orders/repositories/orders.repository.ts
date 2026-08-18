@@ -56,6 +56,17 @@ export const findOrderByStripePaymentIntentId = async (
   );
 };
 
+export const findOrderByPrintifyOrderId = async (
+  printifyOrderId: string,
+): Promise<OrderDocument | null> => {
+  const collection = await getOrdersCollection();
+
+  return collection.findOne(
+    { "printifyOrder.printifyOrderId": printifyOrderId },
+    { projection: { _id: 0 } },
+  );
+};
+
 export type FindOrdersOptions = {
   limit?: number | null;
 };

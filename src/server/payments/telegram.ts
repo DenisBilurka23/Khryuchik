@@ -132,6 +132,29 @@ const buildPrintifyFailureMessage = (
     "🖐 Требуется ручная отправка через дашборд Printify",
   ].join("\n");
 
+const buildPrintifyCancelledMessage = (
+  order: OrderDocument,
+  status: string,
+): string =>
+  [
+    `🚫 Printify отменил заказ ${orderHeader(order.id)}`,
+    "",
+    `👤 ${formatCustomerName(order.customer)}`,
+    `Статус в Printify: ${status}`,
+    `Сумма: ${order.total.toFixed(2)} ${order.currency}`,
+    "",
+    "🖐 Статус заказа на сайте не изменён — решение об отмене и возврате за вами",
+  ].join("\n");
+
+const buildShopDisconnectedMessage = (shopId: string): string =>
+  [
+    "🔌 Printify отключил магазин от нашего приложения",
+    "",
+    `Магазин: ${shopId}`,
+    "",
+    "🖐 Новые заказы туда не уйдут, пока подключение не восстановлено",
+  ].join("\n");
+
 const buildNewReviewMessage = (review: ReviewDocument): string =>
   [
     `⭐️ Новый отзыв ${orderHeader(review.id)}`,
@@ -208,6 +231,19 @@ export const notifyAdminPrintifyOrderFailed = (
   reason: string,
 ): Promise<void> =>
   sendMessage(buildPrintifyFailureMessage(order, reason)).then(() => undefined);
+
+export const notifyAdminPrintifyOrderCancelled = (
+  order: OrderDocument,
+  status: string,
+): Promise<void> =>
+  sendMessage(buildPrintifyCancelledMessage(order, status)).then(
+    () => undefined,
+  );
+
+export const notifyAdminPrintifyShopDisconnected = (
+  shopId: string,
+): Promise<void> =>
+  sendMessage(buildShopDisconnectedMessage(shopId)).then(() => undefined);
 
 export const notifyAdminNewReview = (review: ReviewDocument): Promise<void> =>
   sendMessage(buildNewReviewMessage(review)).then(() => undefined);
