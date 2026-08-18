@@ -85,6 +85,19 @@ export const useProductPrice = ({
     [product, cartSelections, country],
   );
 
+  const oldPrice = useMemo(
+    () =>
+      product.oldPrice === undefined
+        ? undefined
+        : resolveOptionPrice(
+            product.oldPrice,
+            product,
+            cartSelections,
+            country,
+          ),
+    [product, cartSelections, country],
+  );
+
   return {
     selections,
     cartSelections,
@@ -92,5 +105,6 @@ export const useProductPrice = ({
     getOptionState,
     selectionAvailability,
     price,
+    oldPrice,
   };
 };

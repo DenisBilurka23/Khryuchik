@@ -50,6 +50,7 @@ export const ProductInfo = ({
     getOptionState,
     selectionAvailability,
     price,
+    oldPrice,
   } = useProductPrice({
     product,
     country,
@@ -144,7 +145,7 @@ export const ProductInfo = ({
         >
           {formatCurrency(price, locale, product.currency)}
         </Typography>
-        {product.oldPrice ? (
+        {oldPrice ? (
           <Typography
             sx={{
               fontSize: 18,
@@ -152,7 +153,7 @@ export const ProductInfo = ({
               textDecoration: "line-through",
             }}
           >
-            {formatCurrency(product.oldPrice, locale, product.currency)}
+            {formatCurrency(oldPrice, locale, product.currency)}
           </Typography>
         ) : null}
       </Stack>

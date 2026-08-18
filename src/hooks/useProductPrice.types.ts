@@ -25,4 +25,5 @@ export type UseProductPriceResult = {
   ) => ProductVariantValueState;
   selectionAvailability: ProductVariantAvailability;
   price: number;
+  oldPrice: number | undefined;
 };
