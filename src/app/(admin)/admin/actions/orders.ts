@@ -52,7 +52,7 @@ export const updateAdminOrderStatusAction = async (
     if (previous && previous.status !== status) {
       const updated = await findOrderById(orderId);
       if (updated) {
-        sendOrderStatusEmail(updated, previous.status);
+        await sendOrderStatusEmail(updated, previous.status);
       }
     }
   } catch (error) {
@@ -84,7 +84,7 @@ export const confirmAdminOrderPaymentAction = async (
 
     const updated = await findOrderById(orderId);
     if (updated) {
-      void sendOrderConfirmationEmail(updated);
+      await sendOrderConfirmationEmail(updated);
     }
   } catch (error) {
     console.error("confirmAdminOrderPaymentAction failed", error);

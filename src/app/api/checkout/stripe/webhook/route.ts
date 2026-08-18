@@ -59,8 +59,8 @@ const handleCheckoutCompleted = async (session: Stripe.Checkout.Session) => {
 
   const updated = await findOrderById(orderId);
   if (updated) {
-    void notifyAdminOrderPaid(updated);
-    void sendOrderConfirmationEmail(updated);
+    await notifyAdminOrderPaid(updated);
+    await sendOrderConfirmationEmail(updated);
     await submitOrderToPrintify(updated);
   }
 };
@@ -92,7 +92,7 @@ const handleCheckoutExpired = async (session: Stripe.Checkout.Session) => {
 
   const updated = await findOrderById(orderId);
   if (updated) {
-    sendOrderStatusEmail(updated, existing.status);
+    await sendOrderStatusEmail(updated, existing.status);
   }
 };
 
@@ -122,7 +122,7 @@ const handleChargeRefunded = async (charge: Stripe.Charge) => {
 
   const updated = await findOrderById(order.id);
   if (updated) {
-    void notifyAdminOrderRefunded(updated);
+    await notifyAdminOrderRefunded(updated);
   }
 };
 

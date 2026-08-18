@@ -17,10 +17,10 @@ const statusEmailSenders: Partial<
 export const sendOrderStatusEmail = (
   order: OrderDocument,
   previousStatus?: OrderStatus,
-): void => {
+): Promise<void> => {
   if (order.status === previousStatus) {
-    return;
+    return Promise.resolve();
   }
 
-  void statusEmailSenders[order.status]?.(order);
+  return statusEmailSenders[order.status]?.(order) ?? Promise.resolve();
 };

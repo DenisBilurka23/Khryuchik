@@ -66,7 +66,7 @@ export const submitOrderToPrintify = async (
         ),
     );
 
-    void notifyAdminPrintifyOrderFailed(order, reason);
+    await notifyAdminPrintifyOrderFailed(order, reason);
   }
 };
 
@@ -189,7 +189,7 @@ export const syncOrderFromPrintify = async (
   }
 
   if (isCancelled && !current.cancelledAt) {
-    void notifyAdminPrintifyOrderCancelled(order, printifyOrder.status);
+    await notifyAdminPrintifyOrderCancelled(order, printifyOrder.status);
     return;
   }
 
@@ -206,6 +206,6 @@ export const syncOrderFromPrintify = async (
   const updated = await findOrderById(order.id);
 
   if (updated) {
-    sendOrderStatusEmail(updated, order.status);
+    await sendOrderStatusEmail(updated, order.status);
   }
 };
