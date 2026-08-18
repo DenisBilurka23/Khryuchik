@@ -13,7 +13,10 @@ import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { submitOrderToPrintify } from "@/server/orders/services/fulfillment.service";
 import { verifyStripeWebhook } from "@/server/payments/stripe";
-import { notifyAdminOrderPaid } from "@/server/payments/telegram";
+import {
+  notifyAdminOrderPaid,
+  notifyAdminOrderRefunded,
+} from "@/server/payments/telegram";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -116,6 +119,11 @@ const handleChargeRefunded = async (charge: Stripe.Charge) => {
     isFullyRefunded: charge.refunded,
     refundId: charge.refunds?.data?.[0]?.id,
   });
+
+  const updated = await findOrderById(order.id);
+  if (updated) {
+    void notifyAdminOrderRefunded(updated);
+  }
 };
 
 export const POST = async (request: NextRequest) => {
