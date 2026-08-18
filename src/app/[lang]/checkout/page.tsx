@@ -11,6 +11,8 @@ import {
 } from "@/server/localization/localization.service";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { isShopClosed } from "@/server/shop/maintenance.service";
+import { ShopMaintenanceView } from "@/components/shop-maintenance-view";
 
 type LocalizedCheckoutPageProps = {
   params: Promise<{ lang: string }>;
@@ -65,6 +67,10 @@ const LocalizedCheckoutPage = async ({ params }: LocalizedCheckoutPageProps) => 
 
   if (!(await isActiveLocale(lang))) {
     notFound();
+  }
+
+  if (isShopClosed()) {
+    return <ShopMaintenanceView />;
   }
 
   const [country, session] = await Promise.all([

@@ -1,4 +1,5 @@
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
 import {
   Box,
   Button,
@@ -25,6 +26,7 @@ export const OrderSummaryCard = ({
   isDigitalOnly,
   continueShoppingHref,
   checkoutHref,
+  isShopClosed = false,
 }: OrderSummaryCardProps) => {
   const t = useTranslations("storefront.cartPage");
   const labels = t.raw("summary") as CartPageLabels["summary"];
@@ -102,20 +104,55 @@ export const OrderSummaryCard = ({
           </Typography>
         </Stack>
 
-        <Link
-          href={checkoutHref}
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <Button
-            component="span"
-            fullWidth
-            variant="contained"
-            size="large"
-            sx={{ mt: 3 }}
+        {isShopClosed ? (
+          <>
+            <Button
+              disabled
+              fullWidth
+              variant="contained"
+              size="large"
+              sx={{ mt: 3 }}
+            >
+              {labels.checkoutButton}
+            </Button>
+
+            <Box
+              sx={{
+                mt: 1.5,
+                p: 2,
+                borderRadius: "20px",
+                bgcolor: "#FFF8F0",
+                border: "1px solid #F0DFC8",
+              }}
+            >
+              <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                <ScheduleOutlinedIcon fontSize="small" sx={{ mt: "2px" }} />
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ lineHeight: 1.7 }}
+                >
+                  {labels.closedNote}
+                </Typography>
+              </Stack>
+            </Box>
+          </>
+        ) : (
+          <Link
+            href={checkoutHref}
+            style={{ textDecoration: "none", color: "inherit" }}
           >
-            {labels.checkoutButton}
-          </Button>
-        </Link>
+            <Button
+              component="span"
+              fullWidth
+              variant="contained"
+              size="large"
+              sx={{ mt: 3 }}
+            >
+              {labels.checkoutButton}
+            </Button>
+          </Link>
+        )}
 
         <Link
           href={continueShoppingHref}

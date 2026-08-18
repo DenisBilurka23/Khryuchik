@@ -165,6 +165,7 @@ export type CartPageLabels = {
     continueShopping: string;
     infoTitle: string;
     infoText: string;
+    closedNote: string;
   };
 };
 
@@ -231,6 +232,7 @@ export type CheckoutPageLabels = {
     shippingUnavailable: string;
     shippingUnsupportedDestination: string;
     unsupportedVariant: string;
+    shopClosed: string;
   };
   fieldErrors: {
     required: string;
@@ -338,6 +340,14 @@ export type LegalPageLabels = {
   updatedDate: string;
   intro: string;
   sections: LegalPageSection[];
+};
+
+export type MaintenancePageLabels = {
+  title: string;
+  text: string;
+  primaryCta: string;
+  secondaryCta: string;
+  footer: string;
 };
 
 export type NotFoundPageLabels = {
@@ -655,6 +665,7 @@ export type StorefrontDictionary = {
   storyPage: StoryPageLabels;
   deliveryPage: DeliveryPageLabels;
   contactPage: ContactPageLabels;
+  maintenancePage: MaintenancePageLabels;
   notFoundPage: NotFoundPageLabels;
   errorPage: ErrorPageLabels;
   termsPage: LegalPageLabels;

@@ -5,4 +5,5 @@ export type CartPageViewProps = {
   locale: Locale;
   country: CountryCode;
   currency: CurrencyCode;
+  isShopClosed?: boolean;
 };

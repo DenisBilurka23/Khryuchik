@@ -5,6 +5,7 @@ import { CartPageView } from "@/components/cart-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import { getRegionCurrency } from "@/server/localization/localization.service";
+import { isShopClosed } from "@/server/shop/maintenance.service";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const tStorefront = await getTranslations({
@@ -43,6 +44,7 @@ const DefaultCartPage = async () => {
       locale={defaultLocale}
       country={country}
       currency={currency}
+      isShopClosed={isShopClosed()}
     />
   );
 };

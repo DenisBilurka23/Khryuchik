@@ -16,6 +16,7 @@ export const CartPageView = ({
   locale,
   country,
   currency,
+  isShopClosed = false,
 }: CartPageViewProps) => {
   const t = useTranslations("storefront.cartPage");
   const cartPage = {
@@ -178,6 +179,7 @@ export const CartPageView = ({
                     isDigitalOnly={isDigitalOnly}
                     continueShoppingHref={shopHref}
                     checkoutHref={checkoutHref}
+                    isShopClosed={isShopClosed}
                   />
                 </Grid>
               </Grid>
