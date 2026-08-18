@@ -1143,6 +1143,7 @@
     "noBooks": "У вас пока нет купленных электронных книг. После покупки они появятся здесь.",
     "orderFormatDigital": "Цифровая",
     "orderFormatPrinted": "Печатная",
+    "orderTrackingLabel": "Трек-номер",
     "shippingAddresses": "Адреса доставки",
     "favoritesEyebrow": "Wishlist",
     "favoritesTitle": "Ваше избранное",
@@ -1561,6 +1562,8 @@
       "printifyFailed": "Не удалось отправить в Printify: {reason}",
       "printifyCancelFailed": "Не удалось отменить в Printify: {reason}. Если заказ только что создан, подождите несколько секунд и повторите.",
       "refundedAmountLabel": "Возврат: {amount}",
+      "printifyStatusLabel": "Printify: {status}",
+      "trackingLabel": "Трек: {tracking}",
       "refund": {
         "button": "Вернуть деньги",
         "dialogTitle": "Вернуть оплату?",

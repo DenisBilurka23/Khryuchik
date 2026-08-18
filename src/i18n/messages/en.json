@@ -1139,6 +1139,7 @@
     "noBooks": "You haven't purchased any e-books yet. Purchased digital books will appear here.",
     "orderFormatDigital": "Digital",
     "orderFormatPrinted": "Printed",
+    "orderTrackingLabel": "Tracking number",
     "shippingAddresses": "Shipping addresses",
     "favoritesEyebrow": "Wishlist",
     "favoritesTitle": "Your favorites",
@@ -1537,6 +1538,8 @@
       "printifyFailed": "Printify submission failed: {reason}",
       "printifyCancelFailed": "Printify cancellation failed: {reason}. If the order was just created, wait a few seconds and try again.",
       "refundedAmountLabel": "Refunded: {amount}",
+      "printifyStatusLabel": "Printify: {status}",
+      "trackingLabel": "Tracking: {tracking}",
       "refund": {
         "button": "Refund payment",
         "dialogTitle": "Refund this payment?",

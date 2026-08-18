@@ -96,6 +96,41 @@ export type PrintifyOrderCreatedResponse = {
   id: string;
 };
 
+export type PrintifyShipment = {
+  carrier?: string;
+  number?: string;
+  url?: string;
+  delivered_at?: string;
+};
+
+export type PrintifyOrderResponse = {
+  id: string;
+  status: string;
+  metadata?: {
+    shop_order_id?: string | number;
+    shop_order_label?: string;
+    shop_fulfilled_at?: string;
+  };
+  shipments?: PrintifyShipment[];
+};
+
+export type PrintifyWebhookEvent = {
+  id?: string;
+  type: string;
+  created_at?: string;
+  resource: {
+    id: string;
+    type: string;
+  };
+};
+
+export type PrintifyWebhook = {
+  id: string;
+  topic: string;
+  url: string;
+  shop_id?: number | string;
+};
+
 export type PrintifyShippingResponse = {
   standard?: number;
   express?: number;

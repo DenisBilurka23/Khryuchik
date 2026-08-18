@@ -10,6 +10,7 @@ import {
   type OrderItem,
   type OrderPaymentStatus,
   type OrderStatus,
+  type OrderTracking,
 } from "@/types/order";
 
 import { formatCurrency } from "./format-currency";
@@ -30,6 +31,29 @@ export const hasLivePrintifyOrder = (order: {
 }) =>
   Boolean(order.printifyOrder?.printifyOrderId) &&
   !order.printifyOrder?.cancelledAt;
+
+export const getOrderTracking = (order: {
+  printifyOrder?: {
+    carrier?: string;
+    trackingNumber?: string;
+    trackingUrl?: string;
+  };
+}): OrderTracking | undefined => {
+  const trackingNumber = order.printifyOrder?.trackingNumber;
+
+  if (!trackingNumber) {
+    return undefined;
+  }
+
+  return {
+    carrier: order.printifyOrder?.carrier,
+    number: trackingNumber,
+    url: order.printifyOrder?.trackingUrl,
+  };
+};
+
+export const formatOrderTracking = (tracking: OrderTracking) =>
+  [tracking.carrier, tracking.number].filter(Boolean).join(" · ");
 
 export const isRefundableOrder = (order: {
   payment: {
@@ -54,8 +78,6 @@ export const getCustomerOrderStatus = (order: {
   fulfillmentType?: string;
 }): CustomerOrderStatus => {
   if (order.status === "cancelled") return "cancelled";
-  // Ahead of the shipping states on purpose: once the money is back, that
-  // matters more to the customer than where the parcel is.
   if (order.payment.status === "refunded") return "refunded";
   if (order.status === "delivered") return "delivered";
   if (order.status === "shipped") return "shipped";
@@ -91,4 +113,5 @@ export const toAccountOrder = (
   items: order.items.map(toAccountOrderItem),
   total: formatCurrency(order.total, locale, order.currency),
   status: getCustomerOrderStatus(order),
+  tracking: getOrderTracking(order),
 });
