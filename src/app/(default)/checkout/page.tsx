@@ -7,6 +7,8 @@ import { defaultLocale, locales } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import { getRegionCurrency } from "@/server/localization/localization.service";
+import { isShopClosed } from "@/server/shop/maintenance.service";
+import { ShopMaintenanceView } from "@/components/shop-maintenance-view";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const tStorefront = await getTranslations({
@@ -43,6 +45,10 @@ const initialCustomerFromSession = (
 };
 
 const DefaultCheckoutPage = async () => {
+  if (isShopClosed()) {
+    return <ShopMaintenanceView />;
+  }
+
   const [country, session] = await Promise.all([
     getRequestCountry(),
     getServerAuthSession(),

@@ -30,6 +30,7 @@ export type OrderSummaryCardProps = {
   isDigitalOnly: boolean;
   continueShoppingHref: string;
   checkoutHref: string;
+  isShopClosed?: boolean;
 };
 
 export type EmptyCartStateProps = {

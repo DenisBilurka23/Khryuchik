@@ -9,6 +9,7 @@ import {
   isActiveLocale,
 } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
+import { isShopClosed } from "@/server/shop/maintenance.service";
 
 type LocalizedCartPageProps = {
   params: Promise<{ lang: string }>;
@@ -60,7 +61,12 @@ const LocalizedCartPage = async ({ params }: LocalizedCartPageProps) => {
   const currency = await getRegionCurrency(country);
 
   return (
-    <CartPageView locale={lang} country={country} currency={currency} />
+    <CartPageView
+      locale={lang}
+      country={country}
+      currency={currency}
+      isShopClosed={isShopClosed()}
+    />
   );
 };
 

@@ -5,6 +5,7 @@ import { defaultLocale, isLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import { createStripeCheckoutSession } from "@/server/payments/stripe";
+import { isShopClosed } from "@/server/shop/maintenance.service";
 import {
   createOrder,
   OrderValidationError,
@@ -112,6 +113,7 @@ type CheckoutErrorCode =
   | OrderValidationError["code"]
   | "invalid_payload"
   | "invalid_email"
+  | "shop_closed"
   | "payment_failed"
   | "stripe_session_missing_url";
 
@@ -123,6 +125,10 @@ const validationErrorResponse = (code: CheckoutErrorCode, status = 400) =>
   NextResponse.json({ error: code }, { status });
 
 export const POST = async (request: NextRequest) => {
+  if (isShopClosed()) {
+    return validationErrorResponse("shop_closed", 503);
+  }
+
   const payload = (await request.json().catch(() => null)) as Record<
     string,
     unknown

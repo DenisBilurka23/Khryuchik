@@ -226,6 +226,8 @@ export const CheckoutPageView = ({
         return labels.errors.shippingUnsupportedDestination;
       case "unsupported_variant":
         return labels.errors.unsupportedVariant;
+      case "shop_closed":
+        return labels.errors.shopClosed;
       case "payment_failed":
       case "stripe_session_missing_url":
         return labels.errors.paymentFailed;
