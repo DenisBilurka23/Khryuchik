@@ -1,11 +1,15 @@
 import "server-only";
 
-import type { OrderDocument } from "@/types/order";
+import type {
+  OrderDocument,
+  OrderFulfillmentSource,
+  OrderTracking,
+} from "@/types/order";
 import {
   formatOrderNumber,
   formatOrderTracking,
   getLocalizedPath,
-  getOrderTracking,
+  getOrderTrackings,
 } from "@/utils";
 
 import {
@@ -23,23 +27,49 @@ import {
 
 const html = String.raw;
 
+type EmailLang = "ru" | "en";
+
 type OrderShippedEmailStrings = EmailShellStrings & {
   para1: string;
-  trackingLine?: string;
+  trackingLines: string[];
   para2: string;
   buttonLabel: string;
 };
+
+const trackingLabels: Record<EmailLang, string> = {
+  ru: "Трек-номер",
+  en: "Tracking number",
+};
+
+const parcelLabels: Record<
+  EmailLang,
+  Record<OrderFulfillmentSource, string>
+> = {
+  ru: { printify: "Мерч под заказ", manual: "Книги" },
+  en: { printify: "Made-to-order merch", manual: "Books" },
+};
+
+const buildTrackingLines = (
+  trackings: OrderTracking[],
+  lang: EmailLang,
+): string[] =>
+  trackings.map((tracking) => {
+    const label =
+      trackings.length > 1 && tracking.source
+        ? parcelLabels[lang][tracking.source]
+        : trackingLabels[lang];
+
+    return `${label}: ${formatOrderTracking(tracking)}`;
+  });
 
 const buildOrderShippedBodyHtml = (
   strings: OrderShippedEmailStrings,
   buttonUrl: string,
 ) => html` 
                     ${buildParagraphHtml(strings.para1, 14)}
-                    ${
-                      strings.trackingLine
-                        ? buildParagraphHtml(strings.trackingLine, 14)
-                        : ""
-                    }
+                    ${strings.trackingLines
+                      .map((line) => buildParagraphHtml(line, 14))
+                      .join("")}
                     ${buildParagraphHtml(strings.para2, 28)}
                     ${buildButtonHtml(strings.buttonLabel, buttonUrl)}
                   </td>
@@ -57,11 +87,10 @@ const orderShippedEmailBuilders: Record<
   ru: (order, ordersUrl) => {
     const orderNumber = formatOrderNumber(order.id) ?? "";
     const addressLine = buildAddressLine(order);
-    const tracking = getOrderTracking(order);
-    const trackingLine = tracking
-      ? `Трек-номер: ${formatOrderTracking(tracking)}`
-      : undefined;
-    const buttonUrl = tracking?.url ?? ordersUrl;
+    const trackings = getOrderTrackings(order);
+    const trackingLines = buildTrackingLines(trackings, "ru");
+    const trackingUrl = trackings.length === 1 ? trackings[0].url : undefined;
+    const buttonUrl = trackingUrl ?? ordersUrl;
     const strings: OrderShippedEmailStrings = {
       lang: "ru",
       preheader: `Заказ ${orderNumber} отправлен и уже в пути.`,
@@ -69,9 +98,9 @@ const orderShippedEmailBuilders: Record<
       h1Line1: "Ваш заказ",
       h1Line2: "уже в пути",
       para1: `Заказ ${orderNumber} передан в доставку по адресу: ${addressLine}.`,
-      trackingLine,
+      trackingLines,
       para2: "Следить за статусом можно в личном кабинете.",
-      buttonLabel: tracking?.url ? "Отследить посылку" : "Посмотреть заказ",
+      buttonLabel: trackingUrl ? "Отследить посылку" : "Посмотреть заказ",
       quote: "«Каждый может стать главным героем своей истории.»",
       footerShop: "Магазин",
       footerStory: "О нас",
@@ -83,10 +112,10 @@ const orderShippedEmailBuilders: Record<
       subject: `Заказ ${orderNumber} отправлен — Хрючик`,
       text: [
         `Заказ ${orderNumber} передан в доставку по адресу: ${addressLine}.`,
-        ...(trackingLine ? ["", trackingLine] : []),
+        ...(trackingLines.length > 0 ? ["", ...trackingLines] : []),
         "",
-        tracking?.url
-          ? `Отследить посылку: ${tracking.url}`
+        trackingUrl
+          ? `Отследить посылку: ${trackingUrl}`
           : `Посмотреть заказ: ${ordersUrl}`,
       ].join("\n"),
       html: buildEmailShell(
@@ -99,11 +128,10 @@ const orderShippedEmailBuilders: Record<
   en: (order, ordersUrl) => {
     const orderNumber = formatOrderNumber(order.id) ?? "";
     const addressLine = buildAddressLine(order);
-    const tracking = getOrderTracking(order);
-    const trackingLine = tracking
-      ? `Tracking number: ${formatOrderTracking(tracking)}`
-      : undefined;
-    const buttonUrl = tracking?.url ?? ordersUrl;
+    const trackings = getOrderTrackings(order);
+    const trackingLines = buildTrackingLines(trackings, "en");
+    const trackingUrl = trackings.length === 1 ? trackings[0].url : undefined;
+    const buttonUrl = trackingUrl ?? ordersUrl;
     const strings: OrderShippedEmailStrings = {
       lang: "en",
       preheader: `Order ${orderNumber} has shipped and is on its way.`,
@@ -111,9 +139,9 @@ const orderShippedEmailBuilders: Record<
       h1Line1: "Your order is",
       h1Line2: "on its way",
       para1: `Order ${orderNumber} is on its way to: ${addressLine}.`,
-      trackingLine,
+      trackingLines,
       para2: "You can track its status from your account.",
-      buttonLabel: tracking?.url ? "Track parcel" : "View order",
+      buttonLabel: trackingUrl ? "Track parcel" : "View order",
       quote: "“Every hero has their own story worth telling.”",
       footerShop: "Shop",
       footerStory: "Our story",
@@ -125,10 +153,10 @@ const orderShippedEmailBuilders: Record<
       subject: `Order ${orderNumber} shipped — Khryuchik`,
       text: [
         `Order ${orderNumber} is on its way to: ${addressLine}.`,
-        ...(trackingLine ? ["", trackingLine] : []),
+        ...(trackingLines.length > 0 ? ["", ...trackingLines] : []),
         "",
-        tracking?.url
-          ? `Track parcel: ${tracking.url}`
+        trackingUrl
+          ? `Track parcel: ${trackingUrl}`
           : `View order: ${ordersUrl}`,
       ].join("\n"),
       html: buildEmailShell(

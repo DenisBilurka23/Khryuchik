@@ -1,7 +1,10 @@
 import { Chip, Link, Paper, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import { customerOrderStatusColors } from "@/constants/order";
+import {
+  customerOrderStatusColors,
+  orderParcelLabelKeys,
+} from "@/constants/order";
 import { formatOrderTracking } from "@/utils";
 
 import { SectionCard } from "../../shared";
@@ -110,29 +113,41 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
                   }}
                 />
                 <Typography sx={{ fontWeight: 800 }}>{order.total}</Typography>
-                {order.tracking && (
+                {order.trackings.length > 0 && (
                   <Stack
                     alignItems={{ xs: "flex-start", md: "flex-end" }}
-                    spacing={0.25}
+                    spacing={0.75}
                   >
                     <Typography variant="caption" color="text.secondary">
                       {t("orderTrackingLabel")}
                     </Typography>
-                    {order.tracking.url ? (
-                      <Link
-                        href={order.tracking.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        variant="body2"
-                        sx={{ fontWeight: 700 }}
+                    {order.trackings.map((tracking) => (
+                      <Stack
+                        key={tracking.number}
+                        alignItems={{ xs: "flex-start", md: "flex-end" }}
                       >
-                        {formatOrderTracking(order.tracking)}
-                      </Link>
-                    ) : (
-                      <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                        {formatOrderTracking(order.tracking)}
-                      </Typography>
-                    )}
+                        {order.trackings.length > 1 && tracking.source && (
+                          <Typography variant="caption" color="text.secondary">
+                            {t(orderParcelLabelKeys[tracking.source])}
+                          </Typography>
+                        )}
+                        {tracking.url ? (
+                          <Link
+                            href={tracking.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            variant="body2"
+                            sx={{ fontWeight: 700 }}
+                          >
+                            {formatOrderTracking(tracking)}
+                          </Link>
+                        ) : (
+                          <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                            {formatOrderTracking(tracking)}
+                          </Typography>
+                        )}
+                      </Stack>
+                    ))}
                   </Stack>
                 )}
               </Stack>

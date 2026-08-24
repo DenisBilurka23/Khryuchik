@@ -1,15 +1,19 @@
 import { Link, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import { formatOrderTracking, getOrderTracking } from "@/utils";
+import { formatOrderTracking, getOrderTrackings } from "@/utils";
 
 import type { AdminOrderPrintifyStatusProps } from "./types";
 
 export const AdminOrderPrintifyStatus = ({
   printifyOrder,
+  fulfillments,
 }: AdminOrderPrintifyStatusProps) => {
   const tOrders = useTranslations("adminPage.orders");
-  const tracking = getOrderTracking({ printifyOrder });
+
+  const tracking = getOrderTrackings({ fulfillments }).find(
+    (candidate) => candidate.source === "printify",
+  );
 
   if (!printifyOrder?.status && !tracking) {
     return null;

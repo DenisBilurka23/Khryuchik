@@ -7,6 +7,7 @@ import {
   ORDER_STATUSES,
   type OrderCustomer,
   type OrderDocument,
+  type OrderFulfillment,
   type OrderItem,
   type OrderPaymentStatus,
   type OrderStatus,
@@ -32,25 +33,24 @@ export const hasLivePrintifyOrder = (order: {
   Boolean(order.printifyOrder?.printifyOrderId) &&
   !order.printifyOrder?.cancelledAt;
 
-export const getOrderTracking = (order: {
-  printifyOrder?: {
-    carrier?: string;
-    trackingNumber?: string;
-    trackingUrl?: string;
-  };
-}): OrderTracking | undefined => {
-  const trackingNumber = order.printifyOrder?.trackingNumber;
-
-  if (!trackingNumber) {
-    return undefined;
-  }
-
-  return {
-    carrier: order.printifyOrder?.carrier,
-    number: trackingNumber,
-    url: order.printifyOrder?.trackingUrl,
-  };
-};
+export const getOrderTrackings = (order: {
+  fulfillments?: Pick<
+    OrderFulfillment,
+    "source" | "carrier" | "trackingNumber" | "trackingUrl"
+  >[];
+}): OrderTracking[] =>
+  (order.fulfillments ?? []).flatMap((fulfillment) =>
+    fulfillment.trackingNumber
+      ? [
+          {
+            carrier: fulfillment.carrier,
+            number: fulfillment.trackingNumber,
+            url: fulfillment.trackingUrl,
+            source: fulfillment.source,
+          },
+        ]
+      : [],
+  );
 
 export const formatOrderTracking = (tracking: OrderTracking) =>
   [tracking.carrier, tracking.number].filter(Boolean).join(" · ");
@@ -113,5 +113,5 @@ export const toAccountOrder = (
   items: order.items.map(toAccountOrderItem),
   total: formatCurrency(order.total, locale, order.currency),
   status: getCustomerOrderStatus(order),
-  tracking: getOrderTracking(order),
+  trackings: getOrderTrackings(order),
 });

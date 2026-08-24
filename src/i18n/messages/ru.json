@@ -1166,6 +1166,10 @@
     "orderFormatDigital": "Цифровая",
     "orderFormatPrinted": "Печатная",
     "orderTrackingLabel": "Трек-номер",
+    "orderParcels": {
+      "printify": "Мерч под заказ",
+      "manual": "Книги"
+    },
     "shippingAddresses": "Адреса доставки",
     "favoritesEyebrow": "Wishlist",
     "favoritesTitle": "Ваше избранное",

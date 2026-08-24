@@ -27,7 +27,7 @@ export {
   formatCustomerName,
   formatOrderTracking,
   getCustomerOrderStatus,
-  getOrderTracking,
+  getOrderTrackings,
   hasLivePrintifyOrder,
   isDigitalOrderItem,
   isOrderStatus,

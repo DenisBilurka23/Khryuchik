@@ -164,6 +164,7 @@ const AdminOrdersPage = async () => {
                         />
                         <AdminOrderPrintifyStatus
                           printifyOrder={order.printifyOrder}
+                          fulfillments={order.fulfillments}
                         />
                       </Stack>
                     </TableCell>

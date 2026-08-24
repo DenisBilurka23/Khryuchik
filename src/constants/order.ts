@@ -1,4 +1,8 @@
-import type { CustomerOrderStatus, OrderStatus } from "@/types/order";
+import type {
+  CustomerOrderStatus,
+  OrderFulfillmentSource,
+  OrderStatus,
+} from "@/types/order";
 
 export const customerOrderStatusColors: Record<CustomerOrderStatus, string> = {
   pending: "#FFF3D6",
@@ -16,4 +20,9 @@ export const orderStatusRank: Record<OrderStatus, number> = {
   shipped: 2,
   delivered: 3,
   cancelled: 4,
+};
+
+export const orderParcelLabelKeys: Record<OrderFulfillmentSource, string> = {
+  printify: "orderParcels.printify",
+  manual: "orderParcels.manual",
 };

@@ -1162,6 +1162,10 @@
     "orderFormatDigital": "Digital",
     "orderFormatPrinted": "Printed",
     "orderTrackingLabel": "Tracking number",
+    "orderParcels": {
+      "printify": "Made-to-order merch",
+      "manual": "Books"
+    },
     "shippingAddresses": "Shipping addresses",
     "favoritesEyebrow": "Wishlist",
     "favoritesTitle": "Your favorites",

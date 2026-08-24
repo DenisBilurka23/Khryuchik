@@ -3,6 +3,8 @@ import "server-only";
 import { getMongoDb } from "@/server/db/mongodb";
 import type {
   OrderDocument,
+  OrderFulfillmentProgress,
+  OrderFulfillmentSource,
   OrderPaymentInfo,
   OrderPrintifyInfo,
   OrderStatus,
@@ -176,6 +178,47 @@ export const updateOrderPrintifyOrder = async (
       ...(Object.keys($set).length > 0 ? { $set } : {}),
       ...(Object.keys($unset).length > 0 ? { $unset } : {}),
     },
+  );
+};
+
+export type OrderFulfillmentPatch = {
+  [Key in keyof OrderFulfillmentProgress]?:
+    | OrderFulfillmentProgress[Key]
+    | null;
+};
+
+export const updateOrderFulfillment = async (
+  id: string,
+  source: OrderFulfillmentSource,
+  patch: OrderFulfillmentPatch,
+): Promise<void> => {
+  const collection = await getOrdersCollection();
+  const $set: Record<string, unknown> = {};
+  const $unset: Record<string, "" | 1 | true> = {};
+
+  for (const [key, value] of Object.entries(patch)) {
+    if (value === undefined) {
+      continue;
+    }
+
+    if (value === null) {
+      $unset[`fulfillments.$[element].${key}`] = "";
+    } else {
+      $set[`fulfillments.$[element].${key}`] = value;
+    }
+  }
+
+  if (Object.keys($set).length === 0 && Object.keys($unset).length === 0) {
+    return;
+  }
+
+  await collection.updateOne(
+    { id, "fulfillments.source": source },
+    {
+      ...(Object.keys($set).length > 0 ? { $set } : {}),
+      ...(Object.keys($unset).length > 0 ? { $unset } : {}),
+    },
+    { arrayFilters: [{ "element.source": source }] },
   );
 };
 

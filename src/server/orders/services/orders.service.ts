@@ -35,6 +35,7 @@ import {
   type OrderShippingResult,
 } from "@/server/orders/services/shipping.service";
 import { getRegionCurrency } from "@/server/localization/localization.service";
+import { toOrderFulfillments } from "@/server/shipping/utils";
 
 export class OrderValidationError extends Error {
   constructor(
@@ -181,6 +182,7 @@ export const createOrder = async (
   }
 
   const shipping = shippingResult.shipping;
+  const fulfillments = toOrderFulfillments(shippingResult.groups);
   const discount = 0;
   const total = roundToCents(subtotal + shipping - discount);
 
@@ -205,6 +207,7 @@ export const createOrder = async (
     },
     status: "new",
     fulfillmentType,
+    fulfillments: fulfillments.length > 0 ? fulfillments : undefined,
     notes: input.notes,
   };
 

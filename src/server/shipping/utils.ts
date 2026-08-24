@@ -3,7 +3,12 @@ import {
   EUROPE_HUB_COUNTRIES,
   NORTH_AMERICA_HUB_COUNTRIES,
 } from "@/constants/shipping";
-import type { ShippingHubCode, ShippingOption } from "@/types/shipping";
+import type { OrderFulfillment } from "@/types/order";
+import type {
+  ShippingHubCode,
+  ShippingOption,
+  ShippingQuoteGroup,
+} from "@/types/shipping";
 import type { CountryCode } from "@/utils";
 
 const CONVENIENCE_RANK = { address: 1, "pickup-point": 0 } as const;
@@ -54,3 +59,32 @@ export const chooseHubs = (
 
   return inStock.length > 0 ? inStock : stockedHubs;
 };
+
+export const toOrderFulfillments = (
+  groups: ShippingQuoteGroup[],
+): OrderFulfillment[] =>
+  groups.flatMap((group) => {
+    if (group.source === "digital") {
+      return [];
+    }
+
+    const option = group.options.find(
+      (candidate) => candidate.id === group.selectedOptionId,
+    );
+
+    if (!option) {
+      return [];
+    }
+
+    return [
+      {
+        id: group.id,
+        source: group.source,
+        provider: option.provider,
+        service: option.service,
+        amount: option.amount,
+        currency: option.currency,
+        externalId: option.externalId,
+      },
+    ];
+  });

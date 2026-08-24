@@ -10,7 +10,9 @@ import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import {
   findOrderById,
   findOrderByPrintifyOrderId,
+  type OrderFulfillmentPatch,
   type OrderPrintifyInfoPatch,
+  updateOrderFulfillment,
   updateOrderPrintifyOrder,
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
@@ -29,6 +31,7 @@ import type {
 } from "@/server/printify/types";
 import type {
   OrderDocument,
+  OrderFulfillment,
   OrderPrintifyInfo,
   OrderStatus,
 } from "@/types/order";
@@ -104,8 +107,31 @@ const buildPrintifyPatch = (
     (Boolean(PRINTIFY_ORDER_STATUS_MAP[printifyOrder.status]) ||
       Boolean(shipment));
 
-  const put = (key: keyof OrderPrintifyInfo, value: string | undefined) => {
-    if (value && current[key] !== value) {
+  if (printifyOrder.status && current.status !== printifyOrder.status) {
+    patch.status = printifyOrder.status;
+  }
+
+  if (hasStartedProduction && !current.sentToProductionAt) {
+    patch.sentToProductionAt = now;
+  }
+
+  if (isCancelled && !current.cancelledAt) {
+    patch.cancelledAt = now;
+  }
+
+  return patch;
+};
+
+const buildParcelPatch = (
+  current: OrderFulfillment | undefined,
+  printifyOrder: PrintifyOrderResponse,
+  shipment: PrintifyShipment | undefined,
+  now: string,
+): OrderFulfillmentPatch => {
+  const patch: OrderFulfillmentPatch = {};
+
+  const put = (key: keyof OrderFulfillmentPatch, value: string | undefined) => {
+    if (value && current?.[key] !== value) {
       patch[key] = value;
     }
   };
@@ -115,20 +141,12 @@ const buildPrintifyPatch = (
   put("trackingNumber", shipment?.number);
   put("trackingUrl", shipment?.url);
 
-  if (hasStartedProduction && !current.sentToProductionAt) {
-    patch.sentToProductionAt = now;
-  }
-
-  if (shipment && !current.shippedAt) {
+  if (shipment && !current?.shippedAt) {
     patch.shippedAt = now;
   }
 
-  if (shipment?.delivered_at && !current.deliveredAt) {
+  if (shipment?.delivered_at && !current?.deliveredAt) {
     patch.deliveredAt = shipment.delivered_at;
-  }
-
-  if (isCancelled && !current.cancelledAt) {
-    patch.cancelledAt = now;
   }
 
   return patch;
@@ -167,6 +185,9 @@ export const syncOrderFromPrintify = async (
   }
 
   const current = order.printifyOrder ?? {};
+  const parcel = order.fulfillments?.find(
+    (fulfillment) => fulfillment.source === "printify",
+  );
   const shipment = pickShipment(printifyOrder);
   const isCancelled = PRINTIFY_CANCELLED_ORDER_STATUSES.includes(
     printifyOrder.status,
@@ -178,16 +199,22 @@ export const syncOrderFromPrintify = async (
     !PRINTIFY_QUIET_ORDER_STATUSES.includes(printifyOrder.status) &&
     current.status !== printifyOrder.status;
 
+  const now = new Date().toISOString();
   const patch = buildPrintifyPatch(
     current,
     printifyOrder,
     shipment,
     isCancelled,
-    new Date().toISOString(),
+    now,
   );
+  const parcelPatch = buildParcelPatch(parcel, printifyOrder, shipment, now);
 
   if (Object.keys(patch).length > 0) {
     await updateOrderPrintifyOrder(order.id, patch);
+  }
+
+  if (Object.keys(parcelPatch).length > 0) {
+    await updateOrderFulfillment(order.id, "printify", parcelPatch);
   }
 
   if (needsAttention) {

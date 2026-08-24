@@ -1,3 +1,4 @@
+import type { OrderFulfillmentSource } from "@/types/order";
 import type { CountryCode } from "@/utils/country";
 
 export type SeedStorefrontBook = {
@@ -894,6 +895,8 @@ export type AccountPageDictionary = {
   noBooks: string;
   orderFormatDigital: string;
   orderFormatPrinted: string;
+  orderTrackingLabel: string;
+  orderParcels: Record<OrderFulfillmentSource, string>;
   shippingAddresses: string;
   favoritesEyebrow: string;
   favoritesTitle: string;

@@ -1,6 +1,9 @@
 import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
-import type { ShippingQuoteGroup } from "@/types/shipping";
+import type {
+  ShippingProviderCode,
+  ShippingQuoteGroup,
+} from "@/types/shipping";
 import type { CountryCode, CurrencyCode, PaymentMethod } from "@/utils/country";
 
 export type OrderItemPrintifyLink = {
@@ -76,19 +79,37 @@ export type OrderPrintifyInfo = {
   sentToProductionAt?: string;
   cancelledAt?: string;
   status?: string;
+  lastError?: string;
+  cancelError?: string;
+};
+
+export type OrderFulfillmentSource = "printify" | "manual";
+
+export type OrderFulfillmentProgress = {
+  status?: string;
   carrier?: string;
   trackingNumber?: string;
   trackingUrl?: string;
   shippedAt?: string;
   deliveredAt?: string;
   lastError?: string;
-  cancelError?: string;
+};
+
+export type OrderFulfillment = OrderFulfillmentProgress & {
+  id: string;
+  source: OrderFulfillmentSource;
+  provider: ShippingProviderCode;
+  service: string;
+  amount: number;
+  currency: CurrencyCode;
+  externalId?: string;
 };
 
 export type OrderTracking = {
   carrier?: string;
   number: string;
   url?: string;
+  source?: OrderFulfillmentSource;
 };
 
 export type OrderDocument = {
@@ -109,6 +130,7 @@ export type OrderDocument = {
   status: OrderStatus;
   fulfillmentType?: OrderFulfillmentType;
   printifyOrder?: OrderPrintifyInfo;
+  fulfillments?: OrderFulfillment[];
   notes?: string;
 };
 
@@ -138,7 +160,7 @@ export type AccountOrder = {
   items: AccountOrderItem[];
   total: string;
   status: CustomerOrderStatus;
-  tracking?: OrderTracking;
+  trackings: OrderTracking[];
 };
 
 export type CreateOrderInput = {
@@ -150,8 +172,6 @@ export type CreateOrderInput = {
   paymentMethod: PaymentMethod;
   userId?: string;
   notes?: string;
-  // Which shipping option the buyer picked per shipment group. Only ids cross
-  // the wire; the price is re-quoted server side.
   selectedShippingOptionIds?: Record<string, string>;
 };
 
