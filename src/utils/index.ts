@@ -37,7 +37,11 @@ export {
 } from "./order";
 export { formatPersonName } from "./person-name";
 export { isPostalCodeValid } from "./postal-code";
-export { convertFromUsd } from "./price-conversion";
+export {
+  convertFromUsd,
+  convertShippingAmount,
+  roundToCents,
+} from "./price-conversion";
 export {
   isLocalizedProductSummary,
   localizeProductOptionGroups,

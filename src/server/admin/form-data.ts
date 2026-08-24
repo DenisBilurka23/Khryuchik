@@ -8,13 +8,18 @@ import type {
   AdminProductPayload,
   AdminRegionUpsertInput,
 } from "@/types/admin";
-import type { ProductAvailability, ProductType } from "@/types/catalog";
+import type {
+  ProductAvailability,
+  ProductShipping,
+  ProductType,
+} from "@/types/catalog";
 import type {
   ProductFileAsset,
   ProductImage,
   ProductOption,
   ProductReview,
 } from "@/types/product-details";
+import type { ShippingHubCode } from "@/types/shipping";
 import type { CurrencyCode } from "@/utils";
 
 const parseString = (formData: FormData, key: string) => {
@@ -103,7 +108,11 @@ const parseDetailLocaleTranslation = (formData: FormData, locale: Locale) => ({
   formats: parseJsonField<ProductOption[]>(formData, "formatsJson", []),
   sizes: parseJsonField<ProductOption[]>(formData, `${locale}.sizesJson`, []),
   colors: parseJsonField<ProductOption[]>(formData, `${locale}.colorsJson`, []),
-  specs: parseJsonField<Array<{ label: string; value: string }>>(formData, `${locale}.specsJson`, []),
+  specs: parseJsonField<Array<{ label: string; value: string }>>(
+    formData,
+    `${locale}.specsJson`,
+    [],
+  ),
   delivery: parseMultilineList(formData, `${locale}.deliveryLines`),
   reviews: parseJsonField<ProductReview[]>(formData, `reviewsJson`, []),
   digitalAssets: parseJsonField<ProductFileAsset[]>(
@@ -163,6 +172,26 @@ const parseRegionPricing = (formData: FormData, region: string) => ({
   oldPrice: parseOptionalNumber(formData, `pricing.${region}.oldPrice`),
 });
 
+const parseProductShipping = (
+  formData: FormData,
+): ProductShipping | undefined => {
+  const weightGrams = parseOptionalNumber(formData, "shipping.weightGrams");
+
+  if (weightGrams === undefined) {
+    return undefined;
+  }
+
+  return {
+    weightGrams,
+    lengthMm: parseNumber(formData, "shipping.lengthMm"),
+    widthMm: parseNumber(formData, "shipping.widthMm"),
+    heightMm: parseNumber(formData, "shipping.heightMm"),
+    hubs: parseCsvList(formData, "shipping.hubs") as ShippingHubCode[],
+    hsCode: parseOptionalString(formData, "shipping.hsCode"),
+    originCountry: parseOptionalString(formData, "shipping.originCountry"),
+  };
+};
+
 export const parseAdminProductFormData = (
   formData: FormData,
 ): AdminProductPayload => {
@@ -170,23 +199,24 @@ export const parseAdminProductFormData = (
   const regionCodes = parseCsvList(formData, "regionCodes");
   const productId = parseString(formData, "productId").trim();
 
-  // A language is published only when "Add for this language" is on. The
-  // default locale is always published (it is the storefront fallback source).
   const activeLocaleCodes = localeCodes.filter(
     (locale) =>
       locale === defaultLocale || parseBoolean(formData, `${locale}.active`),
   );
 
-  // Regions are activated per product; an unchecked region is excluded from
-  // `availableRegions`, hiding the product there on the storefront.
   const availableRegions = regionCodes.filter((region) =>
     parseBoolean(formData, `region.${region}.active`),
   );
 
-  const languages = parseJsonField<ProductOption[]>(formData, "languagesJson", []);
-  const langLabel = languages.length > 0
-    ? languages.map((l) => l.value.toUpperCase()).join(" / ")
-    : undefined;
+  const languages = parseJsonField<ProductOption[]>(
+    formData,
+    "languagesJson",
+    [],
+  );
+  const langLabel =
+    languages.length > 0
+      ? languages.map((l) => l.value.toUpperCase()).join(" / ")
+      : undefined;
 
   return {
     product: {
@@ -213,9 +243,13 @@ export const parseAdminProductFormData = (
         ) as ProductAvailability,
       },
       pricing: Object.fromEntries(
-        regionCodes.map((region) => [region, parseRegionPricing(formData, region)]),
+        regionCodes.map((region) => [
+          region,
+          parseRegionPricing(formData, region),
+        ]),
       ) as AdminProductPayload["product"]["pricing"],
       availableRegions,
+      shipping: parseProductShipping(formData),
       translations: Object.fromEntries(
         activeLocaleCodes.map((locale) => {
           const t = parseLocaleTranslation(formData, locale);

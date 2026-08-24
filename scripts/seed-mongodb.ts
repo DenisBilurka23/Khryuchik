@@ -8,6 +8,7 @@ import {
 } from "@/server/catalog/seed-data/product-details.seed";
 import { getStorefrontBookSeedItems } from "@/server/catalog/seed-data/storefront.seed";
 import { categorySeedDocuments } from "@/server/catalog/seed-data/categories.seed";
+import { DEFAULT_BOOK_SHIPPING } from "@/constants/shipping";
 import {
   localeSeedDocuments,
   regionSeedDocuments,
@@ -145,6 +146,9 @@ const buildProductDocument = (productId: string): ProductDocument => ({
     availability: "in_stock",
   },
   pricing: productPricingByCountry[productId],
+  ...(getProductType(productId) === "book"
+    ? { shipping: DEFAULT_BOOK_SHIPPING }
+    : {}),
   availableRegions: Object.keys(productPricingByCountry[productId]),
   translations: Object.fromEntries(
     locales.map((locale) => {

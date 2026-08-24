@@ -682,6 +682,10 @@ export const saveAdminProduct = async (payload: AdminProductPayload) => {
     sanitizedPayload.product.printify = previousProduct.printify;
   }
 
+  if (!sanitizedPayload.product.shipping && previousProduct?.shipping) {
+    sanitizedPayload.product.shipping = previousProduct.shipping;
+  }
+
   if (sanitizedPayload.product.printify && previousProduct) {
     sanitizedPayload.product.inventory = previousProduct.inventory;
   }
