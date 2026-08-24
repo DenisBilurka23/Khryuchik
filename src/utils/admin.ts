@@ -127,11 +127,8 @@ export const buildUniqueValue = (
 
 const createEmptyTranslation = (): ProductTranslation => ({
   title: "",
-  shortTitle: "",
-  shortDescription: "",
+  subtitle: "",
   price: 0,
-  // Display currency is sourced from per-region pricing downstream, so the
-  // per-translation currency is a placeholder filled in on save.
   currency: "",
   emoji: "📘",
   thumbnailBackgroundColor: "#FFF8F0",
@@ -139,7 +136,6 @@ const createEmptyTranslation = (): ProductTranslation => ({
 });
 
 const createEmptyDetailTranslation = (): ProductDetailTranslation => ({
-  subtitle: "",
   badge: "",
   storyLabel: "",
   description: "",

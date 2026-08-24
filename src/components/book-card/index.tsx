@@ -65,7 +65,7 @@ export const BookCard = ({
               fontWeight: 700,
             }}
           >
-            {book.shortTitle ?? book.title}
+            {book.title}
           </Typography>
         </Link>
 

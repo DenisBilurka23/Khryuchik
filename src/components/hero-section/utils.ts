@@ -36,7 +36,7 @@ export const buildHeroCards = ({
     featured: {
       label: fallback.featuredHit.label,
       title: featuredProduct
-        ? (featuredProduct.shortTitle ?? featuredProduct.title)
+        ? featuredProduct.title
         : fallback.featuredHit.title,
       price: featuredProduct
         ? formatCurrency(featuredProduct.price, locale, featuredProduct.currency)

@@ -162,11 +162,7 @@ const buildProductDocument = (productId: string): ProductDocument => ({
         locale,
         {
           title: details.title,
-          shortTitle:
-            bookItem && bookItem.title !== details.title
-              ? bookItem.title
-              : undefined,
-          shortDescription: bookItem?.desc ?? details.subtitle,
+          subtitle: details.subtitle,
           price: details.price,
           currency: "BYN" as const,
           emoji: bookItem?.emoji ?? details.images[0]?.emoji ?? "📦",
@@ -189,7 +185,6 @@ const buildProductDetailDocument = (
     locales.map((locale) => {
       const details = getRequiredProductDetails(locale, productId);
       const translation = {
-        subtitle: details.subtitle,
         oldPrice: details.oldPrice,
         badge: details.badge,
         storyLabel: details.storyLabel,

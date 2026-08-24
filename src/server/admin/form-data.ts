@@ -83,10 +83,7 @@ const parseJsonField = <T>(formData: FormData, key: string, fallback: T): T => {
 
 const parseLocaleTranslation = (formData: FormData, locale: Locale) => ({
   title: parseString(formData, `${locale}.title`).trim(),
-  shortTitle: parseOptionalString(formData, `${locale}.shortTitle`),
-  shortDescription: parseString(formData, `${locale}.shortDescription`).trim(),
-  // Display price/currency come from per-region pricing; these are placeholders
-  // normalized in `sanitizeProductPayload`.
+  subtitle: parseString(formData, `${locale}.subtitle`).trim(),
   price: 0,
   currency: "" as CurrencyCode,
   emoji: parseString(formData, `${locale}.emoji`).trim(),
@@ -98,7 +95,6 @@ const parseLocaleTranslation = (formData: FormData, locale: Locale) => ({
 });
 
 const parseDetailLocaleTranslation = (formData: FormData, locale: Locale) => ({
-  subtitle: parseString(formData, `${locale}.subtitle`).trim(),
   oldPrice: parseOptionalNumber(formData, `${locale}.detailOldPrice`),
   badge: parseOptionalString(formData, `${locale}.badge`),
   storyLabel: parseOptionalString(formData, `${locale}.storyLabel`),

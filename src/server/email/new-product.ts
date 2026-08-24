@@ -176,7 +176,7 @@ const buildNewProductContent = (
   const typeCopy = localeCopy[type];
   const translation = getProductTranslation(product, locale);
   const title = translation?.title?.trim() || product.slug;
-  const description = translation?.shortDescription?.trim() ?? "";
+  const description = translation?.subtitle?.trim() ?? "";
   const productUrl = `${getAppOrigin()}${getLocalizedProductPath(locale, product.slug)}`;
 
   // Cover image src is already an absolute R2 URL; guard for any legacy relative

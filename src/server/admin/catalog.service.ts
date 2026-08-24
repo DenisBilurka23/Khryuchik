@@ -528,13 +528,8 @@ const sanitizeProductPayload = (
 
   for (const code of publishedLocaleCodes) {
     const translation = payload.product.translations[code];
-    const detail = payload.details.translations[code];
 
-    if (
-      !translation?.title.trim() ||
-      !translation?.shortDescription.trim() ||
-      !detail?.subtitle.trim()
-    ) {
+    if (!translation?.title.trim() || !translation?.subtitle.trim()) {
       throw new Error(`Missing required fields for language "${code}"`);
     }
   }
@@ -543,14 +538,12 @@ const sanitizeProductPayload = (
     (code) => regionCodes.includes(code),
   );
 
-  // Display currency is sourced from per-region pricing downstream, so the
-  // per-translation currency only needs to be a valid placeholder.
   const fallbackCurrency =
     regionCodes
       .map((code) => payload.product.pricing[code]?.currency?.trim())
       .find((currency): currency is string => Boolean(currency)) ?? "USD";
 
-  const nextPayload: AdminProductPayload = {
+  return {
     product: {
       ...payload.product,
       productId,
@@ -572,8 +565,7 @@ const sanitizeProductPayload = (
             {
               ...translation,
               title: translation.title.trim(),
-              shortTitle: translation.shortTitle?.trim() || undefined,
-              shortDescription: translation.shortDescription.trim(),
+              subtitle: translation.subtitle.trim(),
               currency: fallbackCurrency,
               thumbnail: image,
             },
@@ -608,7 +600,6 @@ const sanitizeProductPayload = (
             locale,
             {
               ...t,
-              subtitle: t.subtitle.trim(),
               badge: t.badge?.trim() || undefined,
               storyLabel: t.storyLabel?.trim() || undefined,
               description: t.description.trim(),
@@ -618,8 +609,6 @@ const sanitizeProductPayload = (
       ) as Record<Locale, ProductDetailTranslation>,
     },
   };
-
-  return nextPayload;
 };
 
 const getRemovedObjectKeys = ({

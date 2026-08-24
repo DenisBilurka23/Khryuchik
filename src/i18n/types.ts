@@ -1405,10 +1405,9 @@ export type AdminPageDictionary = {
       optionPriceDelta: string;
       slug: string;
       title: string;
-      shortTitle: string;
-      shortDescription: string;
       thumbnailBackgroundColor: string;
       subtitle: string;
+      subtitleHelper: string;
       badge: string;
       storyLabel: string;
       storyProductId: string;

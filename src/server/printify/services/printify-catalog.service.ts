@@ -38,7 +38,7 @@ import {
 } from "../variant-mapping";
 
 const MAX_IMPORTED_IMAGES = 6;
-const SHORT_DESCRIPTION_MAX_LENGTH = 160;
+const SUBTITLE_MAX_LENGTH = 160;
 
 // Netlify caps a synchronous function at 60s. What is left over the budget is
 // headroom for the product still in flight when the batch runs out of time.
@@ -338,16 +338,11 @@ export const importPrintifyProduct = async (printifyProductId: string) => {
   basePayload.product.translations[defaultLocale] = {
     ...basePayload.product.translations[defaultLocale],
     title,
-    shortDescription: buildSummaryLine(
-      description,
-      SHORT_DESCRIPTION_MAX_LENGTH,
-    ),
+    subtitle: buildSummaryLine(description, SUBTITLE_MAX_LENGTH) || title,
     emoji: "🎁",
   };
   basePayload.details.translations[defaultLocale] = {
     ...basePayload.details.translations[defaultLocale],
-    subtitle:
-      buildSummaryLine(description, SHORT_DESCRIPTION_MAX_LENGTH) || title,
     description,
     sizes: options.size,
     colors: options.color,

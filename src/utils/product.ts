@@ -107,8 +107,7 @@ export const localizeProductSummary = (
   const searchIndex = Object.values(product.translations)
     .flatMap((localizedTranslation) => [
       localizedTranslation.title,
-      localizedTranslation.shortTitle,
-      localizedTranslation.shortDescription,
+      localizedTranslation.subtitle,
     ])
     .concat(product.slug)
     .filter((value): value is string => Boolean(value))
@@ -241,7 +240,7 @@ export const toProductDetails = (
     productId: summary.id,
     slug: summary.slug,
     title: summary.title,
-    subtitle: translation.subtitle,
+    subtitle: summary.subtitle,
     price: summary.price,
     currency: summary.currency,
     oldPrice: summary.oldPrice,

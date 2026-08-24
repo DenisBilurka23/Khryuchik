@@ -65,8 +65,7 @@ export type LocalizedCategory = {
 
 export type ProductTranslation = {
   title: string;
-  shortTitle?: string;
-  shortDescription: string;
+  subtitle: string;
   price: number;
   currency: CurrencyCode;
   emoji: string;
@@ -146,7 +145,6 @@ export type LocalizedProductSummary = ProductTranslation & {
 };
 
 export type ProductDetailTranslation = {
-  subtitle: string;
   oldPrice?: number;
   badge?: string;
   storyLabel?: string;

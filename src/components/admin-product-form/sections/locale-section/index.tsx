@@ -107,26 +107,16 @@ export const AdminProductLocaleSection = ({
             required={isActive}
           />
           <TextField
-            label={tForm("fields.shortTitle")}
-            name={`${locale}.shortTitle`}
-            defaultValue={translation.shortTitle ?? ""}
-          />
-          <TextField
-            label={tForm("fields.shortDescription")}
-            name={`${locale}.shortDescription`}
-            defaultValue={translation.shortDescription}
+            label={tForm("fields.subtitle")}
+            name={`${locale}.subtitle`}
+            defaultValue={translation.subtitle}
+            helperText={tForm("fields.subtitleHelper")}
             required={isActive}
           />
           <TextField
             label={tForm("fields.thumbnailBackgroundColor")}
             name={`${locale}.thumbnailBackgroundColor`}
             defaultValue={translation.thumbnailBackgroundColor ?? ""}
-          />
-          <TextField
-            label={tForm("fields.subtitle")}
-            name={`${locale}.subtitle`}
-            defaultValue={details.subtitle}
-            required={isActive}
           />
           <TextField
             label={tForm("fields.badge")}
