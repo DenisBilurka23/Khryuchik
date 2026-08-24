@@ -1,6 +1,8 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { isCronAuthorized } from "@/server/cron/cron-auth";
+
 import {
   PrintifyImportError,
   syncPrintifyCatalog,
@@ -9,17 +11,8 @@ import {
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-const isAuthorized = (request: NextRequest) => {
-  const secret = process.env.CRON_SECRET;
-
-  return (
-    Boolean(secret) &&
-    request.headers.get("authorization") === `Bearer ${secret}`
-  );
-};
-
 export const GET = async (request: NextRequest) => {
-  if (!isAuthorized(request)) {
+  if (!isCronAuthorized(request)) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
