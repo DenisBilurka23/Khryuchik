@@ -16,9 +16,11 @@ import {
 } from "@mui/material";
 import { useTranslations } from "next-intl";
 
+import type { ClientApiResponse } from "@/client-api";
 import {
   addAccountAddressClient,
   selectAccountAddressClient,
+  type UpdateAccountAddressesResponse,
 } from "@/client-api/account";
 import {
   UserOperationErrorReason,
@@ -64,12 +66,16 @@ export const AddressesSection = ({
   const { update } = useSession();
 
   const [addresses, setAddresses] = useState(initialAddresses);
-  const [selectedShippingAddressId, setSelectedShippingAddressId] = useState(initialSelectedId);
+  const [selectedShippingAddressId, setSelectedShippingAddressId] =
+    useState(initialSelectedId);
   const [isAddingAddress, setIsAddingAddress] = useState(autoOpenAddForm);
   const [isSavingAddress, setIsSavingAddress] = useState(false);
-  const [isSelectingAddressId, setIsSelectingAddressId] = useState<string | null>(null);
+  const [isSelectingAddressId, setIsSelectingAddressId] = useState<
+    string | null
+  >(null);
   const [addressError, setAddressError] = useState<string | null>(null);
-  const [addressForm, setAddressForm] = useState<UserShippingAddressInput>(emptyAddressForm);
+  const [addressForm, setAddressForm] =
+    useState<UserShippingAddressInput>(emptyAddressForm);
   const allCountries = getAllCountriesSorted(locale);
 
   const sortedAddresses = [...addresses].sort((left, right) => {
@@ -98,7 +104,10 @@ export const AddressesSection = ({
     }
   };
 
-  const applyAddressesState = (nextAddresses: UserShippingAddress[], nextSelectedId: string | null) => {
+  const applyAddressesState = (
+    nextAddresses: UserShippingAddress[],
+    nextSelectedId: string | null,
+  ) => {
     setAddresses(nextAddresses);
     setSelectedShippingAddressId(nextSelectedId);
     onAddressesChange?.(nextAddresses, nextSelectedId);
@@ -108,6 +117,26 @@ export const AddressesSection = ({
         selectedShippingAddressId: nextSelectedId,
       },
     });
+  };
+
+  const applyAddressResponse = (
+    response: ClientApiResponse<UpdateAccountAddressesResponse>,
+  ) => {
+    if (!response.ok || !response.data?.user) {
+      setAddressError(getAddressErrorMessage(response.data?.error));
+
+      return false;
+    }
+
+    const nextUser = response.data.user;
+    const nextAddresses = nextUser.shippingAddresses ?? [];
+
+    applyAddressesState(
+      nextAddresses,
+      nextUser.selectedShippingAddressId ?? nextAddresses[0]?.id ?? null,
+    );
+
+    return true;
   };
 
   const handleBeginAddAddress = () => {
@@ -121,7 +150,9 @@ export const AddressesSection = ({
     setAddressForm(emptyAddressForm());
   };
 
-  const handleAddressFieldChange = <TField extends keyof UserShippingAddressInput>(
+  const handleAddressFieldChange = <
+    TField extends keyof UserShippingAddressInput,
+  >(
     field: TField,
     value: UserShippingAddressInput[TField],
   ) => {
@@ -162,23 +193,20 @@ export const AddressesSection = ({
 
     setIsSavingAddress(false);
 
-    if (!response.ok || !response.data?.user) {
-      setAddressError(getAddressErrorMessage(response.data?.error));
+    if (!applyAddressResponse(response)) {
       return;
     }
 
-    const nextUser = response.data.user;
-    const nextAddresses = nextUser.shippingAddresses ?? [];
-    const nextSelectedId =
-      nextUser.selectedShippingAddressId ?? nextAddresses[0]?.id ?? null;
-
-    applyAddressesState(nextAddresses, nextSelectedId);
     setIsAddingAddress(false);
     setAddressForm(emptyAddressForm());
   };
 
   const handleSelectAddress = async (addressId: string) => {
-    if (addressId === selectedShippingAddressId || isSelectingAddressId !== null) return;
+    if (
+      addressId === selectedShippingAddressId ||
+      isSelectingAddressId !== null
+    )
+      return;
 
     setIsSelectingAddressId(addressId);
     setAddressError(null);
@@ -187,17 +215,7 @@ export const AddressesSection = ({
 
     setIsSelectingAddressId(null);
 
-    if (!response.ok || !response.data?.user) {
-      setAddressError(getAddressErrorMessage(response.data?.error));
-      return;
-    }
-
-    const nextUser = response.data.user;
-    const nextAddresses = nextUser.shippingAddresses ?? [];
-    const nextSelectedId =
-      nextUser.selectedShippingAddressId ?? nextAddresses[0]?.id ?? null;
-
-    applyAddressesState(nextAddresses, nextSelectedId);
+    applyAddressResponse(response);
   };
 
   return (
@@ -231,7 +249,9 @@ export const AddressesSection = ({
                   required
                   label={tCheckoutFields("line1")}
                   value={addressForm.line1}
-                  onChange={(e) => handleAddressFieldChange("line1", e.target.value)}
+                  onChange={(e) =>
+                    handleAddressFieldChange("line1", e.target.value)
+                  }
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -240,7 +260,10 @@ export const AddressesSection = ({
                   label={tCheckoutFields("line2")}
                   value={addressForm.line2 ?? ""}
                   onChange={(e) =>
-                    handleAddressFieldChange("line2", e.target.value || undefined)
+                    handleAddressFieldChange(
+                      "line2",
+                      e.target.value || undefined,
+                    )
                   }
                 />
               </Grid>
@@ -250,7 +273,9 @@ export const AddressesSection = ({
                   required
                   label={tCheckoutFields("city")}
                   value={addressForm.city}
-                  onChange={(e) => handleAddressFieldChange("city", e.target.value)}
+                  onChange={(e) =>
+                    handleAddressFieldChange("city", e.target.value)
+                  }
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
@@ -259,7 +284,10 @@ export const AddressesSection = ({
                   label={tCheckoutFields("region")}
                   value={addressForm.region ?? ""}
                   onChange={(e) =>
-                    handleAddressFieldChange("region", e.target.value || undefined)
+                    handleAddressFieldChange(
+                      "region",
+                      e.target.value || undefined,
+                    )
                   }
                 />
               </Grid>
@@ -270,7 +298,10 @@ export const AddressesSection = ({
                   label={tCheckoutFields("postalCode")}
                   value={addressForm.postalCode ?? ""}
                   onChange={(e) =>
-                    handleAddressFieldChange("postalCode", e.target.value || undefined)
+                    handleAddressFieldChange(
+                      "postalCode",
+                      e.target.value || undefined,
+                    )
                   }
                 />
               </Grid>
@@ -293,7 +324,11 @@ export const AddressesSection = ({
               >
                 {t("save")}
               </Button>
-              <Button variant="outlined" color="inherit" onClick={handleCancelAddAddress}>
+              <Button
+                variant="outlined"
+                color="inherit"
+                onClick={handleCancelAddAddress}
+              >
                 {t("cancel")}
               </Button>
             </Stack>
@@ -310,7 +345,9 @@ export const AddressesSection = ({
               bgcolor: "#fff",
             }}
           >
-            <Typography color="text.secondary">{t("noAddressesYet")}</Typography>
+            <Typography color="text.secondary">
+              {t("noAddressesYet")}
+            </Typography>
           </Paper>
         ) : null}
 
@@ -339,14 +376,20 @@ export const AddressesSection = ({
                     sx={{
                       p: 2.5,
                       borderRadius: "22px",
-                      border: isCurrent ? "1px solid #D9876C" : "1px solid #F0DFC8",
+                      border: isCurrent
+                        ? "1px solid #D9876C"
+                        : "1px solid #F0DFC8",
                       bgcolor: "#fff",
                       height: "100%",
                       opacity: isSelecting ? 0.72 : 1,
                       transition: "opacity 0.2s ease, border-color 0.2s ease",
                     }}
                   >
-                    <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                    <Stack
+                      direction="row"
+                      spacing={1.5}
+                      alignItems="flex-start"
+                    >
                       <LocationOnOutlinedIcon />
                       <Box sx={{ flex: 1 }}>
                         <Stack
@@ -359,7 +402,11 @@ export const AddressesSection = ({
                             {getUserShippingAddressTitle(address)}
                           </Typography>
                           {isCurrent ? (
-                            <Chip label={t("currentAddress")} color="primary" size="small" />
+                            <Chip
+                              label={t("currentAddress")}
+                              color="primary"
+                              size="small"
+                            />
                           ) : isSelecting ? (
                             <CircularProgress size={20} color="inherit" />
                           ) : null}

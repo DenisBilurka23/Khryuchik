@@ -31,7 +31,7 @@ type UpdateAccountProfileResponse = ErrorResponse & {
   user?: AccountClientUser;
 };
 
-type UpdateAccountAddressesResponse = ErrorResponse & {
+export type UpdateAccountAddressesResponse = ErrorResponse & {
   ok?: boolean;
   user?: AccountClientUser;
   address?: UserShippingAddress;
