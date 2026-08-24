@@ -1,6 +1,14 @@
+import type { ShippingQuoteStatus } from "@/hooks/useShippingQuote.types";
 import { isPostalCodeValid } from "@/utils";
 
-import type { CheckoutPageViewProps, FieldErrors, FormState } from "./types";
+import type { ShippingQuoteGroup } from "@/types/shipping";
+
+import type {
+  CheckoutLabels,
+  CheckoutPageViewProps,
+  FieldErrors,
+  FormState,
+} from "./types";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const requiredFields = [
@@ -71,3 +79,81 @@ export const validateForm = (
 
   return errors;
 };
+
+export const shippingOptionLabel = (
+  option: ShippingQuoteGroup["options"][number],
+  labels: CheckoutLabels,
+) =>
+  option.deliveryType === "pickup-point"
+    ? labels.shippingMethod.pickupPoint
+    : labels.shippingMethod.withTracking;
+
+export const shippingGroupLabel = (
+  group: ShippingQuoteGroup,
+  labels: CheckoutLabels,
+) =>
+  group.source === "printify"
+    ? labels.shippingMethod.parcels.printify
+    : labels.shippingMethod.parcels.manual;
+
+export const resolveSelectedOptionId = (
+  group: ShippingQuoteGroup,
+  selectedOptionIds: Record<string, string>,
+) => {
+  const preferredId = selectedOptionIds[group.id] ?? group.selectedOptionId;
+  const isOffered = group.options.some((option) => option.id === preferredId);
+
+  return isOffered ? preferredId : (group.options[0]?.id ?? "");
+};
+
+export const resolveShippingTotal = (
+  groups: ShippingQuoteGroup[],
+  selectedOptionIds: Record<string, string>,
+) =>
+  groups.reduce((total, group) => {
+    const selectedId = resolveSelectedOptionId(group, selectedOptionIds);
+    const option = group.options.find(
+      (candidate) => candidate.id === selectedId,
+    );
+
+    return total + (option?.amount ?? 0);
+  }, 0);
+
+export const resolveShippingSelection = (
+  groups: ShippingQuoteGroup[],
+  selectedOptionIds: Record<string, string>,
+): Record<string, string> =>
+  Object.fromEntries(
+    groups
+      .map((group) => [
+        group.id,
+        resolveSelectedOptionId(group, selectedOptionIds),
+      ])
+      .filter(([, optionId]) => Boolean(optionId)),
+  );
+
+const SHIPPING_ERROR_KEYS: Record<
+  ShippingQuoteStatus,
+  keyof CheckoutLabels["errors"] | null
+> = {
+  idle: null,
+  loading: null,
+  ok: null,
+  unavailable: "shippingUnavailable",
+  "unsupported-destination": "shippingUnsupportedDestination",
+  "unsupported-variant": "unsupportedVariant",
+  "unsupported-parcel": "shippingUnsupportedParcel",
+  "missing-shipping-data": "shippingMissingData",
+};
+
+export const shippingErrorMessage = (
+  status: ShippingQuoteStatus,
+  labels: CheckoutLabels,
+) => {
+  const key = SHIPPING_ERROR_KEYS[status];
+
+  return key ? labels.errors[key] : null;
+};
+
+export const isShippingBlocking = (status: ShippingQuoteStatus) =>
+  status === "loading" || SHIPPING_ERROR_KEYS[status] !== null;

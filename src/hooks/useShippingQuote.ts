@@ -3,7 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { quoteShippingClient } from "@/client-api/shipping";
+import { isPostalCodeValid } from "@/utils";
 import type { ShippingQuoteResponse } from "@/types/order";
+import type { ShippingQuoteGroup } from "@/types/shipping";
 
 import type {
   ShippingQuoteStatus,
@@ -11,12 +13,15 @@ import type {
   UseShippingQuoteResult,
 } from "./useShippingQuote.types";
 
-const QUOTE_DEBOUNCE_MS = 600;
+const QUOTE_DEBOUNCE_MS = 800;
+
+const MIN_QUOTABLE_POSTAL_CODE_LENGTH = 3;
 
 type QuoteState = {
   key: string;
   status: Exclude<ShippingQuoteStatus, "idle" | "loading">;
   shipping: number | null;
+  groups: ShippingQuoteGroup[];
 };
 
 export const useShippingQuote = ({
@@ -24,11 +29,10 @@ export const useShippingQuote = ({
   items,
   address,
   isEnabled,
+  isLocationFieldFocused,
 }: UseShippingQuoteParams): UseShippingQuoteResult => {
   const [result, setResult] = useState<QuoteState | null>(null);
 
-  // The cart array and the address object are rebuilt on every render, so the
-  // request keys off their contents and reads the current values from a ref.
   const itemsKey = useMemo(
     () =>
       items
@@ -40,7 +44,14 @@ export const useShippingQuote = ({
     [items],
   );
   const addressKey = useMemo(
-    () => (address ? JSON.stringify(address) : ""),
+    () =>
+      address?.postalCode &&
+      address.postalCode.trim().length >= MIN_QUOTABLE_POSTAL_CODE_LENGTH &&
+      isPostalCodeValid(address.postalCode)
+        ? [address.country, address.region ?? "", address.postalCode.trim()]
+            .join("|")
+            .toUpperCase()
+        : "",
     [address],
   );
 
@@ -48,17 +59,19 @@ export const useShippingQuote = ({
   const requestKey = isQuotable ? `${locale}|${itemsKey}|${addressKey}` : "";
 
   const latestInput = useRef({ items, address });
+  const requestedKey = useRef("");
 
   useEffect(() => {
     latestInput.current = { items, address };
   });
 
   useEffect(() => {
-    if (!requestKey) {
+    if (!requestKey || requestedKey.current === requestKey) {
       return;
     }
 
-    const abortController = new AbortController();
+    const delay = isLocationFieldFocused ? QUOTE_DEBOUNCE_MS : 0;
+
     const timer = setTimeout(async () => {
       const { items: currentItems, address: currentAddress } =
         latestInput.current;
@@ -67,49 +80,53 @@ export const useShippingQuote = ({
         return;
       }
 
-      try {
-        const response = await quoteShippingClient(
-          { locale, items: currentItems, address: currentAddress },
-          { signal: abortController.signal },
-        );
+      requestedKey.current = requestKey;
 
-        if (abortController.signal.aborted) {
-          return;
+      const applyResult = (state: Omit<QuoteState, "key">) => {
+        if (requestedKey.current === requestKey) {
+          setResult({ key: requestKey, ...state });
         }
+      };
+
+      try {
+        const response = await quoteShippingClient({
+          locale,
+          items: currentItems,
+          address: currentAddress,
+        });
 
         const payload = response.data as ShippingQuoteResponse | null;
 
         if (!response.ok || !payload) {
-          setResult({ key: requestKey, status: "unavailable", shipping: null });
+          applyResult({ status: "unavailable", shipping: null, groups: [] });
           return;
         }
 
-        setResult({
-          key: requestKey,
+        applyResult({
           status: payload.status,
           shipping: payload.status === "ok" ? payload.shipping : null,
+          groups: payload.status === "ok" ? payload.groups : [],
         });
       } catch (error) {
-        if (!abortController.signal.aborted) {
-          console.error("Shipping quote failed", error);
-          setResult({ key: requestKey, status: "unavailable", shipping: null });
-        }
+        console.error("Shipping quote failed", error);
+        applyResult({ status: "unavailable", shipping: null, groups: [] });
       }
-    }, QUOTE_DEBOUNCE_MS);
+    }, delay);
 
-    return () => {
-      clearTimeout(timer);
-      abortController.abort();
-    };
-  }, [locale, requestKey]);
+    return () => clearTimeout(timer);
+  }, [locale, requestKey, isLocationFieldFocused]);
 
   if (!isQuotable) {
-    return { status: "idle", shipping: null };
+    return { status: "idle", shipping: null, groups: [] };
   }
 
   if (result?.key !== requestKey) {
-    return { status: "loading", shipping: null };
+    return { status: "loading", shipping: null, groups: [] };
   }
 
-  return { status: result.status, shipping: result.shipping };
+  return {
+    status: result.status,
+    shipping: result.shipping,
+    groups: result.groups,
+  };
 };

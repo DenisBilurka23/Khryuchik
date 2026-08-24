@@ -753,6 +753,17 @@
       },
       "savedAddressesTitle": "Saved addresses",
       "newAddressOption": "Enter a new address",
+      "shippingMethod": {
+        "title": "Delivery method",
+        "calculating": "Calculating delivery…",
+        "multipleParcels": "This order travels in more than one parcel.",
+        "withTracking": "With tracking",
+        "pickupPoint": "To a parcel point",
+        "parcels": {
+          "printify": "Made-to-order merch",
+          "manual": "Books"
+        }
+      },
       "summary": {
         "itemsLabel": "Items",
         "shippingLabel": "Shipping",
@@ -778,7 +789,9 @@
         "shippingUnavailable": "We could not work out the shipping cost for this address. Please try again in a few minutes.",
         "shippingUnsupportedDestination": "Unfortunately these items cannot be shipped to the address you entered.",
         "unsupportedVariant": "This size and color combination is not available. Please pick another one in your cart.",
-        "shopClosed": "Checkout is closed for a little while. Look in a bit later — your cart is kept safe."
+        "shopClosed": "Checkout is closed for a little while. Look in a bit later — your cart is kept safe.",
+        "shippingUnsupportedParcel": "This order is too large or too heavy to ship to the selected country.",
+        "shippingMissingData": "Delivery cannot be calculated for one of the items yet. Please contact us and we will sort it out."
       },
       "fieldErrors": {
         "required": "Required field",

@@ -11,6 +11,7 @@ export const CheckoutShippingAddressSection = ({
   onField,
   countries,
   onCountryChange,
+  onLocationFieldFocusChange,
   labels,
 }: ShippingAddressSectionProps) => (
   <CheckoutSectionCard title={labels.shippingTitle}>
@@ -48,6 +49,8 @@ export const CheckoutShippingAddressSection = ({
             label={labels.fields.region}
             value={form.region}
             onChange={onField("region")}
+            onFocus={() => onLocationFieldFocusChange(true)}
+            onBlur={() => onLocationFieldFocusChange(false)}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
@@ -57,6 +60,8 @@ export const CheckoutShippingAddressSection = ({
             label={labels.fields.postalCode}
             value={form.postalCode}
             onChange={onField("postalCode")}
+            onFocus={() => onLocationFieldFocusChange(true)}
+            onBlur={() => onLocationFieldFocusChange(false)}
             error={Boolean(fieldErrors.postalCode)}
             helperText={fieldErrors.postalCode}
           />

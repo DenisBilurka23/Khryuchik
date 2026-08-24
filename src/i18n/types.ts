@@ -202,6 +202,17 @@ export type CheckoutPageLabels = {
   };
   savedAddressesTitle: string;
   newAddressOption: string;
+  shippingMethod: {
+    title: string;
+    calculating: string;
+    multipleParcels: string;
+    withTracking: string;
+    pickupPoint: string;
+    parcels: {
+      printify: string;
+      manual: string;
+    };
+  };
   paymentMethods: {
     stripe: CheckoutPaymentMethodLabel;
     cod: CheckoutPaymentMethodLabel;
@@ -231,6 +242,8 @@ export type CheckoutPageLabels = {
     pricingUnavailable: string;
     shippingUnavailable: string;
     shippingUnsupportedDestination: string;
+    shippingUnsupportedParcel: string;
+    shippingMissingData: string;
     unsupportedVariant: string;
     shopClosed: string;
   };

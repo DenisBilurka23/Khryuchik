@@ -36,6 +36,7 @@ import {
   CheckoutPaymentSection,
   CheckoutSavedAddressesSection,
   CheckoutShippingAddressSection,
+  CheckoutShippingMethodSection,
 } from "./sections";
 import type {
   CheckoutLabels,
@@ -44,7 +45,14 @@ import type {
   FormFieldKey,
   FormState,
 } from "./types";
-import { formFromAddress, validateForm } from "./utils";
+import {
+  formFromAddress,
+  isShippingBlocking,
+  resolveShippingSelection,
+  resolveShippingTotal,
+  shippingErrorMessage,
+  validateForm,
+} from "./utils";
 
 export const CheckoutPageView = ({
   locale,
@@ -64,6 +72,7 @@ export const CheckoutPageView = ({
     shippingTitle: t("shippingTitle"),
     paymentTitle: t("paymentTitle"),
     summaryTitle: t("summaryTitle"),
+    shippingMethod: t.raw("shippingMethod") as CheckoutLabels["shippingMethod"],
     fields: t.raw("fields") as CheckoutLabels["fields"],
     savedAddressesTitle: t("savedAddressesTitle"),
     newAddressOption: t("newAddressOption"),
@@ -112,6 +121,12 @@ export const CheckoutPageView = ({
     formFromAddress(initialCustomer, defaultAddress),
   );
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  // One chosen option per parcel. Empty until the shopper picks something -
+  // every group already carries its own default.
+  const [selectedShippingOptionIds, setSelectedShippingOptionIds] = useState<
+    Record<string, string>
+  >({});
+  const [isLocationFieldFocused, setIsLocationFieldFocused] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -136,23 +151,16 @@ export const CheckoutPageView = ({
         }
       : null,
     isEnabled: !isDigitalOnly && checkoutItems.length > 0,
+    isLocationFieldFocused,
   });
 
-  const shipping = shippingQuote.shipping ?? 0;
+  const shipping =
+    shippingQuote.groups.length > 0
+      ? resolveShippingTotal(shippingQuote.groups, selectedShippingOptionIds)
+      : (shippingQuote.shipping ?? 0);
   const total = subtotal + shipping;
-  const isShippingBlocking =
-    shippingQuote.status === "loading" ||
-    shippingQuote.status === "unavailable" ||
-    shippingQuote.status === "unsupported-destination" ||
-    shippingQuote.status === "unsupported-variant";
-  const shippingErrorMessage =
-    shippingQuote.status === "unsupported-destination"
-      ? labels.errors.shippingUnsupportedDestination
-      : shippingQuote.status === "unsupported-variant"
-        ? labels.errors.unsupportedVariant
-        : shippingQuote.status === "unavailable"
-          ? labels.errors.shippingUnavailable
-          : null;
+  const isBlockedByShipping = isShippingBlocking(shippingQuote.status);
+  const shippingError = shippingErrorMessage(shippingQuote.status, labels);
 
   const clearFieldError = (key: FormFieldKey) => {
     setFieldErrors((prev) => {
@@ -169,6 +177,10 @@ export const CheckoutPageView = ({
       setForm((prev) => ({ ...prev, [key]: event.target.value }));
       clearFieldError(key);
     };
+
+  const handleShippingOptionChange = (groupId: string, optionId: string) => {
+    setSelectedShippingOptionIds((prev) => ({ ...prev, [groupId]: optionId }));
+  };
 
   const handleCountryChange = (value: string) => {
     setForm((prev) => ({ ...prev, country: value }));
@@ -224,6 +236,10 @@ export const CheckoutPageView = ({
         return labels.errors.shippingUnavailable;
       case "shipping_unsupported_destination":
         return labels.errors.shippingUnsupportedDestination;
+      case "shipping_unsupported_parcel":
+        return labels.errors.shippingUnsupportedParcel;
+      case "shipping_missing_data":
+        return labels.errors.shippingMissingData;
       case "unsupported_variant":
         return labels.errors.unsupportedVariant;
       case "shop_closed":
@@ -244,8 +260,8 @@ export const CheckoutPageView = ({
       return;
     }
 
-    if (isShippingBlocking) {
-      setError(shippingErrorMessage);
+    if (isBlockedByShipping) {
+      setError(shippingError);
       return;
     }
 
@@ -288,6 +304,12 @@ export const CheckoutPageView = ({
               country: form.country as CountryCode,
             },
         paymentMethod,
+        selectedShippingOptionIds: isDigitalOnly
+          ? undefined
+          : resolveShippingSelection(
+              shippingQuote.groups,
+              selectedShippingOptionIds,
+            ),
         notes: form.notes.trim() || undefined,
       });
 
@@ -310,9 +332,6 @@ export const CheckoutPageView = ({
         return;
       }
 
-      // Cart is cleared in CheckoutResultView on confirmation mount — clearing
-      // here would empty the cart before the browser navigates, briefly
-      // rendering the empty state on this page.
       const params = new URLSearchParams({ order_id: orderId });
       window.location.assign(`${confirmationHref}?${params.toString()}`);
     } catch (submitError) {
@@ -427,6 +446,20 @@ export const CheckoutPageView = ({
                           onField={handleField}
                           countries={allCountries}
                           onCountryChange={handleCountryChange}
+                          onLocationFieldFocusChange={setIsLocationFieldFocused}
+                          labels={labels}
+                        />
+                      ) : null}
+
+                      {!isDigitalOnly ? (
+                        <CheckoutShippingMethodSection
+                          groups={shippingQuote.groups}
+                          isLoading={shippingQuote.status === "loading"}
+                          errorMessage={shippingError ?? undefined}
+                          selectedOptionIds={selectedShippingOptionIds}
+                          onOptionChange={handleShippingOptionChange}
+                          currency={currency}
+                          locale={locale}
                           labels={labels}
                         />
                       ) : null}
@@ -454,10 +487,10 @@ export const CheckoutPageView = ({
                       error={
                         isPricingUnavailable
                           ? labels.errors.pricingUnavailable
-                          : (shippingErrorMessage ?? error)
+                          : error
                       }
                       isSubmitting={isSubmitting}
-                      isBlocked={isPricingUnavailable || isShippingBlocking}
+                      isBlocked={isPricingUnavailable || isBlockedByShipping}
                       hasStoredItems={hasStoredItems}
                       paymentMethod={paymentMethod}
                       labels={labels}

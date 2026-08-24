@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import { SHIPPING_FRACTION_DIGITS } from "@/constants/shipping";
 import { formatCurrency } from "@/utils";
 
 import type { OrderSummarySectionProps } from "./types";
@@ -105,7 +106,12 @@ export const CheckoutOrderSummarySection = ({
               {shippingStatus === "ok"
                 ? shipping === 0
                   ? labels.summary.freeShipping
-                  : formatCurrency(shipping, locale, currency)
+                  : formatCurrency(
+                      shipping,
+                      locale,
+                      currency,
+                      SHIPPING_FRACTION_DIGITS,
+                    )
                 : shippingStatus === "loading"
                   ? labels.summary.shippingCalculating
                   : shippingStatus === "idle"
@@ -125,7 +131,12 @@ export const CheckoutOrderSummarySection = ({
         <Typography
           sx={{ fontSize: 28, fontWeight: 800, color: "primary.main" }}
         >
-          {formatCurrency(total, locale, currency)}
+          {formatCurrency(
+            total,
+            locale,
+            currency,
+            Number.isInteger(total) ? 0 : SHIPPING_FRACTION_DIGITS,
+          )}
         </Typography>
       </Stack>
 
