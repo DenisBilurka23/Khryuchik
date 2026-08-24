@@ -12,15 +12,10 @@ import {
 import { calculateOrderShipping } from "@/server/orders/services/shipping.service";
 import { isStoredCartItem } from "@/types/cart-guards";
 import type { ShippingQuoteResponse } from "@/types/order";
-import { isIsoCountryCode } from "@/utils";
+import { asOptionalString, isIsoCountryCode } from "@/utils";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
-
-const optionalString = (value: unknown) =>
-  typeof value === "string" && value.trim().length > 0
-    ? value.trim()
-    : undefined;
 
 export const POST = async (request: NextRequest) => {
   const rateLimit = consumeRateLimit({
@@ -55,7 +50,7 @@ export const POST = async (request: NextRequest) => {
   const items = Array.isArray(payload?.items)
     ? payload.items.filter(isStoredCartItem)
     : [];
-  const addressCountry = optionalString(payload?.address?.country);
+  const addressCountry = asOptionalString(payload?.address?.country);
   const country = await getRequestCountry();
 
   const respond = (body: ShippingQuoteResponse) => {
@@ -106,10 +101,10 @@ export const POST = async (request: NextRequest) => {
     selectedOptionIds: payload?.selectedOptionIds,
     address: {
       country: addressCountry,
-      region: optionalString(payload?.address?.region),
-      city: optionalString(payload?.address?.city),
-      postalCode: optionalString(payload?.address?.postalCode),
-      line1: optionalString(payload?.address?.line1),
+      region: asOptionalString(payload?.address?.region),
+      city: asOptionalString(payload?.address?.city),
+      postalCode: asOptionalString(payload?.address?.postalCode),
+      line1: asOptionalString(payload?.address?.line1),
     },
   });
 

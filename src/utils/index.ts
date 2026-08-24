@@ -35,6 +35,7 @@ export {
   normalizeOrderEmail,
   toAccountOrder,
 } from "./order";
+export { asOptionalString } from "./optional-string";
 export { formatPersonName } from "./person-name";
 export { isPostalCodeValid } from "./postal-code";
 export {

@@ -15,6 +15,7 @@ import type { OrderCustomer, OrderShippingAddress } from "@/types/order";
 import { isStoredCartItem } from "@/types/cart-guards";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import {
+  asOptionalString,
   getCountryPaymentMethods,
   isIsoCountryCode,
   isPostalCodeValid,
@@ -51,17 +52,12 @@ const parseCustomer = (value: unknown): OrderCustomer | null => {
     return null;
   }
 
-  const optionalString = (key: string) =>
-    typeof raw[key] === "string" && (raw[key] as string).length > 0
-      ? (raw[key] as string)
-      : undefined;
-
   return {
     firstName,
     lastName,
     email: normalizeOrderEmail(raw.email),
-    phone: optionalString("phone"),
-    telegram: optionalString("telegram"),
+    phone: asOptionalString(raw.phone),
+    telegram: asOptionalString(raw.telegram),
   };
 };
 
@@ -94,16 +90,11 @@ const parseShippingAddress = (value: unknown): OrderShippingAddress | null => {
     return null;
   }
 
-  const optional = (key: string) =>
-    typeof raw[key] === "string" && (raw[key] as string).length > 0
-      ? (raw[key] as string)
-      : undefined;
-
   return {
     line1: raw.line1.trim(),
-    line2: optional("line2"),
+    line2: asOptionalString(raw.line2),
     city: raw.city.trim(),
-    region: optional("region"),
+    region: asOptionalString(raw.region),
     postalCode: raw.postalCode.trim(),
     country: countryValue,
   };
