@@ -213,8 +213,8 @@ export const syncOrderFromPrintify = async (
     await updateOrderPrintifyOrder(order.id, patch);
   }
 
-  if (Object.keys(parcelPatch).length > 0) {
-    await updateOrderFulfillment(order.id, "printify", parcelPatch);
+  if (parcel && Object.keys(parcelPatch).length > 0) {
+    await updateOrderFulfillment(order.id, parcel.id, parcelPatch);
   }
 
   if (needsAttention) {

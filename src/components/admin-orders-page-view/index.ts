@@ -1,5 +1,6 @@
 export { AdminOrderDeleteButton } from "./order-delete-button";
 export { AdminOrderPaymentConfirmButton } from "./order-payment-confirm-button";
+export { AdminOrderFulfillments } from "./order-fulfillments";
 export { AdminOrderPrintifyCancelButton } from "./order-printify-cancel-button";
 export { AdminOrderPrintifyStatus } from "./order-printify-status";
 export { AdminOrderProductionButton } from "./order-production-button";
@@ -7,6 +8,7 @@ export { AdminOrderRefundButton } from "./order-refund-button";
 export { AdminOrderStatusSelect } from "./order-status-select";
 export type { AdminOrderDeleteButtonProps } from "./order-delete-button";
 export type { AdminOrderPaymentConfirmButtonProps } from "./order-payment-confirm-button";
+export type { AdminOrderFulfillmentsProps } from "./order-fulfillments";
 export type { AdminOrderPrintifyCancelButtonProps } from "./order-printify-cancel-button";
 export type { AdminOrderPrintifyStatusProps } from "./order-printify-status";
 export type { AdminOrderProductionButtonProps } from "./order-production-button";

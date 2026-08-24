@@ -4,7 +4,6 @@ import { getMongoDb } from "@/server/db/mongodb";
 import type {
   OrderDocument,
   OrderFulfillmentProgress,
-  OrderFulfillmentSource,
   OrderPaymentInfo,
   OrderPrintifyInfo,
   OrderStatus,
@@ -187,9 +186,11 @@ export type OrderFulfillmentPatch = {
     | null;
 };
 
+// Keyed by the parcel's own id, not by its source: an order can carry two manual
+// parcels when its books ship from different warehouses.
 export const updateOrderFulfillment = async (
-  id: string,
-  source: OrderFulfillmentSource,
+  orderId: string,
+  fulfillmentId: string,
   patch: OrderFulfillmentPatch,
 ): Promise<void> => {
   const collection = await getOrdersCollection();
@@ -213,12 +214,12 @@ export const updateOrderFulfillment = async (
   }
 
   await collection.updateOne(
-    { id, "fulfillments.source": source },
+    { id: orderId, "fulfillments.id": fulfillmentId },
     {
       ...(Object.keys($set).length > 0 ? { $set } : {}),
       ...(Object.keys($unset).length > 0 ? { $unset } : {}),
     },
-    { arrayFilters: [{ "element.source": source }] },
+    { arrayFilters: [{ "element.id": fulfillmentId }] },
   );
 };
 

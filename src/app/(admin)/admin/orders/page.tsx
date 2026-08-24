@@ -17,6 +17,7 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 import { deleteAdminOrderAction } from "@/app/(admin)/admin/actions";
 import {
   AdminOrderDeleteButton,
+  AdminOrderFulfillments,
   AdminOrderPaymentConfirmButton,
   AdminOrderPrintifyCancelButton,
   AdminOrderPrintifyStatus,
@@ -164,6 +165,9 @@ const AdminOrdersPage = async () => {
                         />
                         <AdminOrderPrintifyStatus
                           printifyOrder={order.printifyOrder}
+                        />
+                        <AdminOrderFulfillments
+                          orderId={order.id}
                           fulfillments={order.fulfillments}
                         />
                       </Stack>

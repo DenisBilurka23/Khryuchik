@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import {
   deleteOrder,
   findOrderById,
+  updateOrderFulfillment,
   updateOrderPayment,
   updateOrderPrintifyOrder,
   updateOrderStatus,
@@ -20,6 +21,7 @@ import { applyStripeRefund } from "@/server/orders/services/orders.service";
 import { refundStripePayment } from "@/server/payments/stripe";
 import type { OrderStatus } from "@/types/order";
 import {
+  asOptionalString,
   hasLivePrintifyOrder,
   isOrderStatus,
   isRefundableOrder,
@@ -164,6 +166,51 @@ export const cancelAdminOrderPrintifyAction = async (
       cancelError: error instanceof Error ? error.message : String(error),
     }).catch(() => undefined);
     revalidateOrderDependentPaths();
+    return { ok: false, error: "failed" };
+  }
+
+  revalidateOrderDependentPaths();
+  return { ok: true };
+};
+
+export type AdminOrderTrackingInput = {
+  carrier?: string;
+  trackingNumber?: string;
+  trackingUrl?: string;
+};
+
+export const saveAdminOrderTrackingAction = async (
+  orderId: string,
+  fulfillmentId: string,
+  input: AdminOrderTrackingInput,
+): Promise<AdminActionResult<"unknown_parcel">> => {
+  const session = await requireAdminApiAccess();
+  if (!session) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const order = await findOrderById(orderId);
+  const parcel = order?.fulfillments?.find(
+    (fulfillment) => fulfillment.id === fulfillmentId,
+  );
+
+  if (!parcel || parcel.source !== "manual") {
+    return { ok: false, error: "unknown_parcel" };
+  }
+
+  const trackingNumber = asOptionalString(input.trackingNumber);
+
+  try {
+    await updateOrderFulfillment(orderId, fulfillmentId, {
+      carrier: asOptionalString(input.carrier) ?? null,
+      trackingNumber: trackingNumber ?? null,
+      trackingUrl: asOptionalString(input.trackingUrl) ?? null,
+      ...(trackingNumber && !parcel.shippedAt
+        ? { shippedAt: new Date().toISOString() }
+        : {}),
+    });
+  } catch (error) {
+    console.error("saveAdminOrderTrackingAction failed", error);
     return { ok: false, error: "failed" };
   }
 

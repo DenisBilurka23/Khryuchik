@@ -1,10 +1,7 @@
 import { Chip, Link, Paper, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import {
-  customerOrderStatusColors,
-  orderParcelLabelKeys,
-} from "@/constants/order";
+import { customerOrderStatusColors } from "@/constants/order";
 import { formatOrderTracking } from "@/utils";
 
 import { SectionCard } from "../../shared";
@@ -13,6 +10,7 @@ import type { OrdersSectionProps } from "./types";
 export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
   const t = useTranslations("accountPage");
   const tStatus = useTranslations("accountPage.orderStatuses");
+  const tParcels = useTranslations("accountPage.orderParcels");
 
   if (orders.length === 0) {
     return (
@@ -128,7 +126,7 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
                       >
                         {order.trackings.length > 1 && tracking.source && (
                           <Typography variant="caption" color="text.secondary">
-                            {t(orderParcelLabelKeys[tracking.source])}
+                            {tParcels(tracking.source)}
                           </Typography>
                         )}
                         {tracking.url ? (

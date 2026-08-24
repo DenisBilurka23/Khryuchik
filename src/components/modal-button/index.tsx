@@ -23,7 +23,9 @@ export const ModalButton = ({
   confirmLabel,
   cancelLabel,
   onConfirmAction,
+  children,
   color = "error",
+  confirmColor = "error",
   variant = "text",
   size = "medium",
   disabled = false,
@@ -97,6 +99,7 @@ export const ModalButton = ({
         <DialogTitle>{dialogTitle}</DialogTitle>
         <DialogContent>
           <DialogContentText>{dialogDescription}</DialogContentText>
+          {children}
         </DialogContent>
         <DialogActions>
           <Button
@@ -110,7 +113,7 @@ export const ModalButton = ({
           <Button
             type="button"
             onClick={handleConfirm}
-            color="error"
+            color={confirmColor}
             variant="contained"
             disabled={isSubmitting}
             startIcon={

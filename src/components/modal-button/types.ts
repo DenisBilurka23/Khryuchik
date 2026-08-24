@@ -8,7 +8,9 @@ export type ModalButtonProps = {
   confirmLabel: string;
   cancelLabel: string;
   onConfirmAction: () => void | boolean | Promise<void | boolean>;
+  children?: ReactNode;
   color?: ButtonProps["color"];
+  confirmColor?: ButtonProps["color"];
   variant?: ButtonProps["variant"];
   size?: ButtonProps["size"];
   disabled?: boolean;
