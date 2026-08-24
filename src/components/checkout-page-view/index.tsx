@@ -187,6 +187,11 @@ export const CheckoutPageView = ({
     clearFieldError("country");
   };
 
+  const handleRegionChange = (value: string) => {
+    setForm((prev) => ({ ...prev, region: value }));
+    clearFieldError("region");
+  };
+
   const handleSavedAddressSelect = (addressId: string) => {
     setSelectedSavedAddressId(addressId);
     setFieldErrors({});
@@ -446,6 +451,7 @@ export const CheckoutPageView = ({
                           onField={handleField}
                           countries={allCountries}
                           onCountryChange={handleCountryChange}
+                          onRegionChange={handleRegionChange}
                           onLocationFieldFocusChange={setIsLocationFieldFocused}
                           labels={labels}
                         />

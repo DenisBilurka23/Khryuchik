@@ -16,6 +16,7 @@ export type ShippingAddressSectionProps = {
   onField: OnCheckoutFieldChange;
   countries: CheckoutCountryOption[];
   onCountryChange: (value: string) => void;
+  onRegionChange: (value: string) => void;
   onLocationFieldFocusChange: (isFocused: boolean) => void;
   labels: CheckoutLabels;
 };

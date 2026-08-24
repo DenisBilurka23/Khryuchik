@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { quoteShippingClient } from "@/client-api/shipping";
-import { isPostalCodeValid } from "@/utils";
+import { isPostalCodeValid, isRegionRequired } from "@/utils";
 import type { ShippingQuoteResponse } from "@/types/order";
 import type { ShippingQuoteGroup } from "@/types/shipping";
 
@@ -55,7 +55,14 @@ export const useShippingQuote = ({
     [address],
   );
 
-  const isQuotable = isEnabled && Boolean(addressKey) && Boolean(itemsKey);
+  const isAddressComplete = Boolean(
+    address?.line1?.trim() &&
+    address.city?.trim() &&
+    (!isRegionRequired(address.country) || address.region?.trim()),
+  );
+
+  const isQuotable =
+    isEnabled && Boolean(addressKey) && Boolean(itemsKey) && isAddressComplete;
   const requestKey = isQuotable ? `${locale}|${itemsKey}|${addressKey}` : "";
 
   const latestInput = useRef({ items, address });

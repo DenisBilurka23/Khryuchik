@@ -733,6 +733,8 @@
         "line2": "Адрес, строка 2 (необязательно)",
         "city": "Город",
         "region": "Область (необязательно)",
+        "regionState": "Штат",
+        "regionProvince": "Провинция",
         "postalCode": "Индекс",
         "country": "Страна",
         "notes": "Комментарий к заказу (необязательно)"
@@ -1589,7 +1591,21 @@
       "printifyCancelFailed": "Не удалось отменить в Printify: {reason}. Если заказ только что создан, подождите несколько секунд и повторите.",
       "refundedAmountLabel": "Возврат: {amount}",
       "printifyStatusLabel": "Printify: {status}",
-      "trackingLabel": "Трек: {tracking}",
+      "parcels": {
+        "printify": "Мерч под заказ",
+        "manual": "Книги"
+      },
+      "tracking": {
+        "button": "Изменить трек",
+        "none": "трека нет",
+        "dialogTitle": "Трек посылки",
+        "dialogDescription": "Впишите номер с купленной этикетки. Пустое поле очищает значение. Покупатель увидит его в личном кабинете сразу, а в письме об отправке — когда переведёте заказ в статус «Отправлен».",
+        "confirmLabel": "Сохранить",
+        "cancelLabel": "Отмена",
+        "carrierLabel": "Перевозчик",
+        "numberLabel": "Трек-номер",
+        "urlLabel": "Ссылка на отслеживание"
+      },
       "refund": {
         "button": "Вернуть деньги",
         "dialogTitle": "Вернуть оплату?",

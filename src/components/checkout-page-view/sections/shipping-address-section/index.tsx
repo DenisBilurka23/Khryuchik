@@ -1,6 +1,8 @@
 import { Grid, Stack, TextField } from "@mui/material";
 
 import { CountrySelect } from "@/components/country-select";
+import { getRegionOptions, RegionSelect } from "@/components/region-select";
+import { isRegionRequired, regionFieldKey } from "@/utils";
 
 import { CheckoutSectionCard } from "../../section-card";
 import type { ShippingAddressSectionProps } from "./types";
@@ -11,6 +13,7 @@ export const CheckoutShippingAddressSection = ({
   onField,
   countries,
   onCountryChange,
+  onRegionChange,
   onLocationFieldFocusChange,
   labels,
 }: ShippingAddressSectionProps) => (
@@ -44,14 +47,29 @@ export const CheckoutShippingAddressSection = ({
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField
-            fullWidth
-            label={labels.fields.region}
-            value={form.region}
-            onChange={onField("region")}
-            onFocus={() => onLocationFieldFocusChange(true)}
-            onBlur={() => onLocationFieldFocusChange(false)}
-          />
+          {getRegionOptions(form.country) ? (
+            <RegionSelect
+              required
+              country={form.country}
+              value={form.region}
+              label={labels.fields[regionFieldKey(form.country)]}
+              onChange={onRegionChange}
+              error={Boolean(fieldErrors.region)}
+              helperText={fieldErrors.region}
+            />
+          ) : (
+            <TextField
+              fullWidth
+              required={isRegionRequired(form.country)}
+              label={labels.fields[regionFieldKey(form.country)]}
+              value={form.region}
+              onChange={onField("region")}
+              error={Boolean(fieldErrors.region)}
+              helperText={fieldErrors.region}
+              onFocus={() => onLocationFieldFocusChange(true)}
+              onBlur={() => onLocationFieldFocusChange(false)}
+            />
+          )}
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
           <TextField

@@ -1,5 +1,5 @@
 import type { ShippingQuoteStatus } from "@/hooks/useShippingQuote.types";
-import { isPostalCodeValid } from "@/utils";
+import { isPostalCodeValid, isRegionRequired } from "@/utils";
 
 import type { ShippingQuoteGroup } from "@/types/shipping";
 
@@ -75,6 +75,14 @@ export const validateForm = (
     !isPostalCodeValid(form.postalCode)
   ) {
     errors.postalCode = messages.invalidPostalCode;
+  }
+
+  if (
+    !options?.skipAddress &&
+    isRegionRequired(form.country) &&
+    form.region.trim().length === 0
+  ) {
+    errors.region = messages.required;
   }
 
   return errors;

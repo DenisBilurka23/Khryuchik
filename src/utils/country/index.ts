@@ -3,6 +3,7 @@ import {
   COUNTRY_HEADER,
   defaultCountry,
   geoCountryHeaderNames,
+  REGION_LABEL_BY_COUNTRY,
 } from "@/constants/country";
 import { ALL_COUNTRY_CODES } from "@/constants/all-country-codes";
 
@@ -17,6 +18,23 @@ export {
   COUNTRY_HEADER,
   defaultCountry,
   geoCountryHeaderNames,
+};
+
+// Whether an address in this country is incomplete without a region.
+export const isRegionRequired = (country: string) =>
+  country.toUpperCase() in REGION_LABEL_BY_COUNTRY;
+
+// The dictionary key for this country's region field. Returned as a key rather
+// than as text so the two call sites - one holding a labels object, one calling
+// the translator - can each use it directly.
+export const regionFieldKey = (country: string) => {
+  const kind = REGION_LABEL_BY_COUNTRY[country.toUpperCase()];
+
+  if (kind === "province") {
+    return "regionProvince" as const;
+  }
+
+  return kind === "state" ? ("regionState" as const) : ("region" as const);
 };
 
 export const getCountryDisplayName = (

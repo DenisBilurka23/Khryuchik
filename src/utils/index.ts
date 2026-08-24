@@ -10,6 +10,8 @@ export {
   getCountryPaymentMethods,
   getAllCountriesSorted,
   isIsoCountryCode,
+  isRegionRequired,
+  regionFieldKey,
   isPaymentMethodAvailable,
   readCountryCookie,
 } from "./country";

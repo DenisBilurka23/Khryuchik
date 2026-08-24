@@ -197,6 +197,8 @@ export type CheckoutPageLabels = {
     line2: string;
     city: string;
     region: string;
+    regionState: string;
+    regionProvince: string;
     postalCode: string;
     country: string;
     notes: string;
@@ -1250,6 +1252,18 @@ export type AdminPageDictionary = {
     printifyFailed: string;
     printifyCancelFailed: string;
     refundedAmountLabel: string;
+    parcels: Record<OrderFulfillmentSource, string>;
+    tracking: {
+      button: string;
+      none: string;
+      dialogTitle: string;
+      dialogDescription: string;
+      confirmLabel: string;
+      cancelLabel: string;
+      carrierLabel: string;
+      numberLabel: string;
+      urlLabel: string;
+    };
     refund: {
       button: string;
       dialogTitle: string;

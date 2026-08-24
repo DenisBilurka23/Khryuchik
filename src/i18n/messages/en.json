@@ -733,6 +733,8 @@
         "line2": "Address line 2 (optional)",
         "city": "City",
         "region": "Region (optional)",
+        "regionState": "State",
+        "regionProvince": "Province",
         "postalCode": "Postal code",
         "country": "Country",
         "notes": "Order notes (optional)"
@@ -1565,7 +1567,21 @@
       "printifyCancelFailed": "Printify cancellation failed: {reason}. If the order was just created, wait a few seconds and try again.",
       "refundedAmountLabel": "Refunded: {amount}",
       "printifyStatusLabel": "Printify: {status}",
-      "trackingLabel": "Tracking: {tracking}",
+      "parcels": {
+        "printify": "Made-to-order merch",
+        "manual": "Books"
+      },
+      "tracking": {
+        "button": "Edit tracking",
+        "none": "no tracking yet",
+        "dialogTitle": "Tracking for this parcel",
+        "dialogDescription": "Type in the number from the label you bought. An empty field clears the value. The customer sees it in their account right away, and in the shipped email once you move the order to Shipped.",
+        "confirmLabel": "Save",
+        "cancelLabel": "Cancel",
+        "carrierLabel": "Carrier",
+        "numberLabel": "Tracking number",
+        "urlLabel": "Tracking link"
+      },
       "refund": {
         "button": "Refund payment",
         "dialogTitle": "Refund this payment?",

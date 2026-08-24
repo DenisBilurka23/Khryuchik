@@ -153,7 +153,7 @@ export const buildQuoteShipmentPayload = ({
     name: "Customer",
     address_1: destination.line1 ?? "",
     city: destination.city ?? "",
-    province_code: destination.region ?? "",
+    ...(destination.region ? { province_code: destination.region } : {}),
     postal_code: destination.postalCode ?? "",
     country_code: country,
     package_contents: CHITCHATS_PACKAGE_CONTENTS,

@@ -37,6 +37,8 @@ import {
   isPostalCodeValid,
 } from "@/utils";
 import { CountrySelect } from "@/components/country-select";
+import { getRegionOptions, RegionSelect } from "@/components/region-select";
+import { regionFieldKey } from "@/utils";
 
 import { SectionCard } from "../../shared";
 
@@ -279,17 +281,29 @@ export const AddressesSection = ({
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <TextField
-                  fullWidth
-                  label={tCheckoutFields("region")}
-                  value={addressForm.region ?? ""}
-                  onChange={(e) =>
-                    handleAddressFieldChange(
-                      "region",
-                      e.target.value || undefined,
-                    )
-                  }
-                />
+                {getRegionOptions(addressForm.country) ? (
+                  <RegionSelect
+                    required
+                    country={addressForm.country}
+                    value={addressForm.region ?? ""}
+                    label={tCheckoutFields(regionFieldKey(addressForm.country))}
+                    onChange={(code) =>
+                      handleAddressFieldChange("region", code || undefined)
+                    }
+                  />
+                ) : (
+                  <TextField
+                    fullWidth
+                    label={tCheckoutFields("region")}
+                    value={addressForm.region ?? ""}
+                    onChange={(e) =>
+                      handleAddressFieldChange(
+                        "region",
+                        e.target.value || undefined,
+                      )
+                    }
+                  />
+                )}
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <TextField
