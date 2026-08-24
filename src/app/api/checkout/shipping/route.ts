@@ -18,10 +18,29 @@ const optionalString = (value: unknown) =>
     : undefined;
 
 export const POST = async (request: NextRequest) => {
+  const rateLimit = consumeRateLimit({
+    key: `shipping-quote:${getClientIpKey(request.headers)}`,
+    ...SHIPPING_QUOTE_RATE_LIMIT,
+  });
+
+  if (!rateLimit.isAllowed) {
+    return NextResponse.json(
+      { status: "unavailable" } satisfies ShippingQuoteResponse,
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(rateLimit.retryAfterSeconds),
+          "Cache-Control": "no-store, max-age=0",
+        },
+      },
+    );
+  }
+
   const payload = (await request.json().catch(() => null)) as {
     locale?: string;
     items?: unknown[];
     address?: Record<string, unknown>;
+    selectedOptionIds?: Record<string, string>;
   } | null;
 
   const locale =
@@ -75,10 +94,11 @@ export const POST = async (request: NextRequest) => {
       productId: item.productId,
       quantity: item.quantity,
       selections: selectionsById.get(item.id),
+      isDigital: item.isDigital ?? false,
+      unitPrice: item.price,
     })),
     subtotal,
-    isDigitalOnly:
-      resolved.length > 0 && resolved.every((item) => item.isDigital),
+    selectedOptionIds: payload?.selectedOptionIds,
     address: {
       country: addressCountry,
       region: optionalString(payload?.address?.region),

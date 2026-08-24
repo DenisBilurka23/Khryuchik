@@ -1,5 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
+import type { ShippingQuoteGroup } from "@/types/shipping";
 import type { CountryCode, CurrencyCode, PaymentMethod } from "@/utils/country";
 
 export type OrderItemPrintifyLink = {
@@ -149,6 +150,9 @@ export type CreateOrderInput = {
   paymentMethod: PaymentMethod;
   userId?: string;
   notes?: string;
+  // Which shipping option the buyer picked per shipment group. Only ids cross
+  // the wire; the price is re-quoted server side.
+  selectedShippingOptionIds?: Record<string, string>;
 };
 
 export type ShippingQuoteRequest = {
@@ -164,7 +168,14 @@ export type ShippingQuoteRequest = {
 };
 
 export type ShippingQuoteResponse =
-  | { status: "ok"; shipping: number }
+  | {
+      status: "ok";
+      currency: CurrencyCode;
+      groups: ShippingQuoteGroup[];
+      shipping: number;
+    }
   | { status: "unsupported-destination" }
   | { status: "unsupported-variant" }
+  | { status: "unsupported-parcel" }
+  | { status: "missing-shipping-data" }
   | { status: "unavailable" };

@@ -1,10 +1,7 @@
 import { POST } from "@/client-api";
 import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
-import type {
-  OrderCustomer,
-  OrderShippingAddress,
-} from "@/types/order";
+import type { OrderCustomer, OrderShippingAddress } from "@/types/order";
 import type { PaymentMethod } from "@/utils";
 
 export type CheckoutRequestPayload = {
@@ -13,6 +10,7 @@ export type CheckoutRequestPayload = {
   customer: OrderCustomer;
   shippingAddress?: OrderShippingAddress;
   paymentMethod: PaymentMethod;
+  selectedShippingOptionIds?: Record<string, string>;
   notes?: string;
 };
 

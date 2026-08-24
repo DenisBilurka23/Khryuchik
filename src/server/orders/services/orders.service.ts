@@ -25,7 +25,11 @@ import type {
   OrderPaymentInfo,
 } from "@/types/order";
 import { BOOK_FORMAT } from "@/constants/catalog";
-import { isPaymentMethodAvailable, type PaymentMethod } from "@/utils";
+import {
+  isPaymentMethodAvailable,
+  type PaymentMethod,
+  roundToCents,
+} from "@/utils";
 import {
   calculateOrderShipping,
   type OrderShippingResult,
@@ -42,14 +46,14 @@ export class OrderValidationError extends Error {
       | "pricing_unavailable"
       | "shipping_unavailable"
       | "shipping_unsupported_destination"
+      | "shipping_unsupported_parcel"
+      | "shipping_missing_data"
       | "unsupported_variant",
   ) {
     super(message);
     this.name = "OrderValidationError";
   }
 }
-
-const round2 = (value: number) => Math.round(value * 100) / 100;
 
 const initialPaymentStatus = (
   method: PaymentMethod,
@@ -63,6 +67,10 @@ const shippingErrorCode = (
       return "shipping_unsupported_destination";
     case "unsupported-variant":
       return "unsupported_variant";
+    case "unsupported-parcel":
+      return "shipping_unsupported_parcel";
+    case "missing-shipping-data":
+      return "shipping_missing_data";
     default:
       return "shipping_unavailable";
   }
@@ -108,14 +116,16 @@ export const createOrder = async (
     items.map((item) => [item.id, item.selections]),
   );
 
-  const printifyItems = resolved.map((item) => ({
+  const lineItems = resolved.map((item) => ({
     id: item.id,
     productId: item.productId,
     quantity: item.quantity,
     selections: selectionsById.get(item.id),
+    isDigital: item.isDigital ?? false,
+    unitPrice: item.price,
   }));
 
-  const printifyResolution = await resolvePrintifyLineItems(printifyItems);
+  const printifyResolution = await resolvePrintifyLineItems(lineItems);
 
   if (printifyResolution === null) {
     throw new OrderValidationError(
@@ -135,7 +145,7 @@ export const createOrder = async (
     languageSelection: selectionsById.get(item.id)?.language,
     unitPrice: item.price,
     quantity: item.quantity,
-    lineTotal: round2(item.price * item.quantity),
+    lineTotal: roundToCents(item.price * item.quantity),
     printify: printifyResolution.linkByItemId.get(item.id),
   }));
 
@@ -145,15 +155,15 @@ export const createOrder = async (
     ? "digital"
     : "physical";
 
-  const subtotal = round2(
+  const subtotal = roundToCents(
     orderItems.reduce((sum, item) => sum + item.lineTotal, 0),
   );
 
   const shippingResult = await calculateOrderShipping({
     country,
-    items: printifyItems,
+    items: lineItems,
     subtotal,
-    isDigitalOnly: fulfillmentType === "digital",
+    selectedOptionIds: input.selectedShippingOptionIds,
     address: input.shippingAddress && {
       country: input.shippingAddress.country,
       region: input.shippingAddress.region,
@@ -172,7 +182,7 @@ export const createOrder = async (
 
   const shipping = shippingResult.shipping;
   const discount = 0;
-  const total = round2(subtotal + shipping - discount);
+  const total = roundToCents(subtotal + shipping - discount);
 
   const order: OrderDocument = {
     id: randomUUID(),
@@ -219,7 +229,7 @@ export const applyStripeRefund = async (
 ): Promise<void> => {
   await updateOrderPayment(orderId, {
     status: refund.isFullyRefunded ? "refunded" : "paid",
-    refundedAmount: round2(refund.amountRefundedMinor / 100),
+    refundedAmount: roundToCents(refund.amountRefundedMinor / 100),
     refundedAt: new Date().toISOString(),
     lastRefundId: refund.refundId,
   });

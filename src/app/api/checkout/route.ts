@@ -109,6 +109,20 @@ const parseShippingAddress = (value: unknown): OrderShippingAddress | null => {
   };
 };
 
+const parseSelectedShippingOptionIds = (
+  value: unknown,
+): Record<string, string> | undefined => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return undefined;
+  }
+
+  const entries = Object.entries(value as Record<string, unknown>).filter(
+    (entry): entry is [string, string] => typeof entry[1] === "string",
+  );
+
+  return entries.length > 0 ? Object.fromEntries(entries) : undefined;
+};
+
 type CheckoutErrorCode =
   | OrderValidationError["code"]
   | "invalid_payload"
@@ -184,6 +198,9 @@ export const POST = async (request: NextRequest) => {
       customer,
       shippingAddress: shippingAddress ?? undefined,
       paymentMethod,
+      selectedShippingOptionIds: parseSelectedShippingOptionIds(
+        payload.selectedShippingOptionIds,
+      ),
       userId,
       notes:
         typeof payload.notes === "string" && payload.notes.length > 0
