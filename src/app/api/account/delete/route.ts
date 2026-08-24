@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerAuthSession } from "@/server/auth/config";
 import { deleteUserAvatarObject } from "@/server/storage/r2-assets.service";
 import { deleteAccountUserSelf } from "@/server/users/services/users.service";
-import { UserOperationErrorReason } from "@/types/users";
+import { statusForUserOperationError } from "@/server/users/user-error-status";
 
 export async function POST(request: Request) {
   try {
@@ -17,22 +17,25 @@ export async function POST(request: Request) {
     const currentPassword =
       typeof body?.currentPassword === "string" ? body.currentPassword : "";
 
-    const result = await deleteAccountUserSelf(session.user.id, currentPassword);
+    const result = await deleteAccountUserSelf(
+      session.user.id,
+      currentPassword,
+    );
 
     if (!result.ok) {
-      const status =
-        result.reason === UserOperationErrorReason.WrongPassword
-          ? 403
-          : result.reason === UserOperationErrorReason.LastAdmin
-            ? 409
-            : 404;
+      const status = statusForUserOperationError(result.reason);
       return NextResponse.json({ error: result.reason }, { status });
     }
 
     if (result.avatarObjectKey) {
-      await deleteUserAvatarObject(result.avatarObjectKey).catch((cleanupError) => {
-        console.error("Account self-delete avatar cleanup failed", cleanupError);
-      });
+      await deleteUserAvatarObject(result.avatarObjectKey).catch(
+        (cleanupError) => {
+          console.error(
+            "Account self-delete avatar cleanup failed",
+            cleanupError,
+          );
+        },
+      );
     }
 
     return NextResponse.json({ ok: true });

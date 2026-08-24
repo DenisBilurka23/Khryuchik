@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 
 import { getServerAuthSession } from "@/server/auth/config";
-import { deleteUserAvatarObject, uploadUserAvatarFile } from "@/server/storage/r2-assets.service";
+import {
+  deleteUserAvatarObject,
+  uploadUserAvatarFile,
+} from "@/server/storage/r2-assets.service";
 import { isR2Configured } from "@/server/storage/r2";
 import { updateAccountUserProfile } from "@/server/users/services/users.service";
-import { UserOperationErrorReason } from "@/types/users";
+import { statusForUserOperationError } from "@/server/users/user-error-status";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
 const isUploadedFile = (value: FormDataEntryValue | null): value is File =>
@@ -17,14 +20,18 @@ const getTrimmedFormValue = (formData: FormData, key: string) => {
 };
 
 export async function PATCH(request: Request) {
-  let uploadedAvatar: Awaited<ReturnType<typeof uploadUserAvatarFile>> | undefined;
+  let uploadedAvatar:
+    | Awaited<ReturnType<typeof uploadUserAvatarFile>>
+    | undefined;
 
   const cleanupUploadedAvatar = async () => {
     if (!uploadedAvatar?.objectKey) {
       return;
     }
 
-    await deleteUserAvatarObject(uploadedAvatar.objectKey).catch(() => undefined);
+    await deleteUserAvatarObject(uploadedAvatar.objectKey).catch(
+      () => undefined,
+    );
   };
 
   try {
@@ -59,8 +66,13 @@ export async function PATCH(request: Request) {
         ? body.phone.trim()
         : ""
       : getTrimmedFormValue(formData!, "phone");
-    const rawRemoveAvatar = isJsonRequest ? body?.removeAvatar : formData?.get("removeAvatar");
-    const removeAvatar = rawRemoveAvatar === true || rawRemoveAvatar === "1" || rawRemoveAvatar === "true";
+    const rawRemoveAvatar = isJsonRequest
+      ? body?.removeAvatar
+      : formData?.get("removeAvatar");
+    const removeAvatar =
+      rawRemoveAvatar === true ||
+      rawRemoveAvatar === "1" ||
+      rawRemoveAvatar === "true";
     const rawAvatar = formData?.get("avatar") ?? null;
     const avatarFile = isUploadedFile(rawAvatar) ? rawAvatar : null;
 
@@ -77,11 +89,17 @@ export async function PATCH(request: Request) {
     }
 
     if (avatarFile) {
-      uploadedAvatar = await uploadUserAvatarFile({ userId: session.user.id, file: avatarFile });
+      uploadedAvatar = await uploadUserAvatarFile({
+        userId: session.user.id,
+        file: avatarFile,
+      });
 
       if (!uploadedAvatar.url) {
         await cleanupUploadedAvatar();
-        return NextResponse.json({ error: "unexpected_error" }, { status: 500 });
+        return NextResponse.json(
+          { error: "unexpected_error" },
+          { status: 500 },
+        );
       }
     }
 
@@ -106,14 +124,7 @@ export async function PATCH(request: Request) {
     if (!result.ok) {
       await cleanupUploadedAvatar();
 
-      const status =
-        result.reason === UserOperationErrorReason.EmailTaken
-          ? 409
-          : result.reason === UserOperationErrorReason.EmailManagedByGoogle
-            ? 403
-            : result.reason === UserOperationErrorReason.NotFound
-              ? 404
-              : 400;
+      const status = statusForUserOperationError(result.reason);
 
       return NextResponse.json({ error: result.reason }, { status });
     }
@@ -122,7 +133,9 @@ export async function PATCH(request: Request) {
       result.previousAvatarObjectKey &&
       result.previousAvatarObjectKey !== result.nextAvatarObjectKey
     ) {
-      await deleteUserAvatarObject(result.previousAvatarObjectKey).catch(() => undefined);
+      await deleteUserAvatarObject(result.previousAvatarObjectKey).catch(
+        () => undefined,
+      );
     }
 
     return NextResponse.json({ ok: true, user: result.user });

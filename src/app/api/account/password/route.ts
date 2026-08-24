@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getServerAuthSession } from "@/server/auth/config";
 import { changeAccountUserPassword } from "@/server/users/services/users.service";
 import { AuthInputErrorCode } from "@/types/auth";
-import { UserOperationErrorReason } from "@/types/users";
+import { statusForUserOperationError } from "@/server/users/user-error-status";
 
 export async function POST(request: Request) {
   try {
@@ -40,8 +40,7 @@ export async function POST(request: Request) {
     );
 
     if (!result.ok) {
-      const status =
-        result.reason === UserOperationErrorReason.WrongPassword ? 403 : 400;
+      const status = statusForUserOperationError(result.reason);
       return NextResponse.json({ error: result.reason }, { status });
     }
 

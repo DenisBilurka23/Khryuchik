@@ -5,25 +5,12 @@ import {
   addAccountUserShippingAddress,
   selectAccountUserShippingAddress,
 } from "@/server/users/services/users.service";
-import { UserOperationErrorReason } from "@/types/users";
+import { statusForUserOperationError } from "@/server/users/user-error-status";
 
 const getStringField = (body: unknown, key: string): string => {
   if (typeof body !== "object" || body === null) return "";
   const value = (body as Record<string, unknown>)[key];
   return typeof value === "string" ? value.trim() : "";
-};
-
-const getStatusForReason = (reason: UserOperationErrorReason) => {
-  switch (reason) {
-    case UserOperationErrorReason.NotFound:
-    case UserOperationErrorReason.AddressNotFound:
-      return 404;
-    case UserOperationErrorReason.MissingFields:
-    case UserOperationErrorReason.InvalidCountry:
-      return 400;
-    default:
-      return 400;
-  }
 };
 
 export async function POST(request: Request) {
@@ -48,11 +35,15 @@ export async function POST(request: Request) {
     if (!result.ok) {
       return NextResponse.json(
         { error: result.reason },
-        { status: getStatusForReason(result.reason) },
+        { status: statusForUserOperationError(result.reason) },
       );
     }
 
-    return NextResponse.json({ ok: true, user: result.user, address: result.address });
+    return NextResponse.json({
+      ok: true,
+      user: result.user,
+      address: result.address,
+    });
   } catch {
     return NextResponse.json({ error: "unexpected_error" }, { status: 500 });
   }
@@ -75,7 +66,7 @@ export async function PATCH(request: Request) {
     if (!result.ok) {
       return NextResponse.json(
         { error: result.reason },
-        { status: getStatusForReason(result.reason) },
+        { status: statusForUserOperationError(result.reason) },
       );
     }
 
