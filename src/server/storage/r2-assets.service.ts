@@ -32,6 +32,14 @@ type UploadableBinary = Blob & {
   name?: string;
 };
 
+const UPLOAD_EXTENSION_BY_MIME: Record<string, string> = {
+  "image/png": "png",
+  "image/jpeg": "jpg",
+  "image/webp": "webp",
+};
+
+const FALLBACK_EXTENSION = "bin";
+
 const getUploadFileName = (
   file: UploadableBinary,
   fallbackBaseName: string,
@@ -42,14 +50,7 @@ const getUploadFileName = (
     return rawName;
   }
 
-  const extension =
-    file.type === "image/png"
-      ? "png"
-      : file.type === "image/jpeg"
-        ? "jpg"
-        : file.type === "image/webp"
-          ? "webp"
-          : "bin";
+  const extension = UPLOAD_EXTENSION_BY_MIME[file.type] ?? FALLBACK_EXTENSION;
 
   return `${fallbackBaseName}.${extension}`;
 };
