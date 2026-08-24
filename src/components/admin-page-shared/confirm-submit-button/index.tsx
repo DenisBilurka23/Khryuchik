@@ -2,6 +2,7 @@
 import { Button, CircularProgress } from "@mui/material";
 import { useFormStatus } from "react-dom";
 import type { AdminConfirmSubmitButtonProps } from "./types";
+
 export const AdminConfirmSubmitButton = ({
   label,
   pendingLabel,
@@ -22,7 +23,7 @@ export const AdminConfirmSubmitButton = ({
       aria-busy={isPending}
       {...buttonProps}
     >
-      {isPending ? pendingLabel ?? label : label}
+      {isPending ? (pendingLabel ?? label) : label}
     </Button>
   );
 };
