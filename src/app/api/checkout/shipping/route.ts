@@ -1,9 +1,14 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { SHIPPING_QUOTE_RATE_LIMIT } from "@/constants/rate-limit";
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
 import { getRequestCountry } from "@/server/country/request-country";
+import {
+  consumeRateLimit,
+  getClientIpKey,
+} from "@/server/rate-limit/rate-limit.service";
 import { calculateOrderShipping } from "@/server/orders/services/shipping.service";
 import { isStoredCartItem } from "@/types/cart-guards";
 import type { ShippingQuoteResponse } from "@/types/order";
