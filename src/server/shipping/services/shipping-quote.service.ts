@@ -1,9 +1,9 @@
 import "server-only";
 
 import { getUsdRate } from "@/server/localization/exchange-rates.service";
-import type { ShippingHubCode } from "@/types/shipping";
 import type {
   ShippingDestination,
+  ShippingHubCode,
   ShippingOption,
   ShippingParcel,
   ShippingQuote,
@@ -13,11 +13,12 @@ import { convertShippingAmount, type CurrencyCode } from "@/utils";
 
 import { bpostProvider } from "../providers/bpost.provider";
 import { chitchatsProvider } from "../providers/chitchats.provider";
+import { easyshipProvider } from "../providers/easyship.provider";
 import type { ShippingProvider } from "../types";
 import { dropDominatedOptions } from "../utils";
 
 const PROVIDERS_BY_HUB: Record<ShippingHubCode, ShippingProvider[]> = {
-  europe: [bpostProvider],
+  europe: [bpostProvider, easyshipProvider],
   northAmerica: [chitchatsProvider],
 };
 
@@ -71,9 +72,6 @@ const toTargetCurrency = async (
 };
 
 export type ShipmentQuoteInput = {
-  // More than one when the destination is served equally well from either
-  // warehouse: every provider behind every listed hub is asked, and the
-  // dominance filter below settles it on price rather than on geography.
   hubs: ShippingHubCode[];
   parcel: ShippingParcel;
   destination: ShippingDestination;
