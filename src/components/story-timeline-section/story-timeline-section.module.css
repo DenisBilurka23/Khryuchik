@@ -175,8 +175,8 @@
 }
 
 .bookPig {
-  font-size: 64px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
   margin-top: auto;
 }
 

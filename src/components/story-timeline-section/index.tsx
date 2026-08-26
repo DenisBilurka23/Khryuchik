@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { InfoChip } from "../info-chip";
+import { LogoMark } from "../logo";
 import styles from "./story-timeline-section.module.css";
 import type { StoryTimelineSectionProps } from "./types";
 
@@ -164,8 +165,8 @@ export const StoryTimelineSection = ({
                 <Typography className={styles.bookTitle}>
                   {active.book}
                 </Typography>
-                <Box className={styles.bookPig} aria-hidden>
-                  🐷
+                <Box className={styles.bookPig}>
+                  <LogoMark size={64} sizes="128px" />
                 </Box>
               </Box>
             </Box>

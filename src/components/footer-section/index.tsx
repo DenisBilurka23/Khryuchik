@@ -2,6 +2,7 @@ import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
+import { Logo } from "@/components/logo";
 import type { Locale } from "@/i18n/config";
 import type { StorefrontFooterSection } from "@/i18n/types";
 import type { CountryCode } from "@/utils";
@@ -28,12 +29,7 @@ export const FooterSection = async ({
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Grid container spacing={5}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <Stack direction="row" spacing={1.5} alignItems="center">
-              <Box className={styles.brandMark}>🐷</Box>
-              <Typography className={styles.brandTitle}>
-                {tStorefront("brand.shortLabel")}
-              </Typography>
-            </Stack>
+            <Logo markSize={40} title={tStorefront("brand.shortLabel")} />
             <Typography
               variant="body2"
               color="text.secondary"

@@ -15,7 +15,7 @@ export type StatusScreenAction =
     };
 
 export type StatusScreenProps = {
-  emoji: string;
+  emoji: ReactNode;
   blobTone?: "pink" | "warm";
   code?: string;
   title: string;
