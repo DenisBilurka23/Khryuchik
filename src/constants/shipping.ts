@@ -60,7 +60,7 @@ export const EUROPE_HUB_COUNTRIES: readonly CountryCode[] = [
   "VA",
 ];
 
-export const COMPARED_SHIPPING_HUBS: readonly ShippingHubCode[] = [
+export const SHIPPING_HUB_CODES: readonly ShippingHubCode[] = [
   "europe",
   "northAmerica",
 ];

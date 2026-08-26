@@ -1,8 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Chip, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  Chip,
+  FormControlLabel,
+  Stack,
+  Typography,
+} from "@mui/material";
 
+import type { ProductPrintedStock } from "@/types/catalog";
+import type { ShippingHubCode } from "@/types/shipping";
 import type { ProductOption } from "@/types/product-details";
 import type { AdminLanguagesFieldProps } from "./types";
 
@@ -18,9 +27,16 @@ export const AdminLanguagesField = ({
   adminLocale,
   availableLocales,
   initialOptions,
+  stockName,
+  stockTitle,
+  stockHelperText,
+  stockEmptyText,
+  hubs,
+  initialStock,
 }: AdminLanguagesFieldProps) => {
   const initialSelected = new Set(initialOptions.map((o) => o.value));
   const [selected, setSelected] = useState<Set<string>>(initialSelected);
+  const [stock, setStock] = useState<ProductPrintedStock>(initialStock);
 
   const toggle = (code: string) => {
     setSelected((prev) => {
@@ -34,9 +50,30 @@ export const AdminLanguagesField = ({
     });
   };
 
+  const toggleHub = (code: string, hub: ShippingHubCode) => {
+    setStock((prev) => {
+      const current = prev[code] ?? [];
+
+      return {
+        ...prev,
+        [code]: current.includes(hub)
+          ? current.filter((entry) => entry !== hub)
+          : [...current, hub],
+      };
+    });
+  };
+
   const selectedOptions = availableLocales
     .filter((locale) => selected.has(locale.code))
     .map((locale) => localeToOption(locale.code, adminLocale));
+
+  // A language that was unticked keeps no stock: the warehouse cannot hold an
+  // edition the book no longer comes in.
+  const postedStock = Object.fromEntries(
+    selectedOptions
+      .map((option) => [option.value, stock[option.value] ?? []] as const)
+      .filter(([, hubCodes]) => hubCodes.length > 0),
+  );
 
   return (
     <Stack gap={1.5}>
@@ -45,6 +82,7 @@ export const AdminLanguagesField = ({
         name={name}
         value={JSON.stringify(selectedOptions)}
       />
+      <input type="hidden" name={stockName} value={JSON.stringify(postedStock)} />
       <Stack gap={0.75}>
         <Typography variant="h6" sx={{ fontWeight: 800, fontSize: 18, color: "text.primary" }}>
           {title}
@@ -88,6 +126,53 @@ export const AdminLanguagesField = ({
         </Box>
         <Typography variant="body2" color="text.secondary">
           {helperText}
+        </Typography>
+      </Stack>
+
+      <Stack gap={1}>
+        <Typography variant="h6" sx={{ fontWeight: 800, fontSize: 18, color: "text.primary" }}>
+          {stockTitle}
+        </Typography>
+
+        {selectedOptions.length === 0 ? (
+          <Typography variant="body2" color="text.secondary">
+            {stockEmptyText}
+          </Typography>
+        ) : (
+          selectedOptions.map((option) => (
+            <Stack
+              key={`${stockName}-${option.value}`}
+              gap={0.5}
+              sx={{
+                p: 1.5,
+                borderRadius: "18px",
+                border: "1px solid #F0DFC8",
+                bgcolor: "#fff",
+              }}
+            >
+              <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                {option.label}
+              </Typography>
+              <Stack direction={{ xs: "column", sm: "row" }} gap={{ xs: 0, sm: 2 }}>
+                {hubs.map((hub) => (
+                  <FormControlLabel
+                    key={`${stockName}-${option.value}-${hub.code}`}
+                    control={
+                      <Checkbox
+                        checked={Boolean(stock[option.value]?.includes(hub.code))}
+                        onChange={() => toggleHub(option.value, hub.code)}
+                      />
+                    }
+                    label={hub.label}
+                  />
+                ))}
+              </Stack>
+            </Stack>
+          ))
+        )}
+
+        <Typography variant="body2" color="text.secondary">
+          {stockHelperText}
         </Typography>
       </Stack>
     </Stack>

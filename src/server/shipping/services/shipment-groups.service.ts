@@ -17,14 +17,12 @@ export type ShipmentGroupItem = {
   quantity: number;
   isDigital: boolean;
   unitPrice: number;
+  language?: string;
 };
 
 export type ResolvedShipmentGroup = {
   id: string;
   source: "digital" | "printify" | "manual";
-  // Every hub that could send this parcel. More than one means the checkout
-  // quotes each and lets the cheapest option win, rather than deciding by
-  // geography and hoping.
   hubs: ShippingHubCode[];
   itemIds: string[];
   parcel?: ShippingParcel;
@@ -81,9 +79,13 @@ export const buildShipmentGroups = async (
       continue;
     }
 
-    const hubs = chooseHubs(destinationCountry, shipping.hubs);
-    // Items that can leave from the same set of warehouses travel together;
-    // only genuinely different stock splits a cart into two parcels.
+    const stocked = item.language
+      ? shipping.stockByLanguage?.[item.language]
+      : undefined;
+    const hubs = chooseHubs(
+      destinationCountry,
+      stocked?.length ? stocked : shipping.hubs,
+    );
     const key = hubs.join("-");
     const group = manualByHub.get(key) ?? {
       hubs,
@@ -103,6 +105,7 @@ export const buildShipmentGroups = async (
       valueAmount: item.unitPrice * item.quantity,
       hsCode: shipping.hsCode,
       originCountry: shipping.originCountry,
+      manufacturer: shipping.manufacturer,
     });
     manualByHub.set(key, group);
   }

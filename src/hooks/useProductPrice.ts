@@ -2,9 +2,11 @@
 
 import { useCallback, useMemo, useState } from "react";
 
+import { BOOK_FORMAT } from "@/constants/catalog";
 import {
   getVariantSelectionAvailability,
   getVariantValueState,
+  isPrintedOffered,
   isProductVariantAxis,
   resolveOptionPrice,
   resolveVariantSelections,
@@ -23,9 +25,20 @@ const toInitialSelections = (
   product: UseProductPriceParams["product"],
 ): ProductSelectionState => {
   const { languages, formats, sizes, colors, variantMatrix } = product;
+  const language = languages?.[0]?.value ?? "";
+  // Opening on a combination nobody can buy reads as a broken page, so the
+  // first format that exists for the first language wins.
+  const format =
+    formats?.find(
+      (option) =>
+        option.value !== BOOK_FORMAT.printed ||
+        isPrintedOffered(product.printedLanguages, language),
+    )?.value ??
+    formats?.[0]?.value ??
+    "";
   const selections = {
-    language: languages?.[0]?.value ?? "",
-    format: formats?.[0]?.value ?? "",
+    language,
+    format,
     size: sizes?.[0]?.value ?? "",
     color: colors?.[0]?.value ?? "",
   };
@@ -51,6 +64,23 @@ export const useProductPrice = ({
     [],
   );
 
+  const getPrintedState = useCallback(
+    (key: ProductSelectionKey, value: string): ProductVariantValueState => {
+      const language = key === "language" ? value : selections.language;
+      const format = key === "format" ? value : selections.format;
+
+      if (
+        format === BOOK_FORMAT.printed &&
+        !isPrintedOffered(product.printedLanguages, language)
+      ) {
+        return { availability: "unavailable", isSelectable: false };
+      }
+
+      return { availability: "available", isSelectable: true };
+    },
+    [product, selections],
+  );
+
   const getOptionState = useCallback(
     (key: ProductSelectionKey, value: string): ProductVariantValueState =>
       isProductVariantAxis(key)
@@ -61,14 +91,20 @@ export const useProductPrice = ({
             value,
             selections,
           )
-        : { availability: "available", isSelectable: true },
-    [product, selections],
+        : getPrintedState(key, value),
+    [getPrintedState, product, selections],
   );
 
-  const selectionAvailability = useMemo(
-    () => getVariantSelectionAvailability(product.variantMatrix, selections),
-    [product, selections],
-  );
+  const selectionAvailability = useMemo(() => {
+    const variant = getVariantSelectionAvailability(
+      product.variantMatrix,
+      selections,
+    );
+
+    return variant === "available"
+      ? getPrintedState("format", selections.format).availability
+      : variant;
+  }, [getPrintedState, product, selections]);
 
   const cartSelections = useMemo(
     () => ({

@@ -182,6 +182,7 @@ export const getProductDetails = cache(
       locale,
       country,
       regionPricing,
+      product.shipping?.stockByLanguage,
     );
 
     if (!details) {

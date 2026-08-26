@@ -11,6 +11,7 @@ import { DEFAULT_SHIPPING_ORIGIN_COUNTRY } from "@/constants/shipping";
 import type {
   ShippingDestination,
   ShippingLabelRecipient,
+  ShippingManufacturer,
   ShippingOption,
   ShippingParcel,
 } from "@/types/shipping";
@@ -151,6 +152,24 @@ type ChitChatsShipmentInput = {
   orderId: string;
 };
 
+const toManufacturerFields = (manufacturer?: ShippingManufacturer) => {
+  if (
+    !manufacturer ||
+    Object.values(manufacturer).some((value) => !value?.trim())
+  ) {
+    return {};
+  }
+
+  return {
+    manufacturer_contact: manufacturer.name,
+    manufacturer_street: manufacturer.street,
+    manufacturer_city: manufacturer.city,
+    manufacturer_province_code: manufacturer.regionCode,
+    manufacturer_postal_code: manufacturer.postalCode,
+    manufacturer_country_code: manufacturer.country.toUpperCase(),
+  };
+};
+
 const buildShipmentPayload = ({
   parcel,
   destination,
@@ -184,6 +203,7 @@ const buildShipmentPayload = ({
       currency_code: declaredValue.currency,
       hs_tariff_code: item.hsCode ?? null,
       origin_country: item.originCountry ?? DEFAULT_SHIPPING_ORIGIN_COUNTRY,
+      ...toManufacturerFields(item.manufacturer),
     })),
     package_type: CHITCHATS_PACKAGE_TYPE,
     weight_unit: "g",

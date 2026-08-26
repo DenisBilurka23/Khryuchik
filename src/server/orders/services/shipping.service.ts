@@ -125,7 +125,7 @@ export const calculateOrderShipping = async ({
 
   const destinationCountry = address?.country ?? country;
   const grouping = await buildShipmentGroups(
-    items,
+    items.map((item) => ({ ...item, language: item.selections?.language })),
     destinationCountry,
     currency,
   );

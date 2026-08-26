@@ -5,6 +5,7 @@ import type {
   ProductCountryPricing,
   ProductDetailDocument,
   ProductDocument,
+  ProductPrintedStock,
 } from "@/types/catalog";
 import type { CartSelections } from "@/types/cart";
 import type { RegionPricing } from "@/types/localization";
@@ -16,6 +17,7 @@ import type {
 
 import type { CountryCode } from "./country";
 import { convertFromUsd } from "./price-conversion";
+import { toPrintedLanguages } from "./printed-stock";
 import {
   buildProductVariantMatrix,
   filterOfferedVariantOptions,
@@ -219,6 +221,7 @@ export const toProductDetails = (
   locale: Locale,
   country: CountryCode,
   regionPricing: RegionPricing = nativePricing,
+  printedStock?: ProductPrintedStock,
 ): ProductDetails | null => {
   const translation =
     detailsDocument.translations[locale] ??
@@ -256,6 +259,7 @@ export const toProductDetails = (
     sizes: offered.sizes,
     colors: offered.colors,
     variantMatrix,
+    printedLanguages: toPrintedLanguages(printedStock),
     specs: translation.specs,
     delivery: localizeDeliveryCopy(translation.delivery, locale, country),
     reviews: translation.reviews,

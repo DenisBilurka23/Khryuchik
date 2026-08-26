@@ -10,6 +10,7 @@ import type {
 } from "@/types/admin";
 import type {
   ProductAvailability,
+  ProductPrintedStock,
   ProductShipping,
   ProductType,
 } from "@/types/catalog";
@@ -19,7 +20,8 @@ import type {
   ProductOption,
   ProductReview,
 } from "@/types/product-details";
-import type { ShippingHubCode } from "@/types/shipping";
+import { SHIPPING_HUB_CODES } from "@/constants/shipping";
+import type { ShippingHubCode, ShippingManufacturer } from "@/types/shipping";
 import type { CurrencyCode } from "@/utils";
 
 const parseString = (formData: FormData, key: string) => {
@@ -168,8 +170,62 @@ const parseRegionPricing = (formData: FormData, region: string) => ({
   oldPrice: parseOptionalNumber(formData, `pricing.${region}.oldPrice`),
 });
 
+const parseProductPrintedStock = (
+  formData: FormData,
+  localeCodes: string[],
+): ProductPrintedStock => {
+  const posted = parseJsonField<Record<string, string[]>>(
+    formData,
+    "shipping.stockByLanguage",
+    {},
+  );
+
+  return Object.fromEntries(
+    Object.entries(posted)
+      .filter(([language]) => localeCodes.includes(language))
+      .map(([language, hubs]) => [
+        language,
+        (Array.isArray(hubs) ? hubs : []).filter(
+          (hub): hub is ShippingHubCode =>
+            SHIPPING_HUB_CODES.includes(hub as ShippingHubCode),
+        ),
+      ])
+      .filter(([, hubs]) => (hubs as ShippingHubCode[]).length > 0),
+  );
+};
+
+const MANUFACTURER_FIELDS = [
+  "name",
+  "street",
+  "city",
+  "regionCode",
+  "postalCode",
+  "country",
+] as const;
+
+// Carriers reject a half-filled manufacturer, so an incomplete one is stored as
+// no manufacturer at all rather than as data that breaks quoting later.
+const parseProductManufacturer = (
+  formData: FormData,
+): ShippingManufacturer | undefined => {
+  const entries = MANUFACTURER_FIELDS.map(
+    (field) =>
+      [
+        field,
+        (
+          parseOptionalString(formData, `shipping.manufacturer.${field}`) ?? ""
+        ).trim(),
+      ] as const,
+  );
+
+  return entries.every(([, value]) => value.length > 0)
+    ? (Object.fromEntries(entries) as ShippingManufacturer)
+    : undefined;
+};
+
 const parseProductShipping = (
   formData: FormData,
+  localeCodes: string[],
 ): ProductShipping | undefined => {
   const weightGrams = parseOptionalNumber(formData, "shipping.weightGrams");
 
@@ -178,6 +234,7 @@ const parseProductShipping = (
   }
 
   return {
+    stockByLanguage: parseProductPrintedStock(formData, localeCodes),
     weightGrams,
     lengthMm: parseNumber(formData, "shipping.lengthMm"),
     widthMm: parseNumber(formData, "shipping.widthMm"),
@@ -185,6 +242,7 @@ const parseProductShipping = (
     hubs: parseCsvList(formData, "shipping.hubs") as ShippingHubCode[],
     hsCode: parseOptionalString(formData, "shipping.hsCode"),
     originCountry: parseOptionalString(formData, "shipping.originCountry"),
+    manufacturer: parseProductManufacturer(formData),
   };
 };
 
@@ -245,7 +303,7 @@ export const parseAdminProductFormData = (
         ]),
       ) as AdminProductPayload["product"]["pricing"],
       availableRegions,
-      shipping: parseProductShipping(formData),
+      shipping: parseProductShipping(formData, localeCodes),
       translations: Object.fromEntries(
         activeLocaleCodes.map((locale) => {
           const t = parseLocaleTranslation(formData, locale);

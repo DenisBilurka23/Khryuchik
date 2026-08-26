@@ -3,3 +3,4 @@ export { AdminProductLocaleSection } from "./locale-section";
 export { AdminProductPricingSection } from "./pricing-section";
 export { AdminProductPrintifySection } from "./printify-section";
 export { AdminProductRelatedSection } from "./related-section";
+export { AdminProductShippingSection } from "./shipping-section";

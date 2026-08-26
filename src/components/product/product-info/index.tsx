@@ -168,15 +168,32 @@ export const ProductInfo = ({
             fullWidth
             slotProps={{ select: { sx: { textTransform: "capitalize" } } }}
           >
-            {product.languages.map((option) => (
-              <MenuItem
-                key={option.value}
-                value={option.value}
-                sx={{ textTransform: "capitalize" }}
-              >
-                {option.label}
-              </MenuItem>
-            ))}
+            {product.languages.map((option) => {
+              const { availability, isSelectable } = getOptionState(
+                "language",
+                option.value,
+              );
+
+              return (
+                <MenuItem
+                  key={option.value}
+                  value={option.value}
+                  disabled={!isSelectable}
+                  sx={{ textTransform: "capitalize" }}
+                >
+                  {option.label}
+                  {availability === "available" ? null : (
+                    <Typography
+                      component="span"
+                      color="text.secondary"
+                      sx={{ ml: 1, fontSize: 13 }}
+                    >
+                      {tProductPage("selectors.unavailable")}
+                    </Typography>
+                  )}
+                </MenuItem>
+              );
+            })}
           </TextField>
         ) : null}
 
@@ -188,11 +205,31 @@ export const ProductInfo = ({
             onChange={(event) => selectOption("format", event.target.value)}
             fullWidth
           >
-            {product.formats.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
+            {product.formats.map((option) => {
+              const { availability, isSelectable } = getOptionState(
+                "format",
+                option.value,
+              );
+
+              return (
+                <MenuItem
+                  key={option.value}
+                  value={option.value}
+                  disabled={!isSelectable}
+                >
+                  {option.label}
+                  {availability === "available" ? null : (
+                    <Typography
+                      component="span"
+                      color="text.secondary"
+                      sx={{ ml: 1, fontSize: 13 }}
+                    >
+                      {tProductPage("selectors.unavailable")}
+                    </Typography>
+                  )}
+                </MenuItem>
+              );
+            })}
           </TextField>
         ) : null}
 

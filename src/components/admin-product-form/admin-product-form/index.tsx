@@ -8,6 +8,7 @@ import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import { Alert, Box, Paper, Stack, Typography } from "@mui/material";
 
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
+import { SHIPPING_HUB_CODES } from "@/constants/shipping";
 import { defaultLocale } from "@/i18n/config";
 import { useProductPublishToggles } from "@/hooks/useProductPublishToggles";
 import { AdminProductFormErrorCode } from "@/server/admin/product-form-state";
@@ -23,6 +24,7 @@ import {
   AdminProductPricingSection,
   AdminProductPrintifySection,
   AdminProductRelatedSection,
+  AdminProductShippingSection,
 } from "../sections";
 import {
   AdminProductUploadRegistryProvider,
@@ -202,6 +204,14 @@ const AdminProductFormInner = ({
             availableRegions={activeRegions}
             initialLanguages={payload.details.translations[defaultLocale]?.languages ?? []}
             initialFormats={payload.details.translations[defaultLocale]?.formats ?? []}
+          />
+
+          <AdminProductShippingSection
+            payload={payload}
+            hubs={SHIPPING_HUB_CODES.map((code) => ({
+              code,
+              label: tForm(`hubs.${code}`),
+            }))}
           />
 
           <AdminProductPricingSection

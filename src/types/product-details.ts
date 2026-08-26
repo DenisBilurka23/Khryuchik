@@ -86,6 +86,7 @@ export type ProductDetails = {
   sizes?: ProductOption[];
   colors?: ProductOption[];
   variantMatrix?: ProductVariantCombination[];
+  printedLanguages?: string[];
   specs: Array<{ label: string; value: string }>;
   delivery: string[];
   reviews: ProductReview[];

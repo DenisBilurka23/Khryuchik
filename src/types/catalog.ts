@@ -7,7 +7,7 @@ import type {
   ProductOption,
   ProductReview,
 } from "./product-details";
-import type { ShippingHubCode } from "./shipping";
+import type { ShippingHubCode, ShippingManufacturer } from "./shipping";
 
 export type ProductType = "book" | "merch";
 
@@ -105,14 +105,18 @@ export type ProductPrintifyLink = {
   syncedAt: string;
 };
 
+export type ProductPrintedStock = Partial<Record<string, ShippingHubCode[]>>;
+
 export type ProductShipping = {
   weightGrams: number;
   lengthMm: number;
   widthMm: number;
   heightMm: number;
   hubs: ShippingHubCode[];
+  stockByLanguage?: ProductPrintedStock;
   hsCode?: string;
   originCountry?: string;
+  manufacturer?: ShippingManufacturer;
 };
 
 export type ProductDocument = {

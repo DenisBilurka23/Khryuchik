@@ -1387,6 +1387,13 @@ export type AdminPageDictionary = {
       specsRule: string;
       reviewsRule: string;
       filesRule: string;
+      weightGrams: string;
+      hsCode: string;
+      originCountry: string;
+      defaultHubsRule: string;
+      manufacturerRule: string;
+      printedStockRule: string;
+      printedStockEmpty: string;
     };
     buttons: {
       addLanguage: string;
@@ -1437,6 +1444,27 @@ export type AdminPageDictionary = {
       relatedProductIds: string;
       thumbnail: string;
       gallery: string;
+      weightGrams: string;
+      lengthMm: string;
+      widthMm: string;
+      heightMm: string;
+      hsCode: string;
+      originCountry: string;
+      defaultHubs: string;
+      printedStock: string;
+      manufacturer: string;
+      manufacturerName: string;
+      manufacturerStreet: string;
+      manufacturerCity: string;
+      manufacturerRegionCode: string;
+      manufacturerPostalCode: string;
+      manufacturerCountry: string;
+    };
+    shippingSectionTitle: string;
+    shippingSectionDescription: string;
+    hubs: {
+      europe: string;
+      northAmerica: string;
     };
   };
 };

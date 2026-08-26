@@ -10,11 +10,21 @@ export type ShippingProviderCode =
 
 export type ShippingDeliveryType = "address" | "pickup-point";
 
+export type ShippingManufacturer = {
+  name: string;
+  street: string;
+  city: string;
+  regionCode: string;
+  postalCode: string;
+  country: string;
+};
+
 export type ShippingParcelItem = {
   quantity: number;
   valueAmount: number;
   hsCode?: string;
   originCountry?: string;
+  manufacturer?: ShippingManufacturer;
 };
 
 export type ShippingParcel = {

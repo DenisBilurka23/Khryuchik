@@ -1,5 +1,5 @@
 import {
-  COMPARED_SHIPPING_HUBS,
+  SHIPPING_HUB_CODES,
   EUROPE_HUB_COUNTRIES,
   NORTH_AMERICA_HUB_COUNTRIES,
 } from "@/constants/shipping";
@@ -42,7 +42,7 @@ export const serviceableHubs = (country: CountryCode): ShippingHubCode[] => {
     return ["europe"];
   }
 
-  return [...COMPARED_SHIPPING_HUBS];
+  return [...SHIPPING_HUB_CODES];
 };
 
 export const chooseHubs = (

@@ -2,6 +2,7 @@ import { Box, Checkbox, MenuItem, TextField, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
+import { SHIPPING_HUB_CODES } from "@/constants/shipping";
 import { getAdminCategoryLabel } from "@/utils/admin";
 
 import {
@@ -29,6 +30,10 @@ export const AdminProductBaseSection = ({
   const tForm = useTranslations("adminPage.productForm");
   const tShared = useTranslations("adminPage.shared");
   const isPrintifyManaged = Boolean(payload.product.printify);
+  const hubs = SHIPPING_HUB_CODES.map((code) => ({
+    code,
+    label: tForm(`hubs.${code}`),
+  }));
 
   return (
     <AdminSectionCard
@@ -151,6 +156,12 @@ export const AdminProductBaseSection = ({
             adminLocale={locale}
             availableLocales={availableLocales}
             initialOptions={initialLanguages}
+            stockName="shipping.stockByLanguage"
+            stockTitle={tForm("fields.printedStock")}
+            stockHelperText={tForm("helpers.printedStockRule")}
+            stockEmptyText={tForm("helpers.printedStockEmpty")}
+            hubs={hubs}
+            initialStock={payload.product.shipping?.stockByLanguage ?? {}}
           />
           <AdminFormatsField
             name="formatsJson"
