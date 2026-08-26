@@ -14,4 +14,10 @@ export type ChitChatsShipment = {
   order_store?: string | null;
   created_at?: string | null;
   rates?: ChitChatsRate[] | null;
+  postage_type?: string | null;
+  purchase_amount?: string | null;
+  carrier_tracking_code?: string | null;
+  carrier?: string | null;
+  tracking_url?: string | null;
+  postage_label_pdf_url?: string | null;
 };

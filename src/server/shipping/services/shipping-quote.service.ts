@@ -11,16 +11,8 @@ import type {
 import { SHIPPING_REQUIRES_TRACKING } from "@/constants/shipping";
 import { convertShippingAmount, type CurrencyCode } from "@/utils";
 
-import { bpostProvider } from "../providers/bpost.provider";
-import { chitchatsProvider } from "../providers/chitchats.provider";
-import { easyshipProvider } from "../providers/easyship.provider";
-import type { ShippingProvider } from "../types";
+import { PROVIDERS_BY_HUB } from "../providers/registry";
 import { dropDominatedOptions } from "../utils";
-
-const PROVIDERS_BY_HUB: Record<ShippingHubCode, ShippingProvider[]> = {
-  europe: [bpostProvider, easyshipProvider],
-  northAmerica: [chitchatsProvider],
-};
 
 const toTargetCurrency = async (
   options: ShippingOption[],

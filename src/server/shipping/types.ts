@@ -2,6 +2,8 @@ import "server-only";
 
 import type {
   ShippingDestination,
+  ShippingLabelRequest,
+  ShippingLabelResult,
   ShippingParcel,
   ShippingProviderCode,
   ShippingQuote,
@@ -14,4 +16,5 @@ export type ShippingProvider = {
     parcel: ShippingParcel,
     destination: ShippingDestination,
   ) => Promise<ShippingQuote>;
+  buyLabel?: (request: ShippingLabelRequest) => Promise<ShippingLabelResult>;
 };

@@ -130,7 +130,10 @@ const buildParcelPatch = (
 ): OrderFulfillmentPatch => {
   const patch: OrderFulfillmentPatch = {};
 
-  const put = (key: keyof OrderFulfillmentPatch, value: string | undefined) => {
+  const put = <Key extends keyof OrderFulfillmentPatch>(
+    key: Key,
+    value: OrderFulfillmentPatch[Key],
+  ) => {
     if (value && current?.[key] !== value) {
       patch[key] = value;
     }

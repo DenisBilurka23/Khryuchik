@@ -9,7 +9,10 @@ import {
   consumeRateLimit,
   getClientIpKey,
 } from "@/server/rate-limit/rate-limit.service";
-import { calculateOrderShipping } from "@/server/orders/services/shipping.service";
+import {
+  calculateOrderShipping,
+  toShippingQuoteGroups,
+} from "@/server/orders/services/shipping.service";
 import { isStoredCartItem } from "@/types/cart-guards";
 import type { ShippingQuoteResponse } from "@/types/order";
 import { asOptionalString, isIsoCountryCode } from "@/utils";
@@ -108,5 +111,9 @@ export const POST = async (request: NextRequest) => {
     },
   });
 
-  return respond(result);
+  return respond(
+    result.status === "ok"
+      ? { ...result, groups: toShippingQuoteGroups(result.groups) }
+      : result,
+  );
 };

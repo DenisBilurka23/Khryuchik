@@ -65,6 +65,40 @@ export type ShippingQuoteGroup = {
   amount: number;
 };
 
+export type ShippingFulfillmentGroup = ShippingQuoteGroup & {
+  parcel?: ShippingParcel;
+};
+
+export type ShippingLabel = {
+  trackingNumber?: string;
+  trackingUrl?: string;
+  carrier?: string;
+  amount?: number;
+  currency?: CurrencyCode;
+  labelUrl?: string;
+};
+
+export type ShippingLabelRecipient = {
+  name: string;
+  email?: string;
+  phone?: string;
+  destination: ShippingDestination;
+};
+
+export type ShippingLabelRequest = {
+  // Ours, so the carrier record points back at the order rather than at a quote.
+  orderId: string;
+  service: string;
+  parcel: ShippingParcel;
+  recipient: ShippingLabelRecipient;
+  valueCurrency: CurrencyCode;
+};
+
+export type ShippingLabelResult =
+  | { status: "bought"; label: ShippingLabel; externalId: string }
+  | { status: "bought-unparsed"; externalId: string; detail: string }
+  | { status: "failed"; reason: string };
+
 export type ShippingQuote =
   | { status: "quoted"; options: ShippingOption[] }
   | { status: "unsupported-destination" }

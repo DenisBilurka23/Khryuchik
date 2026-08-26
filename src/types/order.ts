@@ -1,6 +1,7 @@
 import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
 import type {
+  ShippingParcel,
   ShippingProviderCode,
   ShippingQuoteGroup,
 } from "@/types/shipping";
@@ -92,6 +93,8 @@ export type OrderFulfillmentProgress = {
   trackingUrl?: string;
   shippedAt?: string;
   deliveredAt?: string;
+  labelExternalId?: string;
+  labelAmount?: number;
   lastError?: string;
 };
 
@@ -102,6 +105,7 @@ export type OrderFulfillment = OrderFulfillmentProgress & {
   service: string;
   amount: number;
   currency: CurrencyCode;
+  parcel?: ShippingParcel;
   externalId?: string;
 };
 

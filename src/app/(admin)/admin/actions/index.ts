@@ -14,6 +14,7 @@ export {
   saveAdminRegionAction,
 } from "./localization";
 export {
+  buyAdminOrderLabelAction,
   cancelAdminOrderPrintifyAction,
   confirmAdminOrderPaymentAction,
   deleteAdminOrderAction,

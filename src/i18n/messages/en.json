@@ -1571,6 +1571,14 @@
         "printify": "Made-to-order merch",
         "manual": "Books"
       },
+      "buyLabel": {
+        "button": "Buy label",
+        "dialogTitle": "Buy postage for this parcel?",
+        "dialogDescription": "The carrier is charged straight away and the purchase cannot be undone. The buyer paid {price} for this parcel; the carrier re-rates at purchase time, so the actual cost may differ and will be recorded.",
+        "confirmLabel": "Buy label",
+        "cancelLabel": "Close",
+        "costLabel": "Label cost {cost}, buyer paid {paid}"
+      },
       "tracking": {
         "button": "Edit tracking",
         "none": "no tracking yet",

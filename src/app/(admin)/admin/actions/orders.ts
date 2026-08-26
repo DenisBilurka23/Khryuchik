@@ -18,6 +18,7 @@ import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { requireAdminApiAccess } from "@/server/admin/auth";
 import { applyStripeRefund } from "@/server/orders/services/orders.service";
+import { buyOrderLabel } from "@/server/orders/services/shipping-label.service";
 import { refundStripePayment } from "@/server/payments/stripe";
 import type { OrderStatus } from "@/types/order";
 import {
@@ -216,6 +217,43 @@ export const saveAdminOrderTrackingAction = async (
 
   revalidateOrderDependentPaths();
   return { ok: true };
+};
+
+export const buyAdminOrderLabelAction = async (
+  orderId: string,
+  fulfillmentId: string,
+): Promise<
+  AdminActionResult<
+    | "unknown_parcel"
+    | "unsupported"
+    | "already_tracked"
+    | "missing_parcel"
+    | "missing_address"
+  >
+> => {
+  const session = await requireAdminApiAccess();
+  if (!session) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const order = await findOrderById(orderId);
+
+  if (!order) {
+    return { ok: false, error: "unknown_parcel" };
+  }
+
+  const result = await buyOrderLabel(order, fulfillmentId);
+
+  revalidateOrderDependentPaths();
+
+  if (result.status === "ok") {
+    return { ok: true };
+  }
+
+  return {
+    ok: false,
+    error: result.status === "failed" ? "failed" : result.status,
+  };
 };
 
 export const refundAdminOrderPaymentAction = async (

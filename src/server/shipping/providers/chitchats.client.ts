@@ -4,10 +4,13 @@ import {
   CHITCHATS_PACKAGE_CONTENTS,
   CHITCHATS_PACKAGE_TYPE,
   CHITCHATS_QUOTE_ORDER_ID,
+  CHITCHATS_QUOTE_RECIPIENT_NAME,
+  CHITCHATS_UNSET_POSTAGE_TYPE,
 } from "@/constants/chitchats";
 import { DEFAULT_SHIPPING_ORIGIN_COUNTRY } from "@/constants/shipping";
 import type {
   ShippingDestination,
+  ShippingLabelRecipient,
   ShippingOption,
   ShippingParcel,
 } from "@/types/shipping";
@@ -130,27 +133,41 @@ export const unwrapShipments = (body: unknown): ChitChatsShipment[] => {
   return Array.isArray(wrapped) ? wrapped.filter(isChitChatsShipment) : [];
 };
 
-const CHITCHATS_CURRENCY: CurrencyCode = "CAD";
+export const CHITCHATS_CURRENCY: CurrencyCode = "CAD";
 
 export type ChitChatsDeclaredValue = {
   currency: "cad" | "usd";
   rate: number;
 };
 
-export const buildQuoteShipmentPayload = ({
-  parcel,
-  destination,
-  declaredValue,
-}: {
+type ChitChatsShipmentInput = {
   parcel: ShippingParcel;
   destination: ShippingDestination;
   declaredValue: ChitChatsDeclaredValue;
-}) => {
+  recipientName: string;
+  recipientEmail?: string;
+  recipientPhone?: string;
+  postageType: string;
+  orderId: string;
+};
+
+const buildShipmentPayload = ({
+  parcel,
+  destination,
+  declaredValue,
+  recipientName,
+  recipientEmail,
+  recipientPhone,
+  postageType,
+  orderId,
+}: ChitChatsShipmentInput) => {
   const country = destination.country.toUpperCase();
   const declare = (amount: number) => roundToCents(amount * declaredValue.rate);
 
   return {
-    name: "Customer",
+    name: recipientName,
+    ...(recipientEmail ? { email: recipientEmail } : {}),
+    ...(recipientPhone ? { phone: recipientPhone } : {}),
     address_1: destination.line1 ?? "",
     city: destination.city ?? "",
     ...(destination.region ? { province_code: destination.region } : {}),
@@ -175,14 +192,56 @@ export const buildQuoteShipmentPayload = ({
     size_x: parcel.lengthMm / 10,
     size_y: parcel.widthMm / 10,
     size_z: parcel.heightMm / 10,
-    postage_type: "unknown",
+    postage_type: postageType,
     ship_date: "today",
     ...(CHITCHATS_DDP_COUNTRIES.includes(country)
       ? { duties_paid_requested: "yes" }
       : {}),
-    order_id: CHITCHATS_QUOTE_ORDER_ID,
+    order_id: orderId,
   };
 };
+
+export const buildQuoteShipmentPayload = ({
+  parcel,
+  destination,
+  declaredValue,
+}: {
+  parcel: ShippingParcel;
+  destination: ShippingDestination;
+  declaredValue: ChitChatsDeclaredValue;
+}) =>
+  buildShipmentPayload({
+    parcel,
+    destination,
+    declaredValue,
+    recipientName: CHITCHATS_QUOTE_RECIPIENT_NAME,
+    postageType: CHITCHATS_UNSET_POSTAGE_TYPE,
+    orderId: CHITCHATS_QUOTE_ORDER_ID,
+  });
+
+export const buildLabelShipmentPayload = ({
+  parcel,
+  declaredValue,
+  recipient,
+  service,
+  orderId,
+}: {
+  parcel: ShippingParcel;
+  declaredValue: ChitChatsDeclaredValue;
+  recipient: ShippingLabelRecipient;
+  service: string;
+  orderId: string;
+}) =>
+  buildShipmentPayload({
+    parcel,
+    destination: recipient.destination,
+    declaredValue,
+    recipientName: recipient.name,
+    recipientEmail: recipient.email,
+    recipientPhone: recipient.phone,
+    postageType: service,
+    orderId,
+  });
 
 export const toShippingOption = (
   rate: ChitChatsRate,

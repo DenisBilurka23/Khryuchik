@@ -33,6 +33,7 @@ import {
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { findOrders } from "@/server/orders/repositories/orders.repository";
+import { canBuyShippingLabel } from "@/server/shipping/providers/registry";
 import type { AdminPageDictionary } from "@/i18n/types";
 import {
   formatCurrency,
@@ -168,7 +169,14 @@ const AdminOrdersPage = async () => {
                         />
                         <AdminOrderFulfillments
                           orderId={order.id}
+                          locale={locale}
+                          currency={order.currency}
                           fulfillments={order.fulfillments}
+                          buyableIds={(order.fulfillments ?? [])
+                            .filter((fulfillment) =>
+                              canBuyShippingLabel(fulfillment.provider),
+                            )
+                            .map((fulfillment) => fulfillment.id)}
                         />
                       </Stack>
                     </TableCell>

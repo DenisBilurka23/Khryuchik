@@ -1253,6 +1253,14 @@ export type AdminPageDictionary = {
     printifyCancelFailed: string;
     refundedAmountLabel: string;
     parcels: Record<OrderFulfillmentSource, string>;
+    buyLabel: {
+      button: string;
+      dialogTitle: string;
+      dialogDescription: string;
+      confirmLabel: string;
+      cancelLabel: string;
+      costLabel: string;
+    };
     tracking: {
       button: string;
       none: string;

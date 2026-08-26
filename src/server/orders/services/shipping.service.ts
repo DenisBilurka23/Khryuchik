@@ -12,7 +12,12 @@ import {
 } from "@/server/shipping/services/shipment-groups.service";
 import { quoteShipment } from "@/server/shipping/services/shipping-quote.service";
 import type { CartSelections } from "@/types/cart";
-import type { ShippingOption, ShippingQuote } from "@/types/shipping";
+import type {
+  ShippingFulfillmentGroup,
+  ShippingOption,
+  ShippingQuote,
+  ShippingQuoteGroup,
+} from "@/types/shipping";
 import type { CountryCode, CurrencyCode } from "@/utils";
 import { convertShippingAmount } from "@/utils";
 
@@ -22,13 +27,18 @@ export type OrderShippingItem = ShipmentGroupItem & {
   selections?: CartSelections;
 };
 
-export type OrderShippingGroup = {
-  id: string;
-  source: "digital" | "printify" | "manual";
-  options: ShippingOption[];
-  selectedOptionId: string | null;
-  amount: number;
-};
+export type OrderShippingGroup = ShippingFulfillmentGroup;
+
+export const toShippingQuoteGroups = (
+  groups: OrderShippingGroup[],
+): ShippingQuoteGroup[] =>
+  groups.map(({ id, source, options, selectedOptionId, amount }) => ({
+    id,
+    source,
+    options,
+    selectedOptionId,
+    amount,
+  }));
 
 export type OrderShippingInput = {
   country: CountryCode;
@@ -201,6 +211,7 @@ export const calculateOrderShipping = async ({
       options: quote.options,
       selectedOptionId: selected.id,
       amount: selected.amount,
+      parcel: group.parcel,
     });
   }
 

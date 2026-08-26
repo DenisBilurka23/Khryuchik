@@ -5,9 +5,9 @@ import {
 } from "@/constants/shipping";
 import type { OrderFulfillment } from "@/types/order";
 import type {
+  ShippingFulfillmentGroup,
   ShippingHubCode,
   ShippingOption,
-  ShippingQuoteGroup,
 } from "@/types/shipping";
 import type { CountryCode } from "@/utils";
 
@@ -61,7 +61,7 @@ export const chooseHubs = (
 };
 
 export const toOrderFulfillments = (
-  groups: ShippingQuoteGroup[],
+  groups: ShippingFulfillmentGroup[],
 ): OrderFulfillment[] =>
   groups.flatMap((group) => {
     if (group.source === "digital") {
@@ -84,6 +84,7 @@ export const toOrderFulfillments = (
         service: option.service,
         amount: option.amount,
         currency: option.currency,
+        parcel: group.parcel,
         externalId: option.externalId,
       },
     ];
