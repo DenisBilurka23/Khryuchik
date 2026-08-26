@@ -12,6 +12,7 @@ import { parseAdminProductFormData } from "@/server/admin/form-data";
 import { announceNewProduct } from "@/server/newsletter/services/newsletter.service";
 import {
   AdminProductFormErrorCode,
+  AdminProductFormValidationError,
   AdminProductFormMode,
 } from "@/server/admin/product-form-state";
 import { populateAdminProductIdentifiers } from "@/server/admin/product-identifiers";
@@ -83,8 +84,12 @@ export const saveAdminProductAction = async (formData: FormData) => {
     revalidateProductDependentPaths(payload.product.slug);
     redirectPath = `/admin/products/${payload.product.productId}/edit?saved=1`;
   } catch (error) {
-    console.error("Admin product save failed", error);
-    errorCode = AdminProductFormErrorCode.SaveFailed;
+    if (error instanceof AdminProductFormValidationError) {
+      errorCode = error.code;
+    } else {
+      console.error("Admin product save failed", error);
+      errorCode = AdminProductFormErrorCode.SaveFailed;
+    }
   }
 
   redirect(

@@ -29,6 +29,7 @@ export {
   syncPrintifyProductAction,
 } from "./printify";
 export { deleteAdminProductAction, saveAdminProductAction } from "./products";
+export { saveAdminShippingSettingsAction } from "./shipping";
 export {
   deleteAdminReviewAction,
   updateAdminReviewStatusAction,

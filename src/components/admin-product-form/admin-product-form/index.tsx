@@ -10,6 +10,8 @@ import { Alert, Box, Paper, Stack, Typography } from "@mui/material";
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import { SHIPPING_HUB_CODES } from "@/constants/shipping";
 import { defaultLocale } from "@/i18n/config";
+import { useProductFormats } from "@/hooks/useProductFormats";
+import { useProductLanguages } from "@/hooks/useProductLanguages";
 import { useProductPublishToggles } from "@/hooks/useProductPublishToggles";
 import { AdminProductFormErrorCode } from "@/server/admin/product-form-state";
 import type { ProductType } from "@/types/catalog";
@@ -62,6 +64,32 @@ const AdminProductFormInner = ({
     defaultLocale,
     isNew,
   });
+  const {
+    options: languageOptions,
+    selectedOptions: selectedLanguages,
+    isLanguageSelected,
+    toggleLanguage,
+    isStocked,
+    toggleHub,
+    postedStock,
+  } = useProductLanguages({
+    availableLocales: activeLocales,
+    adminLocale: locale,
+    initialOptions:
+      payload.details.translations[defaultLocale]?.languages ?? [],
+    initialStock: payload.product.shipping?.stockByLanguage ?? {},
+  });
+  const {
+    options: formatOptions,
+    selectedOptions: selectedFormats,
+    isFormatSelected,
+    toggleFormat,
+    setPriceDelta: setFormatPriceDelta,
+  } = useProductFormats({
+    initialFormats: payload.details.translations[defaultLocale]?.formats ?? [],
+    printedLabel: tForm("fields.formatPrinted"),
+    digitalLabel: tForm("fields.formatDigital"),
+  });
   const formRef = useRef<HTMLFormElement | null>(null);
   const [uploadErrorMessage, setUploadErrorMessage] = useState<string | null>(
     null,
@@ -84,6 +112,8 @@ const AdminProductFormInner = ({
         return tForm("errorMessages.saveFailed");
       case AdminProductFormErrorCode.DeleteFailed:
         return tForm("errorMessages.deleteFailed");
+      case AdminProductFormErrorCode.LanguagesRequired:
+        return tForm("errorMessages.languagesRequired");
       case AdminProductFormErrorCode.Unexpected:
         return tForm("errorMessages.unexpected");
       default:
@@ -200,10 +230,16 @@ const AdminProductFormInner = ({
             merchCategories={merchCategories}
             onTypeChangeAction={handleTypeChange}
             onCategoryChangeAction={setSelectedCategory}
-            availableLocales={activeLocales}
             availableRegions={activeRegions}
-            initialLanguages={payload.details.translations[defaultLocale]?.languages ?? []}
-            initialFormats={payload.details.translations[defaultLocale]?.formats ?? []}
+            formatOptions={formatOptions}
+            selectedFormats={selectedFormats}
+            isFormatSelected={isFormatSelected}
+            onToggleFormatAction={toggleFormat}
+            onFormatPriceDeltaChangeAction={setFormatPriceDelta}
+            languageOptions={languageOptions}
+            selectedLanguages={selectedLanguages}
+            isLanguageSelected={isLanguageSelected}
+            onToggleLanguageAction={toggleLanguage}
           />
 
           <AdminProductShippingSection
@@ -212,6 +248,11 @@ const AdminProductFormInner = ({
               code,
               label: tForm(`hubs.${code}`),
             }))}
+            selectedType={selectedType}
+            languages={selectedLanguages}
+            printedStock={postedStock}
+            isStocked={isStocked}
+            onToggleHubAction={toggleHub}
           />
 
           <AdminProductPricingSection

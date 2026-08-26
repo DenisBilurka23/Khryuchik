@@ -19,6 +19,11 @@ export type ShippingManufacturer = {
   country: string;
 };
 
+export type ShippingSettingsDocument = {
+  key: "default";
+  manufacturer?: ShippingManufacturer;
+};
+
 export type ShippingParcelItem = {
   quantity: number;
   valueAmount: number;

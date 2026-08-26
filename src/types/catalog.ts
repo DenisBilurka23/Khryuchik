@@ -7,7 +7,7 @@ import type {
   ProductOption,
   ProductReview,
 } from "./product-details";
-import type { ShippingHubCode, ShippingManufacturer } from "./shipping";
+import type { ShippingHubCode } from "./shipping";
 
 export type ProductType = "book" | "merch";
 
@@ -115,8 +115,6 @@ export type ProductShipping = {
   hubs: ShippingHubCode[];
   stockByLanguage?: ProductPrintedStock;
   hsCode?: string;
-  originCountry?: string;
-  manufacturer?: ShippingManufacturer;
 };
 
 export type ProductDocument = {

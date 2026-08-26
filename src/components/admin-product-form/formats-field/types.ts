@@ -1,13 +1,11 @@
-import type { RegionDocument } from "@/types/localization";
 import type { ProductOption } from "@/types/product-details";
 
 export type AdminFormatsFieldProps = {
   name: string;
   title: string;
   helperText: string;
-  priceDeltaHelperText: string;
-  printedLabel: string;
-  digitalLabel: string;
-  initialFormats: ProductOption[];
-  regions: RegionDocument[];
+  options: ProductOption[];
+  selectedOptions: ProductOption[];
+  isFormatSelected: (value: string) => boolean;
+  onToggleAction: (value: string) => void;
 };

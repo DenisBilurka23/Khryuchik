@@ -927,6 +927,28 @@ export type AccountPageDictionary = {
   tabs: string[];
 };
 
+export type AdminShippingDictionary = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  savedMessage: string;
+  errorMessage: string;
+  manufacturerTitle: string;
+  manufacturerDescription: string;
+  saveButton: string;
+  fields: {
+    name: string;
+    street: string;
+    city: string;
+    regionCode: string;
+    postalCode: string;
+    country: string;
+  };
+  helpers: {
+    manufacturer: string;
+  };
+};
+
 export type AdminPageDictionary = {
   layout: {
     searchPlaceholder: string;
@@ -940,10 +962,12 @@ export type AdminPageDictionary = {
     products: string;
     categories: string;
     localization: string;
+    shipping: string;
     customers: string;
     orders: string;
     reviews: string;
   };
+  shipping: AdminShippingDictionary;
   shared: {
     actions: {
       edit: string;
@@ -1338,6 +1362,7 @@ export type AdminPageDictionary = {
       storageUnavailable: string;
       saveFailed: string;
       deleteFailed: string;
+      languagesRequired: string;
       unexpected: string;
     };
     createButton: string;
@@ -1389,9 +1414,6 @@ export type AdminPageDictionary = {
       filesRule: string;
       weightGrams: string;
       hsCode: string;
-      originCountry: string;
-      defaultHubsRule: string;
-      manufacturerRule: string;
       printedStockRule: string;
       printedStockEmpty: string;
     };
@@ -1449,16 +1471,8 @@ export type AdminPageDictionary = {
       widthMm: string;
       heightMm: string;
       hsCode: string;
-      originCountry: string;
-      defaultHubs: string;
       printedStock: string;
-      manufacturer: string;
-      manufacturerName: string;
-      manufacturerStreet: string;
-      manufacturerCity: string;
-      manufacturerRegionCode: string;
-      manufacturerPostalCode: string;
-      manufacturerCountry: string;
+      language: string;
     };
     shippingSectionTitle: string;
     shippingSectionDescription: string;

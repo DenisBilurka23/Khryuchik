@@ -1211,7 +1211,8 @@
       "localization": "Localization",
       "customers": "Accounts",
       "orders": "Orders",
-      "reviews": "Reviews"
+      "reviews": "Reviews",
+      "shipping": "Shipping"
     },
     "home": {
       "eyebrow": "Storefront",
@@ -1661,7 +1662,8 @@
         "saveFailed": "Unable to save the product. Check the data and try again.",
         "deleteFailed": "Unable to delete the product. Try again.",
         "unexpected": "An error occurred while saving the product. Try again.",
-        "uploadFailed": "Some files failed to upload. Check the highlighted items and try again."
+        "uploadFailed": "Some files failed to upload. Check the highlighted items and try again.",
+        "languagesRequired": "Select at least one language the book is written in."
       },
       "uploadStatus": {
         "pending": "Queued",
@@ -1720,11 +1722,8 @@
         "filesRule": "Upload one PDF file. A new upload will replace the existing one.",
         "weightGrams": "One copy, without packaging. Required: without it none of the shipping settings on this card are saved.",
         "hsCode": "Customs classification, e.g. 4903.00.00.00 for children's picture books.",
-        "originCountry": "Where the book was physically printed, e.g. CN.",
-        "defaultHubsRule": "Used for products without languages, and as the fallback when a language has no warehouse of its own.",
         "printedStockRule": "Tick the warehouses that hold the printed edition of each language. A language with none is sold as digital only.",
-        "printedStockEmpty": "Select the languages of the book first.",
-        "manufacturerRule": "The printing house that physically made the book. US customs requires it, and without the full address the carrier hides its cheaper US services. Fill in every field or leave them all empty."
+        "printedStockEmpty": "Select the languages of the book first."
       },
       "buttons": {
         "addLanguage": "Add language",
@@ -1782,16 +1781,8 @@
         "widthMm": "Width, mm",
         "heightMm": "Height, mm",
         "hsCode": "HS tariff code",
-        "originCountry": "Country of origin",
-        "defaultHubs": "Default warehouses",
         "printedStock": "Printed stock",
-        "manufacturer": "Manufacturer",
-        "manufacturerName": "Company name",
-        "manufacturerStreet": "Street address",
-        "manufacturerCity": "City",
-        "manufacturerRegionCode": "Province or state",
-        "manufacturerPostalCode": "Postal code",
-        "manufacturerCountry": "Country code"
+        "language": "Language"
       },
       "printifySectionTitle": "Printify",
       "printifySectionDescription": "Variants come from Printify. Pricing and copy stay under your control here.",
@@ -1839,6 +1830,27 @@
       "emptyDescription": "Create a product in Printify first, then import it here.",
       "loadFailed": "Could not load products from Printify. Check PRINTIFY_API_TOKEN and PRINTIFY_SHOP_ID.",
       "importFailed": "Import failed"
+    },
+    "shipping": {
+      "eyebrow": "Logistics",
+      "title": "Shipping",
+      "description": "Settings shared by every parcel we send. Weight, size and printed stock stay on the product itself.",
+      "savedMessage": "Shipping settings updated.",
+      "errorMessage": "Could not save the shipping settings. Please try again.",
+      "manufacturerTitle": "Manufacturer",
+      "manufacturerDescription": "The printing house that physically makes the books.",
+      "saveButton": "Save",
+      "fields": {
+        "name": "Company name",
+        "street": "Street address",
+        "city": "City",
+        "regionCode": "Province or state",
+        "postalCode": "Postal code",
+        "country": "Country code"
+      },
+      "helpers": {
+        "manufacturer": "US customs requires this on every parcel, and without the full address the carrier hides its cheaper US services. Fill in every field or leave them all empty."
+      }
     }
   }
 }

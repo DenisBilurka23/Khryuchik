@@ -1,4 +1,7 @@
-import { DEFAULT_BOOK_SHIPPING } from "@/constants/shipping";
+import {
+  DEFAULT_BOOK_SHIPPING,
+  DEFAULT_SHIPPING_ORIGIN_COUNTRY,
+} from "@/constants/shipping";
 import { buildParcel } from "@/server/shipping/packing";
 import {
   buildRatesPayload,
@@ -39,7 +42,7 @@ const parcel = buildParcel({
     {
       quantity: books,
       valueAmount,
-      originCountry: DEFAULT_BOOK_SHIPPING.originCountry,
+      originCountry: DEFAULT_SHIPPING_ORIGIN_COUNTRY,
       hsCode: DEFAULT_BOOK_SHIPPING.hsCode,
     },
   ],

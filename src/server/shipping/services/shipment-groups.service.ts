@@ -9,6 +9,7 @@ import type {
 } from "@/types/shipping";
 
 import { buildParcel } from "../packing";
+import { getShippingManufacturer } from "./shipping-settings.service";
 import { chooseHubs } from "../utils";
 
 export type ShipmentGroupItem = {
@@ -37,9 +38,10 @@ export const buildShipmentGroups = async (
   destinationCountry: CountryCode,
   currency: CurrencyCode,
 ): Promise<ShipmentGroupsResult> => {
-  const products = await findProductsByIds(
-    Array.from(new Set(items.map((item) => item.productId))),
-  );
+  const [products, manufacturer] = await Promise.all([
+    findProductsByIds(Array.from(new Set(items.map((item) => item.productId)))),
+    getShippingManufacturer(),
+  ]);
   const productById = new Map(
     products.map((product) => [product.productId, product]),
   );
@@ -104,8 +106,8 @@ export const buildShipmentGroups = async (
       quantity: item.quantity,
       valueAmount: item.unitPrice * item.quantity,
       hsCode: shipping.hsCode,
-      originCountry: shipping.originCountry,
-      manufacturer: shipping.manufacturer,
+      originCountry: manufacturer?.country,
+      manufacturer,
     });
     manualByHub.set(key, group);
   }

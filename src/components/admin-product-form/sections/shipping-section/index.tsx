@@ -1,17 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Fragment } from "react";
+import { Box, Checkbox, Stack, TextField, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
-
-import type { ShippingHubCode } from "@/types/shipping";
 
 import { AdminSectionCard } from "../../../admin-page-shared";
 import type { AdminProductShippingSectionProps } from "./types";
@@ -19,35 +10,29 @@ import type { AdminProductShippingSectionProps } from "./types";
 export const AdminProductShippingSection = ({
   payload,
   hubs,
+  selectedType,
+  languages,
+  printedStock,
+  isStocked,
+  onToggleHubAction,
 }: AdminProductShippingSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
   const shipping = payload.product.shipping;
-  const manufacturer = shipping?.manufacturer;
-  const [defaultHubs, setDefaultHubs] = useState<ShippingHubCode[]>(
-    shipping?.hubs ?? [],
-  );
-
-  const toggleHub = (hub: ShippingHubCode) => {
-    setDefaultHubs((prev) =>
-      prev.includes(hub)
-        ? prev.filter((entry) => entry !== hub)
-        : [...prev, hub],
-    );
-  };
-
   return (
     <AdminSectionCard
       title={tForm("shippingSectionTitle")}
       description={tForm("shippingSectionDescription")}
     >
-      <input type="hidden" name="shipping.hubs" value={defaultHubs.join(",")} />
+      <input
+        type="hidden"
+        name="shipping.stockByLanguage"
+        value={JSON.stringify(printedStock)}
+      />
+
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            md: "repeat(2, minmax(0, 1fr))",
-          },
+          gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" },
           gap: 2,
         }}
       >
@@ -82,86 +67,83 @@ export const AdminProductShippingSection = ({
           name="shipping.heightMm"
           defaultValue={shipping?.heightMm ?? ""}
         />
-        <TextField
-          label={tForm("fields.originCountry")}
-          name="shipping.originCountry"
-          defaultValue={shipping?.originCountry ?? ""}
-          helperText={tForm("helpers.originCountry")}
-        />
       </Box>
 
-      <Stack gap={1} sx={{ mt: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: 800, fontSize: 18 }}>
-          {tForm("fields.manufacturer")}
-        </Typography>
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr",
-              md: "repeat(2, minmax(0, 1fr))",
-            },
-            gap: 2,
-          }}
-        >
-          <TextField
-            label={tForm("fields.manufacturerName")}
-            name="shipping.manufacturer.name"
-            defaultValue={manufacturer?.name ?? ""}
-          />
-          <TextField
-            label={tForm("fields.manufacturerStreet")}
-            name="shipping.manufacturer.street"
-            defaultValue={manufacturer?.street ?? ""}
-          />
-          <TextField
-            label={tForm("fields.manufacturerCity")}
-            name="shipping.manufacturer.city"
-            defaultValue={manufacturer?.city ?? ""}
-          />
-          <TextField
-            label={tForm("fields.manufacturerRegionCode")}
-            name="shipping.manufacturer.regionCode"
-            defaultValue={manufacturer?.regionCode ?? ""}
-          />
-          <TextField
-            label={tForm("fields.manufacturerPostalCode")}
-            name="shipping.manufacturer.postalCode"
-            defaultValue={manufacturer?.postalCode ?? ""}
-          />
-          <TextField
-            label={tForm("fields.manufacturerCountry")}
-            name="shipping.manufacturer.country"
-            defaultValue={manufacturer?.country ?? ""}
-          />
-        </Box>
-        <Typography variant="body2" color="text.secondary">
-          {tForm("helpers.manufacturerRule")}
-        </Typography>
-      </Stack>
+      {selectedType === "book" ? (
+        <Stack gap={1} sx={{ mt: 3 }}>
+          <Typography variant="h6" sx={{ fontWeight: 800, fontSize: 18 }}>
+            {tForm("fields.printedStock")}
+          </Typography>
 
-      <Stack gap={0.5} sx={{ mt: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: 800, fontSize: 18 }}>
-          {tForm("fields.defaultHubs")}
-        </Typography>
-        <Stack direction={{ xs: "column", sm: "row" }} gap={{ xs: 0, sm: 2 }}>
-          {hubs.map((hub) => (
-            <FormControlLabel
-              key={`shipping-hub-${hub.code}`}
-              control={
-                <Checkbox
-                  checked={defaultHubs.includes(hub.code)}
-                  onChange={() => toggleHub(hub.code)}
-                />
-              }
-              label={hub.label}
-            />
-          ))}
+          {languages.length === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              {tForm("helpers.printedStockEmpty")}
+            </Typography>
+          ) : (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: `minmax(120px, 1fr) repeat(${hubs.length}, minmax(120px, 200px))`,
+                alignItems: "center",
+                columnGap: 2,
+                p: 2,
+                borderRadius: "18px",
+                border: "1px solid #F0DFC8",
+                bgcolor: "#fff",
+                overflowX: "auto",
+              }}
+            >
+              <Typography
+                variant="caption"
+                sx={{ fontWeight: 700, color: "text.secondary" }}
+              >
+                {tForm("fields.language")}
+              </Typography>
+              {hubs.map((hub) => (
+                <Typography
+                  key={`stock-head-${hub.code}`}
+                  variant="caption"
+                  sx={{
+                    fontWeight: 700,
+                    color: "text.secondary",
+                    textAlign: "center",
+                  }}
+                >
+                  {hub.label}
+                </Typography>
+              ))}
+
+              {languages.map((language) => (
+                <Fragment key={`stock-row-${language.value}`}>
+                  <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                    {language.label}
+                  </Typography>
+                  {hubs.map((hub) => (
+                    <Box
+                      key={`stock-${language.value}-${hub.code}`}
+                      sx={{ textAlign: "center" }}
+                    >
+                      <Checkbox
+                        checked={isStocked(language.value, hub.code)}
+                        onChange={() =>
+                          onToggleHubAction(language.value, hub.code)
+                        }
+                        inputProps={{
+                          "aria-label": `${language.label} — ${hub.label}`,
+                        }}
+                      />
+                    </Box>
+                  ))}
+                </Fragment>
+              ))}
+            </Box>
+          )}
+
+          <Typography variant="body2" color="text.secondary">
+            {tForm("helpers.printedStockRule")}
+          </Typography>
         </Stack>
-        <Typography variant="body2" color="text.secondary">
-          {tForm("helpers.defaultHubsRule")}
-        </Typography>
-      </Stack>
+      ) : null}
     </AdminSectionCard>
   );
 };

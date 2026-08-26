@@ -1,8 +1,14 @@
-import { Box, Checkbox, MenuItem, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Checkbox,
+  MenuItem,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
-import { SHIPPING_HUB_CODES } from "@/constants/shipping";
 import { getAdminCategoryLabel } from "@/utils/admin";
 
 import {
@@ -10,6 +16,7 @@ import {
   AdminSectionCard,
 } from "../../../admin-page-shared";
 import { AdminFormatsField } from "../../formats-field";
+import { AdminOptionPriceDeltaField } from "../../option-price-delta-field";
 import { AdminLanguagesField } from "../../languages-field";
 import type { AdminProductBaseSectionProps } from "./types";
 
@@ -22,18 +29,20 @@ export const AdminProductBaseSection = ({
   merchCategories,
   onTypeChangeAction,
   onCategoryChangeAction,
-  availableLocales,
   availableRegions,
-  initialLanguages,
-  initialFormats,
+  formatOptions,
+  selectedFormats,
+  isFormatSelected,
+  onToggleFormatAction,
+  onFormatPriceDeltaChangeAction,
+  languageOptions,
+  selectedLanguages,
+  isLanguageSelected,
+  onToggleLanguageAction,
 }: AdminProductBaseSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
   const tShared = useTranslations("adminPage.shared");
   const isPrintifyManaged = Boolean(payload.product.printify);
-  const hubs = SHIPPING_HUB_CODES.map((code) => ({
-    code,
-    label: tForm(`hubs.${code}`),
-  }));
 
   return (
     <AdminSectionCard
@@ -153,28 +162,53 @@ export const AdminProductBaseSection = ({
             name="languagesJson"
             title={tForm("fields.languages")}
             helperText={tForm("helpers.languagesSelectRule")}
-            adminLocale={locale}
-            availableLocales={availableLocales}
-            initialOptions={initialLanguages}
-            stockName="shipping.stockByLanguage"
-            stockTitle={tForm("fields.printedStock")}
-            stockHelperText={tForm("helpers.printedStockRule")}
-            stockEmptyText={tForm("helpers.printedStockEmpty")}
-            hubs={hubs}
-            initialStock={payload.product.shipping?.stockByLanguage ?? {}}
+            options={languageOptions}
+            selectedOptions={selectedLanguages}
+            isLanguageSelected={isLanguageSelected}
+            onToggleAction={onToggleLanguageAction}
           />
           <AdminFormatsField
             name="formatsJson"
             title={tForm("fields.formats")}
             helperText={tForm("helpers.formatsRule")}
-            priceDeltaHelperText={tForm("helpers.optionPriceDeltaRule")}
-            printedLabel={tForm("fields.formatPrinted")}
-            digitalLabel={tForm("fields.formatDigital")}
-            initialFormats={initialFormats}
-            regions={availableRegions}
+            options={formatOptions}
+            selectedOptions={selectedFormats}
+            isFormatSelected={isFormatSelected}
+            onToggleAction={onToggleFormatAction}
           />
         </Box>
       )}
+      {selectedType === "book" &&
+      availableRegions.length > 0 &&
+      selectedFormats.length > 0 ? (
+        <Stack gap={1} sx={{ mt: 2 }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "repeat(2, minmax(0, 1fr))",
+              },
+              gap: 2,
+            }}
+          >
+            {selectedFormats.map((option) => (
+              <AdminOptionPriceDeltaField
+                key={`formatsJson-${option.value}-delta`}
+                label={option.label}
+                regions={availableRegions}
+                priceDelta={option.priceDelta}
+                onChangeAction={(priceDelta) =>
+                  onFormatPriceDeltaChangeAction(option.value, priceDelta)
+                }
+              />
+            ))}
+          </Box>
+          <Typography variant="body2" color="text.secondary">
+            {tForm("helpers.optionPriceDeltaRule")}
+          </Typography>
+        </Stack>
+      ) : null}
       <Typography
         variant="subtitle2"
         sx={{ mt: 2.5, mb: 1, fontWeight: 700, color: "text.secondary" }}

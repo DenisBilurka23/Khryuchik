@@ -203,9 +203,7 @@ const MANUFACTURER_FIELDS = [
   "country",
 ] as const;
 
-// Carriers reject a half-filled manufacturer, so an incomplete one is stored as
-// no manufacturer at all rather than as data that breaks quoting later.
-const parseProductManufacturer = (
+export const parseAdminShippingSettingsFormData = (
   formData: FormData,
 ): ShippingManufacturer | undefined => {
   const entries = MANUFACTURER_FIELDS.map(
@@ -233,16 +231,18 @@ const parseProductShipping = (
     return undefined;
   }
 
+  const stockByLanguage = parseProductPrintedStock(formData, localeCodes);
+
   return {
-    stockByLanguage: parseProductPrintedStock(formData, localeCodes),
+    stockByLanguage,
     weightGrams,
     lengthMm: parseNumber(formData, "shipping.lengthMm"),
     widthMm: parseNumber(formData, "shipping.widthMm"),
     heightMm: parseNumber(formData, "shipping.heightMm"),
-    hubs: parseCsvList(formData, "shipping.hubs") as ShippingHubCode[],
+    hubs: SHIPPING_HUB_CODES.filter((hub) =>
+      Object.values(stockByLanguage).some((hubs) => hubs?.includes(hub)),
+    ),
     hsCode: parseOptionalString(formData, "shipping.hsCode"),
-    originCountry: parseOptionalString(formData, "shipping.originCountry"),
-    manufacturer: parseProductManufacturer(formData),
   };
 };
 

@@ -111,7 +111,6 @@ export const DEFAULT_BOOK_SHIPPING: ProductShipping = {
   widthMm: 148,
   heightMm: 20,
   hubs: ["europe", "northAmerica"],
-  originCountry: DEFAULT_SHIPPING_ORIGIN_COUNTRY,
   hsCode: DEFAULT_BOOK_HS_CODE,
 };
 

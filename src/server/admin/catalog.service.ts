@@ -1,6 +1,10 @@
 import "server-only";
 
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
+import {
+  AdminProductFormErrorCode,
+  AdminProductFormValidationError,
+} from "@/server/admin/product-form-state";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryListItem,
@@ -524,6 +528,15 @@ const sanitizeProductPayload = (
 
   if (!publishedLocaleCodes.includes(defaultLocale)) {
     throw new Error("The default language is required");
+  }
+
+  if (
+    payload.product.classification.type === "book" &&
+    (payload.details.translations[defaultLocale]?.languages?.length ?? 0) === 0
+  ) {
+    throw new AdminProductFormValidationError(
+      AdminProductFormErrorCode.LanguagesRequired,
+    );
   }
 
   for (const code of publishedLocaleCodes) {

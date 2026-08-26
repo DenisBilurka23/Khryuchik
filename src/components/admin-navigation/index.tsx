@@ -8,6 +8,7 @@ import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import type { ReactNode } from "react";
 import {
   List,
@@ -29,7 +30,7 @@ const iconByKey: Record<AdminViewKey, ReactNode> = {
   orders: <ShoppingBagOutlinedIcon />,
   reviews: <RateReviewOutlinedIcon />,
   customers: <PeopleAltOutlinedIcon />,
-  shipping: <ShoppingBagOutlinedIcon />,
+  shipping: <LocalShippingOutlinedIcon />,
   promocodes: <CategoryOutlinedIcon />,
   settings: <DashboardOutlinedIcon />,
 };
