@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 
+import { LogoMark } from "@/components/logo";
 import { StatusScreen } from "@/components/status-screen";
 import { getLocalizedPath } from "@/utils";
 
@@ -12,7 +13,7 @@ export const NotFoundView = () => {
   return (
     <StatusScreen
       showFloats
-      emoji="🐷"
+      emoji={<LogoMark size="100%" radius="50%" />}
       code={t("code")}
       title={t("title")}
       text={t("text")}

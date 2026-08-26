@@ -46,8 +46,7 @@
       "character": {
         "eyebrow": "Main character",
         "title": "Khryuchik",
-        "subtitle": "the hero of gentle family stories",
-        "emoji": "🐷"
+        "subtitle": "the hero of gentle family stories"
       },
       "newBook": {
         "label": "New book",
@@ -832,7 +831,7 @@
         "eyebrow": "Contacts",
         "titlePrefix": "Write to",
         "titleAccent": "Khryuchik",
-        "lede": "A question about an order, an idea for a collaboration, or just a kind word — we read every message and reply within one business day."
+        "lede": "A question about an order, an idea for a collaboration, or just a kind word — we read every message and reply to every one with pleasure."
       },
       "channels": {
         "title": "We're in touch",
@@ -841,7 +840,7 @@
         "facebookLabel": "Facebook",
         "facebookHandle": "Khryuchik",
         "emailLabel": "Email",
-        "note": "We usually reply within one business day, Monday to Friday."
+        "note": "We usually reply within 2–3 days, Monday to Friday."
       },
       "form": {
         "eyebrow": "Contact form",
@@ -1199,7 +1198,8 @@
     "layout": {
       "searchPlaceholder": "Search products, accounts, and SKU...",
       "addProduct": "Add product",
-      "brandSubtitle": "Admin panel",
+      "brandTitle": "Khryuchik",
+        "brandSubtitle": "Admin panel",
       "secureAccessText": "Admin access is verified only through the user's isAdmin field in MongoDB.",
       "languageSwitcherLabel": "Interface language"
     },

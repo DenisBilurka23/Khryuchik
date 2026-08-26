@@ -592,7 +592,6 @@ export type StorefrontDictionary = {
       eyebrow: string;
       title: string;
       subtitle: string;
-      emoji: string;
     };
     newBook: {
       label: string;
@@ -953,6 +952,7 @@ export type AdminPageDictionary = {
   layout: {
     searchPlaceholder: string;
     addProduct: string;
+    brandTitle: string;
     brandSubtitle: string;
     secureAccessText: string;
     languageSwitcherLabel: string;

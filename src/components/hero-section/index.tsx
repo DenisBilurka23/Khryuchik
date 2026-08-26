@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { LogoMark } from "@/components/logo";
 import type { StorefrontDictionary } from "@/i18n/types";
 import {
   getLatestBookSummary,
@@ -192,11 +193,11 @@ export const HeroSection = async ({
                         spacing={{ xs: 2, sm: 0 }}
                         alignItems={{ xs: "center", sm: "flex-start" }}
                       >
-                        <Typography
-                          sx={{ fontSize: { xs: 60, md: 72 }, lineHeight: 1 }}
-                        >
-                          {character.emoji}
-                        </Typography>
+                        <LogoMark
+                          alt={character.title}
+                          size={{ xs: 60, md: 72 }}
+                          sizes="144px"
+                        />
                         <Box>
                           <Typography
                             variant="body2"

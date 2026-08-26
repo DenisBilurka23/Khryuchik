@@ -10,9 +10,9 @@ import {
   Paper,
   Stack,
   Toolbar,
-  Typography,
 } from "@mui/material";
 
+import { Logo } from "@/components/logo";
 import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
 import { createAdminNavItems } from "@/utils/admin";
 
@@ -101,28 +101,12 @@ export const AdminLayoutShell = async ({
                 top: 116,
               }}
             >
-              <Stack direction="row" spacing={1.5} alignItems="center" sx={{ px: 1, py: 1.5 }}>
-                <Box
-                  sx={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: "18px",
-                    bgcolor: "#F7C9D1",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 24,
-                  }}
-                >
-                  🐷
-                </Box>
-                <Box>
-                  <Typography sx={{ fontWeight: 800, fontSize: 20 }}>Хрючик</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {tLayout("brandSubtitle")}
-                  </Typography>
-                </Box>
-              </Stack>
+              <Box sx={{ px: 1, py: 1.5 }}>
+                <Logo
+                  title={tLayout("brandTitle")}
+                  subtitle={tLayout("brandSubtitle")}
+                />
+              </Box>
 
               <AdminNavigation items={navItems} />
             </Paper>
