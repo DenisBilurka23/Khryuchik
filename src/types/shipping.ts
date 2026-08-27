@@ -70,6 +70,7 @@ export type ShippingRateRule = {
   maxWeightGrams: number;
   amount: number;
   currency: CurrencyCode;
+  transitDays?: string;
 };
 
 export type ShippingQuoteGroup = {
@@ -101,9 +102,9 @@ export type ShippingLabelRecipient = {
 };
 
 export type ShippingLabelRequest = {
-  // Ours, so the carrier record points back at the order rather than at a quote.
   orderId: string;
   service: string;
+  externalId?: string;
   parcel: ShippingParcel;
   recipient: ShippingLabelRecipient;
   valueCurrency: CurrencyCode;

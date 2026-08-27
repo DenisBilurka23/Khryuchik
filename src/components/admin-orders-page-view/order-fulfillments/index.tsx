@@ -75,6 +75,16 @@ export const AdminOrderFulfillments = ({
                   />
                 )}
             </Stack>
+            {fulfillment.labelUrl ? (
+              <Link
+                href={fulfillment.labelUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="caption"
+              >
+                {tLabel("downloadLabel")}
+              </Link>
+            ) : null}
             {fulfillment.labelAmount !== undefined &&
               fulfillment.labelAmount !== fulfillment.amount && (
                 <Typography variant="caption" color="text.secondary">

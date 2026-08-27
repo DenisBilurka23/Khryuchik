@@ -51,6 +51,7 @@ export const buyOrderLabel = async (
   const result = await provider.buyLabel({
     orderId: order.id,
     service: fulfillment.service,
+    externalId: fulfillment.externalId,
     parcel: fulfillment.parcel,
     valueCurrency: order.currency,
     recipient: {
@@ -95,6 +96,7 @@ export const buyOrderLabel = async (
     trackingNumber: result.label.trackingNumber ?? null,
     trackingUrl: result.label.trackingUrl ?? null,
     labelAmount: result.label.amount ?? null,
+    labelUrl: result.label.labelUrl ?? null,
     shippedAt: fulfillment.shippedAt ?? new Date().toISOString(),
     lastError: null,
   });

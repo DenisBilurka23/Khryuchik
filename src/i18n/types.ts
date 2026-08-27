@@ -211,6 +211,7 @@ export type CheckoutPageLabels = {
     multipleParcels: string;
     withTracking: string;
     pickupPoint: string;
+    transitDays: string;
     parcels: {
       printify: string;
       manual: string;
@@ -1284,6 +1285,7 @@ export type AdminPageDictionary = {
       confirmLabel: string;
       cancelLabel: string;
       costLabel: string;
+      downloadLabel: string;
     };
     tracking: {
       button: string;

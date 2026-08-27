@@ -1,6 +1,16 @@
 import { BPOST_ZONE, type BpostZone } from "@/constants/bpost";
 import type { ShippingDeliveryType, ShippingRateRule } from "@/types/shipping";
 
+const BPOST_TRANSIT_DAYS: Record<BpostZone, string> = {
+  [BPOST_ZONE.domestic]: "1",
+  [BPOST_ZONE.franceNetherlands]: "2-4",
+  [BPOST_ZONE.neighbours]: "2-4",
+  [BPOST_ZONE.restOfEu]: "2-10",
+  [BPOST_ZONE.restOfEurope]: "2-10",
+  [BPOST_ZONE.mediterraneanNorthAmerica]: "2-10",
+  [BPOST_ZONE.restOfWorld]: "2-10",
+};
+
 const bpostRules = (
   zone: BpostZone,
   service: string,
@@ -16,6 +26,7 @@ const bpostRules = (
     maxWeightGrams,
     amount,
     currency: "EUR",
+    transitDays: BPOST_TRANSIT_DAYS[zone],
   }));
 
 export const BPOST_TARIFF_RULES: ShippingRateRule[] = [

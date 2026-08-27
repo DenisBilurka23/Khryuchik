@@ -31,6 +31,7 @@ const toOption = (rule: ShippingRateRule): ShippingOption => ({
   currency: rule.currency,
   hasTracking: rule.hasTracking,
   deliveryType: rule.deliveryType,
+  transitDays: rule.transitDays,
 });
 
 const pickBandPerService = (rules: ShippingRateRule[], weightGrams: number) => {

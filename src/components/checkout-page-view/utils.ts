@@ -96,6 +96,14 @@ export const shippingOptionLabel = (
     ? labels.shippingMethod.pickupPoint
     : labels.shippingMethod.withTracking;
 
+export const shippingOptionTransit = (
+  option: ShippingQuoteGroup["options"][number],
+  labels: CheckoutLabels,
+) =>
+  option.transitDays
+    ? labels.shippingMethod.transitDays.replace("{days}", option.transitDays)
+    : undefined;
+
 export const shippingGroupLabel = (
   group: ShippingQuoteGroup,
   labels: CheckoutLabels,

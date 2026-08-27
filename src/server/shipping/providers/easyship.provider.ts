@@ -4,6 +4,8 @@ import { EASYSHIP_SKIPPED_DESTINATIONS } from "@/constants/easyship";
 
 import type {
   ShippingDestination,
+  ShippingLabelRequest,
+  ShippingLabelResult,
   ShippingOption,
   ShippingParcel,
   ShippingQuote,
@@ -15,14 +17,20 @@ import {
 } from "../repositories/shipping-quote-cache.repository";
 import type { ShippingProvider } from "../types";
 import {
+  buildLabelShipmentPayload,
   buildRatesPayload,
   EasyshipApiError,
   easyshipRequest,
   getEasyshipConfig,
+  toShipmentLabel,
   toShippingOption,
   unwrapRates,
 } from "./easyship.client";
-import type { EasyshipRatesResponse } from "./easyship.types";
+import type {
+  EasyshipErrorBody,
+  EasyshipRatesResponse,
+  EasyshipShipmentResponse,
+} from "./easyship.types";
 
 const QUOTE_CACHE_TTL_MS = 30 * 60 * 1000;
 const FAILED_QUOTE_CACHE_TTL_MS = 60 * 1000;
@@ -107,10 +115,78 @@ const quote = async (
   return result;
 };
 
+// Buying postage takes longer than asking for a price, and the request must not
+// be abandoned while the carrier is already charging for it.
+const LABEL_TIMEOUT_MS = 30_000;
+
+const describeError = (error: unknown) => {
+  if (!(error instanceof EasyshipApiError)) {
+    return error instanceof Error ? error.message : String(error);
+  }
+
+  const body = error.body as EasyshipErrorBody | undefined;
+  const reason = body?.error?.details?.join("; ") ?? body?.error?.message;
+  const requestId = body?.error?.request_id;
+
+  return (
+    [reason, requestId ? `request ${requestId}` : undefined]
+      .filter(Boolean)
+      .join(" · ") || error.message
+  );
+};
+
+const buyLabel = async (
+  request: ShippingLabelRequest,
+): Promise<ShippingLabelResult> => {
+  const config = getEasyshipConfig();
+
+  if (!config) {
+    return {
+      status: "failed",
+      reason: "EASYSHIP_API_TOKEN or the EASYSHIP_ORIGIN_* address is not set",
+    };
+  }
+
+  let response: EasyshipShipmentResponse;
+
+  try {
+    response = await easyshipRequest<EasyshipShipmentResponse>(
+      config,
+      "/shipments",
+      buildLabelShipmentPayload(config, request),
+      LABEL_TIMEOUT_MS,
+    );
+  } catch (error) {
+    console.error("Easyship label purchase failed", error);
+
+    return { status: "failed", reason: describeError(error) };
+  }
+
+  const { externalId, label } = toShipmentLabel(response);
+
+  if (!externalId) {
+    return {
+      status: "failed",
+      reason: "Easyship returned no shipment id",
+    };
+  }
+
+  if (!label.trackingNumber) {
+    return {
+      status: "bought-unparsed",
+      externalId,
+      detail: "shipment created without a tracking number in the response",
+    };
+  }
+
+  return { status: "bought", label, externalId };
+};
+
 export const easyshipProvider: ShippingProvider = {
   code: "easyship",
   supports: (destination) =>
     getEasyshipConfig() !== null &&
     !EASYSHIP_SKIPPED_DESTINATIONS.includes(destination.country.toUpperCase()),
   quote,
+  buyLabel,
 };

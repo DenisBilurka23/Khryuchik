@@ -18,6 +18,7 @@ import {
   resolveSelectedOptionId,
   shippingGroupLabel,
   shippingOptionLabel,
+  shippingOptionTransit,
 } from "../../utils";
 import type { ShippingMethodSectionProps } from "./types";
 
@@ -76,9 +77,16 @@ export const CheckoutShippingMethodSection = ({
                     p: 2,
                   }}
                 >
-                  <Typography>
-                    {shippingOptionLabel(group.options[0], labels)}
-                  </Typography>
+                  <Stack direction="row" spacing={2} alignItems="baseline">
+                    <Typography>
+                      {shippingOptionLabel(group.options[0], labels)}
+                    </Typography>
+                    {shippingOptionTransit(group.options[0], labels) ? (
+                      <Typography variant="body2" color="text.secondary">
+                        {shippingOptionTransit(group.options[0], labels)}
+                      </Typography>
+                    ) : null}
+                  </Stack>
                   <Typography sx={{ fontWeight: 700 }}>
                     {formatCurrency(
                       group.options[0].amount,
@@ -134,6 +142,14 @@ export const CheckoutShippingMethodSection = ({
                                   <Typography>
                                     {shippingOptionLabel(option, labels)}
                                   </Typography>
+                                  {shippingOptionTransit(option, labels) ? (
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                    >
+                                      {shippingOptionTransit(option, labels)}
+                                    </Typography>
+                                  ) : null}
                                   <Typography sx={{ fontWeight: 700 }}>
                                     {formatCurrency(
                                       option.amount,

@@ -263,6 +263,20 @@ export const buildLabelShipmentPayload = ({
     orderId,
   });
 
+const toTransitDays = (description: string | null | undefined) => {
+  if (!description) {
+    return undefined;
+  }
+
+  const range = description.match(/(\d+)\s*[-\u2013]\s*(\d+)/);
+
+  if (range) {
+    return `${range[1]}-${range[2]}`;
+  }
+
+  return description.match(/\d+/)?.[0];
+};
+
 export const toShippingOption = (
   rate: ChitChatsRate,
   shipmentId: string,
@@ -281,7 +295,7 @@ export const toShippingOption = (
     currency: CHITCHATS_CURRENCY,
     hasTracking: Boolean(rate.tracking_type_description),
     deliveryType: "address",
-    transitDays: rate.delivery_time_description ?? undefined,
+    transitDays: toTransitDays(rate.delivery_time_description),
     externalId: shipmentId,
   };
 };

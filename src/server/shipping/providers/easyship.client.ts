@@ -9,12 +9,18 @@ import {
 import { DEFAULT_SHIPPING_ORIGIN_COUNTRY } from "@/constants/shipping";
 import type {
   ShippingDestination,
+  ShippingLabel,
+  ShippingLabelRequest,
   ShippingOption,
   ShippingParcel,
 } from "@/types/shipping";
 import type { CurrencyCode } from "@/utils";
 
-import type { EasyshipRate, EasyshipRatesResponse } from "./easyship.types";
+import type {
+  EasyshipRate,
+  EasyshipRatesResponse,
+  EasyshipShipmentResponse,
+} from "./easyship.types";
 
 export type EasyshipOriginAddress = {
   line1: string;
@@ -97,6 +103,7 @@ export const easyshipRequest = async <TResponse>(
   config: EasyshipConfig,
   path: string,
   body: unknown,
+  timeoutMs: number = EASYSHIP_TIMEOUT_MS,
 ): Promise<TResponse> => {
   const base = config.token.startsWith(EASYSHIP_SANDBOX_TOKEN_PREFIX)
     ? EASYSHIP_SANDBOX_API_BASE
@@ -104,7 +111,7 @@ export const easyshipRequest = async <TResponse>(
 
   const response = await fetch(`${base}${path}`, {
     method: "POST",
-    signal: AbortSignal.timeout(EASYSHIP_TIMEOUT_MS),
+    signal: AbortSignal.timeout(timeoutMs),
     headers: {
       Authorization: `Bearer ${config.token}`,
       Accept: "application/json",
@@ -209,7 +216,56 @@ export const toShippingOption = (rate: EasyshipRate): ShippingOption | null => {
     currency: rate.currency as CurrencyCode,
     hasTracking: EASYSHIP_HAS_TRACKING,
     deliveryType: "address",
+    externalId: rate.courier_service?.id,
     transitDays: transitDays(rate),
+  };
+};
+
+export const buildLabelShipmentPayload = (
+  config: EasyshipConfig,
+  request: ShippingLabelRequest,
+) => {
+  const { parcel, recipient, externalId } = request;
+  const rates = buildRatesPayload(config, parcel, recipient.destination);
+
+  return {
+    ...rates,
+    destination_address: {
+      ...rates.destination_address,
+      contact_name: recipient.name,
+      ...(recipient.email ? { contact_email: recipient.email } : {}),
+      ...(recipient.phone ? { contact_phone: recipient.phone } : {}),
+    },
+    ...(externalId ? { courier_service_id: externalId } : {}),
+    buy_label: true,
+  };
+};
+
+const unwrapShipment = (body: EasyshipShipmentResponse) =>
+  body?.shipment ?? body;
+
+export const toShipmentLabel = (
+  body: EasyshipShipmentResponse,
+): { externalId?: string; label: ShippingLabel } => {
+  const shipment = unwrapShipment(body);
+  const tracking = shipment?.trackings?.find((entry) => entry.tracking_number);
+  const document = shipment?.shipping_documents?.find(
+    (entry) => entry.category === "label" && entry.url,
+  );
+  const amount = Number(shipment?.total_charge);
+
+  return {
+    externalId: shipment?.easyship_shipment_id,
+    label: {
+      trackingNumber: tracking?.tracking_number ?? undefined,
+      trackingUrl:
+        tracking?.tracking_page_url ?? tracking?.tracking_url ?? undefined,
+      carrier: tracking?.handler ?? undefined,
+      labelUrl: document?.url ?? undefined,
+      ...(Number.isFinite(amount) && amount > 0 && shipment?.currency
+        ? { amount, currency: shipment.currency as CurrencyCode }
+        : {}),
+    },
   };
 };
 

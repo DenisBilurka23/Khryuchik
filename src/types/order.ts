@@ -95,6 +95,7 @@ export type OrderFulfillmentProgress = {
   deliveredAt?: string;
   labelExternalId?: string;
   labelAmount?: number;
+  labelUrl?: string;
   lastError?: string;
 };
 
