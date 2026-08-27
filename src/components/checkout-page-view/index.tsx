@@ -182,9 +182,13 @@ export const CheckoutPageView = ({
     setSelectedShippingOptionIds((prev) => ({ ...prev, [groupId]: optionId }));
   };
 
+  // A region code only means something inside its own country: keeping the old
+  // one turns "Ontario" into an invalid province the moment the country moves
+  // to the US, and the select hides it because it no longer matches an option.
   const handleCountryChange = (value: string) => {
-    setForm((prev) => ({ ...prev, country: value }));
+    setForm((prev) => ({ ...prev, country: value, region: "" }));
     clearFieldError("country");
+    clearFieldError("region");
   };
 
   const handleRegionChange = (value: string) => {

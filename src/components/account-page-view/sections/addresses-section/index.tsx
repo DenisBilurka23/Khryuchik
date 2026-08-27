@@ -162,6 +162,13 @@ export const AddressesSection = ({
     setAddressError(null);
   };
 
+  // A region code only means something inside its own country, so it cannot
+  // survive a country change — see the same reset on the checkout form.
+  const handleAddressCountryChange = (country: string) => {
+    setAddressForm((prev) => ({ ...prev, country, region: undefined }));
+    setAddressError(null);
+  };
+
   const handleAddAddress = async () => {
     if (isSavingAddress) return;
 
@@ -325,7 +332,7 @@ export const AddressesSection = ({
                   value={addressForm.country}
                   options={allCountries}
                   label={t("addressCountryLabel")}
-                  onChange={(code) => handleAddressFieldChange("country", code)}
+                  onChange={(code) => handleAddressCountryChange(code)}
                 />
               </Grid>
             </Grid>
