@@ -1,0 +1,128 @@
+name: Parcel progress and quote cleanup
+
+on:
+  schedule:
+    # Once a day, UTC. Parcels travel for days; polling more often buys nothing.
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+jobs:
+  parcels:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Ask the carriers about parcels in flight
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          MAX_ATTEMPTS: 3
+          RETRY_BACKOFF_SECONDS: 10
+        run: |
+          endpoint="${SITE_URL%/}/api/cron/parcel-progress"
+          attempt=0
+
+          while true; do
+            attempt=$((attempt + 1))
+            rm -f response.json
+
+            status=$(curl -sS --max-time 300 --get \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              -o response.json -w "%{http_code}" \
+              "$endpoint") || status="000"
+
+            echo "--- attempt $attempt: HTTP $status"
+            cat response.json 2>/dev/null || true
+            echo
+
+            if [ "$status" = "200" ]; then
+              break
+            fi
+
+            # 000 means the request never completed: connection error or the
+            # host cutting the function off mid-run. Those are worth retrying,
+            # 401 and 404 are not — they need a human.
+            case "$status" in
+              000 | 429 | 5*) ;;
+              *)
+                echo "::error::Parcel progress endpoint returned HTTP $status"
+                exit 1
+                ;;
+            esac
+
+            if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+              echo "::error::Parcel progress endpoint still failing after $MAX_ATTEMPTS attempts (HTTP $status)"
+              exit 1
+            fi
+
+            sleep $((attempt * RETRY_BACKOFF_SECONDS))
+          done
+
+          delivered=$(jq '.delivered' response.json)
+          failed=$(jq '.failed' response.json)
+
+          echo "Asked about $(jq '.asked' response.json) parcel(s) across $(jq '.orders' response.json) order(s), $delivered delivered"
+
+          # A carrier that cannot be reached is not a reason to fail the run —
+          # the parcel keeps its state and the next day asks again.
+          if [ "$failed" -gt 0 ]; then
+            echo "::warning::$failed parcel(s) could not be read"
+          fi
+
+      # Quote shipments pile up at Chit Chats until something deletes them. The
+      # endpoint sweeps every page itself, so one call is the whole job.
+      - name: Sweep abandoned Chit Chats quote shipments
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          MAX_ATTEMPTS: 3
+          RETRY_BACKOFF_SECONDS: 10
+        run: |
+          endpoint="${SITE_URL%/}/api/cron/chitchats-cleanup"
+          attempt=0
+
+          while true; do
+            attempt=$((attempt + 1))
+            rm -f response.json
+
+            status=$(curl -sS --max-time 300 --get \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              -o response.json -w "%{http_code}" \
+              "$endpoint") || status="000"
+
+            echo "--- attempt $attempt: HTTP $status"
+            cat response.json 2>/dev/null || true
+            echo
+
+            if [ "$status" = "200" ]; then
+              break
+            fi
+
+            case "$status" in
+              000 | 429 | 5*) ;;
+              *)
+                echo "::error::Cleanup endpoint returned HTTP $status"
+                exit 1
+                ;;
+            esac
+
+            if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+              echo "::error::Cleanup endpoint still failing after $MAX_ATTEMPTS attempts (HTTP $status)"
+              exit 1
+            fi
+
+            sleep $((attempt * RETRY_BACKOFF_SECONDS))
+          done
+
+          if [ "$(jq -r '.status' response.json)" = "not-configured" ]; then
+            echo "::warning::Chit Chats is not configured; nothing was swept"
+            exit 0
+          fi
+
+          failed=$(jq '.failed' response.json)
+
+          echo "Scanned $(jq '.scanned' response.json) shipment(s), deleted $(jq '.deleted' response.json)"
+
+          if [ "$failed" -gt 0 ]; then
+            echo "::error::$failed shipment(s) failed to delete"
+            exit 1
+          fi

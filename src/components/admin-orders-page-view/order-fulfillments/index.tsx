@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { formatCurrency, formatOrderTracking } from "@/utils";
 
 import { AdminOrderBuyLabelButton } from "./buy-label-button";
+import { AdminOrderMarkDeliveredButton } from "./mark-delivered-button";
 import { AdminOrderTrackingButton } from "./tracking-button";
 import type { AdminOrderFulfillmentsProps } from "./types";
 
@@ -17,6 +18,7 @@ export const AdminOrderFulfillments = ({
   const t = useTranslations("adminPage.orders.tracking");
   const tParcels = useTranslations("adminPage.orders.parcels");
   const tLabel = useTranslations("adminPage.orders.buyLabel");
+  const tDelivered = useTranslations("adminPage.orders.markDelivered");
 
   if (!fulfillments || fulfillments.length === 0) {
     return null;
@@ -74,7 +76,23 @@ export const AdminOrderFulfillments = ({
                     )}
                   />
                 )}
+              {!fulfillment.deliveredAt && (
+                <AdminOrderMarkDeliveredButton
+                  orderId={orderId}
+                  fulfillmentId={fulfillment.id}
+                />
+              )}
             </Stack>
+            {fulfillment.deliveredAt ? (
+              <Typography variant="caption" color="text.secondary">
+                {tDelivered("deliveredLabel", {
+                  date: new Date(fulfillment.deliveredAt).toLocaleDateString(
+                    locale,
+                  ),
+                  by: tDelivered(`by.${fulfillment.deliveredBy ?? "carrier"}`),
+                })}
+              </Typography>
+            ) : null}
             {fulfillment.labelUrl ? (
               <Link
                 href={fulfillment.labelUrl}

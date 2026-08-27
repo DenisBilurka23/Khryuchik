@@ -115,6 +115,18 @@ export type ShippingLabelResult =
   | { status: "bought-unparsed"; externalId: string; detail: string }
   | { status: "failed"; reason: string };
 
+export type ShippingProgressTracking = {
+  carrier?: string;
+  trackingNumber?: string;
+  trackingUrl?: string;
+};
+
+export type ShippingProgress =
+  | (ShippingProgressTracking & { status: "in-transit" })
+  | (ShippingProgressTracking & { status: "delivered"; deliveredAt: string })
+  | (ShippingProgressTracking & { status: "unknown" })
+  | { status: "failed"; reason: string };
+
 export type ShippingQuote =
   | { status: "quoted"; options: ShippingOption[] }
   | { status: "unsupported-destination" }

@@ -17,6 +17,7 @@ import {
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { requireAdminApiAccess } from "@/server/admin/auth";
+import { markParcelDelivered } from "@/server/orders/services/delivery.service";
 import { applyStripeRefund } from "@/server/orders/services/orders.service";
 import { buyOrderLabel } from "@/server/orders/services/shipping-label.service";
 import { refundStripePayment } from "@/server/payments/stripe";
@@ -212,6 +213,39 @@ export const saveAdminOrderTrackingAction = async (
     });
   } catch (error) {
     console.error("saveAdminOrderTrackingAction failed", error);
+    return { ok: false, error: "failed" };
+  }
+
+  revalidateOrderDependentPaths();
+  return { ok: true };
+};
+
+export const markAdminOrderParcelDeliveredAction = async (
+  orderId: string,
+  fulfillmentId: string,
+): Promise<AdminActionResult<"unknown_parcel" | "already_delivered">> => {
+  const session = await requireAdminApiAccess();
+  if (!session) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const order = await findOrderById(orderId);
+  const parcel = order?.fulfillments?.find(
+    (fulfillment) => fulfillment.id === fulfillmentId,
+  );
+
+  if (!parcel) {
+    return { ok: false, error: "unknown_parcel" };
+  }
+
+  if (parcel.deliveredAt) {
+    return { ok: false, error: "already_delivered" };
+  }
+
+  try {
+    await markParcelDelivered(orderId, fulfillmentId, "admin");
+  } catch (error) {
+    console.error("markAdminOrderParcelDeliveredAction failed", error);
     return { ok: false, error: "failed" };
   }
 

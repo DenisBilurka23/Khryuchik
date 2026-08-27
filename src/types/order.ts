@@ -86,6 +86,8 @@ export type OrderPrintifyInfo = {
 
 export type OrderFulfillmentSource = "printify" | "manual";
 
+export type OrderDeliveredBy = "carrier" | "admin" | "customer";
+
 export type OrderFulfillmentProgress = {
   status?: string;
   carrier?: string;
@@ -93,6 +95,7 @@ export type OrderFulfillmentProgress = {
   trackingUrl?: string;
   shippedAt?: string;
   deliveredAt?: string;
+  deliveredBy?: OrderDeliveredBy;
   labelExternalId?: string;
   labelAmount?: number;
   labelUrl?: string;
@@ -166,6 +169,7 @@ export type AccountOrder = {
   total: string;
   status: CustomerOrderStatus;
   trackings: OrderTracking[];
+  canConfirmDelivery: boolean;
 };
 
 export type CreateOrderInput = {

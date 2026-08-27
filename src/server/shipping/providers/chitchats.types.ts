@@ -17,6 +17,7 @@ export type ChitChatsShipment = {
   postage_type?: string | null;
   purchase_amount?: string | null;
   carrier_tracking_code?: string | null;
+  delivered_at?: string | null;
   carrier?: string | null;
   tracking_url?: string | null;
   postage_label_pdf_url?: string | null;

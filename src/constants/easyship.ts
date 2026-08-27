@@ -18,3 +18,16 @@ export const EASYSHIP_SKIPPED_DESTINATIONS: readonly CountryCode[] = [
   "BY",
   "RU",
 ];
+
+// Transcribed from Easyship's tracking-status vocabulary, unverified against a
+// live shipment: their Belgium origin returns no couriers, so no label has ever
+// been bought. Only `delivered` closes a parcel; the in-transit list just keeps
+// the cron summary readable, and anything else is logged rather than guessed at.
+export const EASYSHIP_DELIVERED_STATUSES = ["delivered"];
+export const EASYSHIP_IN_TRANSIT_STATUSES = [
+  "label_generated",
+  "not_yet_in_transit",
+  "in_transit",
+  "out_for_delivery",
+  "failed_attempt",
+];

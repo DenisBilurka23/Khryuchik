@@ -99,25 +99,30 @@ const parseBody = (raw: string): unknown => {
   }
 };
 
-export const easyshipRequest = async <TResponse>(
+const easyshipFetch = async <TResponse>(
   config: EasyshipConfig,
   path: string,
+  method: "GET" | "POST",
   body: unknown,
-  timeoutMs: number = EASYSHIP_TIMEOUT_MS,
+  timeoutMs: number,
 ): Promise<TResponse> => {
   const base = config.token.startsWith(EASYSHIP_SANDBOX_TOKEN_PREFIX)
     ? EASYSHIP_SANDBOX_API_BASE
     : EASYSHIP_API_BASE;
+  const headers = new Headers({
+    Authorization: `Bearer ${config.token}`,
+    Accept: "application/json",
+  });
+
+  if (body !== undefined) {
+    headers.set("Content-Type", "application/json");
+  }
 
   const response = await fetch(`${base}${path}`, {
-    method: "POST",
+    method,
     signal: AbortSignal.timeout(timeoutMs),
-    headers: {
-      Authorization: `Bearer ${config.token}`,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
+    headers,
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     cache: "no-store",
   });
 
@@ -125,7 +130,7 @@ export const easyshipRequest = async <TResponse>(
 
   if (!response.ok) {
     throw new EasyshipApiError(
-      `Easyship POST ${path} failed with ${response.status}`,
+      `Easyship ${method} ${path} failed with ${response.status}`,
       response.status,
       parsed,
     );
@@ -133,6 +138,21 @@ export const easyshipRequest = async <TResponse>(
 
   return parsed as TResponse;
 };
+
+export const easyshipRequest = async <TResponse>(
+  config: EasyshipConfig,
+  path: string,
+  body: unknown,
+  timeoutMs: number = EASYSHIP_TIMEOUT_MS,
+): Promise<TResponse> =>
+  easyshipFetch<TResponse>(config, path, "POST", body, timeoutMs);
+
+export const easyshipRead = async <TResponse>(
+  config: EasyshipConfig,
+  path: string,
+  timeoutMs: number = EASYSHIP_TIMEOUT_MS,
+): Promise<TResponse> =>
+  easyshipFetch<TResponse>(config, path, "GET", undefined, timeoutMs);
 
 const buildOriginAddress = ({ origin }: EasyshipConfig) => ({
   line_1: origin.line1,
@@ -241,7 +261,7 @@ export const buildLabelShipmentPayload = (
   };
 };
 
-const unwrapShipment = (body: EasyshipShipmentResponse) =>
+export const unwrapShipment = (body: EasyshipShipmentResponse) =>
   body?.shipment ?? body;
 
 export const toShipmentLabel = (

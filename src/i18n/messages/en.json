@@ -1168,6 +1168,14 @@
       "printify": "Made-to-order merch",
       "manual": "Books"
     },
+    "confirmDelivery": {
+      "button": "I got my order",
+      "dialogTitle": "Confirm you received the order",
+      "dialogDescription": "Only confirm once everything has actually arrived. We will mark the order delivered and stop tracking it.",
+      "confirmLabel": "Yes, it arrived",
+      "cancelLabel": "Not yet",
+      "error": "Could not save that. Please try again."
+    },
     "shippingAddresses": "Shipping addresses",
     "favoritesEyebrow": "Wishlist",
     "favoritesTitle": "Your favorites",
@@ -1200,7 +1208,7 @@
       "searchPlaceholder": "Search products, accounts, and SKU...",
       "addProduct": "Add product",
       "brandTitle": "Khryuchik",
-        "brandSubtitle": "Admin panel",
+      "brandSubtitle": "Admin panel",
       "secureAccessText": "Admin access is verified only through the user's isAdmin field in MongoDB.",
       "languageSwitcherLabel": "Interface language"
     },
@@ -1592,6 +1600,19 @@
         "carrierLabel": "Carrier",
         "numberLabel": "Tracking number",
         "urlLabel": "Tracking link"
+      },
+      "markDelivered": {
+        "button": "Mark delivered",
+        "dialogTitle": "Mark this parcel delivered",
+        "dialogDescription": "Use this for a carrier we cannot ask — bpost, or anything whose label you bought by hand. Once every parcel on the order is marked, the order turns Delivered and the customer gets the email.",
+        "confirmLabel": "Mark delivered",
+        "cancelLabel": "Cancel",
+        "deliveredLabel": "Delivered {date} · {by}",
+        "by": {
+          "carrier": "carrier",
+          "admin": "marked by you",
+          "customer": "confirmed by the customer"
+        }
       },
       "refund": {
         "button": "Refund payment",

@@ -18,6 +18,7 @@ export {
   cancelAdminOrderPrintifyAction,
   confirmAdminOrderPaymentAction,
   deleteAdminOrderAction,
+  markAdminOrderParcelDeliveredAction,
   refundAdminOrderPaymentAction,
   saveAdminOrderTrackingAction,
   sendAdminOrderToProductionAction,

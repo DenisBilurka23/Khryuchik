@@ -1,6 +1,10 @@
 import "server-only";
 
-import { EASYSHIP_SKIPPED_DESTINATIONS } from "@/constants/easyship";
+import {
+  EASYSHIP_DELIVERED_STATUSES,
+  EASYSHIP_IN_TRANSIT_STATUSES,
+  EASYSHIP_SKIPPED_DESTINATIONS,
+} from "@/constants/easyship";
 
 import type {
   ShippingDestination,
@@ -8,6 +12,7 @@ import type {
   ShippingLabelResult,
   ShippingOption,
   ShippingParcel,
+  ShippingProgress,
   ShippingQuote,
 } from "@/types/shipping";
 
@@ -20,11 +25,13 @@ import {
   buildLabelShipmentPayload,
   buildRatesPayload,
   EasyshipApiError,
+  easyshipRead,
   easyshipRequest,
   getEasyshipConfig,
   toShipmentLabel,
   toShippingOption,
   unwrapRates,
+  unwrapShipment,
 } from "./easyship.client";
 import type {
   EasyshipErrorBody,
@@ -182,6 +189,59 @@ const buyLabel = async (
   return { status: "bought", label, externalId };
 };
 
+// Easyship keeps the movement on the tracking entry and the paperwork state on
+// the shipment, and only one of the two is filled in at a time.
+const readProgress = async (externalId: string): Promise<ShippingProgress> => {
+  const config = getEasyshipConfig();
+
+  if (!config) {
+    return { status: "failed", reason: "Easyship is not configured" };
+  }
+
+  let response: EasyshipShipmentResponse;
+
+  try {
+    response = await easyshipRead<EasyshipShipmentResponse>(
+      config,
+      `/shipments/${externalId}`,
+    );
+  } catch (error) {
+    console.error(`Could not re-read Easyship shipment ${externalId}`, error);
+
+    return { status: "failed", reason: describeError(error) };
+  }
+
+  const shipment = unwrapShipment(response);
+  const { label } = toShipmentLabel(response);
+  const tracking = {
+    carrier: label.carrier,
+    trackingNumber: label.trackingNumber,
+    trackingUrl: label.trackingUrl,
+  };
+  const status =
+    shipment?.trackings?.find((entry) => entry.status)?.status ??
+    shipment?.status ??
+    "";
+
+  if (EASYSHIP_DELIVERED_STATUSES.includes(status)) {
+    return {
+      ...tracking,
+      status: "delivered",
+      deliveredAt: shipment?.delivered_at ?? new Date().toISOString(),
+    };
+  }
+
+  if (EASYSHIP_IN_TRANSIT_STATUSES.includes(status)) {
+    return { ...tracking, status: "in-transit" };
+  }
+
+  console.warn(
+    `Easyship shipment ${externalId} reports an unmapped status "${status}"`,
+  );
+
+  return { ...tracking, status: "unknown" };
+};
+
 export const easyshipProvider: ShippingProvider = {
   code: "easyship",
   supports: (destination) =>
@@ -189,4 +249,5 @@ export const easyshipProvider: ShippingProvider = {
     !EASYSHIP_SKIPPED_DESTINATIONS.includes(destination.country.toUpperCase()),
   quote,
   buyLabel,
+  readProgress,
 };

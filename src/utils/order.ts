@@ -88,6 +88,10 @@ export const getCustomerOrderStatus = (order: {
   return "pending";
 };
 
+export const canConfirmOrderDelivery = (order: OrderDocument): boolean =>
+  order.status === "shipped" &&
+  (order.fulfillments ?? []).some((fulfillment) => !fulfillment.deliveredAt);
+
 const buildItemsSummary = (order: OrderDocument): string =>
   order.items.map((item) => item.title).join(" + ");
 
@@ -114,4 +118,5 @@ export const toAccountOrder = (
   total: formatCurrency(order.total, locale, order.currency),
   status: getCustomerOrderStatus(order),
   trackings: getOrderTrackings(order),
+  canConfirmDelivery: canConfirmOrderDelivery(order),
 });

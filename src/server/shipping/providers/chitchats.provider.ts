@@ -1,7 +1,9 @@
 import "server-only";
 
 import {
+  CHITCHATS_DELIVERED_STATUSES,
   CHITCHATS_DOMESTIC_COUNTRY,
+  CHITCHATS_IN_TRANSIT_STATUSES,
   CHITCHATS_UNKNOWN_CARRIER,
 } from "@/constants/chitchats";
 import { getUsdRate } from "@/server/localization/exchange-rates.service";
@@ -11,6 +13,8 @@ import type {
   ShippingLabelResult,
   ShippingOption,
   ShippingParcel,
+  ShippingProgress,
+  ShippingProgressTracking,
   ShippingQuote,
 } from "@/types/shipping";
 
@@ -285,8 +289,59 @@ const buyLabel = async (
   return toLabelResult(shipment.id, await readShipment(config, shipment.id));
 };
 
+const toProgressTracking = (
+  shipment: ChitChatsShipment,
+): ShippingProgressTracking => {
+  const carrier = shipment.carrier ?? undefined;
+
+  return {
+    carrier: carrier === CHITCHATS_UNKNOWN_CARRIER ? undefined : carrier,
+    trackingNumber: shipment.carrier_tracking_code ?? undefined,
+    trackingUrl: shipment.tracking_url ?? undefined,
+  };
+};
+
+const readProgress = async (externalId: string): Promise<ShippingProgress> => {
+  const config = getChitChatsConfig();
+
+  if (!config) {
+    return { status: "failed", reason: "Chit Chats is not configured" };
+  }
+
+  const shipment = await readShipment(config, externalId);
+
+  if (!shipment) {
+    return {
+      status: "failed",
+      reason: `Could not read Chit Chats shipment ${externalId}`,
+    };
+  }
+
+  const tracking = toProgressTracking(shipment);
+  const status = shipment.status ?? "";
+
+  if (CHITCHATS_DELIVERED_STATUSES.includes(status)) {
+    return {
+      ...tracking,
+      status: "delivered",
+      deliveredAt: shipment.delivered_at ?? new Date().toISOString(),
+    };
+  }
+
+  if (CHITCHATS_IN_TRANSIT_STATUSES.includes(status)) {
+    return { ...tracking, status: "in-transit" };
+  }
+
+  console.warn(
+    `Chit Chats shipment ${externalId} reports an unmapped status "${status}"`,
+  );
+
+  return { ...tracking, status: "unknown" };
+};
+
 export const chitchatsProvider: ShippingProvider = {
   code: "chitchats",
   quote,
   buyLabel,
+  readProgress,
 };

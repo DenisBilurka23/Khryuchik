@@ -17,6 +17,7 @@ export type EasyshipRatesResponse = {
 };
 
 export type EasyshipTracking = {
+  status?: string | null;
   tracking_number?: string | null;
   handler?: string | null;
   tracking_page_url?: string | null;
@@ -31,6 +32,8 @@ export type EasyshipShippingDocument = {
 
 export type EasyshipShipment = {
   easyship_shipment_id?: string;
+  status?: string | null;
+  delivered_at?: string | null;
   trackings?: EasyshipTracking[];
   shipping_documents?: EasyshipShippingDocument[];
   total_charge?: number | string | null;

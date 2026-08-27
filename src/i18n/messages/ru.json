@@ -1172,6 +1172,14 @@
       "printify": "Мерч под заказ",
       "manual": "Книги"
     },
+    "confirmDelivery": {
+      "button": "Я получил заказ",
+      "dialogTitle": "Подтвердите получение заказа",
+      "dialogDescription": "Подтверждайте, только когда всё действительно пришло. Мы отметим заказ доставленным и перестанем его отслеживать.",
+      "confirmLabel": "Да, всё пришло",
+      "cancelLabel": "Ещё нет",
+      "error": "Не удалось сохранить. Попробуйте ещё раз."
+    },
     "shippingAddresses": "Адреса доставки",
     "favoritesEyebrow": "Wishlist",
     "favoritesTitle": "Ваше избранное",
@@ -1204,7 +1212,7 @@
       "searchPlaceholder": "Поиск по товарам, аккаунтам и SKU...",
       "addProduct": "Добавить товар",
       "brandTitle": "Хрючик",
-        "brandSubtitle": "Админ-панель",
+      "brandSubtitle": "Админ-панель",
       "secureAccessText": "Доступ в админку проверяется только через поле isAdmin у пользователя в MongoDB.",
       "languageSwitcherLabel": "Язык интерфейса"
     },
@@ -1616,6 +1624,19 @@
         "carrierLabel": "Перевозчик",
         "numberLabel": "Трек-номер",
         "urlLabel": "Ссылка на отслеживание"
+      },
+      "markDelivered": {
+        "button": "Отметить доставленной",
+        "dialogTitle": "Отметить посылку доставленной",
+        "dialogDescription": "Для перевозчика, которого нельзя опросить, — bpost и всего, где лейбл покупался руками. Когда отмечены все посылки заказа, заказ переходит в «Доставлен» и покупателю уходит письмо.",
+        "confirmLabel": "Отметить",
+        "cancelLabel": "Отмена",
+        "deliveredLabel": "Доставлена {date} · {by}",
+        "by": {
+          "carrier": "перевозчик",
+          "admin": "отметили вы",
+          "customer": "подтвердил покупатель"
+        }
       },
       "refund": {
         "button": "Вернуть деньги",

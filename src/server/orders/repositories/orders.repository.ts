@@ -123,6 +123,26 @@ export const findOrders = async (
   return cursor.toArray();
 };
 
+export const findOrdersWithOpenParcels = async (): Promise<OrderDocument[]> => {
+  const collection = await getOrdersCollection();
+
+  return collection
+    .find(
+      {
+        status: { $in: ["processing", "shipped"] },
+        fulfillments: {
+          $elemMatch: {
+            labelExternalId: { $exists: true, $ne: null },
+            deliveredAt: null,
+          },
+        },
+      },
+      { projection: { _id: 0 } },
+    )
+    .sort({ createdAt: -1 })
+    .toArray();
+};
+
 export const updateOrderPayment = async (
   id: string,
   patch: Partial<OrderPaymentInfo>,

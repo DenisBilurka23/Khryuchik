@@ -150,20 +150,35 @@ const buildParcelPatch = (
 
   if (shipment?.delivered_at && !current?.deliveredAt) {
     patch.deliveredAt = shipment.delivered_at;
+    patch.deliveredBy = "carrier";
   }
 
   return patch;
 };
 
+const areAllParcelsDelivered = (
+  order: OrderDocument,
+  parcel: OrderFulfillment | undefined,
+  parcelPatch: OrderFulfillmentPatch,
+) =>
+  (order.fulfillments ?? []).every((fulfillment) =>
+    fulfillment.id === parcel?.id
+      ? Boolean(parcelPatch.deliveredAt ?? fulfillment.deliveredAt)
+      : Boolean(fulfillment.deliveredAt),
+  );
+
 const resolveNextStatus = (
   order: OrderDocument,
   printifyOrder: PrintifyOrderResponse,
   shipment: PrintifyShipment | undefined,
+  allParcelsDelivered: boolean,
 ): OrderStatus | undefined => {
   const mapped = PRINTIFY_ORDER_STATUS_MAP[printifyOrder.status];
-  const candidate = shipment?.delivered_at
+  const resolved = shipment?.delivered_at
     ? "delivered"
     : (mapped ?? (shipment ? "shipped" : undefined));
+  const candidate =
+    resolved === "delivered" && !allParcelsDelivered ? "shipped" : resolved;
 
   if (!candidate) {
     return undefined;
@@ -234,7 +249,12 @@ export const syncOrderFromPrintify = async (
 
   const nextStatus = isCancelled
     ? undefined
-    : resolveNextStatus(order, printifyOrder, shipment);
+    : resolveNextStatus(
+        order,
+        printifyOrder,
+        shipment,
+        areAllParcelsDelivered(order, parcel, parcelPatch),
+      );
 
   if (!nextStatus) {
     return;

@@ -5,6 +5,7 @@ import { customerOrderStatusColors } from "@/constants/order";
 import { formatOrderTracking } from "@/utils";
 
 import { SectionCard } from "../../shared";
+import { ConfirmDeliveryButton } from "./confirm-delivery-button";
 import type { OrdersSectionProps } from "./types";
 
 export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
@@ -111,6 +112,9 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
                   }}
                 />
                 <Typography sx={{ fontWeight: 800 }}>{order.total}</Typography>
+                {order.canConfirmDelivery && (
+                  <ConfirmDeliveryButton orderId={order.id} />
+                )}
                 {order.trackings.length > 0 && (
                   <Stack
                     alignItems={{ xs: "flex-start", md: "flex-end" }}

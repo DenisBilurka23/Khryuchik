@@ -89,3 +89,9 @@ export const setAccountNewsletterSubscriptionClient = async (
     subscribed,
     locale,
   });
+
+export const confirmAccountOrderDeliveryClient = async (orderId: string) =>
+  POST<ErrorResponse & { ok?: boolean }>(
+    `/api/account/orders/${orderId}/delivery`,
+    {},
+  );
