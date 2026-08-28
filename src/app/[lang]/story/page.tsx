@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 
 import { StoryPageView } from "@/components/story-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
+import { getStoryTimelineBooks } from "@/server/catalog/services/catalog.service";
+import { getRequestCountry } from "@/server/country/request-country";
 import { isActiveLocale } from "@/server/localization/localization.service";
 
 type LocalizedStoryPageProps = {
@@ -56,7 +58,10 @@ const LocalizedStoryPage = async ({ params }: LocalizedStoryPageProps) => {
     notFound();
   }
 
-  return <StoryPageView locale={lang} />;
+  const country = await getRequestCountry();
+  const timelineBooks = await getStoryTimelineBooks(lang, country);
+
+  return <StoryPageView locale={lang} timelineBooks={timelineBooks} />;
 };
 
 export default LocalizedStoryPage;

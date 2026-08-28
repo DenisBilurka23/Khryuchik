@@ -126,6 +126,7 @@ export const localizeProductSummary = (
     type: product.classification.type,
     category: product.classification.category,
     searchIndex,
+    ageRating: product.ageRating,
     isActive: product.status.isActive,
     sortOrder: product.merchandising.sortOrder,
     availability: product.inventory.availability,

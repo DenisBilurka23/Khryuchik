@@ -295,16 +295,6 @@ export type CheckoutResultLabels = {
   };
 };
 
-export type StoryChapter = {
-  age: string;
-  year: string;
-  title: string;
-  series: string;
-  blurb: string;
-  book: string;
-  tags: string[];
-};
-
 export type StorySeriesItem = {
   tone: string;
   label: string;
@@ -321,12 +311,8 @@ export type StoryPageLabels = {
     eyebrow: string;
     title: string;
     lead: string;
-    seriesLabels: {
-      small: string;
-      travel: string;
-    };
     ctaLabel: string;
-    chapters: StoryChapter[];
+    ctaLabelShort: string;
   };
   series: {
     eyebrow: string;
@@ -1418,6 +1404,7 @@ export type AdminPageDictionary = {
       productId: string;
       slug: string;
       sku: string;
+      ageRating: string;
       relatedProductIds: string;
       storyProductId: string;
       mediaRule: string;
@@ -1445,12 +1432,14 @@ export type AdminPageDictionary = {
       type: string;
       category: string;
       sortOrder: string;
+      ageRating: string;
       availability: string;
       quantity: string;
       isActive: string;
       visibleInShop: string;
       visibleOnHome: string;
       notifySubscribers: string;
+      showInStory: string;
       regionPrice: string;
       regionOldPrice: string;
       optionPriceDelta: string;

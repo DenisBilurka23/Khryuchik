@@ -5,12 +5,14 @@ import { cache } from "react";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import {
   type CountryCode,
+  getLocalizedProductPath,
   isLocalizedProductSummary,
   localizeProductOptionGroups,
   localizeProductSummary,
   resolveOptionPrice,
   toProductDetails,
 } from "@/utils";
+import type { StoryTimelineBook } from "@/types/story";
 import type {
   ProductDetailDocument,
   ProductDetailTranslation,
@@ -99,6 +101,53 @@ export const getShopProducts = cache(
     ]);
 
     return localizeProductSummaries(products, locale, country, regionPricing);
+  },
+);
+
+export const getStoryTimelineBooks = cache(
+  async (locale: Locale, country: CountryCode): Promise<StoryTimelineBook[]> => {
+    const [products, regionPricing] = await Promise.all([
+      findShopVisibleProducts(country),
+      getRegionPricing(country),
+    ]);
+    const books = localizeProductSummaries(
+      products.filter(
+        (product) =>
+          product.classification.type === "book" &&
+          product.showInStory === true,
+      ),
+      locale,
+      country,
+      regionPricing,
+    );
+
+    const detailsById = new Map(
+      await Promise.all(
+        books.map(
+          async (book) =>
+            [book.id, await findProductDetailsByProductId(book.id)] as const,
+        ),
+      ),
+    );
+
+    return books.map((book) => {
+      const detailTranslation =
+        detailsById.get(book.id)?.translations[locale] ??
+        detailsById.get(book.id)?.translations[defaultLocale];
+
+      return {
+        slug: book.slug,
+        href: getLocalizedProductPath(locale, book.slug),
+        title: book.title,
+        subtitle: book.subtitle,
+        emoji: book.emoji,
+        ageRating: book.ageRating,
+        storyLabel: detailTranslation?.storyLabel,
+        badge: detailTranslation?.badge,
+        thumbnail: book.thumbnail,
+        thumbnailBackgroundColor: book.thumbnailBackgroundColor,
+      };
+    });
   },
 );
 

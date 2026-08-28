@@ -126,6 +126,9 @@ export type ProductDocument = {
   status: ProductStatus;
   merchandising: ProductMerchandising;
   inventory: ProductInventory;
+  ageRating?: string;
+  // When true the book is featured on the story timeline ("Books by age").
+  showInStory?: boolean;
   pricing: Partial<Record<CountryCode, ProductCountryPricing>>;
   availableRegions: string[];
   hasOptions?: boolean;
@@ -140,6 +143,7 @@ export type LocalizedProductSummary = ProductTranslation & {
   type: ProductType;
   category: ProductCategory;
   searchIndex: string;
+  ageRating?: string;
   oldPrice?: number;
   isActive: boolean;
   sortOrder: number;

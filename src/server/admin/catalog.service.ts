@@ -564,6 +564,7 @@ const sanitizeProductPayload = (
         ...payload.product.classification,
         category: normalizedCategory,
       },
+      ageRating: payload.product.ageRating?.trim() || undefined,
       merchandising: {
         ...payload.product.merchandising,
       },

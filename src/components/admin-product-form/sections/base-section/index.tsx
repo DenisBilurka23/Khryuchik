@@ -8,7 +8,10 @@ import {
 } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
+import {
+  BOOKS_CATEGORY_KEY,
+  DEFAULT_BOOK_AGE_RATING,
+} from "@/constants/catalog";
 import { getAdminCategoryLabel } from "@/utils/admin";
 
 import {
@@ -118,6 +121,14 @@ export const AdminProductBaseSection = ({
           type="number"
           defaultValue={payload.product.merchandising.sortOrder}
         />
+        {selectedType === "book" ? (
+          <TextField
+            label={tForm("fields.ageRating")}
+            name="ageRating"
+            defaultValue={payload.product.ageRating ?? DEFAULT_BOOK_AGE_RATING}
+            helperText={tForm("helpers.ageRating")}
+          />
+        ) : null}
         <TextField
           select
           label={tForm("fields.availability")}
@@ -261,6 +272,17 @@ export const AdminProductBaseSection = ({
           }
           label={tForm("fields.notifySubscribers")}
         />
+        {selectedType === "book" ? (
+          <AdminCheckboxField
+            control={
+              <Checkbox
+                name="showInStory"
+                defaultChecked={payload.product.showInStory ?? false}
+              />
+            }
+            label={tForm("fields.showInStory")}
+          />
+        ) : null}
       </Box>
     </AdminSectionCard>
   );

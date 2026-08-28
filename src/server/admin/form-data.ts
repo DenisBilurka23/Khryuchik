@@ -286,6 +286,8 @@ export const parseAdminProductFormData = (
         type: parseString(formData, "type") as ProductType,
         category: parseString(formData, "category").trim(),
       },
+      ageRating: parseOptionalString(formData, "ageRating"),
+      showInStory: parseBoolean(formData, "showInStory"),
       status: {
         isActive: parseBoolean(formData, "isActive"),
         visibleInShop: parseBoolean(formData, "visibleInShop"),

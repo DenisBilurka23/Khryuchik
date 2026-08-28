@@ -54,6 +54,12 @@ const productCategoryById: Record<string, ProductCategory> = {
   stickers: "gifts",
 };
 
+const productAgeRatingById: Record<string, string> = {
+  "book-winter": "3+",
+  "book-country-house": "3+",
+  "book-friends": "3+",
+};
+
 const productPricingByCountry: Record<
   string,
   Record<CountryCode, ProductCountryPricing>
@@ -141,6 +147,10 @@ const buildProductDocument = (productId: string): ProductDocument => ({
   merchandising: {
     sortOrder: getProductSortOrder(productId),
   },
+  ...(productAgeRatingById[productId]
+    ? { ageRating: productAgeRatingById[productId] }
+    : {}),
+  ...(getProductType(productId) === "book" ? { showInStory: true } : {}),
   inventory: {
     quantity: getProductType(productId) === "book" ? null : 25,
     availability: "in_stock",

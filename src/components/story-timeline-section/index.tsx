@@ -1,19 +1,12 @@
 "use client";
 
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import {
-  Box,
-  Button,
-  Container,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Paper, Typography } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
 
-import { InfoChip } from "../info-chip";
-import { LogoMark } from "../logo";
+import { useAnimatedHeight } from "@/hooks/useAnimatedHeight";
+
 import styles from "./story-timeline-section.module.css";
 import type { StoryTimelineSectionProps } from "./types";
 
@@ -21,22 +14,24 @@ export const StoryTimelineSection = ({
   eyebrow,
   title,
   lead,
-  seriesLabels,
   ctaLabel,
-  chapters,
-  shopHref,
+  ctaLabelShort,
+  books,
 }: StoryTimelineSectionProps) => {
-  const [activeIndex, setActiveIndex] = useState(chapters.length > 2 ? 2 : 0);
-  const safeIndex = Math.min(activeIndex, chapters.length - 1);
-  const active = chapters[safeIndex];
-  const lastIndex = Math.max(chapters.length - 1, 1);
+  const [activeIndex, setActiveIndex] = useState(books.length > 2 ? 2 : 0);
+  const safeIndex = Math.min(activeIndex, books.length - 1);
+  const active = books[safeIndex];
+  const lastIndex = Math.max(books.length - 1, 1);
+  const { ref: detailRef, height: detailHeight } =
+    useAnimatedHeight<HTMLDivElement>(active?.slug ?? "");
 
   if (!active) {
     return null;
   }
 
-  const seriesLabel =
-    active.series === "small" ? seriesLabels.small : seriesLabels.travel;
+  const metaLine = [active.storyLabel, active.ageRating]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <Box component="section" className={styles.section}>
@@ -60,28 +55,29 @@ export const StoryTimelineSection = ({
               className={styles.railFill}
               style={{ width: `${(safeIndex / lastIndex) * 100}%` }}
             />
-            {chapters.map((chapter, index) => {
+            {books.map((book, index) => {
               const nodeClassName = [
                 styles.node,
                 index === safeIndex ? styles.nodeActive : "",
                 index < safeIndex ? styles.nodePassed : "",
-                chapter.series === "travel" ? styles.nodeTravel : "",
               ]
                 .filter(Boolean)
                 .join(" ");
 
               return (
                 <button
-                  key={chapter.year}
+                  key={book.slug}
                   type="button"
                   className={nodeClassName}
                   style={{ left: `${(index / lastIndex) * 100}%` }}
                   onClick={() => setActiveIndex(index)}
-                  aria-label={`${chapter.year} — ${chapter.title}`}
+                  aria-label={book.title}
                   aria-pressed={index === safeIndex}
                 >
                   <span className={styles.nodeDot} />
-                  <span className={styles.nodeAge}>{chapter.age}</span>
+                  {book.ageRating ? (
+                    <span className={styles.nodeAge}>{book.ageRating}</span>
+                  ) : null}
                 </button>
               );
             })}
@@ -93,81 +89,78 @@ export const StoryTimelineSection = ({
           className={styles.detail}
           sx={{ p: { xs: 3, md: 6 } }}
         >
-          <Box className={styles.detailGrid}>
-            <Box>
-              <Box
-                className={[
-                  styles.chip,
-                  active.series === "travel"
-                    ? styles.chipTravel
-                    : styles.chipSmall,
-                ].join(" ")}
-              >
-                {seriesLabel}
-              </Box>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mt: 2 }}
-              >
-                {active.year} · {active.age}
-              </Typography>
-              <Typography
-                variant="h3"
-                sx={{ mt: 1, fontSize: { xs: 28, md: 38 } }}
-              >
-                {active.title}
-              </Typography>
-              <Typography
-                color="text.secondary"
-                sx={{ mt: 2, lineHeight: 1.8 }}
-              >
-                {active.blurb}
-              </Typography>
-              <Stack
-                direction="row"
-                useFlexGap
-                flexWrap="wrap"
-                spacing={1}
-                sx={{ mt: 3 }}
-              >
-                {active.tags.map((tag) => (
-                  <InfoChip key={tag} text={tag} variant="tag" />
-                ))}
-              </Stack>
-              <Link
-                href={shopHref}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <Button
-                  component="span"
-                  variant="contained"
-                  endIcon={<ArrowForwardIcon />}
-                  sx={{ mt: 4 }}
-                >
-                  {ctaLabel.replace("{book}", active.book)}
-                </Button>
-              </Link>
-            </Box>
-
-            <Box className={styles.bookWrap}>
-              <Box
-                className={[
-                  styles.book,
-                  active.series === "travel"
-                    ? styles.bookTravel
-                    : styles.bookSmall,
-                ].join(" ")}
-              >
-                <Typography className={styles.bookSeries}>
-                  {seriesLabel}
-                </Typography>
-                <Typography className={styles.bookTitle}>
-                  {active.book}
-                </Typography>
-                <Box className={styles.bookPig}>
-                  <LogoMark size={64} sizes="128px" />
+          <Box className={styles.detailAnim} style={{ height: detailHeight }}>
+            <Box ref={detailRef} className={styles.detailBody}>
+              <Box className={styles.detailGrid}>
+                <Box className={styles.detailText}>
+                  {active.badge ? (
+                    <Box
+                      className={[styles.chip, styles.chipSmall].join(" ")}
+                    >
+                      {active.badge}
+                    </Box>
+                  ) : null}
+                  {metaLine ? (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: "block", mt: 2 }}
+                    >
+                      {metaLine}
+                    </Typography>
+                  ) : null}
+                  <Typography
+                    variant="h3"
+                    sx={{ mt: 1, fontSize: { xs: 28, md: 38 } }}
+                  >
+                    {active.title}
+                  </Typography>
+                  <Typography
+                    color="text.secondary"
+                    sx={{ mt: 2, lineHeight: 1.8 }}
+                  >
+                    {active.subtitle}
+                  </Typography>
                 </Box>
+
+                <Box className={styles.bookWrap}>
+                  {active.thumbnail?.src ? (
+                    <Box
+                      component="img"
+                      src={active.thumbnail.src}
+                      alt={active.thumbnail.alt ?? active.title}
+                      className={styles.bookImage}
+                    />
+                  ) : (
+                    <Box
+                      className={styles.bookFallback}
+                      style={{
+                        background:
+                          active.thumbnail?.bgColor ??
+                          active.thumbnailBackgroundColor ??
+                          undefined,
+                      }}
+                    >
+                      {active.emoji}
+                    </Box>
+                  )}
+                </Box>
+
+                <Link href={active.href} className={styles.ctaLink}>
+                  <Button
+                    component="span"
+                    variant="contained"
+                    endIcon={<ArrowForwardIcon />}
+                    className={styles.ctaButton}
+                  >
+                    <Box component="span" className={styles.ctaTextFull}>
+                      {ctaLabel.replace("{book}", active.title)}
+                    </Box>
+                    <Box component="span" className={styles.ctaTextShort}>
+                      {ctaLabelShort}
+                    </Box>
+                  </Button>
+                </Link>
               </Box>
             </Box>
           </Box>

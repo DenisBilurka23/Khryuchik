@@ -11,7 +11,10 @@ import { StoryValuesSection } from "../story-values-section";
 import storefrontStyles from "../storefront/storefront.module.css";
 import type { StoryPageDictionary, StoryPageViewProps } from "./types";
 
-export const StoryPageView = async ({ locale }: StoryPageViewProps) => {
+export const StoryPageView = async ({
+  locale,
+  timelineBooks,
+}: StoryPageViewProps) => {
   const t = await getTranslations({
     locale,
     namespace: "storefront.storyPage",
@@ -27,7 +30,7 @@ export const StoryPageView = async ({ locale }: StoryPageViewProps) => {
       <Box className={storefrontStyles.pageContent}>
         <StorySeriesSection {...series} shopHref={shopHref} />
         <StoryValuesSection {...values} />
-        <StoryTimelineSection {...timeline} shopHref={shopHref} />
+        <StoryTimelineSection {...timeline} books={timelineBooks} />
         <StoryAuthorSection {...author} />
         <NewsletterSection locale={locale} />
       </Box>

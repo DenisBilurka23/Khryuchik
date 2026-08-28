@@ -3,6 +3,8 @@ import { getTranslations } from "next-intl/server";
 
 import { StoryPageView } from "@/components/story-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
+import { getStoryTimelineBooks } from "@/server/catalog/services/catalog.service";
+import { getRequestCountry } from "@/server/country/request-country";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const tStorefront = await getTranslations({
@@ -35,6 +37,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
   };
 };
 
-const DefaultStoryPage = () => <StoryPageView locale={defaultLocale} />;
+const DefaultStoryPage = async () => {
+  const country = await getRequestCountry();
+  const timelineBooks = await getStoryTimelineBooks(defaultLocale, country);
+
+  return (
+    <StoryPageView locale={defaultLocale} timelineBooks={timelineBooks} />
+  );
+};
 
 export default DefaultStoryPage;
