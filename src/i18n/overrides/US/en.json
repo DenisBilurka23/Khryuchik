@@ -14,11 +14,6 @@
       "shipping": "Shipping across the USA and internationally"
     }
   },
-  "cartPage": {
-    "summary": {
-      "infoText": "PDF books are delivered after payment, while physical products can be shipped across the USA and internationally."
-    }
-  },
   "deliveryPage": {
     "hero": {
       "mapCity": "New York"

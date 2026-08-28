@@ -11,11 +11,6 @@
       "shipping": "Shipping across Belarus and internationally"
     }
   },
-  "cartPage": {
-    "summary": {
-      "infoText": "PDF books are delivered after payment, while physical products can be shipped across Belarus and internationally."
-    }
-  },
   "deliveryPage": {
     "payment": {
       "eyebrow": "How payment works",
