@@ -11,7 +11,7 @@ import {
   savePrintedStockMovements,
 } from "@/server/orders/repositories/orders.repository";
 import { hubForProvider } from "@/server/shipping/providers/registry";
-import { chooseHubs } from "@/server/shipping/utils";
+import { chooseHubs, serviceableHubs } from "@/server/shipping/utils";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import type { ProductDocument } from "@/types/catalog";
 import type { OrderDocument, OrderPrintedStockMovement } from "@/types/order";
@@ -37,6 +37,18 @@ const shippingHubsFor = (
   return chooseHubs(
     destinationCountry,
     stocked.length > 0 ? stocked : (product.shipping?.hubs ?? []),
+  );
+};
+
+const sellableHubsFor = (
+  product: ProductDocument,
+  language: string,
+  destinationCountry: CountryCode,
+) => {
+  const stocked = getStockedHubs(product.shipping?.stockByLanguage, language);
+
+  return serviceableHubs(destinationCountry).filter((hub) =>
+    stocked.includes(hub),
   );
 };
 
@@ -106,7 +118,7 @@ export const findUnstockedPrintedLines = async (
       continue;
     }
 
-    const hubs = shippingHubsFor(product, group.language, destinationCountry);
+    const hubs = sellableHubsFor(product, group.language, destinationCountry);
 
     if (
       !hasPrintedStock(
