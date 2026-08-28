@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 import { useResolvedCart } from "@/hooks/useResolvedCart";
-import { getLocalizedPath } from "@/utils";
+import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
 import { CartItemCard, EmptyCartState, OrderSummaryCard } from "../cart";
 import styles from "../storefront/storefront.module.css";
@@ -40,6 +40,9 @@ export const CartPageView = ({
 
   const isDigitalOnly =
     items.length > 0 && items.every((item) => item.isDigital);
+  const hasUnavailableItems = items.some(
+    (item) => !isPurchasableAvailability(item.availability),
+  );
 
   const homeHref = getLocalizedPath(locale, "/");
   const shopHref = getLocalizedPath(locale, "/shop");
@@ -162,6 +165,7 @@ export const CartPageView = ({
                         locale={locale}
                         variantLabel={cartPage.itemCard.variantLabel}
                         removeLabel={cartPage.itemCard.removeLabel}
+                        soldOutLabel={cartPage.itemCard.soldOut}
                         onIncrease={handleIncrease}
                         onDecrease={handleDecrease}
                         onRemove={handleRemove}
@@ -180,6 +184,7 @@ export const CartPageView = ({
                     continueShoppingHref={shopHref}
                     checkoutHref={checkoutHref}
                     isShopClosed={isShopClosed}
+                    hasUnavailableItems={hasUnavailableItems}
                   />
                 </Grid>
               </Grid>

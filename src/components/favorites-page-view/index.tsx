@@ -3,6 +3,7 @@
 import { Box, Container, Paper } from "@mui/material";
 
 import { useWishlist } from "@/hooks/useWishlist";
+import { isPurchasableAvailability } from "@/utils";
 
 import { useCart } from "../cart/store";
 import { FavoritesEmptyState } from "./empty-state";
@@ -25,8 +26,11 @@ export const FavoritesPageView = ({
   const resolvedItems = items.filter(
     (item): item is ResolvedWishlistItem => Boolean(item.product),
   );
+  const purchasableItems = resolvedItems.filter((item) =>
+    isPurchasableAvailability(item.product.availability),
+  );
   const addAllToCart = () => {
-    resolvedItems.forEach((item) => {
+    purchasableItems.forEach((item) => {
       addItem({
         productId: item.productId,
         quantity: 1,
@@ -43,7 +47,7 @@ export const FavoritesPageView = ({
         loginHref={loginHref}
         registerHref={registerHref}
         onAddAllToCart={addAllToCart}
-        isAddAllDisabled={resolvedItems.length === 0}
+        isAddAllDisabled={purchasableItems.length === 0}
       />
 
       <Box sx={{ mt: 4.5 }}>

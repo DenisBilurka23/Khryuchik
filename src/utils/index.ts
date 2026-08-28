@@ -50,6 +50,7 @@ export {
 export { isPrintedOffered, toPrintedLanguages } from "./printed-stock";
 export {
   isLocalizedProductSummary,
+  isPurchasableAvailability,
   localizeProductOptionGroups,
   localizeProductSummary,
   resolveOptionPrice,

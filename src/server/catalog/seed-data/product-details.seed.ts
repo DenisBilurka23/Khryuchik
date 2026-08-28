@@ -3,7 +3,7 @@ import type { ProductDetails } from "@/types/product-details";
 
 type SeedLocalizedProductDetails = Omit<
   ProductDetails,
-  "currency" | "productId" | "slug" | "sku"
+  "availability" | "currency" | "productId" | "slug" | "sku"
 >;
 
 type SeedProductSharedDetails = {

@@ -8,6 +8,7 @@ import {
   getVariantValueState,
   isPrintedOffered,
   isProductVariantAxis,
+  isPurchasableAvailability,
   resolveOptionPrice,
   resolveVariantSelections,
 } from "@/utils";
@@ -96,6 +97,10 @@ export const useProductPrice = ({
   );
 
   const selectionAvailability = useMemo(() => {
+    if (!isPurchasableAvailability(product.availability)) {
+      return "sold-out";
+    }
+
     const variant = getVariantSelectionAvailability(
       product.variantMatrix,
       selections,

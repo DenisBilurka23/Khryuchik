@@ -29,6 +29,7 @@ import { BOOK_FORMAT } from "@/constants/catalog";
 import {
   type CountryCode,
   isPaymentMethodAvailable,
+  isPurchasableAvailability,
   type PaymentMethod,
   roundToCents,
 } from "@/utils";
@@ -56,6 +57,7 @@ export class OrderValidationError extends Error {
       | "shipping_unsupported_parcel"
       | "shipping_missing_data"
       | "unsupported_variant"
+      | "item_out_of_stock"
       | "pickup_point_required",
   ) {
     super(message);
@@ -117,6 +119,13 @@ export const createOrder = async (
     throw new OrderValidationError(
       "No items could be resolved",
       "unresolved_items",
+    );
+  }
+
+  if (!resolved.every((item) => isPurchasableAvailability(item.availability))) {
+    throw new OrderValidationError(
+      "Cart contains an item that is out of stock",
+      "item_out_of_stock",
     );
   }
 

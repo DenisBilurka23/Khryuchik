@@ -79,7 +79,9 @@
       "actionLabel": "All merch",
       "addToCart": "Add to cart",
       "selectOptions": "Select",
-      "wishlistAriaLabel": "Add to favorites"
+      "wishlistAriaLabel": "Add to favorites",
+      "outOfStock": "Out of stock",
+      "viewProduct": "View product"
     },
     "favoritesLabel": "Favorites",
     "favoritesPage": {
@@ -200,7 +202,8 @@
         "alreadyOwned": "Already in your library",
         "viewInLibrary": "Open library",
         "unavailableSelection": "This size and color are not offered together. Pick another combination to continue.",
-        "soldOutSelection": "This size and color combination is sold out. Pick another combination to continue."
+        "soldOutSelection": "This size and color combination is sold out. Pick another combination to continue.",
+        "soldOutProduct": "This product is sold out. It will come back to the shop as soon as it is restocked."
       },
       "details": {
         "sku": "SKU",
@@ -690,7 +693,8 @@
       },
       "itemCard": {
         "variantLabel": "Variant",
-        "removeLabel": "Remove item"
+        "removeLabel": "Remove item",
+        "soldOut": "Out of stock"
       },
       "pricingUnavailable": "Some items cannot be priced right now — we could not get an up-to-date exchange rate. Please try again in a few minutes.",
       "summary": {
@@ -707,7 +711,8 @@
         "continueShopping": "Continue shopping",
         "infoTitle": "Cozy delivery",
         "infoText": "PDF books are delivered after payment, while physical products can be shipped across the US, Canada and Europe.",
-        "closedNote": "Checkout is closed for a little while — Khryuchik is tidying up. Your cart is kept safe, so look in a bit later."
+        "closedNote": "Checkout is closed for a little while — Khryuchik is tidying up. Your cart is kept safe, so look in a bit later.",
+        "unavailableNote": "One of the items in your cart is out of stock. Remove it to continue to checkout."
       }
     },
     "checkoutPage": {
@@ -798,7 +803,8 @@
         "unsupportedVariant": "This size and color combination is not available. Please pick another one in your cart.",
         "shopClosed": "Checkout is closed for a little while. Look in a bit later — your cart is kept safe.",
         "shippingUnsupportedParcel": "This order is too large or too heavy to ship to the selected country.",
-        "shippingMissingData": "Delivery cannot be calculated for one of the items yet. Please contact us and we will sort it out."
+        "shippingMissingData": "Delivery cannot be calculated for one of the items yet. Please contact us and we will sort it out.",
+        "itemOutOfStock": "One of the items in your cart is out of stock. Remove it and try again."
       },
       "fieldErrors": {
         "required": "Required field",

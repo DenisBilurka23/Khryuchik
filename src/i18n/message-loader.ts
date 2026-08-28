@@ -106,6 +106,8 @@ const buildStorefrontDictionary = async (
       addToCart: dictionary.storefront.shopSection.addToCart,
       selectOptions: dictionary.storefront.shopSection.selectOptions,
       wishlistAriaLabel: dictionary.storefront.shopSection.wishlistAriaLabel,
+      outOfStock: dictionary.storefront.shopSection.outOfStock,
+      viewProduct: dictionary.storefront.shopSection.viewProduct,
     },
   };
 

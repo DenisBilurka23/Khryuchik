@@ -3,12 +3,13 @@ import {
   Button,
   Card,
   CardContent,
+  Chip,
   Stack,
   Typography,
 } from "@mui/material";
 import Link from "next/link";
 
-import { formatCurrency } from "@/utils";
+import { formatCurrency, isPurchasableAvailability } from "@/utils";
 import { AddToCartButton } from "./add-to-cart-button";
 import { WishlistButton } from "./wishlist-button";
 import styles from "./product-card.module.css";
@@ -20,17 +21,40 @@ export const ProductCard = ({
   addToCart,
   selectOptions,
   wishlistAriaLabel,
+  outOfStock,
+  viewProduct,
   detailsHref,
 }: ProductCardProps) => {
   const thumbnail = product.thumbnail;
+  const isSoldOut = !isPurchasableAvailability(product.availability);
 
   return (
     <Card className={styles.card}>
       <CardContent sx={{ p: 2.5, display: "flex", flexDirection: "column", height: "100%" }}>
         <Link
           href={detailsHref}
-          style={{ textDecoration: "none", color: "inherit", display: "block" }}
+          style={{
+            textDecoration: "none",
+            color: "inherit",
+            display: "block",
+            position: "relative",
+          }}
         >
+          {isSoldOut ? (
+            <Chip
+              label={outOfStock}
+              size="small"
+              sx={{
+                position: "absolute",
+                top: 12,
+                left: 12,
+                zIndex: 1,
+                bgcolor: "#fff",
+                border: "1px solid #E8D6BF",
+                fontWeight: 700,
+              }}
+            />
+          ) : null}
           <Box
             className={styles.preview}
             sx={{
@@ -75,14 +99,19 @@ export const ProductCard = ({
         </Typography>
 
         <Stack direction="row" spacing={1.5} sx={{ mt: "auto", pt: 3 }}>
-          {product.hasOptions ? (
+          {isSoldOut || product.hasOptions ? (
             <Button
               fullWidth
-              variant="contained"
-              color="primary"
+              variant={isSoldOut ? "outlined" : "contained"}
+              color={isSoldOut ? "inherit" : "primary"}
               href={detailsHref}
+              sx={
+                isSoldOut
+                  ? { borderColor: "#E8D6BF", bgcolor: "#fff" }
+                  : undefined
+              }
             >
-              {selectOptions}
+              {isSoldOut ? viewProduct : selectOptions}
             </Button>
           ) : (
             <AddToCartButton

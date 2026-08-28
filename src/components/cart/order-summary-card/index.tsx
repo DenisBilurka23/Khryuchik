@@ -1,4 +1,5 @@
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined";
 import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
 import {
   Box,
@@ -27,10 +28,12 @@ export const OrderSummaryCard = ({
   continueShoppingHref,
   checkoutHref,
   isShopClosed = false,
+  hasUnavailableItems = false,
 }: OrderSummaryCardProps) => {
   const t = useTranslations("storefront.cartPage");
   const labels = t.raw("summary") as CartPageLabels["summary"];
   const total = subtotal - discount;
+  const isCheckoutBlocked = isShopClosed || hasUnavailableItems;
 
   return (
     <Card
@@ -104,39 +107,16 @@ export const OrderSummaryCard = ({
           </Typography>
         </Stack>
 
-        {isShopClosed ? (
-          <>
-            <Button
-              disabled
-              fullWidth
-              variant="contained"
-              size="large"
-              sx={{ mt: 3 }}
-            >
-              {labels.checkoutButton}
-            </Button>
-
-            <Box
-              sx={{
-                mt: 1.5,
-                p: 2,
-                borderRadius: "20px",
-                bgcolor: "#FFF8F0",
-                border: "1px solid #F0DFC8",
-              }}
-            >
-              <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                <ScheduleOutlinedIcon fontSize="small" sx={{ mt: "2px" }} />
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ lineHeight: 1.7 }}
-                >
-                  {labels.closedNote}
-                </Typography>
-              </Stack>
-            </Box>
-          </>
+        {isCheckoutBlocked ? (
+          <Button
+            disabled
+            fullWidth
+            variant="contained"
+            size="large"
+            sx={{ mt: 3 }}
+          >
+            {labels.checkoutButton}
+          </Button>
         ) : (
           <Link
             href={checkoutHref}
@@ -170,9 +150,39 @@ export const OrderSummaryCard = ({
           </Button>
         </Link>
 
+        {isCheckoutBlocked ? (
+          <Box
+            sx={{
+              mt: 3,
+              p: 2,
+              borderRadius: "20px",
+              bgcolor: "#FFF8F0",
+              border: "1px solid #F0DFC8",
+            }}
+          >
+            <Stack direction="row" spacing={1.5} alignItems="flex-start">
+              {isShopClosed ? (
+                <ScheduleOutlinedIcon fontSize="small" sx={{ mt: "2px" }} />
+              ) : (
+                <ReportProblemOutlinedIcon
+                  fontSize="small"
+                  sx={{ mt: "2px" }}
+                />
+              )}
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ lineHeight: 1.7 }}
+              >
+                {isShopClosed ? labels.closedNote : labels.unavailableNote}
+              </Typography>
+            </Stack>
+          </Box>
+        ) : null}
+
         <Box
           sx={{
-            mt: 3,
+            mt: isCheckoutBlocked ? 1.5 : 3,
             p: 2,
             borderRadius: "20px",
             bgcolor: "#FFF8F0",

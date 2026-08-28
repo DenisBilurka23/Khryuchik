@@ -51,6 +51,7 @@ export type ProductPageLabels = {
     viewInLibrary: string;
     unavailableSelection: string;
     soldOutSelection: string;
+    soldOutProduct: string;
   };
   details: {
     sku: string;
@@ -150,6 +151,7 @@ export type CartPageLabels = {
   itemCard: {
     variantLabel: string;
     removeLabel: string;
+    soldOut: string;
   };
   pricingUnavailable: string;
   summary: {
@@ -167,6 +169,7 @@ export type CartPageLabels = {
     infoTitle: string;
     infoText: string;
     closedNote: string;
+    unavailableNote: string;
   };
 };
 
@@ -254,6 +257,7 @@ export type CheckoutPageLabels = {
     shippingUnsupportedParcel: string;
     shippingMissingData: string;
     unsupportedVariant: string;
+    itemOutOfStock: string;
     shopClosed: string;
   };
   fieldErrors: {
@@ -625,6 +629,8 @@ export type StorefrontDictionary = {
     addToCart: string;
     selectOptions: string;
     wishlistAriaLabel: string;
+    outOfStock: string;
+    viewProduct: string;
   };
   favoritesLabel: string;
   favoritesPage: FavoritesPageLabels;

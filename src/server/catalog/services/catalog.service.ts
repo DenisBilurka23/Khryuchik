@@ -271,7 +271,6 @@ export const resolveCartItems = async (
     ),
   );
   const detailsById = new Map(detailsEntries);
-
   const resolvedItems = items.flatMap((item) => {
     const summary = summaryById.get(item.productId);
 
@@ -305,6 +304,7 @@ export const resolveCartItems = async (
         quantity: item.quantity,
         variant: buildVariantLabel(item, translation),
         isDigital: item.selections?.format === BOOK_FORMAT.digital,
+        availability: summary.availability,
       },
     ];
   });

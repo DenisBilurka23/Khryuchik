@@ -3,10 +3,22 @@
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import RemoveIcon from "@mui/icons-material/Remove";
-import { Box, Card, CardContent, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Chip,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Link from "next/link";
 
-import { formatCurrency, getLocalizedProductPath } from "@/utils";
+import {
+  formatCurrency,
+  getLocalizedProductPath,
+  isPurchasableAvailability,
+} from "@/utils";
 
 import type { CartItemCardProps } from "../types";
 
@@ -15,11 +27,13 @@ export const CartItemCard = ({
   locale,
   variantLabel,
   removeLabel,
+  soldOutLabel,
   onDecrease,
   onIncrease,
   onRemove,
 }: CartItemCardProps) => {
   const productHref = getLocalizedProductPath(locale, item.slug);
+  const isSoldOut = !isPurchasableAvailability(item.availability);
 
   return (
     <Card sx={{ border: "1px solid #F0DFC8" }}>
@@ -74,6 +88,16 @@ export const CartItemCard = ({
                 {item.title}
               </Link>
             </Typography>
+
+            {isSoldOut ? (
+              <Chip
+                label={soldOutLabel}
+                size="small"
+                color="warning"
+                variant="outlined"
+                sx={{ mt: 1, fontWeight: 700 }}
+              />
+            ) : null}
 
             {item.variant ? (
               <Typography color="text.secondary" sx={{ mt: 1 }}>

@@ -7,5 +7,7 @@ export type ProductCardProps = {
   addToCart: string;
   selectOptions: string;
   wishlistAriaLabel: string;
+  outOfStock: string;
+  viewProduct: string;
   detailsHref: string;
 };

@@ -1,5 +1,6 @@
 import type { CurrencyCode } from "@/utils";
 
+import type { ProductAvailability } from "./catalog";
 import type { ProductImage } from "./product-details";
 
 export type CartSelections = {
@@ -29,6 +30,7 @@ export type CartItem = {
   quantity: number;
   variant?: string;
   isDigital?: boolean;
+  availability: ProductAvailability;
 };
 
 export type CartResolveResponse = {

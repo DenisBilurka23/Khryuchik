@@ -31,6 +31,7 @@ export type OrderSummaryCardProps = {
   continueShoppingHref: string;
   checkoutHref: string;
   isShopClosed?: boolean;
+  hasUnavailableItems?: boolean;
 };
 
 export type EmptyCartStateProps = {
@@ -45,6 +46,7 @@ export type CartItemCardProps = {
   locale: Locale;
   variantLabel: string;
   removeLabel: string;
+  soldOutLabel: string;
   onDecrease: (id: string) => void;
   onIncrease: (id: string) => void;
   onRemove: (id: string) => void;

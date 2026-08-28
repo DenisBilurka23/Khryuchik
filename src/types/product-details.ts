@@ -1,5 +1,7 @@
 import type { CountryCode, CurrencyCode } from "@/utils";
 
+import type { ProductAvailability } from "./catalog";
+
 export type ProductImage = {
   id: string;
   emoji?: string;
@@ -74,6 +76,7 @@ export type ProductDetails = {
   price: number;
   currency: CurrencyCode;
   oldPrice?: number;
+  availability: ProductAvailability;
   badge?: string;
   storyLabel?: string;
   storyTitle?: string;

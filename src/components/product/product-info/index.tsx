@@ -21,7 +21,11 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { formatCurrency, getLocalizedPath } from "@/utils";
+import {
+  formatCurrency,
+  getLocalizedPath,
+  isPurchasableAvailability,
+} from "@/utils";
 
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useWishlist } from "@/hooks/useWishlist";
@@ -56,6 +60,12 @@ export const ProductInfo = ({
     country,
   });
   const isWishlisted = isInWishlist(product.productId);
+  const isSoldOut = !isPurchasableAvailability(product.availability);
+  const unavailableMessage = isSoldOut
+    ? "actions.soldOutProduct"
+    : selectionAvailability === "sold-out"
+      ? "actions.soldOutSelection"
+      : "actions.unavailableSelection";
   const hasMetaChips = Boolean(product.badge || product.storyLabel);
   const isDigital = selections.format === BOOK_FORMAT.digital;
   const alreadyOwned =
@@ -350,13 +360,7 @@ export const ProductInfo = ({
       ) : (
         <Stack spacing={2} sx={{ mt: 4 }}>
           {selectionAvailability === "available" ? null : (
-            <Alert severity="warning">
-              {tProductPage(
-                selectionAvailability === "sold-out"
-                  ? "actions.soldOutSelection"
-                  : "actions.unavailableSelection",
-              )}
-            </Alert>
+            <Alert severity="warning">{tProductPage(unavailableMessage)}</Alert>
           )}
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <Button

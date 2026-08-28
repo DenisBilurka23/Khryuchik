@@ -49,6 +49,8 @@ export const ShopSection = async ({
                 addToCart={t("addToCart")}
                 selectOptions={t("selectOptions")}
                 wishlistAriaLabel={t("wishlistAriaLabel")}
+                outOfStock={t("outOfStock")}
+                viewProduct={t("viewProduct")}
                 detailsHref={getLocalizedProductPath(locale, product.slug)}
               />
             </Grid>

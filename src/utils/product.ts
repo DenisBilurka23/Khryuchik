@@ -1,6 +1,7 @@
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   LocalizedProductSummary,
+  ProductAvailability,
   PrintifyVariantLink,
   ProductCountryPricing,
   ProductDetailDocument,
@@ -24,6 +25,9 @@ import {
 } from "./variant-matrix";
 
 const nativePricing: RegionPricing = { status: "native" };
+
+export const isPurchasableAvailability = (availability: ProductAvailability) =>
+  availability !== "out_of_stock";
 
 const localizeDeliveryCopy = (
   delivery: string[],
@@ -247,6 +251,7 @@ export const toProductDetails = (
     price: summary.price,
     currency: summary.currency,
     oldPrice: summary.oldPrice,
+    availability: summary.availability,
     badge: translation.badge,
     storyLabel: translation.storyLabel,
     storyTitle: translation.storyTitle,

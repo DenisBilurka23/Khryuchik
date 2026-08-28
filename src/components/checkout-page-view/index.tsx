@@ -29,6 +29,7 @@ import {
   getCountryPaymentMethods,
   getLocalizedPath,
   isIsoCountryCode,
+  isPurchasableAvailability,
   type PaymentMethod,
 } from "@/utils";
 
@@ -92,6 +93,9 @@ export const CheckoutPageView = ({
 
   const { items, subtotal, isLoading, isPricingUnavailable, hasStoredItems } =
     useResolvedCart(locale, country, buyNowItems ?? undefined);
+  const hasUnavailableItems = items.some(
+    (item) => !isPurchasableAvailability(item.availability),
+  );
 
   const availableMethods = useMemo(
     () => getCountryPaymentMethods(country),
@@ -272,6 +276,8 @@ export const CheckoutPageView = ({
         return labels.errors.shippingMissingData;
       case "unsupported_variant":
         return labels.errors.unsupportedVariant;
+      case "item_out_of_stock":
+        return labels.errors.itemOutOfStock;
       case "pickup_point_required":
         return labels.fieldErrors.pickupPointRequired;
       case "shop_closed":
@@ -289,6 +295,11 @@ export const CheckoutPageView = ({
 
     if (isPricingUnavailable) {
       setError(labels.errors.pricingUnavailable);
+      return;
+    }
+
+    if (hasUnavailableItems) {
+      setError(labels.errors.itemOutOfStock);
       return;
     }
 
@@ -547,10 +558,16 @@ export const CheckoutPageView = ({
                       error={
                         isPricingUnavailable
                           ? labels.errors.pricingUnavailable
-                          : error
+                          : hasUnavailableItems
+                            ? labels.errors.itemOutOfStock
+                            : error
                       }
                       isSubmitting={isSubmitting}
-                      isBlocked={isPricingUnavailable || isBlockedByShipping}
+                      isBlocked={
+                        isPricingUnavailable ||
+                        hasUnavailableItems ||
+                        isBlockedByShipping
+                      }
                       hasStoredItems={hasStoredItems}
                       paymentMethod={paymentMethod}
                       labels={labels}
