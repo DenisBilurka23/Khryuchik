@@ -177,6 +177,15 @@ const AdminOrdersPage = async () => {
                               canBuyShippingLabel(fulfillment.provider),
                             )
                             .map((fulfillment) => fulfillment.id)}
+                          address={
+                            order.shippingAddress && {
+                              country: order.shippingAddress.country,
+                              region: order.shippingAddress.region,
+                              city: order.shippingAddress.city,
+                              postalCode: order.shippingAddress.postalCode,
+                              line1: order.shippingAddress.line1,
+                            }
+                          }
                         />
                       </Stack>
                     </TableCell>

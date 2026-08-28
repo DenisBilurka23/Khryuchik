@@ -11,6 +11,7 @@ export type CheckoutRequestPayload = {
   shippingAddress?: OrderShippingAddress;
   paymentMethod: PaymentMethod;
   selectedShippingOptionIds?: Record<string, string>;
+  pickupPointIds?: Record<string, string>;
   notes?: string;
 };
 

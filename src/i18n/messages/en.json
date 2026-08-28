@@ -758,8 +758,13 @@
         "title": "Delivery method",
         "calculating": "Calculating delivery…",
         "multipleParcels": "This order travels in more than one parcel.",
-        "withTracking": "With tracking",
+        "toAddress": "To the address",
         "pickupPoint": "To a parcel point",
+        "pickupPointSelect": {
+          "title": "Choose a pickup point",
+          "loading": "Looking for points near you…",
+          "empty": "No pickup points found for this address. Pick delivery to the address instead."
+        },
         "parcels": {
           "printify": "Made-to-order merch",
           "manual": "Books"
@@ -798,7 +803,8 @@
       "fieldErrors": {
         "required": "Required field",
         "invalidEmail": "Enter a valid email address",
-        "invalidPostalCode": "Enter a valid postal code"
+        "invalidPostalCode": "Enter a valid postal code",
+        "pickupPointRequired": "Choose a pickup point"
       },
       "emptyState": {
         "title": "Your cart is empty",
@@ -1613,6 +1619,18 @@
           "admin": "marked by you",
           "customer": "confirmed by the customer"
         }
+      },
+      "pickupPoint": {
+        "label": "Pickup point: {name}, {address} (id {id})",
+        "button": "Change the pickup point",
+        "dialogTitle": "Pickup point for this parcel",
+        "dialogDescription": "The list comes from bpost for the delivery address on this order. Clearing it turns the parcel back into a delivery to the address.",
+        "confirmLabel": "Save",
+        "cancelLabel": "Cancel",
+        "selectLabel": "Point",
+        "none": "No point",
+        "loading": "Asking bpost for points near this address…",
+        "empty": "bpost lists no points for this address."
       },
       "refund": {
         "button": "Refund payment",

@@ -20,6 +20,8 @@ import { EmptyCartState } from "@/components/cart";
 import storefrontStyles from "@/components/storefront/storefront.module.css";
 import { useBuyNowCheckoutItems } from "@/hooks/useBuyNowCheckoutItems";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
+import { usePickupPoints } from "@/hooks/usePickupPoints";
+import type { ShippingPickupPoint } from "@/types/shipping";
 import { useShippingQuote } from "@/hooks/useShippingQuote";
 import {
   type CountryCode,
@@ -48,6 +50,7 @@ import type {
 import {
   formFromAddress,
   isShippingBlocking,
+  resolvePickupGroupIds,
   resolveShippingSelection,
   resolveShippingTotal,
   shippingErrorMessage,
@@ -121,11 +124,13 @@ export const CheckoutPageView = ({
     formFromAddress(initialCustomer, defaultAddress),
   );
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  // One chosen option per parcel. Empty until the shopper picks something -
-  // every group already carries its own default.
   const [selectedShippingOptionIds, setSelectedShippingOptionIds] = useState<
     Record<string, string>
   >({});
+  const [selectedPickupPoints, setSelectedPickupPoints] = useState<
+    Record<string, ShippingPickupPoint>
+  >({});
+  const [pickupPointError, setPickupPointError] = useState<string | null>(null);
   const [isLocationFieldFocused, setIsLocationFieldFocused] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -138,20 +143,30 @@ export const CheckoutPageView = ({
     items.length > 0 && items.every((item) => item.isDigital);
 
   const checkoutItems = buyNowItems ?? cart.items;
+  const quoteAddress = isIsoCountryCode(form.country)
+    ? {
+        country: form.country,
+        region: form.region.trim() || undefined,
+        city: form.city.trim() || undefined,
+        postalCode: form.postalCode.trim() || undefined,
+        line1: form.line1.trim() || undefined,
+      }
+    : null;
   const shippingQuote = useShippingQuote({
     locale,
     items: checkoutItems,
-    address: isIsoCountryCode(form.country)
-      ? {
-          country: form.country,
-          region: form.region.trim() || undefined,
-          city: form.city.trim() || undefined,
-          postalCode: form.postalCode.trim() || undefined,
-          line1: form.line1.trim() || undefined,
-        }
-      : null,
+    address: quoteAddress,
     isEnabled: !isDigitalOnly && checkoutItems.length > 0,
     isLocationFieldFocused,
+  });
+
+  const pickupGroupIds = resolvePickupGroupIds(
+    shippingQuote.groups,
+    selectedShippingOptionIds,
+  );
+  const pickupPoints = usePickupPoints({
+    address: quoteAddress,
+    isEnabled: pickupGroupIds.length > 0,
   });
 
   const shipping =
@@ -180,11 +195,17 @@ export const CheckoutPageView = ({
 
   const handleShippingOptionChange = (groupId: string, optionId: string) => {
     setSelectedShippingOptionIds((prev) => ({ ...prev, [groupId]: optionId }));
+    setPickupPointError(null);
   };
 
-  // A region code only means something inside its own country: keeping the old
-  // one turns "Ontario" into an invalid province the moment the country moves
-  // to the US, and the select hides it because it no longer matches an option.
+  const handlePickupPointChange = (
+    groupId: string,
+    point: ShippingPickupPoint,
+  ) => {
+    setSelectedPickupPoints((prev) => ({ ...prev, [groupId]: point }));
+    setPickupPointError(null);
+  };
+
   const handleCountryChange = (value: string) => {
     setForm((prev) => ({ ...prev, country: value, region: "" }));
     clearFieldError("country");
@@ -251,6 +272,8 @@ export const CheckoutPageView = ({
         return labels.errors.shippingMissingData;
       case "unsupported_variant":
         return labels.errors.unsupportedVariant;
+      case "pickup_point_required":
+        return labels.fieldErrors.pickupPointRequired;
       case "shop_closed":
         return labels.errors.shopClosed;
       case "payment_failed":
@@ -288,7 +311,18 @@ export const CheckoutPageView = ({
       return;
     }
 
+    const missingPickupPoint = pickupGroupIds.some(
+      (groupId) => !selectedPickupPoints[groupId],
+    );
+
+    if (missingPickupPoint) {
+      setPickupPointError(labels.fieldErrors.pickupPointRequired);
+      setError(null);
+      return;
+    }
+
     setFieldErrors({});
+    setPickupPointError(null);
     setError(null);
     setIsSubmitting(true);
 
@@ -319,6 +353,15 @@ export const CheckoutPageView = ({
               shippingQuote.groups,
               selectedShippingOptionIds,
             ),
+        pickupPointIds:
+          pickupGroupIds.length > 0
+            ? Object.fromEntries(
+                pickupGroupIds.map((groupId) => [
+                  groupId,
+                  selectedPickupPoints[groupId].id,
+                ]),
+              )
+            : undefined,
         notes: form.notes.trim() || undefined,
       });
 
@@ -468,6 +511,13 @@ export const CheckoutPageView = ({
                           errorMessage={shippingError ?? undefined}
                           selectedOptionIds={selectedShippingOptionIds}
                           onOptionChange={handleShippingOptionChange}
+                          pickupPoints={pickupPoints.points}
+                          pickupPointsStatus={pickupPoints.status}
+                          selectedPickupPoints={selectedPickupPoints}
+                          onPickupPointChange={handlePickupPointChange}
+                          pickupPointErrorMessage={
+                            pickupPointError ?? undefined
+                          }
                           currency={currency}
                           locale={locale}
                           labels={labels}

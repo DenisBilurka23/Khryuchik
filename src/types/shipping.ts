@@ -85,6 +85,17 @@ export type ShippingFulfillmentGroup = ShippingQuoteGroup & {
   parcel?: ShippingParcel;
 };
 
+export type ShippingPickupPoint = {
+  id: string;
+  type: number;
+  name: string;
+  street?: string;
+  number?: string;
+  postalCode?: string;
+  city?: string;
+  country: string;
+};
+
 export type ShippingLabel = {
   trackingNumber?: string;
   trackingUrl?: string;

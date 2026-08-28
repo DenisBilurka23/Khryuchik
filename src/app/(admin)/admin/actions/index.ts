@@ -20,6 +20,7 @@ export {
   deleteAdminOrderAction,
   markAdminOrderParcelDeliveredAction,
   refundAdminOrderPaymentAction,
+  saveAdminOrderPickupPointAction,
   saveAdminOrderTrackingAction,
   sendAdminOrderToProductionAction,
   updateAdminOrderStatusAction,

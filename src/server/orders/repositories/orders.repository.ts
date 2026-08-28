@@ -8,6 +8,7 @@ import type {
   OrderPrintifyInfo,
   OrderStatus,
 } from "@/types/order";
+import type { ShippingPickupPoint } from "@/types/shipping";
 
 const collectionName = "orders";
 
@@ -204,10 +205,10 @@ export type OrderFulfillmentPatch = {
   [Key in keyof OrderFulfillmentProgress]?:
     | OrderFulfillmentProgress[Key]
     | null;
+} & {
+  pickupPoint?: ShippingPickupPoint | null;
 };
 
-// Keyed by the parcel's own id, not by its source: an order can carry two manual
-// parcels when its books ship from different warehouses.
 export const updateOrderFulfillment = async (
   orderId: string,
   fulfillmentId: string,

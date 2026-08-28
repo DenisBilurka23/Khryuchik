@@ -1,5 +1,5 @@
 import type { Locale } from "@/i18n/config";
-import type { OrderFulfillment } from "@/types/order";
+import type { OrderFulfillment, ShippingQuoteRequest } from "@/types/order";
 import type { CurrencyCode } from "@/utils";
 
 export type AdminOrderFulfillmentsProps = {
@@ -8,4 +8,5 @@ export type AdminOrderFulfillmentsProps = {
   currency: CurrencyCode;
   fulfillments?: OrderFulfillment[];
   buyableIds: string[];
+  address?: ShippingQuoteRequest["address"];
 };

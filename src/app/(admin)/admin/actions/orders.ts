@@ -22,6 +22,7 @@ import { applyStripeRefund } from "@/server/orders/services/orders.service";
 import { buyOrderLabel } from "@/server/orders/services/shipping-label.service";
 import { refundStripePayment } from "@/server/payments/stripe";
 import type { OrderStatus } from "@/types/order";
+import type { ShippingPickupPoint } from "@/types/shipping";
 import {
   asOptionalString,
   hasLivePrintifyOrder,
@@ -213,6 +214,38 @@ export const saveAdminOrderTrackingAction = async (
     });
   } catch (error) {
     console.error("saveAdminOrderTrackingAction failed", error);
+    return { ok: false, error: "failed" };
+  }
+
+  revalidateOrderDependentPaths();
+  return { ok: true };
+};
+
+export const saveAdminOrderPickupPointAction = async (
+  orderId: string,
+  fulfillmentId: string,
+  point: ShippingPickupPoint | null,
+): Promise<AdminActionResult<"unknown_parcel">> => {
+  const session = await requireAdminApiAccess();
+  if (!session) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const order = await findOrderById(orderId);
+  const parcel = order?.fulfillments?.find(
+    (fulfillment) => fulfillment.id === fulfillmentId,
+  );
+
+  if (!parcel) {
+    return { ok: false, error: "unknown_parcel" };
+  }
+
+  try {
+    await updateOrderFulfillment(orderId, fulfillmentId, {
+      pickupPoint: point,
+    });
+  } catch (error) {
+    console.error("saveAdminOrderPickupPointAction failed", error);
     return { ok: false, error: "failed" };
   }
 

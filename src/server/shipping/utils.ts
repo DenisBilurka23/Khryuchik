@@ -8,6 +8,7 @@ import type {
   ShippingFulfillmentGroup,
   ShippingHubCode,
   ShippingOption,
+  ShippingPickupPoint,
 } from "@/types/shipping";
 import type { CountryCode } from "@/utils";
 
@@ -60,8 +61,22 @@ export const chooseHubs = (
   return inStock.length > 0 ? inStock : stockedHubs;
 };
 
+// Groups whose chosen option is delivered to a pickup point. bpost only sells
+// that for Belgium, France and the Netherlands, so this is usually empty.
+export const resolvePickupGroupIds = (
+  groups: ShippingFulfillmentGroup[],
+): string[] =>
+  groups
+    .filter(
+      (group) =>
+        group.options.find((option) => option.id === group.selectedOptionId)
+          ?.deliveryType === "pickup-point",
+    )
+    .map((group) => group.id);
+
 export const toOrderFulfillments = (
   groups: ShippingFulfillmentGroup[],
+  pickupPoints: Record<string, ShippingPickupPoint> = {},
 ): OrderFulfillment[] =>
   groups.flatMap((group) => {
     if (group.source === "digital") {
@@ -86,6 +101,7 @@ export const toOrderFulfillments = (
         currency: option.currency,
         parcel: group.parcel,
         externalId: option.externalId,
+        pickupPoint: pickupPoints[group.id],
       },
     ];
   });

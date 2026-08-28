@@ -2,6 +2,7 @@ import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
 import type {
   ShippingParcel,
+  ShippingPickupPoint,
   ShippingProviderCode,
   ShippingQuoteGroup,
 } from "@/types/shipping";
@@ -111,6 +112,7 @@ export type OrderFulfillment = OrderFulfillmentProgress & {
   currency: CurrencyCode;
   parcel?: ShippingParcel;
   externalId?: string;
+  pickupPoint?: ShippingPickupPoint;
 };
 
 export type OrderTracking = {
@@ -182,6 +184,7 @@ export type CreateOrderInput = {
   userId?: string;
   notes?: string;
   selectedShippingOptionIds?: Record<string, string>;
+  pickupPointIds?: Record<string, string>;
 };
 
 export type ShippingQuoteRequest = {
@@ -194,6 +197,14 @@ export type ShippingQuoteRequest = {
     postalCode?: string;
     line1?: string;
   };
+};
+
+export type PickupPointsRequest = {
+  address: ShippingQuoteRequest["address"];
+};
+
+export type PickupPointsResponse = {
+  points: ShippingPickupPoint[];
 };
 
 export type ShippingQuoteResponse =

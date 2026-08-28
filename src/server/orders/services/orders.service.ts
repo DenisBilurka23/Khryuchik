@@ -24,8 +24,10 @@ import type {
   OrderItem,
   OrderPaymentInfo,
 } from "@/types/order";
+import type { ShippingPickupPoint } from "@/types/shipping";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import {
+  type CountryCode,
   isPaymentMethodAvailable,
   type PaymentMethod,
   roundToCents,
@@ -35,7 +37,11 @@ import {
   type OrderShippingResult,
 } from "@/server/orders/services/shipping.service";
 import { getRegionCurrency } from "@/server/localization/localization.service";
-import { toOrderFulfillments } from "@/server/shipping/utils";
+import { resolvePickupPoint } from "@/server/shipping/services/pickup-points.service";
+import {
+  resolvePickupGroupIds,
+  toOrderFulfillments,
+} from "@/server/shipping/utils";
 
 export class OrderValidationError extends Error {
   constructor(
@@ -49,7 +55,8 @@ export class OrderValidationError extends Error {
       | "shipping_unsupported_destination"
       | "shipping_unsupported_parcel"
       | "shipping_missing_data"
-      | "unsupported_variant",
+      | "unsupported_variant"
+      | "pickup_point_required",
   ) {
     super(message);
     this.name = "OrderValidationError";
@@ -181,8 +188,36 @@ export const createOrder = async (
     );
   }
 
+  const pickupPoints: Record<string, ShippingPickupPoint> = {};
+
+  for (const groupId of resolvePickupGroupIds(shippingResult.groups)) {
+    const pointId = input.pickupPointIds?.[groupId];
+    const point =
+      pointId && input.shippingAddress
+        ? await resolvePickupPoint(
+            {
+              country: input.shippingAddress.country as CountryCode,
+              region: input.shippingAddress.region,
+              city: input.shippingAddress.city,
+              postalCode: input.shippingAddress.postalCode,
+              line1: input.shippingAddress.line1,
+            },
+            pointId,
+          )
+        : null;
+
+    if (!point) {
+      throw new OrderValidationError(
+        `No pickup point for parcel ${groupId}`,
+        "pickup_point_required",
+      );
+    }
+
+    pickupPoints[groupId] = point;
+  }
+
   const shipping = shippingResult.shipping;
-  const fulfillments = toOrderFulfillments(shippingResult.groups);
+  const fulfillments = toOrderFulfillments(shippingResult.groups, pickupPoints);
   const discount = 0;
   const total = roundToCents(subtotal + shipping - discount);
 

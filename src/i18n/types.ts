@@ -209,8 +209,13 @@ export type CheckoutPageLabels = {
     title: string;
     calculating: string;
     multipleParcels: string;
-    withTracking: string;
+    toAddress: string;
     pickupPoint: string;
+    pickupPointSelect: {
+      title: string;
+      loading: string;
+      empty: string;
+    };
     transitDays: string;
     parcels: {
       printify: string;
@@ -255,6 +260,7 @@ export type CheckoutPageLabels = {
     required: string;
     invalidEmail: string;
     invalidPostalCode: string;
+    pickupPointRequired: string;
   };
   emptyState: {
     title: string;

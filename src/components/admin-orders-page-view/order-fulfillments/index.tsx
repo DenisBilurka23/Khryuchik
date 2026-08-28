@@ -1,10 +1,15 @@
 import { Link, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import { formatCurrency, formatOrderTracking } from "@/utils";
+import {
+  formatCurrency,
+  formatOrderTracking,
+  formatPickupPointAddress,
+} from "@/utils";
 
 import { AdminOrderBuyLabelButton } from "./buy-label-button";
 import { AdminOrderMarkDeliveredButton } from "./mark-delivered-button";
+import { AdminOrderPickupPointButton } from "./pickup-point-button";
 import { AdminOrderTrackingButton } from "./tracking-button";
 import type { AdminOrderFulfillmentsProps } from "./types";
 
@@ -14,11 +19,13 @@ export const AdminOrderFulfillments = ({
   currency,
   fulfillments,
   buyableIds,
+  address,
 }: AdminOrderFulfillmentsProps) => {
   const t = useTranslations("adminPage.orders.tracking");
   const tParcels = useTranslations("adminPage.orders.parcels");
   const tLabel = useTranslations("adminPage.orders.buyLabel");
   const tDelivered = useTranslations("adminPage.orders.markDelivered");
+  const tPickup = useTranslations("adminPage.orders.pickupPoint");
 
   if (!fulfillments || fulfillments.length === 0) {
     return null;
@@ -76,6 +83,14 @@ export const AdminOrderFulfillments = ({
                     )}
                   />
                 )}
+              {fulfillment.pickupPoint && address ? (
+                <AdminOrderPickupPointButton
+                  orderId={orderId}
+                  fulfillmentId={fulfillment.id}
+                  address={address}
+                  pickupPoint={fulfillment.pickupPoint}
+                />
+              ) : null}
               {!fulfillment.deliveredAt && (
                 <AdminOrderMarkDeliveredButton
                   orderId={orderId}
@@ -90,6 +105,15 @@ export const AdminOrderFulfillments = ({
                     locale,
                   ),
                   by: tDelivered(`by.${fulfillment.deliveredBy ?? "carrier"}`),
+                })}
+              </Typography>
+            ) : null}
+            {fulfillment.pickupPoint ? (
+              <Typography variant="caption" color="text.secondary">
+                {tPickup("label", {
+                  name: fulfillment.pickupPoint.name,
+                  address: formatPickupPointAddress(fulfillment.pickupPoint),
+                  id: fulfillment.pickupPoint.id,
                 })}
               </Typography>
             ) : null}

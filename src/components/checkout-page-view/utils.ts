@@ -94,7 +94,11 @@ export const shippingOptionLabel = (
 ) =>
   option.deliveryType === "pickup-point"
     ? labels.shippingMethod.pickupPoint
-    : labels.shippingMethod.withTracking;
+    : labels.shippingMethod.toAddress;
+
+export const isPickupPointOption = (
+  option?: ShippingQuoteGroup["options"][number],
+) => option?.deliveryType === "pickup-point";
 
 export const shippingOptionTransit = (
   option: ShippingQuoteGroup["options"][number],
@@ -121,6 +125,23 @@ export const resolveSelectedOptionId = (
 
   return isOffered ? preferredId : (group.options[0]?.id ?? "");
 };
+
+// The groups whose chosen option goes to a pickup point - normally at most one,
+// since made-to-order merch always ships to an address.
+export const resolvePickupGroupIds = (
+  groups: ShippingQuoteGroup[],
+  selectedOptionIds: Record<string, string>,
+): string[] =>
+  groups
+    .filter((group) =>
+      isPickupPointOption(
+        group.options.find(
+          (option) =>
+            option.id === resolveSelectedOptionId(group, selectedOptionIds),
+        ),
+      ),
+    )
+    .map((group) => group.id);
 
 export const resolveShippingTotal = (
   groups: ShippingQuoteGroup[],

@@ -15,11 +15,13 @@ import { formatCurrency } from "@/utils";
 
 import { CheckoutSectionCard } from "../../section-card";
 import {
+  isPickupPointOption,
   resolveSelectedOptionId,
   shippingGroupLabel,
   shippingOptionLabel,
   shippingOptionTransit,
 } from "../../utils";
+import { PickupPointSelect } from "./pickup-point-select";
 import type { ShippingMethodSectionProps } from "./types";
 
 export const CheckoutShippingMethodSection = ({
@@ -28,6 +30,11 @@ export const CheckoutShippingMethodSection = ({
   errorMessage,
   selectedOptionIds,
   onOptionChange,
+  pickupPoints,
+  pickupPointsStatus,
+  selectedPickupPoints,
+  onPickupPointChange,
+  pickupPointErrorMessage,
   currency,
   locale,
   labels,
@@ -59,117 +66,137 @@ export const CheckoutShippingMethodSection = ({
             </Typography>
           ) : null}
 
-          {shippableGroups.map((group) => (
-            <Stack key={group.id} spacing={1}>
-              {shippableGroups.length > 1 ? (
-                <Typography sx={{ fontWeight: 700 }}>
-                  {shippingGroupLabel(group, labels)}
-                </Typography>
-              ) : null}
+          {shippableGroups.map((group) => {
+            const selectedOption = group.options.find(
+              (option) =>
+                option.id === resolveSelectedOptionId(group, selectedOptionIds),
+            );
 
-              {group.options.length === 1 ? (
-                <Stack
-                  direction="row"
-                  justifyContent="space-between"
-                  sx={{
-                    border: "1px solid #F0DFC8",
-                    borderRadius: 2,
-                    p: 2,
-                  }}
-                >
-                  <Stack direction="row" spacing={2} alignItems="baseline">
-                    <Typography>
-                      {shippingOptionLabel(group.options[0], labels)}
-                    </Typography>
-                    {shippingOptionTransit(group.options[0], labels) ? (
-                      <Typography variant="body2" color="text.secondary">
-                        {shippingOptionTransit(group.options[0], labels)}
-                      </Typography>
-                    ) : null}
-                  </Stack>
+            return (
+              <Stack key={group.id} spacing={1}>
+                {shippableGroups.length > 1 ? (
                   <Typography sx={{ fontWeight: 700 }}>
-                    {formatCurrency(
-                      group.options[0].amount,
-                      locale,
-                      currency,
-                      SHIPPING_FRACTION_DIGITS,
-                    )}
+                    {shippingGroupLabel(group, labels)}
                   </Typography>
-                </Stack>
-              ) : (
-                <FormControl fullWidth>
-                  <RadioGroup
-                    value={resolveSelectedOptionId(group, selectedOptionIds)}
-                    onChange={(event) =>
-                      onOptionChange(group.id, event.target.value)
-                    }
-                  >
-                    <Stack spacing={1}>
-                      {group.options.map((option) => {
-                        const isSelected =
-                          resolveSelectedOptionId(group, selectedOptionIds) ===
-                          option.id;
+                ) : null}
 
-                        return (
-                          <Box
-                            key={option.id}
-                            sx={{
-                              border: "1px solid",
-                              borderColor: isSelected
-                                ? "primary.main"
-                                : "#F0DFC8",
-                              borderRadius: 2,
-                              px: 2,
-                              py: 1,
-                              transition: "border-color .2s ease",
-                            }}
-                          >
-                            <FormControlLabel
-                              value={option.id}
-                              control={<Radio />}
-                              sx={{
-                                m: 0,
-                                width: "100%",
-                                justifyContent: "space-between",
-                              }}
-                              labelPlacement="start"
-                              label={
-                                <Stack
-                                  direction="row"
-                                  spacing={2}
-                                  alignItems="baseline"
-                                >
-                                  <Typography>
-                                    {shippingOptionLabel(option, labels)}
-                                  </Typography>
-                                  {shippingOptionTransit(option, labels) ? (
-                                    <Typography
-                                      variant="body2"
-                                      color="text.secondary"
-                                    >
-                                      {shippingOptionTransit(option, labels)}
-                                    </Typography>
-                                  ) : null}
-                                  <Typography sx={{ fontWeight: 700 }}>
-                                    {formatCurrency(
-                                      option.amount,
-                                      locale,
-                                      currency,
-                                      SHIPPING_FRACTION_DIGITS,
-                                    )}
-                                  </Typography>
-                                </Stack>
-                              }
-                            />
-                          </Box>
-                        );
-                      })}
+                {group.options.length === 1 ? (
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    sx={{
+                      border: "1px solid #F0DFC8",
+                      borderRadius: 2,
+                      p: 2,
+                    }}
+                  >
+                    <Stack direction="row" spacing={2} alignItems="baseline">
+                      <Typography>
+                        {shippingOptionLabel(group.options[0], labels)}
+                      </Typography>
+                      {shippingOptionTransit(group.options[0], labels) ? (
+                        <Typography variant="body2" color="text.secondary">
+                          {shippingOptionTransit(group.options[0], labels)}
+                        </Typography>
+                      ) : null}
                     </Stack>
-                  </RadioGroup>
-                </FormControl>
-              )}
-            </Stack>
-          ))}
+                    <Typography sx={{ fontWeight: 700 }}>
+                      {formatCurrency(
+                        group.options[0].amount,
+                        locale,
+                        currency,
+                        SHIPPING_FRACTION_DIGITS,
+                      )}
+                    </Typography>
+                  </Stack>
+                ) : (
+                  <FormControl fullWidth>
+                    <RadioGroup
+                      value={resolveSelectedOptionId(group, selectedOptionIds)}
+                      onChange={(event) =>
+                        onOptionChange(group.id, event.target.value)
+                      }
+                    >
+                      <Stack spacing={1}>
+                        {group.options.map((option) => {
+                          const isSelected =
+                            resolveSelectedOptionId(
+                              group,
+                              selectedOptionIds,
+                            ) === option.id;
+
+                          return (
+                            <Box
+                              key={option.id}
+                              sx={{
+                                border: "1px solid",
+                                borderColor: isSelected
+                                  ? "primary.main"
+                                  : "#F0DFC8",
+                                borderRadius: 2,
+                                px: 2,
+                                py: 1,
+                                transition: "border-color .2s ease",
+                              }}
+                            >
+                              <FormControlLabel
+                                value={option.id}
+                                control={<Radio />}
+                                sx={{
+                                  m: 0,
+                                  width: "100%",
+                                  justifyContent: "space-between",
+                                }}
+                                labelPlacement="start"
+                                label={
+                                  <Stack
+                                    direction="row"
+                                    spacing={2}
+                                    alignItems="baseline"
+                                  >
+                                    <Typography>
+                                      {shippingOptionLabel(option, labels)}
+                                    </Typography>
+                                    {shippingOptionTransit(option, labels) ? (
+                                      <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                      >
+                                        {shippingOptionTransit(option, labels)}
+                                      </Typography>
+                                    ) : null}
+                                    <Typography sx={{ fontWeight: 700 }}>
+                                      {formatCurrency(
+                                        option.amount,
+                                        locale,
+                                        currency,
+                                        SHIPPING_FRACTION_DIGITS,
+                                      )}
+                                    </Typography>
+                                  </Stack>
+                                }
+                              />
+                            </Box>
+                          );
+                        })}
+                      </Stack>
+                    </RadioGroup>
+                  </FormControl>
+                )}
+
+                {isPickupPointOption(selectedOption) ? (
+                  <PickupPointSelect
+                    points={pickupPoints}
+                    status={pickupPointsStatus}
+                    selectedPointId={selectedPickupPoints[group.id]?.id}
+                    onChange={(point) => onPickupPointChange(group.id, point)}
+                    errorMessage={pickupPointErrorMessage}
+                    labels={labels}
+                  />
+                ) : null}
+              </Stack>
+            );
+          })}
         </Stack>
       ) : null}
     </CheckoutSectionCard>

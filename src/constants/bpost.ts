@@ -87,6 +87,23 @@ export const BPOST_PICKUP_POINT_COUNTRIES: readonly CountryCode[] = [
   "NL",
 ];
 
+export const hasBpostPickupPoints = (country: string): boolean => {
+  const code = country.toUpperCase();
+
+  return (
+    code === BPOST_ORIGIN_COUNTRY ||
+    BPOST_PICKUP_POINT_COUNTRIES.includes(code as CountryCode)
+  );
+};
+
+export const BPOST_LOCATOR_URL = "https://pudo.bpost.be/Locator";
+
+export const BPOST_LOCATOR_POINT_TYPES = 3;
+
+export const BPOST_LOCATOR_LIMIT = 10;
+
+export const BPOST_LOCATOR_TIMEOUT_MS = 8_000;
+
 export const resolveBpostZone = (country: CountryCode): BpostZone => {
   const code = country.toUpperCase();
 
