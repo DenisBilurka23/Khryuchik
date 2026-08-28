@@ -5,6 +5,7 @@ import type {
   OrderDocument,
   OrderFulfillmentProgress,
   OrderPaymentInfo,
+  OrderPrintedStockMovement,
   OrderPrintifyInfo,
   OrderStatus,
 } from "@/types/order";
@@ -257,4 +258,41 @@ export const deleteOrder = async (id: string): Promise<void> => {
   const collection = await getOrdersCollection();
 
   await collection.deleteOne({ id });
+};
+
+export const claimPrintedStockApplication = async (
+  id: string,
+): Promise<boolean> => {
+  const collection = await getOrdersCollection();
+  const result = await collection.updateOne(
+    { id, printedStockAppliedAt: { $exists: false } },
+    { $set: { printedStockAppliedAt: new Date().toISOString() } },
+  );
+
+  return result.modifiedCount > 0;
+};
+
+export const savePrintedStockMovements = async (
+  id: string,
+  movements: OrderPrintedStockMovement[],
+): Promise<void> => {
+  const collection = await getOrdersCollection();
+
+  await collection.updateOne(
+    { id },
+    { $set: { printedStockMovements: movements } },
+  );
+};
+
+export const releasePrintedStockApplication = async (
+  id: string,
+): Promise<OrderPrintedStockMovement[] | null> => {
+  const collection = await getOrdersCollection();
+  const released = await collection.findOneAndUpdate(
+    { id, printedStockAppliedAt: { $exists: true } },
+    { $unset: { printedStockAppliedAt: "", printedStockMovements: "" } },
+    { returnDocument: "before" },
+  );
+
+  return released ? (released.printedStockMovements ?? []) : null;
 };

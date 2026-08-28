@@ -17,6 +17,7 @@ import {
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { requireAdminApiAccess } from "@/server/admin/auth";
+import { restoreOrderPrintedStock } from "@/server/catalog/services/printed-stock.service";
 import { markParcelDelivered } from "@/server/orders/services/delivery.service";
 import { applyStripeRefund } from "@/server/orders/services/orders.service";
 import { buyOrderLabel } from "@/server/orders/services/shipping-label.service";
@@ -57,6 +58,10 @@ export const updateAdminOrderStatusAction = async (
     if (previous && previous.status !== status) {
       const updated = await findOrderById(orderId);
       if (updated) {
+        if (status === "cancelled") {
+          await restoreOrderPrintedStock(updated);
+        }
+
         await sendOrderStatusEmail(updated, previous.status);
       }
     }

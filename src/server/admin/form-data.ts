@@ -21,7 +21,7 @@ import type {
   ProductReview,
 } from "@/types/product-details";
 import { SHIPPING_HUB_CODES } from "@/constants/shipping";
-import type { ShippingHubCode, ShippingManufacturer } from "@/types/shipping";
+import type { ShippingManufacturer } from "@/types/shipping";
 import type { CurrencyCode } from "@/utils";
 
 const parseString = (formData: FormData, key: string) => {
@@ -174,7 +174,7 @@ const parseProductPrintedStock = (
   formData: FormData,
   localeCodes: string[],
 ): ProductPrintedStock => {
-  const posted = parseJsonField<Record<string, string[]>>(
+  const posted = parseJsonField<Record<string, Record<string, unknown>>>(
     formData,
     "shipping.stockByLanguage",
     {},
@@ -185,12 +185,16 @@ const parseProductPrintedStock = (
       .filter(([language]) => localeCodes.includes(language))
       .map(([language, hubs]) => [
         language,
-        (Array.isArray(hubs) ? hubs : []).filter(
-          (hub): hub is ShippingHubCode =>
-            SHIPPING_HUB_CODES.includes(hub as ShippingHubCode),
+        Object.fromEntries(
+          SHIPPING_HUB_CODES.flatMap((hub) => {
+            const quantity = Math.trunc(Number(hubs?.[hub]));
+
+            return Number.isFinite(quantity) && quantity > 0
+              ? [[hub, quantity] as const]
+              : [];
+          }),
         ),
-      ])
-      .filter(([, hubs]) => (hubs as ShippingHubCode[]).length > 0),
+      ]),
   );
 };
 
@@ -240,7 +244,9 @@ const parseProductShipping = (
     widthMm: parseNumber(formData, "shipping.widthMm"),
     heightMm: parseNumber(formData, "shipping.heightMm"),
     hubs: SHIPPING_HUB_CODES.filter((hub) =>
-      Object.values(stockByLanguage).some((hubs) => hubs?.includes(hub)),
+      Object.values(stockByLanguage).some(
+        (hubStock) => (hubStock?.[hub] ?? 0) > 0,
+      ),
     ),
     hsCode: parseOptionalString(formData, "shipping.hsCode"),
   };

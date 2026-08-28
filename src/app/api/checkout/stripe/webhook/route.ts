@@ -8,6 +8,7 @@ import {
   updateOrderPayment,
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
+import { applyOrderPrintedStock } from "@/server/catalog/services/printed-stock.service";
 import { applyStripeRefund } from "@/server/orders/services/orders.service";
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
@@ -59,6 +60,7 @@ const handleCheckoutCompleted = async (session: Stripe.Checkout.Session) => {
 
   const updated = await findOrderById(orderId);
   if (updated) {
+    await applyOrderPrintedStock(updated);
     await notifyAdminOrderPaid(updated);
     await sendOrderConfirmationEmail(updated);
     await submitOrderToPrintify(updated);

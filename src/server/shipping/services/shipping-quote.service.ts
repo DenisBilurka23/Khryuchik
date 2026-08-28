@@ -84,8 +84,6 @@ export const quoteShipment = async ({
     return { status: "unsupported-destination" };
   }
 
-  // One slow or broken carrier must not take the whole checkout down: the
-  // table providers answer instantly and carry the quote on their own.
   const results = await Promise.allSettled(
     providers.map((provider) => provider.quote(parcel, destination)),
   );
@@ -104,10 +102,6 @@ export const quoteShipment = async ({
     quote.status === "quoted" ? quote.options : [],
   );
 
-  // Applied before the empty check on purpose. No zone is served by untracked
-  // services alone today, so this cannot strand a destination; if one ever
-  // were, reporting it as unserved is the honest answer rather than quietly
-  // selling a parcel nobody can trace.
   const options = SHIPPING_REQUIRES_TRACKING
     ? quotedOptions.filter((option) => option.hasTracking)
     : quotedOptions;

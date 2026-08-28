@@ -105,7 +105,9 @@ export type ProductPrintifyLink = {
   syncedAt: string;
 };
 
-export type ProductPrintedStock = Partial<Record<string, ShippingHubCode[]>>;
+export type ProductHubStock = Partial<Record<ShippingHubCode, number>>;
+
+export type ProductPrintedStock = Partial<Record<string, ProductHubStock>>;
 
 export type ProductShipping = {
   weightGrams: number;

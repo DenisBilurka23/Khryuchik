@@ -3,9 +3,15 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
+import {
+  applyOrderPrintedStock,
+  findUnstockedPrintedLines,
+  restoreOrderPrintedStock,
+} from "@/server/catalog/services/printed-stock.service";
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderReceivedEmail } from "@/server/email/order-received";
 import {
+  findOrderById,
   findOrderByStripeSessionId,
   insertOrder,
   updateOrderPayment,
@@ -142,6 +148,24 @@ export const createOrder = async (
     unitPrice: item.price,
   }));
 
+  const unstockedLineIds = await findUnstockedPrintedLines(
+    lineItems.map((item) => ({
+      id: item.id,
+      productId: item.productId,
+      quantity: item.quantity,
+      isDigital: item.isDigital,
+      language: item.selections?.language,
+    })),
+    (input.shippingAddress?.country ?? country) as CountryCode,
+  );
+
+  if (unstockedLineIds.size > 0) {
+    throw new OrderValidationError(
+      "Not enough printed copies for one of the items",
+      "item_out_of_stock",
+    );
+  }
+
   const printifyResolution = await resolvePrintifyLineItems(lineItems);
 
   if (printifyResolution === null) {
@@ -258,6 +282,7 @@ export const createOrder = async (
   const saved = await insertOrder(order);
   void notifyAdminNewOrder(saved);
   if (paymentMethod !== "stripe") {
+    await applyOrderPrintedStock(saved);
     void sendOrderReceivedEmail(saved);
   }
 
@@ -280,6 +305,16 @@ export const applyStripeRefund = async (
     refundedAt: new Date().toISOString(),
     lastRefundId: refund.refundId,
   });
+
+  if (!refund.isFullyRefunded) {
+    return;
+  }
+
+  const order = await findOrderById(orderId);
+
+  if (order) {
+    await restoreOrderPrintedStock(order);
+  }
 };
 
 export const confirmOrderFromStripeSession = async (
@@ -318,6 +353,8 @@ export const confirmOrderFromStripeSession = async (
       ...order,
       payment: { ...order.payment, status: "paid" as const },
     };
+
+    await applyOrderPrintedStock(updatedOrder);
 
     void notifyAdminOrderPaid(updatedOrder);
     void sendOrderConfirmationEmail(updatedOrder);

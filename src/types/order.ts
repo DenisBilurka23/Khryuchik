@@ -1,6 +1,7 @@
 import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
 import type {
+  ShippingHubCode,
   ShippingParcel,
   ShippingPickupPoint,
   ShippingProviderCode,
@@ -73,6 +74,13 @@ export type OrderPaymentInfo = {
   lastRefundId?: string;
 };
 
+export type OrderPrintedStockMovement = {
+  productId: string;
+  language: string;
+  hub: ShippingHubCode;
+  quantity: number;
+};
+
 export type OrderFulfillmentType = "digital" | "physical";
 
 export type OrderPrintifyInfo = {
@@ -141,6 +149,8 @@ export type OrderDocument = {
   fulfillmentType?: OrderFulfillmentType;
   printifyOrder?: OrderPrintifyInfo;
   fulfillments?: OrderFulfillment[];
+  printedStockAppliedAt?: string;
+  printedStockMovements?: OrderPrintedStockMovement[];
   notes?: string;
 };
 

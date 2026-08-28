@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment } from "react";
-import { Box, Checkbox, Stack, TextField, Typography } from "@mui/material";
+import { Box, Stack, TextField, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { AdminSectionCard } from "../../../admin-page-shared";
@@ -13,8 +13,8 @@ export const AdminProductShippingSection = ({
   selectedType,
   languages,
   printedStock,
-  isStocked,
-  onToggleHubAction,
+  getHubStock,
+  onStockChangeAction,
 }: AdminProductShippingSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
   const shipping = payload.product.shipping;
@@ -123,14 +123,25 @@ export const AdminProductShippingSection = ({
                       key={`stock-${language.value}-${hub.code}`}
                       sx={{ textAlign: "center" }}
                     >
-                      <Checkbox
-                        checked={isStocked(language.value, hub.code)}
-                        onChange={() =>
-                          onToggleHubAction(language.value, hub.code)
+                      <TextField
+                        type="number"
+                        size="small"
+                        value={getHubStock(language.value, hub.code)}
+                        onChange={(event) =>
+                          onStockChangeAction(
+                            language.value,
+                            hub.code,
+                            Number(event.target.value),
+                          )
                         }
-                        inputProps={{
-                          "aria-label": `${language.label} — ${hub.label}`,
+                        slotProps={{
+                          htmlInput: {
+                            min: 0,
+                            step: 1,
+                            "aria-label": `${language.label} — ${hub.label}`,
+                          },
                         }}
+                        sx={{ width: 96 }}
                       />
                     </Box>
                   ))}

@@ -69,8 +69,8 @@ const AdminProductFormInner = ({
     selectedOptions: selectedLanguages,
     isLanguageSelected,
     toggleLanguage,
-    isStocked,
-    toggleHub,
+    getHubStock,
+    setHubStock,
     postedStock,
   } = useProductLanguages({
     availableLocales: activeLocales,
@@ -78,6 +78,7 @@ const AdminProductFormInner = ({
     initialOptions:
       payload.details.translations[defaultLocale]?.languages ?? [],
     initialStock: payload.product.shipping?.stockByLanguage ?? {},
+    isNew,
   });
   const {
     options: formatOptions,
@@ -251,8 +252,8 @@ const AdminProductFormInner = ({
             selectedType={selectedType}
             languages={selectedLanguages}
             printedStock={postedStock}
-            isStocked={isStocked}
-            onToggleHubAction={toggleHub}
+            getHubStock={getHubStock}
+            onStockChangeAction={setHubStock}
           />
 
           <AdminProductPricingSection

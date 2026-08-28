@@ -1769,7 +1769,7 @@
         "filesRule": "Upload one PDF file. A new upload will replace the existing one.",
         "weightGrams": "One copy, without packaging. Required: without it none of the shipping settings on this card are saved.",
         "hsCode": "Customs classification, e.g. 4903.00.00.00 for children's picture books.",
-        "printedStockRule": "Tick the warehouses that hold the printed edition of each language. A language with none is sold as digital only.",
+        "printedStockRule": "Enter how many printed copies of each language sit in each warehouse. A language with zero everywhere is sold as digital only.",
         "printedStockEmpty": "Select the languages of the book first."
       },
       "buttons": {

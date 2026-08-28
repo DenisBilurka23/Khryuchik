@@ -1,6 +1,7 @@
 import "server-only";
 
 import { findProductsByIds } from "@/server/catalog/repositories/products.repository";
+import { getStockedHubs } from "@/utils";
 import type { CountryCode, CurrencyCode } from "@/utils";
 import type {
   ShippingHubCode,
@@ -81,12 +82,10 @@ export const buildShipmentGroups = async (
       continue;
     }
 
-    const stocked = item.language
-      ? shipping.stockByLanguage?.[item.language]
-      : undefined;
+    const stocked = getStockedHubs(shipping.stockByLanguage, item.language);
     const hubs = chooseHubs(
       destinationCountry,
-      stocked?.length ? stocked : shipping.hubs,
+      stocked.length > 0 ? stocked : shipping.hubs,
     );
     const key = hubs.join("-");
     const group = manualByHub.get(key) ?? {

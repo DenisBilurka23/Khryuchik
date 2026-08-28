@@ -1,8 +1,11 @@
 import "server-only";
 
+import type { Filter, UpdateFilter } from "mongodb";
+
 import type { Locale } from "@/i18n/config";
 import { getMongoDb } from "@/server/db/mongodb";
 import type { ProductDocument, ProductPlacement } from "@/types/catalog";
+import type { ShippingHubCode } from "@/types/shipping";
 import type { CountryCode } from "@/utils";
 
 const escapeRegex = (value: string) =>
@@ -285,4 +288,39 @@ export const countProductsByCategoryKey = async (categoryKey: string) => {
   return db.collection<ProductDocument>("products").countDocuments({
     "classification.category": categoryKey,
   });
+};
+
+export const decrementPrintedStock = async (
+  productId: string,
+  language: string,
+  hub: ShippingHubCode,
+  quantity: number,
+) => {
+  const db = await getMongoDb();
+  const path = `shipping.stockByLanguage.${language}.${hub}`;
+  const result = await db.collection<ProductDocument>("products").updateOne(
+    { productId, [path]: { $gte: quantity } } as Filter<ProductDocument>,
+    {
+      $inc: { [path]: -quantity },
+    } as UpdateFilter<ProductDocument>,
+  );
+
+  return result.modifiedCount > 0;
+};
+
+export const restorePrintedStock = async (
+  productId: string,
+  language: string,
+  hub: ShippingHubCode,
+  quantity: number,
+) => {
+  const db = await getMongoDb();
+  const path = `shipping.stockByLanguage.${language}.${hub}`;
+
+  await db.collection<ProductDocument>("products").updateOne(
+    { productId } as Filter<ProductDocument>,
+    {
+      $inc: { [path]: quantity },
+    } as UpdateFilter<ProductDocument>,
+  );
 };

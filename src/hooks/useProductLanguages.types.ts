@@ -8,6 +8,7 @@ export type UseProductLanguagesArgs = {
   adminLocale: string;
   initialOptions: ProductOption[];
   initialStock: ProductPrintedStock;
+  isNew: boolean;
 };
 
 export type UseProductLanguagesResult = {
@@ -15,7 +16,7 @@ export type UseProductLanguagesResult = {
   selectedOptions: ProductOption[];
   isLanguageSelected: (code: string) => boolean;
   toggleLanguage: (code: string) => void;
-  isStocked: (code: string, hub: ShippingHubCode) => boolean;
-  toggleHub: (code: string, hub: ShippingHubCode) => void;
+  getHubStock: (code: string, hub: ShippingHubCode) => number;
+  setHubStock: (code: string, hub: ShippingHubCode, quantity: number) => void;
   postedStock: ProductPrintedStock;
 };

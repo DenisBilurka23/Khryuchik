@@ -31,6 +31,7 @@ import {
   findShopVisibleProducts,
 } from "../repositories/products.repository";
 import { findProductDetailsByProductId } from "../repositories/product-details.repository";
+import { findUnstockedPrintedLines } from "./printed-stock.service";
 import { getApprovedReviewsForProduct } from "@/server/reviews/services/reviews.service";
 
 const localizeProductSummaries = (
@@ -271,6 +272,17 @@ export const resolveCartItems = async (
     ),
   );
   const detailsById = new Map(detailsEntries);
+  const unstockedLineIds = await findUnstockedPrintedLines(
+    items.map((item) => ({
+      id: item.id,
+      productId: item.productId,
+      quantity: item.quantity,
+      isDigital: item.selections?.format === BOOK_FORMAT.digital,
+      language: item.selections?.language,
+    })),
+    country,
+  );
+
   const resolvedItems = items.flatMap((item) => {
     const summary = summaryById.get(item.productId);
 
@@ -304,7 +316,9 @@ export const resolveCartItems = async (
         quantity: item.quantity,
         variant: buildVariantLabel(item, translation),
         isDigital: item.selections?.format === BOOK_FORMAT.digital,
-        availability: summary.availability,
+        availability: unstockedLineIds.has(item.id)
+          ? ("out_of_stock" as const)
+          : summary.availability,
       },
     ];
   });

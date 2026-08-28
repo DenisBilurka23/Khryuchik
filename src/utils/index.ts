@@ -47,7 +47,13 @@ export {
   convertShippingAmount,
   roundToCents,
 } from "./price-conversion";
-export { isPrintedOffered, toPrintedLanguages } from "./printed-stock";
+export {
+  getPrintedStockCount,
+  getStockedHubs,
+  hasPrintedStock,
+  isPrintedOffered,
+  toPrintedLanguages,
+} from "./printed-stock";
 export {
   isLocalizedProductSummary,
   isPurchasableAvailability,

@@ -11,6 +11,10 @@ export type AdminProductShippingSectionProps = {
   selectedType: ProductType;
   languages: ProductOption[];
   printedStock: ProductPrintedStock;
-  isStocked: (code: string, hub: ShippingHubCode) => boolean;
-  onToggleHubAction: (code: string, hub: ShippingHubCode) => void;
+  getHubStock: (code: string, hub: ShippingHubCode) => number;
+  onStockChangeAction: (
+    code: string,
+    hub: ShippingHubCode,
+    quantity: number,
+  ) => void;
 };

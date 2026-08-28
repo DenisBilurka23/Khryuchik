@@ -2,7 +2,9 @@
 
 import { useCallback, useMemo, useState } from "react";
 
-import type { ProductPrintedStock } from "@/types/catalog";
+import { DEFAULT_BOOK_STOCK } from "@/constants/catalog";
+import { SHIPPING_HUB_CODES } from "@/constants/shipping";
+import type { ProductHubStock, ProductPrintedStock } from "@/types/catalog";
 import type { ShippingHubCode } from "@/types/shipping";
 
 import type {
@@ -13,11 +15,16 @@ import type {
 const toLabel = (code: string, adminLocale: string) =>
   new Intl.DisplayNames([adminLocale], { type: "language" }).of(code) ?? code;
 
+const seedStock: ProductHubStock = Object.fromEntries(
+  SHIPPING_HUB_CODES.map((hub) => [hub, DEFAULT_BOOK_STOCK]),
+);
+
 export const useProductLanguages = ({
   availableLocales,
   adminLocale,
   initialOptions,
   initialStock,
+  isNew,
 }: UseProductLanguagesArgs): UseProductLanguagesResult => {
   const [selected, setSelected] = useState<string[]>(() =>
     initialOptions.map((option) => option.value),
@@ -33,26 +40,32 @@ export const useProductLanguages = ({
     [availableLocales, adminLocale],
   );
 
-  const toggleLanguage = useCallback((code: string) => {
-    setSelected((prev) =>
-      prev.includes(code)
-        ? prev.filter((entry) => entry !== code)
-        : [...prev, code],
-    );
-  }, []);
+  const toggleLanguage = useCallback(
+    (code: string) => {
+      setSelected((prev) =>
+        prev.includes(code)
+          ? prev.filter((entry) => entry !== code)
+          : [...prev, code],
+      );
 
-  const toggleHub = useCallback((code: string, hub: ShippingHubCode) => {
-    setStock((prev) => {
-      const current = prev[code] ?? [];
+      if (isNew) {
+        setStock((prev) =>
+          prev[code] ? prev : { ...prev, [code]: seedStock },
+        );
+      }
+    },
+    [isNew],
+  );
 
-      return {
+  const setHubStock = useCallback(
+    (code: string, hub: ShippingHubCode, quantity: number) => {
+      setStock((prev) => ({
         ...prev,
-        [code]: current.includes(hub)
-          ? current.filter((entry) => entry !== hub)
-          : [...current, hub],
-      };
-    });
-  }, []);
+        [code]: { ...prev[code], [hub]: Math.max(0, Math.trunc(quantity)) },
+      }));
+    },
+    [],
+  );
 
   const selectedOptions = useMemo(
     () => options.filter((option) => selected.includes(option.value)),
@@ -62,9 +75,11 @@ export const useProductLanguages = ({
   const postedStock = useMemo(
     () =>
       Object.fromEntries(
-        selectedOptions
-          .map((option) => [option.value, stock[option.value] ?? []] as const)
-          .filter(([, hubs]) => hubs.length > 0),
+        selectedOptions.flatMap((option) => {
+          const hubStock = stock[option.value];
+
+          return hubStock ? [[option.value, hubStock] as const] : [];
+        }),
       ),
     [selectedOptions, stock],
   );
@@ -77,12 +92,11 @@ export const useProductLanguages = ({
       [selected],
     ),
     toggleLanguage,
-    isStocked: useCallback(
-      (code: string, hub: ShippingHubCode) =>
-        Boolean(stock[code]?.includes(hub)),
+    getHubStock: useCallback(
+      (code: string, hub: ShippingHubCode) => stock[code]?.[hub] ?? 0,
       [stock],
     ),
-    toggleHub,
+    setHubStock,
     postedStock,
   };
 };
