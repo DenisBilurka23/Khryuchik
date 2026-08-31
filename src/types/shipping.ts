@@ -73,12 +73,20 @@ export type ShippingRateRule = {
   transitDays?: string;
 };
 
+export type ShippingGroupIssue =
+  | "unsupported-destination"
+  | "unsupported-variant"
+  | "unsupported-parcel"
+  | "unavailable";
+
 export type ShippingQuoteGroup = {
   id: string;
   source: "digital" | "printify" | "manual";
   options: ShippingOption[];
   selectedOptionId: string | null;
   amount: number;
+  itemIds: string[];
+  issue?: ShippingGroupIssue;
 };
 
 export type ShippingFulfillmentGroup = ShippingQuoteGroup & {

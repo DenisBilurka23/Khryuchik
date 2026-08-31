@@ -14,6 +14,7 @@ import { quoteShipment } from "@/server/shipping/services/shipping-quote.service
 import type { CartSelections } from "@/types/cart";
 import type {
   ShippingFulfillmentGroup,
+  ShippingGroupIssue,
   ShippingOption,
   ShippingQuote,
   ShippingQuoteGroup,
@@ -32,13 +33,17 @@ export type OrderShippingGroup = ShippingFulfillmentGroup;
 export const toShippingQuoteGroups = (
   groups: OrderShippingGroup[],
 ): ShippingQuoteGroup[] =>
-  groups.map(({ id, source, options, selectedOptionId, amount }) => ({
-    id,
-    source,
-    options,
-    selectedOptionId,
-    amount,
-  }));
+  groups.map(
+    ({ id, source, options, selectedOptionId, amount, itemIds, issue }) => ({
+      id,
+      source,
+      options,
+      selectedOptionId,
+      amount,
+      itemIds,
+      issue,
+    }),
+  );
 
 export type OrderShippingInput = {
   country: CountryCode;
@@ -149,9 +154,23 @@ export const calculateOrderShipping = async ({
         options: [],
         selectedOptionId: null,
         amount: 0,
+        itemIds: group.itemIds,
       });
       continue;
     }
+
+    const pushUnshippable = (issue: ShippingGroupIssue) => {
+      groups.push({
+        id: group.id,
+        source: group.source,
+        options: [],
+        selectedOptionId: null,
+        amount: 0,
+        itemIds: group.itemIds,
+        issue,
+        parcel: group.parcel,
+      });
+    };
 
     let quote: ShippingQuote;
 
@@ -165,16 +184,13 @@ export const calculateOrderShipping = async ({
         { ...address, country: destinationCountry },
       );
 
-      if (printifyQuote.status === "unsupported-variant") {
-        return { status: "unsupported-variant" };
-      }
-
-      if (printifyQuote.status === "unsupported-destination") {
-        return { status: "unsupported-destination" };
-      }
-
-      if (printifyQuote.status === "unavailable") {
-        return { status: "unavailable" };
+      if (
+        printifyQuote.status === "unsupported-variant" ||
+        printifyQuote.status === "unsupported-destination" ||
+        printifyQuote.status === "unavailable"
+      ) {
+        pushUnshippable(printifyQuote.status);
+        continue;
       }
 
       // `no-merch` cannot happen: the group exists because an item matched.
@@ -196,13 +212,15 @@ export const calculateOrderShipping = async ({
     }
 
     if (quote.status !== "quoted") {
-      return { status: quote.status };
+      pushUnshippable(quote.status);
+      continue;
     }
 
     const selected = pickOption(quote.options, selectedOptionIds?.[group.id]);
 
     if (!selected) {
-      return { status: "unavailable" };
+      pushUnshippable("unavailable");
+      continue;
     }
 
     groups.push({
@@ -211,6 +229,7 @@ export const calculateOrderShipping = async ({
       options: quote.options,
       selectedOptionId: selected.id,
       amount: selected.amount,
+      itemIds: group.itemIds,
       parcel: group.parcel,
     });
   }

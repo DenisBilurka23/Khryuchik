@@ -365,7 +365,7 @@
           "BY": {
             "flag": "🇧🇾",
             "country": "Belarus",
-            "subtitle": "Cash on delivery"
+            "subtitle": "Pay online · Stripe"
           },
           "US": {
             "flag": "🇺🇸",
@@ -400,7 +400,7 @@
         "eyebrow": "Delivery options",
         "titlePrefix": "{country}:",
         "titleAccent": "how it ships",
-        "sub": "Timeframes are counted after dispatch. We pack your order within 1–2 business days.",
+        "sub": "Rates and timeframes come from the carrier at checkout, for your exact address. We pack books within 1–2 business days; merch is printed to order.",
         "items": [
           {
             "icon": "post",
@@ -408,6 +408,13 @@
             "meta": "Varies by destination",
             "price": "Shown at checkout",
             "note": "Tracked delivery to your address. Timeframes depend on the destination country."
+          },
+          {
+            "icon": "courier",
+            "name": "Made-to-order merch",
+            "meta": "Printed on demand",
+            "price": "Shown at checkout",
+            "note": "Merch is printed and shipped by our print partner, so it travels in its own parcel on its own schedule."
           },
           {
             "icon": "card",
@@ -429,7 +436,7 @@
           },
           {
             "title": "Enter shipping address",
-            "desc": "We deliver to addresses across the US, Canada and Europe."
+            "desc": "Checkout quotes live carrier rates for your exact address."
           },
           {
             "title": "Pay online",
@@ -437,7 +444,7 @@
           },
           {
             "title": "Get a tracking number",
-            "desc": "We dispatch within 1–2 business days and email tracking."
+            "desc": "Every parcel travels with tracking. An order with merch may arrive in more than one."
           }
         ]
       },
@@ -452,7 +459,15 @@
           },
           {
             "q": "Do you ship internationally?",
-            "a": "Yes — we ship across the United States, Canada and Europe."
+            "a": "Yes. Books ship from our hubs in North America and Europe, and checkout quotes live rates for almost any destination. Our printers do not ship made-to-order merch everywhere — if your country is one of the exceptions, you will see it at checkout."
+          },
+          {
+            "q": "Can I collect the order from a parcel point?",
+            "a": "In Belgium, France and the Netherlands you can pick a bpost parcel point at checkout. Everywhere else we deliver to your address."
+          },
+          {
+            "q": "Why did my order arrive in two parcels?",
+            "a": "We pack books ourselves and our print partner prints merch to order, so an order with both ships as separate parcels — each with its own tracking number."
           },
           {
             "q": "What about returns?",
@@ -715,6 +730,7 @@
       "shippingMethod": {
         "title": "Delivery method",
         "calculating": "Calculating delivery…",
+        "removeGroup": "Remove these items",
         "multipleParcels": "This order travels in more than one parcel.",
         "toAddress": "To the address",
         "pickupPoint": "To a parcel point",
@@ -1545,6 +1561,21 @@
       "parcels": {
         "printify": "Made-to-order merch",
         "manual": "Books"
+      },
+      "customs": {
+        "button": "Customs data",
+        "dialogTitle": "Customs data for this parcel",
+        "dialogDescription": "What the CN23 and the invoice ask for. This carrier does not sell labels through our API, so the parcel is booked by hand.",
+        "closeLabel": "Close",
+        "valueLabel": "Declared value",
+        "weightLabel": "Weight",
+        "weightValue": "{grams} g",
+        "sizeLabel": "Size",
+        "sizeValue": "{length} × {width} × {height} cm",
+        "manufacturerLabel": "Manufacturer",
+        "itemsLabel": "Contents",
+        "itemValue": "×{quantity} — {value} · HS {hsCode} · origin {origin}",
+        "missing": "not set"
       },
       "buyLabel": {
         "button": "Buy label",

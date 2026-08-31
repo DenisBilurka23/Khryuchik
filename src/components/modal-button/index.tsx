@@ -49,7 +49,7 @@ export const ModalButton = ({
     setIsSubmitting(true);
 
     try {
-      await onConfirmAction();
+      await onConfirmAction?.();
     } catch {
       // Callers surface their own error UI (e.g. an Alert on the page);
       // closing here just returns the user to see it.
@@ -110,20 +110,22 @@ export const ModalButton = ({
           >
             {cancelLabel}
           </Button>
-          <Button
-            type="button"
-            onClick={handleConfirm}
-            color={confirmColor}
-            variant="contained"
-            disabled={isSubmitting}
-            startIcon={
-              isSubmitting ? (
-                <CircularProgress size={16} color="inherit" />
-              ) : undefined
-            }
-          >
-            {confirmLabel}
-          </Button>
+          {onConfirmAction ? (
+            <Button
+              type="button"
+              onClick={handleConfirm}
+              color={confirmColor}
+              variant="contained"
+              disabled={isSubmitting}
+              startIcon={
+                isSubmitting ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : undefined
+              }
+            >
+              {confirmLabel}
+            </Button>
+          ) : null}
         </DialogActions>
       </Dialog>
     </>

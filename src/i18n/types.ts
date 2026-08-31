@@ -213,6 +213,7 @@ export type CheckoutPageLabels = {
     title: string;
     calculating: string;
     multipleParcels: string;
+    removeGroup: string;
     toAddress: string;
     pickupPoint: string;
     pickupPointSelect: {
@@ -1283,6 +1284,21 @@ export type AdminPageDictionary = {
     printifyCancelFailed: string;
     refundedAmountLabel: string;
     parcels: Record<OrderFulfillmentSource, string>;
+    customs: {
+      button: string;
+      dialogTitle: string;
+      dialogDescription: string;
+      closeLabel: string;
+      valueLabel: string;
+      weightLabel: string;
+      weightValue: string;
+      sizeLabel: string;
+      sizeValue: string;
+      manufacturerLabel: string;
+      itemsLabel: string;
+      itemValue: string;
+      missing: string;
+    };
     buyLabel: {
       button: string;
       dialogTitle: string;

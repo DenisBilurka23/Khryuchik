@@ -1,7 +1,10 @@
 import type { ShippingQuoteStatus } from "@/hooks/useShippingQuote.types";
 import { isPostalCodeValid, isRegionRequired } from "@/utils";
 
-import type { ShippingQuoteGroup } from "@/types/shipping";
+import type {
+  ShippingGroupIssue,
+  ShippingQuoteGroup,
+} from "@/types/shipping";
 
 import type {
   CheckoutLabels,
@@ -194,3 +197,13 @@ export const shippingErrorMessage = (
 
 export const isShippingBlocking = (status: ShippingQuoteStatus) =>
   status === "loading" || SHIPPING_ERROR_KEYS[status] !== null;
+
+// A quote can come back fine while one parcel still cannot be shipped, so the
+// reason is read off the group and phrased with the same error copy.
+export const shippingGroupIssueMessage = (
+  issue: ShippingGroupIssue,
+  labels: CheckoutLabels,
+) => labels.errors[SHIPPING_ERROR_KEYS[issue]!];
+
+export const unshippableGroups = (groups: ShippingQuoteGroup[]) =>
+  groups.filter((group) => group.issue);

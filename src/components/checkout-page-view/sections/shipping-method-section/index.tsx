@@ -17,19 +17,23 @@ import { CheckoutSectionCard } from "../../section-card";
 import {
   isPickupPointOption,
   resolveSelectedOptionId,
+  shippingGroupIssueMessage,
   shippingGroupLabel,
   shippingOptionLabel,
   shippingOptionTransit,
 } from "../../utils";
 import { PickupPointSelect } from "./pickup-point-select";
+import { CheckoutUndeliverableGroup } from "./undeliverable-group";
 import type { ShippingMethodSectionProps } from "./types";
 
 export const CheckoutShippingMethodSection = ({
   groups,
+  items,
   isLoading,
   errorMessage,
   selectedOptionIds,
   onOptionChange,
+  onRemoveGroup,
   pickupPoints,
   pickupPointsStatus,
   selectedPickupPoints,
@@ -39,7 +43,9 @@ export const CheckoutShippingMethodSection = ({
   locale,
   labels,
 }: ShippingMethodSectionProps) => {
-  const shippableGroups = groups.filter((group) => group.options.length > 0);
+  const shippableGroups = groups.filter(
+    (group) => group.options.length > 0 || group.issue,
+  );
 
   if (!isLoading && !errorMessage && shippableGroups.length === 0) {
     return null;
@@ -71,6 +77,27 @@ export const CheckoutShippingMethodSection = ({
               (option) =>
                 option.id === resolveSelectedOptionId(group, selectedOptionIds),
             );
+
+            if (group.issue) {
+              return (
+                <CheckoutUndeliverableGroup
+                  key={group.id}
+                  title={
+                    shippableGroups.length > 1
+                      ? shippingGroupLabel(group, labels)
+                      : undefined
+                  }
+                  message={shippingGroupIssueMessage(group.issue, labels)}
+                  items={items.filter((item) =>
+                    group.itemIds.includes(item.id),
+                  )}
+                  removeLabel={labels.shippingMethod.removeGroup}
+                  onRemove={
+                    onRemoveGroup ? () => onRemoveGroup(group.id) : undefined
+                  }
+                />
+              );
+            }
 
             return (
               <Stack key={group.id} spacing={1}>

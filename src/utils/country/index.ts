@@ -57,9 +57,10 @@ export const getAllCountriesSorted = (
 
 const defaultPaymentMethods: PaymentMethod[] = ["stripe"];
 
-const countryPaymentMethods: Partial<Record<CountryCode, PaymentMethod[]>> = {
-  BY: ["cod", "telegram_transfer"],
-};
+// Countries that pay by something other than a card. Empty since Belarus
+// moved to Stripe - kept as the hook a region needs when it cannot.
+const countryPaymentMethods: Partial<Record<CountryCode, PaymentMethod[]>> =
+  {};
 
 export const getCountryPaymentMethods = (
   country: CountryCode,

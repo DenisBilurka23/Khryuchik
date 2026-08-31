@@ -39,7 +39,10 @@ export {
   toAccountOrder,
 } from "./order";
 export { asOptionalString } from "./optional-string";
-export { formatPickupPointAddress } from "./pickup-point";
+export {
+  formatManufacturerAddress,
+  formatPickupPointAddress,
+} from "./pickup-point";
 export { formatPersonName } from "./person-name";
 export { isPostalCodeValid } from "./postal-code";
 export {

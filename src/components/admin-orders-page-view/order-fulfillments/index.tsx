@@ -8,6 +8,7 @@ import {
 } from "@/utils";
 
 import { AdminOrderBuyLabelButton } from "./buy-label-button";
+import { AdminOrderCustomsButton } from "./customs-button";
 import { AdminOrderMarkDeliveredButton } from "./mark-delivered-button";
 import { AdminOrderPickupPointButton } from "./pickup-point-button";
 import { AdminOrderTrackingButton } from "./tracking-button";
@@ -83,6 +84,12 @@ export const AdminOrderFulfillments = ({
                     )}
                   />
                 )}
+              {fulfillment.parcel && !buyableIds.includes(fulfillment.id) ? (
+                <AdminOrderCustomsButton
+                  locale={locale}
+                  parcel={fulfillment.parcel}
+                />
+              ) : null}
               {fulfillment.pickupPoint && address ? (
                 <AdminOrderPickupPointButton
                   orderId={orderId}

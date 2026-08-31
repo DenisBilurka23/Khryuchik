@@ -55,6 +55,8 @@ import {
   resolveShippingSelection,
   resolveShippingTotal,
   shippingErrorMessage,
+  shippingGroupIssueMessage,
+  unshippableGroups,
   validateForm,
 } from "./utils";
 
@@ -178,8 +180,29 @@ export const CheckoutPageView = ({
       ? resolveShippingTotal(shippingQuote.groups, selectedShippingOptionIds)
       : (shippingQuote.shipping ?? 0);
   const total = subtotal + shipping;
-  const isBlockedByShipping = isShippingBlocking(shippingQuote.status);
-  const shippingError = shippingErrorMessage(shippingQuote.status, labels);
+  const blockedGroups = unshippableGroups(shippingQuote.groups);
+  const blockedGroupIssue = blockedGroups[0]?.issue;
+  const isBlockedByShipping =
+    isShippingBlocking(shippingQuote.status) || blockedGroups.length > 0;
+  const globalShippingError = shippingErrorMessage(
+    shippingQuote.status,
+    labels,
+  );
+  const shippingError =
+    globalShippingError ??
+    (blockedGroupIssue
+      ? shippingGroupIssueMessage(blockedGroupIssue, labels)
+      : null);
+
+  const handleRemoveGroup = buyNowItems
+    ? undefined
+    : (groupId: string) => {
+        const group = shippingQuote.groups.find(
+          (candidate) => candidate.id === groupId,
+        );
+
+        group?.itemIds.forEach((itemId) => cart.removeItem(itemId));
+      };
 
   const clearFieldError = (key: FormFieldKey) => {
     setFieldErrors((prev) => {
@@ -518,10 +541,12 @@ export const CheckoutPageView = ({
                       {!isDigitalOnly ? (
                         <CheckoutShippingMethodSection
                           groups={shippingQuote.groups}
+                          items={items}
                           isLoading={shippingQuote.status === "loading"}
-                          errorMessage={shippingError ?? undefined}
+                          errorMessage={globalShippingError ?? undefined}
                           selectedOptionIds={selectedShippingOptionIds}
                           onOptionChange={handleShippingOptionChange}
+                          onRemoveGroup={handleRemoveGroup}
                           pickupPoints={pickupPoints.points}
                           pickupPointsStatus={pickupPoints.status}
                           selectedPickupPoints={selectedPickupPoints}

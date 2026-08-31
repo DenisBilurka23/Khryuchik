@@ -221,6 +221,15 @@ export const createOrder = async (
     );
   }
 
+  const unshippableGroup = shippingResult.groups.find((group) => group.issue);
+
+  if (unshippableGroup?.issue) {
+    throw new OrderValidationError(
+      `Parcel ${unshippableGroup.id} cannot be shipped (${unshippableGroup.issue})`,
+      shippingErrorCode(unshippableGroup.issue),
+    );
+  }
+
   const pickupPoints: Record<string, ShippingPickupPoint> = {};
 
   for (const groupId of resolvePickupGroupIds(shippingResult.groups)) {

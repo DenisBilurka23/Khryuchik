@@ -29,7 +29,7 @@ export const regionSeedDocuments: RegionDocument[] = [
   },
   {
     code: "BY",
-    currency: "BYN",
+    currency: "USD",
     isActive: true,
     isDefault: false,
     sortOrder: 2,
