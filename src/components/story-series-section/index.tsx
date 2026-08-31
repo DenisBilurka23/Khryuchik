@@ -10,6 +10,10 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
+import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
+import type { BookSeries } from "@/types/catalog";
+import { getCountLabel } from "@/utils/count-label";
+
 import { InfoChip } from "../info-chip";
 import { SeriesArt } from "./series-art";
 import styles from "./story-series-section.module.css";
@@ -20,8 +24,12 @@ export const StorySeriesSection = ({
   title,
   lead,
   openLabel,
+  bookCount,
+  emptyCount,
   items,
+  locale,
   shopHref,
+  seriesCounts,
 }: StorySeriesSectionProps) => {
   return (
     <Box component="section" className={styles.section}>
@@ -42,6 +50,11 @@ export const StorySeriesSection = ({
         <Grid container spacing={3}>
           {items.map((item) => {
             const isAmber = item.tone === "amber";
+            const bookTotal = seriesCounts[item.series as BookSeries] ?? 0;
+            const countLabel =
+              bookTotal > 0
+                ? getCountLabel(bookTotal, locale, bookCount)
+                : emptyCount;
 
             return (
               <Grid key={item.name} size={{ xs: 12, md: 6 }}>
@@ -92,10 +105,10 @@ export const StorySeriesSection = ({
                     </Stack>
                     <Box className={styles.foot}>
                       <Typography className={styles.count}>
-                        {item.count}
+                        {countLabel}
                       </Typography>
                       <Link
-                        href={shopHref}
+                        href={`${shopHref}?category=${BOOKS_CATEGORY_KEY}&series=${item.series}`}
                         style={{ textDecoration: "none", color: "inherit" }}
                       >
                         <Button

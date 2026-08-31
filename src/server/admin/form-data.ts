@@ -9,6 +9,7 @@ import type {
   AdminRegionUpsertInput,
 } from "@/types/admin";
 import type {
+  BookSeries,
   ProductAvailability,
   ProductPrintedStock,
   ProductShipping,
@@ -98,7 +99,6 @@ const parseLocaleTranslation = (formData: FormData, locale: Locale) => ({
 
 const parseDetailLocaleTranslation = (formData: FormData, locale: Locale) => ({
   oldPrice: parseOptionalNumber(formData, `${locale}.detailOldPrice`),
-  badge: parseOptionalString(formData, `${locale}.badge`),
   storyLabel: parseOptionalString(formData, `${locale}.storyLabel`),
   description: parseString(formData, `${locale}.description`).trim(),
   images: parseJsonField<ProductImage[]>(formData, `${locale}.imagesJson`, []),
@@ -288,6 +288,7 @@ export const parseAdminProductFormData = (
       },
       ageRating: parseOptionalString(formData, "ageRating"),
       showInStory: parseBoolean(formData, "showInStory"),
+      series: parseOptionalString(formData, "series") as BookSeries | undefined,
       status: {
         isActive: parseBoolean(formData, "isActive"),
         visibleInShop: parseBoolean(formData, "visibleInShop"),

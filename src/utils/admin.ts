@@ -138,7 +138,6 @@ const createEmptyTranslation = (): ProductTranslation => ({
 });
 
 const createEmptyDetailTranslation = (): ProductDetailTranslation => ({
-  badge: "",
   storyLabel: "",
   description: "",
   images: [],

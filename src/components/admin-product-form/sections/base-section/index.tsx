@@ -9,6 +9,7 @@ import {
 import { useTranslations } from "next-intl";
 
 import {
+  BOOK_SERIES_VALUES,
   BOOKS_CATEGORY_KEY,
   DEFAULT_BOOK_AGE_RATING,
 } from "@/constants/catalog";
@@ -45,6 +46,7 @@ export const AdminProductBaseSection = ({
 }: AdminProductBaseSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
   const tShared = useTranslations("adminPage.shared");
+  const tSeries = useTranslations("storefront.bookSeries");
   const isPrintifyManaged = Boolean(payload.product.printify);
 
   return (
@@ -128,6 +130,24 @@ export const AdminProductBaseSection = ({
             defaultValue={payload.product.ageRating ?? DEFAULT_BOOK_AGE_RATING}
             helperText={tForm("helpers.ageRating")}
           />
+        ) : null}
+        {selectedType === "book" ? (
+          <TextField
+            select
+            label={tForm("fields.series")}
+            name="series"
+            defaultValue={payload.product.series ?? ""}
+            helperText={tForm("helpers.series")}
+          >
+            <MenuItem value="">
+              {tShared("placeholders.emptyValue")}
+            </MenuItem>
+            {BOOK_SERIES_VALUES.map((value) => (
+              <MenuItem key={value} value={value}>
+                {tSeries(value)}
+              </MenuItem>
+            ))}
+          </TextField>
         ) : null}
         <TextField
           select

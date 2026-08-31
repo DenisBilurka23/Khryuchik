@@ -1,6 +1,6 @@
 import type { CountryCode, CurrencyCode } from "@/utils";
 
-import type { ProductAvailability } from "./catalog";
+import type { BookSeries, ProductAvailability } from "./catalog";
 
 export type ProductImage = {
   id: string;
@@ -77,7 +77,7 @@ export type ProductDetails = {
   currency: CurrencyCode;
   oldPrice?: number;
   availability: ProductAvailability;
-  badge?: string;
+  series?: BookSeries;
   storyLabel?: string;
   storyTitle?: string;
   storyProductId?: string;

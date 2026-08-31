@@ -42,7 +42,11 @@ const DefaultStoryPage = async () => {
   const timelineBooks = await getStoryTimelineBooks(defaultLocale, country);
 
   return (
-    <StoryPageView locale={defaultLocale} timelineBooks={timelineBooks} />
+    <StoryPageView
+      locale={defaultLocale}
+      country={country}
+      timelineBooks={timelineBooks}
+    />
   );
 };
 

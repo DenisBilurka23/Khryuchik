@@ -12,5 +12,7 @@ export type CategoryTabsProps = {
   queryParamName?: string;
   defaultValueWithoutQuery?: string;
   preserveQueryParams?: string[];
+  variant?: "pills" | "text";
+  label?: string;
   sx?: SxProps<Theme>;
 };

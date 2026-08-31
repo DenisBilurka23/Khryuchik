@@ -119,11 +119,6 @@ export const AdminProductLocaleSection = ({
             defaultValue={translation.thumbnailBackgroundColor ?? ""}
           />
           <TextField
-            label={tForm("fields.badge")}
-            name={`${locale}.badge`}
-            defaultValue={details.badge ?? ""}
-          />
-          <TextField
             label={tForm("fields.storyLabel")}
             name={`${locale}.storyLabel`}
             defaultValue={details.storyLabel ?? ""}

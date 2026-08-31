@@ -565,6 +565,7 @@ const sanitizeProductPayload = (
         category: normalizedCategory,
       },
       ageRating: payload.product.ageRating?.trim() || undefined,
+      series: payload.product.series || undefined,
       merchandising: {
         ...payload.product.merchandising,
       },
@@ -614,7 +615,6 @@ const sanitizeProductPayload = (
             locale,
             {
               ...t,
-              badge: t.badge?.trim() || undefined,
               storyLabel: t.storyLabel?.trim() || undefined,
               description: t.description.trim(),
             },

@@ -1,5 +1,6 @@
 import "server-only";
 
+import { getTranslations } from "next-intl/server";
 import { cache } from "react";
 
 import { defaultLocale, type Locale } from "@/i18n/config";
@@ -14,6 +15,7 @@ import {
 } from "@/utils";
 import type { StoryTimelineBook } from "@/types/story";
 import type {
+  BookSeries,
   ProductDetailDocument,
   ProductDetailTranslation,
   ProductDocument,
@@ -23,7 +25,7 @@ import type { RegionPricing } from "@/types/localization";
 import { getRegionPricing } from "@/server/localization/localization.service";
 import type { ProductDetails, ProductOption } from "@/types/product-details";
 import type { CartItem, StoredCartItem } from "@/types/cart";
-import { BOOK_FORMAT } from "@/constants/catalog";
+import { BOOK_FORMAT, BOOK_SERIES_VALUES } from "@/constants/catalog";
 import {
   findActiveProductBySlug,
   findActiveProductsByIds,
@@ -121,14 +123,15 @@ export const getStoryTimelineBooks = cache(
       regionPricing,
     );
 
-    const detailsById = new Map(
-      await Promise.all(
+    const [detailsById, tSeries] = await Promise.all([
+      Promise.all(
         books.map(
           async (book) =>
             [book.id, await findProductDetailsByProductId(book.id)] as const,
         ),
-      ),
-    );
+      ).then((entries) => new Map(entries)),
+      getTranslations({ locale, namespace: "storefront.bookSeries" }),
+    ]);
 
     return books.map((book) => {
       const detailTranslation =
@@ -143,11 +146,32 @@ export const getStoryTimelineBooks = cache(
         emoji: book.emoji,
         ageRating: book.ageRating,
         storyLabel: detailTranslation?.storyLabel,
-        badge: detailTranslation?.badge,
+        seriesLabel: book.series ? tSeries(book.series) : undefined,
         thumbnail: book.thumbnail,
         thumbnailBackgroundColor: book.thumbnailBackgroundColor,
       };
     });
+  },
+);
+
+export const getBookCountsBySeries = cache(
+  async (country: CountryCode): Promise<Record<BookSeries, number>> => {
+    const products = await findShopVisibleProducts(country);
+    const counts = Object.fromEntries(
+      BOOK_SERIES_VALUES.map((series) => [series, 0]),
+    ) as Record<BookSeries, number>;
+
+    for (const product of products) {
+      if (
+        product.classification.type === "book" &&
+        product.series &&
+        product.series in counts
+      ) {
+        counts[product.series] += 1;
+      }
+    }
+
+    return counts;
   },
 );
 
@@ -295,9 +319,6 @@ const buildVariantLabel = (
 
 export type ResolvedCart = {
   items: CartItem[];
-  // True when items dropped out because the region's exchange rate could not be
-  // established, which is a temporary failure the customer should see rather
-  // than a cart that quietly lost a line.
   isPricingUnavailable: boolean;
 };
 

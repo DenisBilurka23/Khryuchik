@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
+import { getBookCountsBySeries } from "@/server/catalog/services/catalog.service";
 import { getLocalizedPath } from "@/utils";
 
 import { NewsletterSection } from "../newsletter-section";
@@ -13,12 +14,13 @@ import type { StoryPageDictionary, StoryPageViewProps } from "./types";
 
 export const StoryPageView = async ({
   locale,
+  country,
   timelineBooks,
 }: StoryPageViewProps) => {
-  const t = await getTranslations({
-    locale,
-    namespace: "storefront.storyPage",
-  });
+  const [t, seriesCounts] = await Promise.all([
+    getTranslations({ locale, namespace: "storefront.storyPage" }),
+    getBookCountsBySeries(country),
+  ]);
   const timeline = t.raw("timeline") as StoryPageDictionary["timeline"];
   const series = t.raw("series") as StoryPageDictionary["series"];
   const values = t.raw("values") as StoryPageDictionary["values"];
@@ -28,7 +30,12 @@ export const StoryPageView = async ({
   return (
     <Box className={storefrontStyles.pageShell} sx={{ color: "text.primary" }}>
       <Box className={storefrontStyles.pageContent}>
-        <StorySeriesSection {...series} shopHref={shopHref} />
+        <StorySeriesSection
+          {...series}
+          locale={locale}
+          shopHref={shopHref}
+          seriesCounts={seriesCounts}
+        />
         <StoryValuesSection {...values} />
         <StoryTimelineSection {...timeline} books={timelineBooks} />
         <StoryAuthorSection {...author} />

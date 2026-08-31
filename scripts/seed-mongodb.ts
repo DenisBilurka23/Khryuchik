@@ -8,6 +8,7 @@ import {
 } from "@/server/catalog/seed-data/product-details.seed";
 import { getStorefrontBookSeedItems } from "@/server/catalog/seed-data/storefront.seed";
 import { categorySeedDocuments } from "@/server/catalog/seed-data/categories.seed";
+import { BOOK_SERIES } from "@/constants/catalog";
 import { DEFAULT_BOOK_SHIPPING } from "@/constants/shipping";
 import {
   localeSeedDocuments,
@@ -150,7 +151,9 @@ const buildProductDocument = (productId: string): ProductDocument => ({
   ...(productAgeRatingById[productId]
     ? { ageRating: productAgeRatingById[productId] }
     : {}),
-  ...(getProductType(productId) === "book" ? { showInStory: true } : {}),
+  ...(getProductType(productId) === "book"
+    ? { showInStory: true, series: BOOK_SERIES.small }
+    : {}),
   inventory: {
     quantity: getProductType(productId) === "book" ? null : 25,
     availability: "in_stock",
@@ -196,7 +199,6 @@ const buildProductDetailDocument = (
       const details = getRequiredProductDetails(locale, productId);
       const translation = {
         oldPrice: details.oldPrice,
-        badge: details.badge,
         storyLabel: details.storyLabel,
         storyTitle: details.storyTitle,
         description: details.description,

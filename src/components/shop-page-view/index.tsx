@@ -12,15 +12,24 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { CategoryTabs } from "@/components/category-tabs";
+import { BOOK_SERIES, BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import { getLocalizedProductPath } from "@/utils";
-import { createShopPageViewModel, isShopFilterValue } from "@/utils/shop-page";
+import {
+  createShopPageViewModel,
+  isBookSeries,
+  isShopFilterValue,
+} from "@/utils/shop-page";
 
 import { NewsletterSection } from "../newsletter-section";
 import { ProductCard } from "../product-card";
 import { ShopSearchField } from "../shop-search-field";
 import styles from "../storefront/storefront.module.css";
 
-import type { ShopFilterValue, ShopPageViewProps } from "./types";
+import type {
+  ShopFilterValue,
+  ShopPageViewProps,
+  ShopSeriesFilterValue,
+} from "./types";
 
 export const ShopPageView = async ({
   locale,
@@ -28,11 +37,13 @@ export const ShopPageView = async ({
   categories,
   products,
   initialCategory,
+  initialSeries,
   initialQuery,
 }: ShopPageViewProps) => {
-  const [tShopPage, tShopSection] = await Promise.all([
+  const [tShopPage, tShopSection, tBookSeries] = await Promise.all([
     getTranslations({ locale, namespace: "storefront.shopPage" }),
     getTranslations({ locale, namespace: "storefront.shopSection" }),
+    getTranslations({ locale, namespace: "storefront.bookSeries" }),
   ]);
   const initialCategoryParam = initialCategory ?? null;
   const selectedFilter: ShopFilterValue = isShopFilterValue(
@@ -41,9 +52,21 @@ export const ShopPageView = async ({
   )
     ? initialCategoryParam
     : "all";
+  const hasSeriesProducts = products.some((product) =>
+    Boolean(product.series),
+  );
+  const showSeriesFilter =
+    hasSeriesProducts && selectedFilter === BOOKS_CATEGORY_KEY;
+  const seriesParam = initialSeries ?? null;
+  const selectedSeries: ShopSeriesFilterValue =
+    showSeriesFilter && isBookSeries(seriesParam) ? seriesParam : "all";
+  const seriesLabels = {
+    [BOOK_SERIES.small]: tBookSeries("small"),
+    [BOOK_SERIES.travel]: tBookSeries("travel"),
+  };
   const search = initialQuery ?? "";
   const isRegionEmpty = products.length === 0;
-  const { homeHref, shopHref, filters, filteredProducts } =
+  const { homeHref, shopHref, filters, seriesFilters, filteredProducts } =
     createShopPageViewModel({
       locale,
       country,
@@ -51,6 +74,8 @@ export const ShopPageView = async ({
       categories,
       products,
       selectedFilter,
+      selectedSeries,
+      seriesLabels,
       search,
     });
 
@@ -116,7 +141,7 @@ export const ShopPageView = async ({
               justifyContent="space-between"
               alignItems={{ xs: "stretch", md: "center" }}
               spacing={3}
-              sx={{ mt: 5, mb: 4 }}
+              sx={{ mt: 5, mb: showSeriesFilter ? 3 : 4 }}
             >
               <CategoryTabs
                 selectedValue={selectedFilter}
@@ -130,6 +155,18 @@ export const ShopPageView = async ({
                 placeholder={tShopPage("searchPlaceholder")}
               />
             </Stack>
+
+            {showSeriesFilter ? (
+              <CategoryTabs
+                variant="text"
+                label={tShopPage("seriesFilterLabel")}
+                selectedValue={selectedSeries}
+                options={seriesFilters}
+                queryParamName="series"
+                preserveQueryParams={["q", "category"]}
+                sx={{ mb: 4 }}
+              />
+            ) : null}
 
             <Typography color="text.secondary" sx={{ mb: 3 }}>
               {tShopPage("resultsLabel")}: {filteredProducts.length}

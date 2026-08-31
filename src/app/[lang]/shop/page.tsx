@@ -10,7 +10,7 @@ import { getRequestCountry } from "@/server/country/request-country";
 
 type LocalizedShopPageProps = {
   params: Promise<{ lang: string }>;
-  searchParams: Promise<{ category?: string; q?: string }>;
+  searchParams: Promise<{ category?: string; series?: string; q?: string }>;
 };
 
 export const generateStaticParams = () => locales.map((lang) => ({ lang }));
@@ -56,7 +56,7 @@ const LocalizedShopPage = async ({
   searchParams,
 }: LocalizedShopPageProps) => {
   const { lang } = await params;
-  const { category, q } = await searchParams;
+  const { category, series, q } = await searchParams;
 
   if (!(await isActiveLocale(lang))) {
     notFound();
@@ -75,6 +75,7 @@ const LocalizedShopPage = async ({
       categories={categories}
       products={products}
       initialCategory={category}
+      initialSeries={series}
       initialQuery={q}
     />
   );

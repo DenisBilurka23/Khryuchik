@@ -1,10 +1,18 @@
 "use client";
 
-import { Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { startTransition } from "react";
 
 import type { CategoryTabsProps } from "./types";
+
+const eyebrowSx = {
+  textTransform: "uppercase",
+  letterSpacing: "0.2em",
+  fontSize: 12,
+  fontWeight: 700,
+  color: "primary.main",
+} as const;
 
 export const CategoryTabs = ({
   selectedValue,
@@ -13,6 +21,8 @@ export const CategoryTabs = ({
   queryParamName = "category",
   defaultValueWithoutQuery,
   preserveQueryParams = [],
+  variant = "pills",
+  label,
   sx,
 }: CategoryTabsProps) => {
   const router = useRouter();
@@ -41,6 +51,53 @@ export const CategoryTabs = ({
       router.replace(nextUrl, { scroll: false });
     });
   };
+
+  if (variant === "text") {
+    return (
+      <Box sx={sx}>
+        {label ? (
+          <Typography sx={{ ...eyebrowSx, mb: 1 }}>{label}</Typography>
+        ) : null}
+        <Stack
+          direction="row"
+          spacing={2.5}
+          useFlexGap
+          flexWrap="wrap"
+          sx={{ rowGap: 0.5 }}
+        >
+          {options.map((option) => {
+            const isActive = selectedValue === option.value;
+
+            return (
+              <Button
+                key={option.value}
+                variant="text"
+                disableRipple
+                onClick={() => updateValue(option.value)}
+                className={className}
+                sx={{
+                  px: 0,
+                  minWidth: 0,
+                  borderRadius: 0,
+                  textTransform: "none",
+                  fontWeight: isActive ? 700 : 500,
+                  color: isActive ? "primary.main" : "text.secondary",
+                  borderBottom: "2px solid",
+                  borderColor: isActive ? "primary.main" : "transparent",
+                  "&:hover": {
+                    bgcolor: "transparent",
+                    color: "primary.main",
+                  },
+                }}
+              >
+                {option.label}
+              </Button>
+            );
+          })}
+        </Stack>
+      </Box>
+    );
+  }
 
   return (
     <Stack direction="row" spacing={1.5} sx={sx}>

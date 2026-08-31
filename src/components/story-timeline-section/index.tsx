@@ -93,11 +93,11 @@ export const StoryTimelineSection = ({
             <Box ref={detailRef} className={styles.detailBody}>
               <Box className={styles.detailGrid}>
                 <Box className={styles.detailText}>
-                  {active.badge ? (
+                  {active.seriesLabel ? (
                     <Box
                       className={[styles.chip, styles.chipSmall].join(" ")}
                     >
-                      {active.badge}
+                      {active.seriesLabel}
                     </Box>
                   ) : null}
                   {metaLine ? (

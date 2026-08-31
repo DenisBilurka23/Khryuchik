@@ -7,7 +7,7 @@ import { getShopCategoriesForRegion } from "@/server/catalog/services/categories
 import { getRequestCountry } from "@/server/country/request-country";
 
 type DefaultShopPageProps = {
-  searchParams: Promise<{ category?: string; q?: string }>;
+  searchParams: Promise<{ category?: string; series?: string; q?: string }>;
 };
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -39,7 +39,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const DefaultShopPage = async ({ searchParams }: DefaultShopPageProps) => {
-  const { category, q } = await searchParams;
+  const { category, series, q } = await searchParams;
   const country = await getRequestCountry();
   const [categories, products] = await Promise.all([
     getShopCategoriesForRegion(defaultLocale, country),
@@ -53,6 +53,7 @@ const DefaultShopPage = async ({ searchParams }: DefaultShopPageProps) => {
       categories={categories}
       products={products}
       initialCategory={category}
+      initialSeries={series}
       initialQuery={q}
     />
   );

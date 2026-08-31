@@ -61,7 +61,13 @@ const LocalizedStoryPage = async ({ params }: LocalizedStoryPageProps) => {
   const country = await getRequestCountry();
   const timelineBooks = await getStoryTimelineBooks(lang, country);
 
-  return <StoryPageView locale={lang} timelineBooks={timelineBooks} />;
+  return (
+    <StoryPageView
+      locale={lang}
+      country={country}
+      timelineBooks={timelineBooks}
+    />
+  );
 };
 
 export default LocalizedStoryPage;

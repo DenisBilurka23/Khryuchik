@@ -27,7 +27,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       subtitle: "Уютная кружка для тёплых семейных историй",
       price: 24,
       oldPrice: 29,
-      badge: "Хит недели",
       storyLabel: "Коллекция: Хрючик зимой",
       storyTitle: "Хрючик зимой",
       description:
@@ -75,7 +74,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       title: "Книга «Хрючик зимой»",
       subtitle: "Добрая зимняя история на русском и английском",
       price: 29,
-      badge: "Новая книга",
       storyLabel: "Сюжетная история Хрючика",
       storyTitle: "Хрючик зимой",
       description:
@@ -120,7 +118,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       title: "Книга «Хрючик на даче»",
       subtitle: "Летняя история о каникулах, семье и маленьких открытиях",
       price: 27,
-      badge: "Семейная история",
       storyLabel: "Сюжетная история Хрючика",
       storyTitle: "Хрючик на даче",
       description:
@@ -165,7 +162,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       title: "Книга «Хрючик и друзья»",
       subtitle: "Добрая история о дружбе, заботе и совместных приключениях",
       price: 27,
-      badge: "Для чтения перед сном",
       storyLabel: "Сюжетная история Хрючика",
       storyTitle: "Хрючик и друзья",
       description:
@@ -210,7 +206,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       title: "Футболка Хрючик",
       subtitle: "Мягкая футболка для прогулок, чтения и подарков",
       price: 49,
-      badge: "Бестселлер",
       storyLabel: "Коллекция: Хрючик зимой",
       storyTitle: "Хрючик зимой",
       description:
@@ -256,7 +251,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       title: "Наклейки Хрючик",
       subtitle: "Мини-набор для подарков, тетрадей и упаковки",
       price: 12,
-      badge: "Маленький подарок",
       storyLabel: "Стикеры по мотивам книги",
       storyTitle: "Хрючик зимой",
       description:
@@ -296,7 +290,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       subtitle: "A cozy mug for warm family stories",
       price: 24,
       oldPrice: 29,
-      badge: "This week's favorite",
       storyLabel: "Collection: Khryuchik in Winter",
       storyTitle: "Khryuchik in Winter",
       description:
@@ -344,7 +337,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       title: "Book 'Khryuchik in Winter'",
       subtitle: "A gentle winter story in Russian and English",
       price: 29,
-      badge: "New book",
       storyLabel: "A story-led Khryuchik title",
       storyTitle: "Khryuchik in Winter",
       description:
@@ -389,7 +381,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       title: "Book 'Khryuchik at the Country House'",
       subtitle: "A summer story about family time and small discoveries",
       price: 27,
-      badge: "Family story",
       storyLabel: "A story-led Khryuchik title",
       storyTitle: "Khryuchik at the Country House",
       description:
@@ -434,7 +425,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       title: "Book 'Khryuchik and Friends'",
       subtitle: "A gentle story about friendship, care, and shared adventures",
       price: 27,
-      badge: "Perfect for bedtime",
       storyLabel: "A story-led Khryuchik title",
       storyTitle: "Khryuchik and Friends",
       description:
@@ -479,7 +469,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       title: "Khryuchik T-shirt",
       subtitle: "A soft everyday T-shirt for walks, reading, and gifting",
       price: 49,
-      badge: "Bestseller",
       storyLabel: "Collection: Khryuchik in Winter",
       storyTitle: "Khryuchik in Winter",
       description:
@@ -525,7 +514,6 @@ const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetai
       title: "Khryuchik stickers",
       subtitle: "A mini set for gifts, notebooks, and wrapping",
       price: 12,
-      badge: "A small gift",
       storyLabel: "Stickers inspired by the book",
       storyTitle: "Khryuchik in Winter",
       description:

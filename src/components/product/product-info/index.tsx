@@ -43,6 +43,7 @@ export const ProductInfo = ({
 }: ProductInfoProps) => {
   const tProductPage = useTranslations("storefront.productPage");
   const tShopSection = useTranslations("storefront.shopSection");
+  const tSeries = useTranslations("storefront.bookSeries");
   const { addItem } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const router = useRouter();
@@ -66,7 +67,7 @@ export const ProductInfo = ({
     : selectionAvailability === "sold-out"
       ? "actions.soldOutSelection"
       : "actions.unavailableSelection";
-  const hasMetaChips = Boolean(product.badge || product.storyLabel);
+  const hasMetaChips = Boolean(product.series || product.storyLabel);
   const isDigital = selections.format === BOOK_FORMAT.digital;
   const alreadyOwned =
     isDigital && ownedLanguages.includes(selections.language);
@@ -93,9 +94,9 @@ export const ProductInfo = ({
     <Box>
       {hasMetaChips ? (
         <Stack direction="row" spacing={1} useFlexGap flexWrap="wrap">
-          {product.badge ? (
+          {product.series ? (
             <Chip
-              label={product.badge}
+              label={tSeries(product.series)}
               color="secondary"
               sx={{ fontWeight: 700 }}
             />

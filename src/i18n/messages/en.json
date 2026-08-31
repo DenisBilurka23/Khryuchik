@@ -250,6 +250,7 @@
       "filters": {
         "all": "All"
       },
+      "seriesFilterLabel": "Series",
       "searchPlaceholder": "Search products",
       "resultsLabel": "Products found",
       "emptyTitle": "Nothing found",
@@ -276,24 +277,31 @@
         "title": "From childhood to adulthood — together with Khryuchik",
         "lead": "Khryuchik grows up, and his stories and his readers grow up with him: from warm tales of childhood to journeys, change, and the search for oneself.",
         "openLabel": "Open the series",
+        "bookCount": {
+          "one": "book",
+          "few": "books",
+          "many": "books",
+          "other": "books"
+        },
+        "emptyCount": "Books coming soon",
         "items": [
           {
             "tone": "pink",
+            "series": "small",
             "label": "Series 1",
             "name": "Khryuchik when he was little",
             "age": "3 — 7 years",
             "desc": "Stories about Khryuchik's childhood, his family, friends, first discoveries, and important life lessons. A young reader can grow, learn, and grow up alongside a beloved hero.",
-            "themes": ["Family", "Friendship", "Kindness", "Humor"],
-            "count": "4 books"
+            "themes": ["Family", "Friendship", "Kindness", "Humor"]
           },
           {
             "tone": "amber",
+            "series": "travel",
             "label": "Series 2",
             "name": "Khryuchik's adventures",
             "age": "8 — 12+ years",
             "desc": "A grown-up Khryuchik sets off on a journey that slowly turns into a long road toward himself. He discovers new countries, meets new people, and along with the new world he discovers new sides of himself. \"Khryuchik in France\" will appeal to teenagers and adults, while the later stories in this series are meant for adult readers.",
-            "themes": ["Dream", "The road", "Courage", "Growing up"],
-            "count": "3 books · and more to come"
+            "themes": ["Dream", "The road", "Courage", "Growing up"]
           }
         ]
       },
@@ -340,6 +348,10 @@
         ],
         "actionLabel": "Write to the author"
       }
+    },
+    "bookSeries": {
+      "small": "Khryuchik when he was little",
+      "travel": "Khryuchik's adventures"
     },
     "deliveryPage": {
       "hero": {
@@ -1699,6 +1711,7 @@
         "slug": "Leave empty to generate it from the EN title and normalize it for URLs.",
         "sku": "Leave empty to generate it automatically from the product ID.",
         "ageRating": "A short age hint, e.g. \"3+\". Shown on the \"Books by age\" slider on the story page.",
+        "series": "Which story series the book belongs to. Drives the shop series filter and the chip on the story page.",
         "relatedProductIds": "Start typing a title, ID, or slug and pick products from the list.",
         "storyProductId": "Pick the book or product that should supply the title and thumbnail for the story block.",
         "mediaRule": "The first image is used as the thumbnail. The rest become the gallery.",
@@ -1744,7 +1757,7 @@
         "thumbnailBackgroundColor": "Thumbnail background color",
         "subtitle": "Subtitle",
         "subtitleHelper": "Shown under the product title, and used for search and new-product emails",
-        "badge": "Badge",
+        "series": "Series",
         "storyLabel": "Story label",
         "storyProductId": "Story source product",
         "sku": "SKU",

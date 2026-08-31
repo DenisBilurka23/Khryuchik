@@ -99,6 +99,7 @@ export type ShopPageLabels = {
   filters: {
     all: string;
   };
+  seriesFilterLabel: string;
   searchPlaceholder: string;
   resultsLabel: string;
   emptyTitle: string;
@@ -297,12 +298,12 @@ export type CheckoutResultLabels = {
 
 export type StorySeriesItem = {
   tone: string;
+  series: string;
   label: string;
   name: string;
   age: string;
   desc: string;
   themes: string[];
-  count: string;
 };
 
 export type StoryPageLabels = {
@@ -319,6 +320,8 @@ export type StoryPageLabels = {
     title: string;
     lead: string;
     openLabel: string;
+    bookCount: CountLabelForms;
+    emptyCount: string;
     items: StorySeriesItem[];
   };
   values: {
@@ -677,6 +680,10 @@ export type StorefrontDictionary = {
   productPage: ProductPageLabels;
   shopPage: ShopPageLabels;
   storyPage: StoryPageLabels;
+  bookSeries: {
+    small: string;
+    travel: string;
+  };
   deliveryPage: DeliveryPageLabels;
   contactPage: ContactPageLabels;
   maintenancePage: MaintenancePageLabels;
@@ -1405,6 +1412,7 @@ export type AdminPageDictionary = {
       slug: string;
       sku: string;
       ageRating: string;
+      series: string;
       relatedProductIds: string;
       storyProductId: string;
       mediaRule: string;
@@ -1448,7 +1456,7 @@ export type AdminPageDictionary = {
       thumbnailBackgroundColor: string;
       subtitle: string;
       subtitleHelper: string;
-      badge: string;
+      series: string;
       storyLabel: string;
       storyProductId: string;
       sku: string;

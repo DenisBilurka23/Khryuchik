@@ -8,7 +8,7 @@ export type StoryTimelineBook = {
   emoji: string;
   ageRating?: string;
   storyLabel?: string;
-  badge?: string;
+  seriesLabel?: string;
   thumbnail?: ProductImage;
   thumbnailBackgroundColor?: string;
 };

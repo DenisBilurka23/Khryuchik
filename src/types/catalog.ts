@@ -11,6 +11,8 @@ import type { ShippingHubCode } from "./shipping";
 
 export type ProductType = "book" | "merch";
 
+export type BookSeries = "small" | "travel";
+
 export type CategoryKey = string;
 
 export type ProductCategory = CategoryKey;
@@ -127,8 +129,8 @@ export type ProductDocument = {
   merchandising: ProductMerchandising;
   inventory: ProductInventory;
   ageRating?: string;
-  // When true the book is featured on the story timeline ("Books by age").
   showInStory?: boolean;
+  series?: BookSeries;
   pricing: Partial<Record<CountryCode, ProductCountryPricing>>;
   availableRegions: string[];
   hasOptions?: boolean;
@@ -144,6 +146,7 @@ export type LocalizedProductSummary = ProductTranslation & {
   category: ProductCategory;
   searchIndex: string;
   ageRating?: string;
+  series?: BookSeries;
   oldPrice?: number;
   isActive: boolean;
   sortOrder: number;
@@ -154,7 +157,6 @@ export type LocalizedProductSummary = ProductTranslation & {
 
 export type ProductDetailTranslation = {
   oldPrice?: number;
-  badge?: string;
   storyLabel?: string;
   storyTitle?: string;
   description: string;
