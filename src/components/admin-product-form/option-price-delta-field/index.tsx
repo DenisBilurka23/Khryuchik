@@ -5,18 +5,18 @@ import { useTranslations } from "next-intl";
 import type { ProductOptionPriceDelta } from "@/types/product-details";
 import type { AdminOptionPriceDeltaFieldProps } from "./types";
 
-const withRegionDelta = (
+const withCurrencyDelta = (
   priceDelta: ProductOptionPriceDelta | undefined,
-  region: string,
+  currency: string,
   rawValue: string,
 ) => {
   const value = Number(rawValue.trim());
   const next = { ...priceDelta };
 
   if (!rawValue.trim() || !Number.isFinite(value) || value === 0) {
-    delete next[region];
+    delete next[currency];
   } else {
-    next[region] = value;
+    next[currency] = value;
   }
 
   return Object.keys(next).length > 0 ? next : undefined;
@@ -24,7 +24,7 @@ const withRegionDelta = (
 
 export const AdminOptionPriceDeltaField = ({
   label,
-  regions,
+  currencies,
   priceDelta,
   onChangeAction,
 }: AdminOptionPriceDeltaFieldProps) => {
@@ -49,18 +49,16 @@ export const AdminOptionPriceDeltaField = ({
           gap: 1,
         }}
       >
-        {regions.map((region) => (
+        {currencies.map((currency) => (
           <TextField
-            key={region.code}
-            label={tForm("fields.optionPriceDelta", {
-              region: region.currency,
-            })}
+            key={currency}
+            label={tForm("fields.optionPriceDelta", { currency })}
             type="number"
             size="small"
-            value={priceDelta?.[region.code] ?? ""}
+            value={priceDelta?.[currency] ?? ""}
             onChange={(event) => {
               onChangeAction(
-                withRegionDelta(priceDelta, region.code, event.target.value),
+                withCurrencyDelta(priceDelta, currency, event.target.value),
               );
             }}
           />

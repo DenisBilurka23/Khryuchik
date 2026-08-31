@@ -37,7 +37,6 @@ import type { ProductInfoProps } from "../types";
 
 export const ProductInfo = ({
   locale,
-  country,
   product,
   ownedLanguages = [],
 }: ProductInfoProps) => {
@@ -56,10 +55,7 @@ export const ProductInfo = ({
     selectionAvailability,
     price,
     oldPrice,
-  } = useProductPrice({
-    product,
-    country,
-  });
+  } = useProductPrice({ product });
   const isWishlisted = isInWishlist(product.productId);
   const isSoldOut = !isPurchasableAvailability(product.availability);
   const unavailableMessage = isSoldOut

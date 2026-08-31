@@ -21,7 +21,7 @@ export const AdminOptionsField = ({
   priceDeltaHelperText,
   initialOptions,
   itemLabel,
-  regions,
+  currencies,
 }: AdminOptionsFieldProps) => {
   const [options, setOptions] = useState(initialOptions);
   const [draftValue, setDraftValue] = useState("");
@@ -152,13 +152,13 @@ export const AdminOptionsField = ({
           {helperText}
         </Typography>
 
-        {regions.length > 0 && options.length > 0 ? (
+        {currencies.length > 0 && options.length > 0 ? (
           <Stack gap={1} sx={{ mt: 0.5 }}>
             {options.map((option) => (
               <AdminOptionPriceDeltaField
                 key={`${name}-${option.value}-delta`}
                 label={option.label}
-                regions={regions}
+                currencies={currencies}
                 priceDelta={option.priceDelta}
                 onChangeAction={(priceDelta) =>
                   setPriceDelta(option.value, priceDelta)

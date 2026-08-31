@@ -1,10 +1,7 @@
 import "server-only";
 
+import { BASE_CURRENCY } from "@/constants/country-currency";
 import type { CurrencyCode } from "@/utils";
-
-// Printify quotes products and shipping in USD only, and its API never states a
-// currency, so USD is the base every converted price is derived from.
-const BASE_CURRENCY = "USD";
 
 const EXCHANGE_RATES_URL = "https://open.er-api.com/v6/latest/USD";
 const RATES_TTL_MS = 24 * 60 * 60 * 1000;

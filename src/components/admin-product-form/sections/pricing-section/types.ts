@@ -6,4 +6,5 @@ export type AdminProductPricingSectionProps = {
   regions: RegionDocument[];
   activeRegions: Record<string, boolean>;
   onToggleRegionAction: (code: string) => void;
+  onToggleAllRegionsAction: (isActive: boolean) => void;
 };

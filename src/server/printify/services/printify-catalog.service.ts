@@ -1,6 +1,7 @@
 import "server-only";
 
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
+import { PRINTIFY_CURRENCY } from "@/constants/printify";
 import { defaultLocale } from "@/i18n/config";
 import { saveAdminProduct } from "@/server/admin/catalog.service";
 import { populateAdminProductIdentifiers } from "@/server/admin/product-identifiers";
@@ -15,11 +16,9 @@ import {
   findProductById,
   upsertProduct,
 } from "@/server/catalog/repositories/products.repository";
-import { getActiveRegions } from "@/server/localization/localization.service";
 import { uploadProductGalleryFiles } from "@/server/storage/r2-assets.service";
 import type { AdminPrintifyImportItem } from "@/types/admin";
 import type { ProductDocument, ProductPrintifyLink } from "@/types/catalog";
-import type { RegionDocument } from "@/types/localization";
 import type { ProductImage } from "@/types/product-details";
 import { createEmptyAdminProductPayload } from "@/utils/admin";
 
@@ -44,8 +43,6 @@ const SUBTITLE_MAX_LENGTH = 160;
 // headroom for the product still in flight when the batch runs out of time.
 const PRINTIFY_SYNC_BUDGET_MS = 45_000;
 
-// Printify quotes every product in USD regardless of the billing currency.
-const PRINTIFY_CURRENCY = "USD";
 
 export const printifyImportErrorCodes = {
   NotConfigured: "not-configured",
@@ -194,26 +191,12 @@ const buildPrintifyLink = (
   syncedAt: new Date().toISOString(),
 });
 
-const getPrintifyRegionCodes = (regions: RegionDocument[]) =>
-  regions
-    .filter((region) => region.currency === PRINTIFY_CURRENCY)
-    .map((region) => region.code);
-
 const buildSeedPricing = (
   baseRetailCents: number,
-  regionCodes: string[],
-): ProductDocument["pricing"] => {
-  if (baseRetailCents === 0) {
-    return {};
-  }
-
-  return Object.fromEntries(
-    regionCodes.map((code) => [
-      code,
-      { price: baseRetailCents / 100, currency: PRINTIFY_CURRENCY },
-    ]),
-  );
-};
+): ProductDocument["pricing"] =>
+  baseRetailCents === 0
+    ? {}
+    : { [PRINTIFY_CURRENCY]: { price: baseRetailCents / 100 } };
 
 const getAvailability = (link: ProductPrintifyLink) =>
   link.variants.some((variant) => variant.isEnabled && variant.isAvailable)
@@ -309,8 +292,7 @@ export const importPrintifyProduct = async (printifyProductId: string) => {
 
   const description = htmlToPlainText(printifyProduct.description);
   const title = printifyProduct.title.trim();
-  const regionCodes = getPrintifyRegionCodes(await getActiveRegions());
-  const options = buildPrintifyProductOptions(printifyProduct, regionCodes);
+  const options = buildPrintifyProductOptions(printifyProduct);
   const link = buildPrintifyLink(shopId, printifyProduct);
   const basePayload = createEmptyAdminProductPayload([defaultLocale]);
 
@@ -331,7 +313,6 @@ export const importPrintifyProduct = async (printifyProductId: string) => {
   basePayload.product.availableRegions = [];
   basePayload.product.pricing = buildSeedPricing(
     getPrintifyBaseRetailCents(printifyProduct),
-    regionCodes,
   );
   basePayload.product.printify = link;
   basePayload.product.slug = title;
@@ -386,10 +367,7 @@ export const syncPrintifyProduct = async (productId: string) => {
   }
 
   const link = buildPrintifyLink(shopId, printifyProduct);
-  const options = buildPrintifyProductOptions(
-    printifyProduct,
-    getPrintifyRegionCodes(await getActiveRegions()),
-  );
+  const options = buildPrintifyProductOptions(printifyProduct);
   const details = await findProductDetailsByProductId(productId);
 
   const nextProduct: ProductDocument = {

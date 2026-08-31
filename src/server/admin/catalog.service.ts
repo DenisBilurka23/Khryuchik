@@ -5,6 +5,7 @@ import {
   AdminProductFormErrorCode,
   AdminProductFormValidationError,
 } from "@/server/admin/product-form-state";
+import { BASE_CURRENCY } from "@/constants/country-currency";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryListItem,
@@ -244,7 +245,7 @@ export const getAdminProducts = async (
   return products.map((product) => {
     const details = detailsById.get(product.productId);
     const category = categoriesByKey.get(product.classification.category);
-    const pricing = Object.values(product.pricing)[0];
+    const [currency, pricing] = Object.entries(product.pricing)[0] ?? [];
     const sku = details?.sku || "";
 
     return {
@@ -257,7 +258,7 @@ export const getAdminProducts = async (
         getAdminCategoryLabel(category?.translations ?? {}, locale) ||
         product.classification.category,
       sku,
-      priceLabel: pricing ? `${pricing.price} ${pricing.currency}` : "—",
+      priceLabel: pricing ? `${pricing.price} ${currency}` : "—",
       availability: product.inventory.availability,
       isActive: product.status.isActive,
       visibleInShop: product.status.visibleInShop,
@@ -305,7 +306,6 @@ export const getAdminProductEditorData = async (
     }),
   ]);
   const localeCodes = activeLocales.map((item) => item.code);
-  const regionCodes = activeRegions.map((item) => item.code);
 
   if (!productId) {
     const emptyPayload = createEmptyAdminProductPayload(localeCodes);
@@ -350,11 +350,7 @@ export const getAdminProductEditorData = async (
     activeLocales,
     activeRegions,
     initialRelatedProductOptions,
-    payload: ensureProductPayloadCoverage(
-      { product, details },
-      localeCodes,
-      regionCodes,
-    ),
+    payload: ensureProductPayloadCoverage({ product, details }, localeCodes),
     selectedRelatedProductOptions,
     selectedStoryProductOption,
   };
@@ -524,7 +520,7 @@ const sanitizeProductPayload = (
   // so every entry here must have its required fields filled in. Languages left
   // off fall back to the default-locale content on the storefront.
   const publishedLocaleCodes = Object.keys(payload.product.translations);
-  const regionCodes = Object.keys(payload.product.pricing);
+  const currencyCodes = Object.keys(payload.product.pricing);
 
   if (!publishedLocaleCodes.includes(defaultLocale)) {
     throw new Error("The default language is required");
@@ -547,14 +543,9 @@ const sanitizeProductPayload = (
     }
   }
 
-  const availableRegions = (payload.product.availableRegions ?? []).filter(
-    (code) => regionCodes.includes(code),
-  );
+  const availableRegions = payload.product.availableRegions ?? [];
 
-  const fallbackCurrency =
-    regionCodes
-      .map((code) => payload.product.pricing[code]?.currency?.trim())
-      .find((currency): currency is string => Boolean(currency)) ?? "USD";
+  const fallbackCurrency = currencyCodes[0] ?? BASE_CURRENCY;
 
   return {
     product: {
@@ -588,17 +579,22 @@ const sanitizeProductPayload = (
         }),
       ) as Record<Locale, ProductTranslation>,
       pricing: Object.fromEntries(
-        regionCodes.map((code) => {
-          const regionPricing = payload.product.pricing[code];
-          return [
-            code,
-            {
-              ...regionPricing,
-              price: regionPricing?.price ?? 0,
-              currency: regionPricing?.currency?.trim() || fallbackCurrency,
-              oldPrice: regionPricing?.oldPrice,
-            },
-          ];
+        currencyCodes.flatMap((code) => {
+          const currencyPricing = payload.product.pricing[code];
+
+          return currencyPricing && currencyPricing.price > 0
+            ? [
+                [
+                  code,
+                  {
+                    price: currencyPricing.price,
+                    ...(currencyPricing.oldPrice
+                      ? { oldPrice: currencyPricing.oldPrice }
+                      : {}),
+                  },
+                ] as const,
+              ]
+            : [];
         }),
       ) as AdminProductPayload["product"]["pricing"],
     },

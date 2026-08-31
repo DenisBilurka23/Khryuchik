@@ -1,9 +1,10 @@
+import { BASE_CURRENCY } from "@/constants/country-currency";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   LocalizedProductSummary,
   ProductAvailability,
   PrintifyVariantLink,
-  ProductCountryPricing,
+  ProductCurrencyPricing,
   ProductDetailDocument,
   ProductDocument,
   ProductPrintedStock,
@@ -16,7 +17,7 @@ import type {
   ProductOptionGroups,
 } from "@/types/product-details";
 
-import type { CountryCode } from "./country";
+import type { CountryCode, CurrencyCode } from "./country";
 import { convertFromUsd } from "./price-conversion";
 import { toPrintedLanguages } from "./printed-stock";
 import {
@@ -24,7 +25,10 @@ import {
   filterOfferedVariantOptions,
 } from "./variant-matrix";
 
-const nativePricing: RegionPricing = { status: "native" };
+const nativePricing: RegionPricing = {
+  status: "native",
+  currency: BASE_CURRENCY,
+};
 
 export const isPurchasableAvailability = (availability: ProductAvailability) =>
   availability !== "out_of_stock";
@@ -62,12 +66,11 @@ const localizeDeliveryCopy = (
   });
 };
 
-const resolveCountryPricing = (
+const resolveCurrencyPricing = (
   product: ProductDocument,
-  country: CountryCode,
   regionPricing: RegionPricing,
-): ProductCountryPricing | null => {
-  const stored = product.pricing[country];
+): ProductCurrencyPricing | null => {
+  const stored = product.pricing[regionPricing.currency];
 
   if (stored) {
     return stored;
@@ -77,8 +80,8 @@ const resolveCountryPricing = (
     return null;
   }
 
-  const { currency, rate, sourceCountry } = regionPricing.conversion;
-  const source = product.pricing[sourceCountry];
+  const { rate } = regionPricing.conversion;
+  const source = product.pricing[BASE_CURRENCY];
 
   if (!source) {
     return null;
@@ -86,7 +89,6 @@ const resolveCountryPricing = (
 
   return {
     price: convertFromUsd(source.price, rate),
-    currency,
     ...(source.oldPrice === undefined
       ? {}
       : { oldPrice: convertFromUsd(source.oldPrice, rate) }),
@@ -104,7 +106,7 @@ export const localizeProductSummary = (
   }
   const translation =
     product.translations[locale] ?? product.translations[defaultLocale];
-  const pricing = resolveCountryPricing(product, country, regionPricing);
+  const pricing = resolveCurrencyPricing(product, regionPricing);
 
   if (!translation || !pricing) {
     return null;
@@ -135,27 +137,26 @@ export const localizeProductSummary = (
     hasOptions: product.hasOptions ?? false,
     ...translation,
     price: pricing.price,
-    currency: pricing.currency,
+    currency: regionPricing.currency,
     oldPrice: pricing.oldPrice,
   };
 };
 
 const localizeOptionPrices = (
   options: ProductOption[] | undefined,
-  country: CountryCode,
   regionPricing: RegionPricing,
 ): ProductOption[] | undefined => {
   if (!options || regionPricing.status !== "converted") {
     return options;
   }
 
-  const { rate, sourceCountry } = regionPricing.conversion;
+  const { currency, rate } = regionPricing.conversion;
 
   return options.map((option) => {
-    const sourceDelta = option.priceDelta?.[sourceCountry];
+    const sourceDelta = option.priceDelta?.[BASE_CURRENCY];
 
     if (
-      option.priceDelta?.[country] !== undefined ||
+      option.priceDelta?.[currency] !== undefined ||
       sourceDelta === undefined
     ) {
       return option;
@@ -165,7 +166,7 @@ const localizeOptionPrices = (
       ...option,
       priceDelta: {
         ...option.priceDelta,
-        [country]: convertFromUsd(sourceDelta, rate),
+        [currency]: convertFromUsd(sourceDelta, rate),
       },
     };
   });
@@ -173,26 +174,25 @@ const localizeOptionPrices = (
 
 export const localizeProductOptionGroups = (
   options: ProductOptionGroups,
-  country: CountryCode,
   regionPricing: RegionPricing = nativePricing,
 ): ProductOptionGroups => ({
-  languages: localizeOptionPrices(options.languages, country, regionPricing),
-  formats: localizeOptionPrices(options.formats, country, regionPricing),
-  sizes: localizeOptionPrices(options.sizes, country, regionPricing),
-  colors: localizeOptionPrices(options.colors, country, regionPricing),
+  languages: localizeOptionPrices(options.languages, regionPricing),
+  formats: localizeOptionPrices(options.formats, regionPricing),
+  sizes: localizeOptionPrices(options.sizes, regionPricing),
+  colors: localizeOptionPrices(options.colors, regionPricing),
 });
 
 const getOptionPriceDelta = (
   options: ProductOption[] | undefined,
   value: string | undefined,
-  country: CountryCode,
+  currency: CurrencyCode,
 ) => {
   if (!value) {
     return 0;
   }
 
   return (
-    options?.find((option) => option.value === value)?.priceDelta?.[country] ??
+    options?.find((option) => option.value === value)?.priceDelta?.[currency] ??
     0
   );
 };
@@ -201,17 +201,17 @@ export const resolveOptionPrice = (
   basePrice: number,
   options: ProductOptionGroups,
   selections: CartSelections | undefined,
-  country: CountryCode,
+  currency: CurrencyCode,
 ) => {
   if (!selections) {
     return basePrice;
   }
 
   const delta =
-    getOptionPriceDelta(options.languages, selections.language, country) +
-    getOptionPriceDelta(options.formats, selections.format, country) +
-    getOptionPriceDelta(options.sizes, selections.size, country) +
-    getOptionPriceDelta(options.colors, selections.color, country);
+    getOptionPriceDelta(options.languages, selections.language, currency) +
+    getOptionPriceDelta(options.formats, selections.format, currency) +
+    getOptionPriceDelta(options.sizes, selections.size, currency) +
+    getOptionPriceDelta(options.colors, selections.color, currency);
 
   return Math.max(0, Math.round((basePrice + delta) * 100) / 100);
 };
@@ -237,11 +237,7 @@ export const toProductDetails = (
     return null;
   }
 
-  const options = localizeProductOptionGroups(
-    translation,
-    country,
-    regionPricing,
-  );
+  const options = localizeProductOptionGroups(translation, regionPricing);
   const variantMatrix = buildProductVariantMatrix(printifyVariants);
   const offered = filterOfferedVariantOptions(variantMatrix, options);
 

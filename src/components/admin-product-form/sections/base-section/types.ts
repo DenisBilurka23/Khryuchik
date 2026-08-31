@@ -1,11 +1,11 @@
 import type { Locale } from "@/i18n/config";
 import type { AdminProductPayload } from "@/types/admin";
 import type { CategoryDocument, ProductType } from "@/types/catalog";
-import type { RegionDocument } from "@/types/localization";
 import type {
   ProductOption,
   ProductOptionPriceDelta,
 } from "@/types/product-details";
+import type { CurrencyCode } from "@/utils";
 
 export type AdminProductBaseSectionProps = {
   payload: AdminProductPayload;
@@ -17,7 +17,7 @@ export type AdminProductBaseSectionProps = {
   merchCategories: CategoryDocument[];
   onTypeChangeAction: (value: ProductType) => void;
   onCategoryChangeAction: (value: string) => void;
-  availableRegions: RegionDocument[];
+  currencies: CurrencyCode[];
   formatOptions: ProductOption[];
   selectedFormats: ProductOption[];
   isFormatSelected: (value: string) => boolean;

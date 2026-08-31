@@ -197,14 +197,9 @@ export const createEmptyAdminProductPayload = (
   },
 });
 
-// Ensures the payload has a translation/detail entry for every active locale
-// and a pricing entry for every active region, so the editor can render a
-// section per active language/region even when the stored product predates a
-// newly added locale or region.
 export const ensureProductPayloadCoverage = (
   payload: AdminProductPayload,
   localeCodes: string[],
-  regionCodes: string[],
 ): AdminProductPayload => ({
   ...payload,
   product: {
@@ -212,15 +207,6 @@ export const ensureProductPayloadCoverage = (
     translations: {
       ...buildTranslationsForLocales(localeCodes),
       ...payload.product.translations,
-    },
-    pricing: {
-      ...Object.fromEntries(
-        regionCodes.map((code) => [
-          code,
-          payload.product.pricing[code] ?? { price: 0, currency: "" },
-        ]),
-      ),
-      ...payload.product.pricing,
     },
   },
   details: {

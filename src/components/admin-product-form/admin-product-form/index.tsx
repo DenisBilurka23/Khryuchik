@@ -15,7 +15,7 @@ import { useProductLanguages } from "@/hooks/useProductLanguages";
 import { useProductPublishToggles } from "@/hooks/useProductPublishToggles";
 import { AdminProductFormErrorCode } from "@/server/admin/product-form-state";
 import type { ProductType } from "@/types/catalog";
-import { getLocaleDisplayName } from "@/utils";
+import { getLocaleDisplayName, toCurrencyCodes } from "@/utils";
 
 import { AdminConfirmSubmitButton, AdminSectionCard } from "../../admin-page-shared";
 import { AdminReviewsField } from "../reviews-field";
@@ -52,9 +52,11 @@ const AdminProductFormInner = ({
 }: AdminProductFormProps) => {
   const tForm = useTranslations("adminPage.productForm");
   const { runAll } = useAdminProductUploadRegistry();
+  const currencyCodes = toCurrencyCodes(activeRegions);
   const {
     toggleLocale,
     toggleRegion,
+    toggleAllRegions,
     isLocaleActive,
     activeRegions: activeRegionFlags,
   } = useProductPublishToggles({
@@ -218,6 +220,11 @@ const AdminProductFormInner = ({
           name="regionCodes"
           value={activeRegions.map((item) => item.code).join(",")}
         />
+        <input
+          type="hidden"
+          name="currencyCodes"
+          value={currencyCodes.join(",")}
+        />
         <Stack gap={3}>
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
 
@@ -231,7 +238,7 @@ const AdminProductFormInner = ({
             merchCategories={merchCategories}
             onTypeChangeAction={handleTypeChange}
             onCategoryChangeAction={setSelectedCategory}
-            availableRegions={activeRegions}
+            currencies={currencyCodes}
             formatOptions={formatOptions}
             selectedFormats={selectedFormats}
             isFormatSelected={isFormatSelected}
@@ -261,6 +268,7 @@ const AdminProductFormInner = ({
             regions={activeRegions}
             activeRegions={activeRegionFlags}
             onToggleRegionAction={toggleRegion}
+            onToggleAllRegionsAction={toggleAllRegions}
           />
 
           {payload.product.printify ? (
@@ -285,7 +293,7 @@ const AdminProductFormInner = ({
               details={payload.details.translations[activeLocale.code]}
               productId={isNew ? undefined : payload.product.productId}
               selectedType={selectedType}
-              availableRegions={activeRegions}
+              currencies={currencyCodes}
             />
           ))}
 

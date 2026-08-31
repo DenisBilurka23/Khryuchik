@@ -15,11 +15,12 @@ import {
   regionSeedDocuments,
 } from "@/server/localization/seed-data/localization.seed";
 import { type Locale, locales } from "@/i18n/config";
-import type { CountryCode } from "@/utils";
+import { BASE_CURRENCY } from "@/constants/country-currency";
+import type { CurrencyCode } from "@/utils";
 import type {
   CategoryDocument,
   ProductCategory,
-  ProductCountryPricing,
+  ProductCurrencyPricing,
   ProductDetailDocument,
   ProductDocument,
   ProductType,
@@ -61,35 +62,19 @@ const productAgeRatingById: Record<string, string> = {
   "book-friends": "3+",
 };
 
-const productPricingByCountry: Record<
+const productPricingByCurrency: Record<
   string,
-  Record<CountryCode, ProductCountryPricing>
+  Record<CurrencyCode, ProductCurrencyPricing>
 > = {
-  "book-winter": {
-    BY: { price: 29, currency: "BYN" },
-    US: { price: 12, currency: "USD" },
-  },
-  "book-country-house": {
-    BY: { price: 27, currency: "BYN" },
-    US: { price: 11, currency: "USD" },
-  },
-  "book-friends": {
-    BY: { price: 27, currency: "BYN" },
-    US: { price: 11, currency: "USD" },
-  },
-  mug: {
-    BY: { price: 24, currency: "BYN", oldPrice: 29 },
-    US: { price: 9, currency: "USD", oldPrice: 11 },
-  },
-  tshirt: {
-    BY: { price: 49, currency: "BYN" },
-    US: { price: 18, currency: "USD" },
-  },
-  stickers: {
-    BY: { price: 12, currency: "BYN" },
-    US: { price: 5, currency: "USD" },
-  },
+  "book-winter": { USD: { price: 12 } },
+  "book-country-house": { USD: { price: 11 } },
+  "book-friends": { USD: { price: 11 } },
+  mug: { USD: { price: 9, oldPrice: 11 } },
+  tshirt: { USD: { price: 18 } },
+  stickers: { USD: { price: 5 } },
 };
+
+const seededRegionCodes = regionSeedDocuments.map((region) => region.code);
 
 const getProductType = (productId: string): ProductType =>
   productCategoryById[productId] === "books" ? "book" : "merch";
@@ -158,11 +143,11 @@ const buildProductDocument = (productId: string): ProductDocument => ({
     quantity: getProductType(productId) === "book" ? null : 25,
     availability: "in_stock",
   },
-  pricing: productPricingByCountry[productId],
+  pricing: productPricingByCurrency[productId],
   ...(getProductType(productId) === "book"
     ? { shipping: DEFAULT_BOOK_SHIPPING }
     : {}),
-  availableRegions: Object.keys(productPricingByCountry[productId]),
+  availableRegions: seededRegionCodes,
   translations: Object.fromEntries(
     locales.map((locale) => {
       const bookItem = getStorefrontBookSeedItems(locale).find(
@@ -177,7 +162,7 @@ const buildProductDocument = (productId: string): ProductDocument => ({
           title: details.title,
           subtitle: details.subtitle,
           price: details.price,
-          currency: "BYN" as const,
+          currency: BASE_CURRENCY,
           emoji: bookItem?.emoji ?? details.images[0]?.emoji ?? "📦",
           ...(thumbnail ? { thumbnail } : {}),
           thumbnailBackgroundColor: details.images[0]?.bgColor,

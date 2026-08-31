@@ -1,4 +1,4 @@
-import type { CountryCode, CurrencyCode } from "@/utils";
+import type { CurrencyCode } from "@/utils";
 
 import type { BookSeries, ProductAvailability } from "./catalog";
 
@@ -22,7 +22,7 @@ export type ProductFileAsset = {
   url?: string;
 };
 
-export type ProductOptionPriceDelta = Partial<Record<CountryCode, number>>;
+export type ProductOptionPriceDelta = Partial<Record<CurrencyCode, number>>;
 
 export type ProductOption = {
   label: string;

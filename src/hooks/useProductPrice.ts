@@ -52,7 +52,6 @@ const toInitialSelections = (
 
 export const useProductPrice = ({
   product,
-  country,
 }: UseProductPriceParams): UseProductPriceResult => {
   const [selections, setSelections] = useState<ProductSelectionState>(() =>
     toInitialSelections(product),
@@ -122,8 +121,14 @@ export const useProductPrice = ({
   );
 
   const price = useMemo(
-    () => resolveOptionPrice(product.price, product, cartSelections, country),
-    [product, cartSelections, country],
+    () =>
+      resolveOptionPrice(
+        product.price,
+        product,
+        cartSelections,
+        product.currency,
+      ),
+    [product, cartSelections],
   );
 
   const oldPrice = useMemo(
@@ -134,9 +139,9 @@ export const useProductPrice = ({
             product.oldPrice,
             product,
             cartSelections,
-            country,
+            product.currency,
           ),
-    [product, cartSelections, country],
+    [product, cartSelections],
   );
 
   return {

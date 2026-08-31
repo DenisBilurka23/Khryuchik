@@ -9,7 +9,6 @@ import type {
   ProductReview,
 } from "@/types/product-details";
 import type { ReviewStatus, UserReviewSummary } from "@/types/reviews";
-import type { CountryCode } from "@/utils";
 
 export type StoryProductCardViewModel = {
   href: string;
@@ -38,7 +37,6 @@ export type ProductPricingUnavailableProps = {
 
 export type ProductInfoProps = {
   locale: Locale;
-  country: CountryCode;
   product: ProductDetails;
   ownedLanguages?: string[];
 };
@@ -76,7 +74,6 @@ export type RelatedProductsProps = {
 
 export type ProductPageViewProps = {
   locale: Locale;
-  country: CountryCode;
   product: ProductDetails;
   relatedProducts: LocalizedProductSummary[];
   storyProduct?: LocalizedProductSummary | null;

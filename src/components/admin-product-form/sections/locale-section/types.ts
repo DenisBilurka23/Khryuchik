@@ -4,7 +4,7 @@ import type {
   ProductTranslation,
   ProductType,
 } from "@/types/catalog";
-import type { RegionDocument } from "@/types/localization";
+import type { CurrencyCode } from "@/utils";
 
 export type AdminProductLocaleSectionProps = {
   locale: Locale;
@@ -16,5 +16,5 @@ export type AdminProductLocaleSectionProps = {
   details: ProductDetailTranslation;
   productId?: string;
   selectedType: ProductType;
-  availableRegions: RegionDocument[];
+  currencies: CurrencyCode[];
 };

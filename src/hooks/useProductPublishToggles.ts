@@ -75,11 +75,18 @@ export const useProductPublishToggles = (
     setActiveRegions((prev) => ({ ...prev, [code]: !prev[code] }));
   };
 
+  const toggleAllRegions = (isActive: boolean) => {
+    setActiveRegions((prev) =>
+      Object.fromEntries(Object.keys(prev).map((code) => [code, isActive])),
+    );
+  };
+
   return {
     activeLocales,
     activeRegions,
     toggleLocale,
     toggleRegion,
+    toggleAllRegions,
     isLocaleActive: (code) =>
       code === defaultLocale ? true : Boolean(activeLocales[code]),
   };

@@ -164,10 +164,9 @@ export const parseAdminHeroContentFormData = (
   newBookProductId: parseOptionalString(formData, "newBookProductId"),
 });
 
-const parseRegionPricing = (formData: FormData, region: string) => ({
-  price: parseNumber(formData, `pricing.${region}.price`),
-  currency: parseString(formData, `pricing.${region}.currency`) as CurrencyCode,
-  oldPrice: parseOptionalNumber(formData, `pricing.${region}.oldPrice`),
+const parseCurrencyPricing = (formData: FormData, currency: CurrencyCode) => ({
+  price: parseNumber(formData, `pricing.${currency}.price`),
+  oldPrice: parseOptionalNumber(formData, `pricing.${currency}.oldPrice`),
 });
 
 const parseProductPrintedStock = (
@@ -257,6 +256,7 @@ export const parseAdminProductFormData = (
 ): AdminProductPayload => {
   const localeCodes = parseCsvList(formData, "localeCodes");
   const regionCodes = parseCsvList(formData, "regionCodes");
+  const currencyCodes = parseCsvList(formData, "currencyCodes");
   const productId = parseString(formData, "productId").trim();
 
   const activeLocaleCodes = localeCodes.filter(
@@ -306,9 +306,9 @@ export const parseAdminProductFormData = (
         ) as ProductAvailability,
       },
       pricing: Object.fromEntries(
-        regionCodes.map((region) => [
-          region,
-          parseRegionPricing(formData, region),
+        currencyCodes.map((currency) => [
+          currency,
+          parseCurrencyPricing(formData, currency),
         ]),
       ) as AdminProductPayload["product"]["pricing"],
       availableRegions,

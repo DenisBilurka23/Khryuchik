@@ -50,6 +50,8 @@ export {
   convertShippingAmount,
   roundToCents,
 } from "./price-conversion";
+export { groupRegionsByCurrency, toCurrencyCodes } from "./region-currency";
+export type { CurrencyRegionGroup } from "./region-currency";
 export {
   getPrintedStockCount,
   getStockedHubs,

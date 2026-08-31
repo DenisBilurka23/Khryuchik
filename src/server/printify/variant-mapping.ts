@@ -6,6 +6,7 @@ import type {
   ProductOption,
   ProductOptionPriceDelta,
 } from "@/types/product-details";
+import { PRINTIFY_CURRENCY } from "@/constants/printify";
 import { normalizeIdentifierPart } from "@/utils/admin";
 
 import type { PrintifyProduct, PrintifyProductOption } from "./types";
@@ -155,21 +156,12 @@ const buildOptionPriceDeltaCents = (
 
 const toPriceDelta = (
   deltaCents: number,
-  regionCodes: string[],
-): ProductOptionPriceDelta | undefined => {
-  if (deltaCents === 0 || regionCodes.length === 0) {
-    return undefined;
-  }
+): ProductOptionPriceDelta | undefined =>
+  deltaCents === 0
+    ? undefined
+    : { [PRINTIFY_CURRENCY]: deltaCents / 100 };
 
-  return Object.fromEntries(
-    regionCodes.map((code) => [code, deltaCents / 100]),
-  );
-};
-
-export const buildPrintifyProductOptions = (
-  product: PrintifyProduct,
-  priceDeltaRegionCodes: string[] = [],
-) => {
+export const buildPrintifyProductOptions = (product: PrintifyProduct) => {
   const optionValueIndex = buildOptionValueIndex(product.options);
   const deltaByValueId = buildOptionPriceDeltaCents(product, optionValueIndex);
   const offeredValues = new Set(
@@ -190,10 +182,7 @@ export const buildPrintifyProductOptions = (
 
     seenValues.add(entry.value);
 
-    const priceDelta = toPriceDelta(
-      deltaByValueId.get(optionValueId) ?? 0,
-      priceDeltaRegionCodes,
-    );
+    const priceDelta = toPriceDelta(deltaByValueId.get(optionValueId) ?? 0);
 
     optionsByKey[entry.selectionKey].push({
       label: entry.label,

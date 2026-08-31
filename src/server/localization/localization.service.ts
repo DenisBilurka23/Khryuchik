@@ -122,13 +122,7 @@ export const getRegionPricing = cache(
     const currency = await getRegionCurrency(code);
 
     if (currency === BASE_CURRENCY) {
-      return { status: "native" };
-    }
-
-    const sourceCountry = await getDefaultRegionCode();
-
-    if ((await getRegionCurrency(sourceCountry)) !== BASE_CURRENCY) {
-      return { status: "native" };
+      return { status: "native", currency };
     }
 
     const rate = await getUsdRate(currency);
@@ -139,7 +133,8 @@ export const getRegionPricing = cache(
 
     return {
       status: "converted",
-      conversion: { currency, rate, sourceCountry },
+      currency,
+      conversion: { currency, rate },
     };
   },
 );

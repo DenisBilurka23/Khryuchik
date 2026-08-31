@@ -1,5 +1,5 @@
 import type { Locale } from "@/i18n/config";
-import type { CountryCode, CurrencyCode } from "@/utils";
+import type { CurrencyCode } from "@/utils";
 
 import type {
   ProductFileAsset,
@@ -76,9 +76,8 @@ export type ProductTranslation = {
   lang?: string;
 };
 
-export type ProductCountryPricing = {
+export type ProductCurrencyPricing = {
   price: number;
-  currency: CurrencyCode;
   oldPrice?: number;
 };
 
@@ -131,7 +130,7 @@ export type ProductDocument = {
   ageRating?: string;
   showInStory?: boolean;
   series?: BookSeries;
-  pricing: Partial<Record<CountryCode, ProductCountryPricing>>;
+  pricing: Partial<Record<CurrencyCode, ProductCurrencyPricing>>;
   availableRegions: string[];
   hasOptions?: boolean;
   printify?: ProductPrintifyLink;

@@ -18,10 +18,13 @@ export type RegionDocument = {
 export type RegionPricingConversion = {
   currency: CurrencyCode;
   rate: number;
-  sourceCountry: string;
 };
 
 export type RegionPricing =
-  | { status: "native" }
-  | { status: "converted"; conversion: RegionPricingConversion }
+  | { status: "native"; currency: CurrencyCode }
+  | {
+      status: "converted";
+      currency: CurrencyCode;
+      conversion: RegionPricingConversion;
+    }
   | { status: "unavailable"; currency: CurrencyCode };

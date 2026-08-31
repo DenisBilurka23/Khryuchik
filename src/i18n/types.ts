@@ -1409,7 +1409,8 @@ export type AdminPageDictionary = {
     placementTitle: string;
     pricingSectionTitle: string;
     pricingSectionDescription: string;
-    regionActiveLabel: string;
+    pricingRegionsTitle: string;
+    pricingRegionsSelectAll: string;
     localeSectionTitle: string;
     localeSectionDescription: string;
     addForLanguage: string;
@@ -1464,8 +1465,8 @@ export type AdminPageDictionary = {
       visibleOnHome: string;
       notifySubscribers: string;
       showInStory: string;
-      regionPrice: string;
-      regionOldPrice: string;
+      currencyPrice: string;
+      currencyOldPrice: string;
       optionPriceDelta: string;
       slug: string;
       title: string;

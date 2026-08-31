@@ -228,7 +228,7 @@ export const getProductDetails = cache(
       const isPriceable =
         regionPricing.status === "unavailable" &&
         product.availableRegions?.includes(country) &&
-        !product.pricing[country];
+        !product.pricing[regionPricing.currency];
 
       if (!isPriceable) {
         return { status: "not-found" };
@@ -374,9 +374,9 @@ export const resolveCartItems = async (
         price: translation
           ? resolveOptionPrice(
               summary.price,
-              localizeProductOptionGroups(translation, country, regionPricing),
+              localizeProductOptionGroups(translation, regionPricing),
               item.selections,
-              country,
+              summary.currency,
             )
           : summary.price,
         currency: summary.currency,

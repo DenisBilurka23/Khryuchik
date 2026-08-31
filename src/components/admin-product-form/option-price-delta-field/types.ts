@@ -1,9 +1,9 @@
 import type { ProductOptionPriceDelta } from "@/types/product-details";
-import type { RegionDocument } from "@/types/localization";
+import type { CurrencyCode } from "@/utils";
 
 export type AdminOptionPriceDeltaFieldProps = {
   label: string;
-  regions: RegionDocument[];
+  currencies: CurrencyCode[];
   priceDelta?: ProductOptionPriceDelta;
   onChangeAction: (priceDelta: ProductOptionPriceDelta | undefined) => void;
 };

@@ -1,3 +1,7 @@
+// Printify quotes products and shipping in USD only, and its API never states a
+// currency, so USD is the base every converted price is derived from.
+export const BASE_CURRENCY = "USD";
+
 export const COUNTRY_CURRENCY: Record<string, string> = {
   AD: "EUR",
   AE: "AED",

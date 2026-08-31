@@ -1,5 +1,5 @@
-import type { RegionDocument } from "@/types/localization";
 import type { ProductOption } from "@/types/product-details";
+import type { CurrencyCode } from "@/utils";
 
 export type AdminOptionsFieldProps = {
   name: string;
@@ -8,5 +8,5 @@ export type AdminOptionsFieldProps = {
   priceDeltaHelperText: string;
   initialOptions: ProductOption[];
   itemLabel: string;
-  regions: RegionDocument[];
+  currencies: CurrencyCode[];
 };

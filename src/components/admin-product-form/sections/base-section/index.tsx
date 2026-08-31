@@ -33,7 +33,7 @@ export const AdminProductBaseSection = ({
   merchCategories,
   onTypeChangeAction,
   onCategoryChangeAction,
-  availableRegions,
+  currencies,
   formatOptions,
   selectedFormats,
   isFormatSelected,
@@ -210,7 +210,7 @@ export const AdminProductBaseSection = ({
         </Box>
       )}
       {selectedType === "book" &&
-      availableRegions.length > 0 &&
+      currencies.length > 0 &&
       selectedFormats.length > 0 ? (
         <Stack gap={1} sx={{ mt: 2 }}>
           <Box
@@ -227,7 +227,7 @@ export const AdminProductBaseSection = ({
               <AdminOptionPriceDeltaField
                 key={`formatsJson-${option.value}-delta`}
                 label={option.label}
-                regions={availableRegions}
+                currencies={currencies}
                 priceDelta={option.priceDelta}
                 onChangeAction={(priceDelta) =>
                   onFormatPriceDeltaChangeAction(option.value, priceDelta)

@@ -63,7 +63,6 @@ const createProductPageViewModel = ({
 
 export const ProductPageView = async ({
   locale,
-  country,
   product,
   relatedProducts,
   storyProduct,
@@ -158,7 +157,6 @@ export const ProductPageView = async ({
               <Grid size={{ xs: 12, md: 6 }}>
                 <ProductInfo
                   locale={locale}
-                  country={country}
                   product={product}
                   ownedLanguages={ownedLanguages}
                 />

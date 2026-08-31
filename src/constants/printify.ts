@@ -8,6 +8,9 @@ import type { OrderStatus } from "@/types/order";
 
 export const PRINTIFY_STANDARD_SHIPPING_METHOD = 1;
 
+// Printify quotes every product in USD regardless of the billing currency.
+export const PRINTIFY_CURRENCY = "USD";
+
 export const PRINTIFY_RESTRICTED_COUNTRIES = [
   "BY",
   "CU",
