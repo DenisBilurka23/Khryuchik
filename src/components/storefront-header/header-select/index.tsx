@@ -58,13 +58,13 @@ export const HeaderSelect = ({
           height: 40,
           px: 1.5,
           borderRadius: "999px",
-          bgcolor: "#fff",
-          boxShadow: "0 1px 3px rgba(54, 33, 18, 0.04)",
-          border: "1px solid #E8D6BF",
+          bgcolor: "var(--color-card)",
+          boxShadow: "var(--shadow-card)",
+          border: "1px solid var(--color-border)",
           justifyContent: "center",
           gap: 0.75,
           "&:hover": {
-            borderColor: "#D96C82",
+            borderColor: "var(--color-border-rose)",
           },
           ...sx,
         }}
@@ -116,7 +116,7 @@ export const HeaderSelect = ({
               width: "max-content",
               maxWidth: "calc(100vw - 32px)",
               borderRadius: "18px",
-              boxShadow: "0 12px 30px rgba(54, 33, 18, 0.18)",
+              boxShadow: "var(--shadow-floating)",
             }}
           >
             <MenuList

@@ -12,7 +12,6 @@ export type AdminViewKey =
   | "dashboard"
   | "products"
   | "categories"
-  | "home"
   | "localization"
   | "orders"
   | "reviews"
@@ -159,17 +158,4 @@ export type AdminRegionUpsertInput = {
 export type AdminLocalizationData = {
   locales: AdminLocaleListItem[];
   regions: AdminRegionListItem[];
-};
-
-export type AdminHeroContentData = {
-  featuredProductId?: string;
-  newBookProductId?: string;
-  featuredProductOption?: AdminProductOption;
-  newBookProductOption?: AdminProductOption;
-  initialProductOptions: AdminProductOption[];
-};
-
-export type AdminHeroContentUpsertInput = {
-  featuredProductId?: string;
-  newBookProductId?: string;
 };

@@ -1,7 +1,7 @@
 .pageShell {
   min-height: 100vh;
   color: inherit;
-  background: #fff8f0;
+  background: var(--color-page);
 }
 
 .pageContent {

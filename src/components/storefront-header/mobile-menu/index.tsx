@@ -4,6 +4,7 @@ import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
@@ -37,6 +38,7 @@ import { LocaleSwitcher } from "../locale-switcher";
 import type { MobileMenuItem, MobileMenuProps } from "./types";
 
 const iconByKey: Record<MobileMenuItem["key"], React.ReactNode> = {
+  home: <HomeOutlinedIcon fontSize="small" />,
   shop: <StorefrontOutlinedIcon fontSize="small" />,
   story: <AutoStoriesOutlinedIcon fontSize="small" />,
   faq: <LocalShippingOutlinedIcon fontSize="small" />,
@@ -63,7 +65,9 @@ export const MobileMenu = ({
   const accountHref = session
     ? getLocalizedPath(locale, "/account")
     : getLocalizedPath(locale, "/login");
-  const accountActionLabel = session ? t("userMenu.account") : t("userMenu.signIn");
+  const accountActionLabel = session
+    ? t("userMenu.account")
+    : t("userMenu.signIn");
   const menuItems: MobileMenuItem[] = [
     ...navItems,
     {
@@ -88,8 +92,8 @@ export const MobileMenu = ({
           width: 40,
           height: 40,
           borderRadius: "999px",
-          border: "1px solid #E8D6BF",
-          bgcolor: "#fff",
+          border: "1px solid var(--color-border)",
+          bgcolor: "var(--color-card)",
         }}
       >
         <MenuIcon />
@@ -104,13 +108,17 @@ export const MobileMenu = ({
             sx: {
               width: 320,
               maxWidth: "100%",
-              bgcolor: "#FFF8F0",
+              bgcolor: "var(--color-page)",
             },
           },
         }}
       >
         <Box sx={{ p: 2.5 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Link
               href={homeHref}
               onClick={() => setOpen(false)}
@@ -121,7 +129,10 @@ export const MobileMenu = ({
 
             <IconButton
               onClick={() => setOpen(false)}
-              sx={{ bgcolor: "#fff", border: "1px solid #E8D6BF" }}
+              sx={{
+                bgcolor: "var(--color-card)",
+                border: "1px solid var(--color-border)",
+              }}
             >
               <CloseIcon />
             </IconButton>
@@ -162,7 +173,7 @@ export const MobileMenu = ({
             </Box>
           </Box>
 
-          <Divider sx={{ my: 3, borderColor: "#E8D6BF" }} />
+          <Divider sx={{ my: 3, borderColor: "var(--color-border)" }} />
 
           <List sx={{ p: 0 }}>
             {menuItems.map((item) => {
@@ -181,17 +192,21 @@ export const MobileMenu = ({
                     sx={{
                       borderRadius: "18px",
                       mb: 1,
-                      bgcolor: active ? "secondary.main" : "#fff",
+                      bgcolor: active
+                        ? "var(--color-accent-pale)"
+                        : "var(--color-card)",
                       border: "1px solid",
-                      borderColor: active ? "primary.main" : "#F0DFC8",
-                      color: active ? "primary.main" : "inherit",
+                      borderColor: active
+                        ? "var(--color-border-rose)"
+                        : "var(--color-border)",
+                      color: active ? "var(--color-action)" : "inherit",
                       py: 1.5,
                     }}
                   >
                     <ListItemIcon
                       sx={{
                         minWidth: 38,
-                        color: active ? "primary.main" : "text.primary",
+                        color: active ? "var(--color-action)" : "text.primary",
                       }}
                     >
                       {iconByKey[item.key]}
@@ -219,11 +234,7 @@ export const MobileMenu = ({
               fullWidth
               variant="contained"
               component="span"
-              sx={{
-                mt: 2,
-                bgcolor: "#18181B",
-                "&:hover": { bgcolor: "#09090B" },
-              }}
+              sx={{ mt: 2 }}
             >
               {t("cartLabel")}
             </Button>

@@ -1,7 +1,6 @@
 "use client";
 
 import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -25,7 +24,6 @@ const iconByKey: Record<AdminViewKey, ReactNode> = {
   dashboard: <DashboardOutlinedIcon />,
   products: <Inventory2OutlinedIcon />,
   categories: <CategoryOutlinedIcon />,
-  home: <HomeOutlinedIcon />,
   localization: <LanguageOutlinedIcon />,
   orders: <ShoppingBagOutlinedIcon />,
   reviews: <RateReviewOutlinedIcon />,

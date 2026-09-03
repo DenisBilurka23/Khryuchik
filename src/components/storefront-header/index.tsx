@@ -1,8 +1,3 @@
-import type { ReactNode } from "react";
-import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
-import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
-import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
-import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import { AppBar, Box, Container, Toolbar } from "@mui/material";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -28,30 +23,31 @@ export const StorefrontHeader = async ({
   navigationPaths,
 }: StorefrontHeaderProps) => {
   const t = await getTranslations({ locale, namespace: "storefront" });
-  const navItems: Array<StorefrontNavItem & { icon: ReactNode }> = [
+  const navItems: StorefrontNavItem[] = [
+    {
+      key: "home",
+      label: t("nav.home"),
+      href: homeHref,
+    },
     {
       key: "shop",
       label: t("nav.shop"),
       href: navigationPaths?.shop ?? "#shop",
-      icon: <StorefrontOutlinedIcon fontSize="small" />,
     },
     {
       key: "story",
       label: t("nav.story"),
       href: navigationPaths?.story ?? "#story",
-      icon: <AutoStoriesOutlinedIcon fontSize="small" />,
     },
     {
       key: "faq",
       label: t("nav.faq"),
       href: navigationPaths?.faq ?? "#faq",
-      icon: <LocalShippingOutlinedIcon fontSize="small" />,
     },
     {
       key: "contacts",
       label: t("nav.contacts"),
       href: navigationPaths?.contacts ?? "/contacts",
-      icon: <ChatBubbleOutlineOutlinedIcon fontSize="small" />,
     },
   ];
 
@@ -73,8 +69,7 @@ export const StorefrontHeader = async ({
           <Toolbar
             disableGutters
             sx={{
-              minHeight: { xs: 72, md: 64 },
-              py: { xs: 1, md: 1.5 },
+              minHeight: { xs: 72, md: 88 },
               justifyContent: "space-between",
               gap: 2,
             }}
@@ -84,13 +79,23 @@ export const StorefrontHeader = async ({
               style={{ textDecoration: "none", color: "inherit" }}
             >
               <Logo
+                markSize={48}
                 title={t("brand.title")}
                 subtitle={t("brand.subtitle")}
                 textSx={{ display: { xs: "block", md: "none", lg: "block" } }}
+                subtitleSx={{ display: { xs: "none", sm: "block" } }}
               />
             </Link>
 
-            <HeaderNavLinks items={navItems} />
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                alignItems: "center",
+                gap: 0.5,
+              }}
+            >
+              <HeaderNavLinks items={navItems} />
+            </Box>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <Box
@@ -121,11 +126,7 @@ export const StorefrontHeader = async ({
                 localizedPaths={localizedPaths}
                 availableLocales={availableLocales}
                 availableCountries={availableCountries}
-                navItems={navItems.map(({ key, label, href }) => ({
-                  key,
-                  label,
-                  href,
-                }))}
+                navItems={navItems}
                 cartHref={navigationPaths?.cart ?? "/cart"}
                 homeHref={homeHref}
                 favoritesHref={navigationPaths?.favorites ?? "/favorites"}

@@ -10,7 +10,6 @@ type AdminNavLabels = Record<
   | "dashboard"
   | "products"
   | "categories"
-  | "home"
   | "localization"
   | "shipping"
   | "customers"
@@ -32,7 +31,6 @@ export const createAdminNavItems = (labels: AdminNavLabels): AdminNavItem[] => [
   { key: "dashboard", label: labels.dashboard, href: "/admin" },
   { key: "products", label: labels.products, href: "/admin/products" },
   { key: "categories", label: labels.categories, href: "/admin/categories" },
-  { key: "home", label: labels.home, href: "/admin/home" },
   {
     key: "localization",
     label: labels.localization,

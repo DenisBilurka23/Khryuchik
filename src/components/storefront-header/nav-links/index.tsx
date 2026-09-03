@@ -12,11 +12,7 @@ export const HeaderNavLinks = ({ items }: HeaderNavLinksProps) => {
   const pathname = usePathname();
 
   return (
-    <Stack
-      direction="row"
-      spacing={1}
-      sx={{ display: { xs: "none", md: "flex" } }}
-    >
+    <Stack direction="row" spacing={0.5}>
       {items.map((item) => {
         const active = isNavItemActive(pathname, item.href);
 
@@ -29,26 +25,29 @@ export const HeaderNavLinks = ({ items }: HeaderNavLinksProps) => {
             <Button
               color="inherit"
               disableRipple
-              startIcon={item.icon}
               component="span"
               aria-current={active ? "page" : undefined}
               sx={{
                 position: "relative",
-                color: active ? "primary.main" : "#2a2522",
+                minHeight: 44,
+                px: 1.5,
+                fontSize: 15,
+                fontWeight: active ? 600 : 500,
+                color: active ? "var(--color-action)" : "var(--color-text)",
                 transition: "color 0.2s ease",
                 "&:hover": {
                   backgroundColor: "transparent",
-                  color: "primary.main",
+                  color: "var(--color-action)",
                 },
                 "&::after": {
                   content: '""',
                   position: "absolute",
-                  left: 16,
-                  right: 16,
-                  bottom: 4,
+                  left: 12,
+                  right: 12,
+                  bottom: 6,
                   height: 2,
                   borderRadius: 2,
-                  backgroundColor: "primary.main",
+                  backgroundColor: "var(--color-action)",
                   opacity: active ? 1 : 0,
                   transition: "opacity 0.2s ease",
                 },

@@ -30,7 +30,6 @@ import {
   findActiveProductBySlug,
   findActiveProductsByIds,
   findActiveProductSlugs,
-  findLatestBook,
   findProductsForPlacement,
   findShopVisibleProducts,
 } from "../repositories/products.repository";
@@ -66,25 +65,6 @@ export const getProductsForPlacement = cache(
     ]);
 
     return localizeProductSummaries(products, locale, country, regionPricing);
-  },
-);
-
-export const getLatestBookSummary = cache(
-  async (locale: Locale, country: CountryCode) => {
-    const product = await findLatestBook(country);
-
-    if (!product) {
-      return null;
-    }
-
-    const summary = localizeProductSummary(
-      product,
-      locale,
-      country,
-      await getRegionPricing(country),
-    );
-
-    return isLocalizedProductSummary(summary) ? summary : null;
   },
 );
 

@@ -1,14 +1,7 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
+import { ArrowLink } from "../arrow-link";
 import { formatCurrency, isPurchasableAvailability } from "@/utils";
 import { AddToCartButton } from "./add-to-cart-button";
 import { WishlistButton } from "./wishlist-button";
@@ -19,7 +12,6 @@ export const ProductCard = ({
   product,
   locale,
   addToCart,
-  selectOptions,
   wishlistAriaLabel,
   outOfStock,
   viewProduct,
@@ -27,10 +19,19 @@ export const ProductCard = ({
 }: ProductCardProps) => {
   const thumbnail = product.thumbnail;
   const isSoldOut = !isPurchasableAvailability(product.availability);
+  const canAddDirectly = !isSoldOut && !product.hasOptions;
 
   return (
     <Card className={styles.card}>
-      <CardContent sx={{ p: 2.5, display: "flex", flexDirection: "column", height: "100%" }}>
+      <CardContent
+        sx={{
+          p: 1.5,
+          "&:last-child": { pb: 1.5 },
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
         <Link
           href={detailsHref}
           style={{
@@ -44,24 +45,16 @@ export const ProductCard = ({
             <Chip
               label={outOfStock}
               size="small"
-              sx={{
-                position: "absolute",
-                top: 12,
-                left: 12,
-                zIndex: 1,
-                bgcolor: "#fff",
-                border: "1px solid #E8D6BF",
-                fontWeight: 700,
-              }}
+              className={styles.soldOutChip}
             />
           ) : null}
           <Box
             className={styles.preview}
             sx={{
-              color: "inherit",
-              display: "flex",
               bgcolor:
-                thumbnail?.bgColor ?? product.thumbnailBackgroundColor ?? undefined,
+                thumbnail?.bgColor ??
+                product.thumbnailBackgroundColor ??
+                undefined,
             }}
           >
             {thumbnail?.src ? (
@@ -72,7 +65,7 @@ export const ProductCard = ({
                 className={styles.previewImage}
               />
             ) : (
-              thumbnail?.emoji ?? product.emoji
+              (thumbnail?.emoji ?? product.emoji)
             )}
           </Box>
         </Link>
@@ -82,50 +75,41 @@ export const ProductCard = ({
           style={{ textDecoration: "none", color: "inherit", display: "block" }}
         >
           <Typography
-            variant="h6"
-            sx={{
-              mt: 3,
-              fontSize: 18,
-              fontWeight: 700,
-              color: "inherit",
-            }}
+            sx={{ mt: 1.75, fontSize: 16, fontWeight: 600, lineHeight: 1.35 }}
           >
             {product.title}
           </Typography>
         </Link>
 
-        <Typography sx={{ mt: 1, color: "primary.main", fontWeight: 700 }}>
+        <Typography sx={{ mt: 0.75, fontSize: 17, fontWeight: 700 }}>
           {formatCurrency(product.price, locale, product.currency)}
         </Typography>
 
-        <Stack direction="row" spacing={1.5} sx={{ mt: "auto", pt: 3 }}>
-          {isSoldOut || product.hasOptions ? (
-            <Button
-              fullWidth
-              variant={isSoldOut ? "outlined" : "contained"}
-              color={isSoldOut ? "inherit" : "primary"}
-              href={detailsHref}
-              sx={
-                isSoldOut
-                  ? { borderColor: "#E8D6BF", bgcolor: "#fff" }
-                  : undefined
-              }
-            >
-              {isSoldOut ? viewProduct : selectOptions}
-            </Button>
-          ) : (
-            <AddToCartButton
-              productId={product.id}
-              label={addToCart}
-              className={styles.addButton}
-            />
-          )}
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={1}
+          sx={{ mt: "auto", pt: 1.5 }}
+        >
+          <ArrowLink href={detailsHref} label={viewProduct} />
 
-          <WishlistButton
-            productId={product.id}
-            label={`${wishlistAriaLabel}: ${product.title}`}
-            className={styles.wishlistButton}
-          />
+          <Stack direction="row" spacing={0.5} alignItems="center">
+            {canAddDirectly ? (
+              <AddToCartButton
+                productId={product.id}
+                label={addToCart}
+                className={styles.iconAction}
+                iconOnly
+              />
+            ) : null}
+
+            <WishlistButton
+              productId={product.id}
+              label={`${wishlistAriaLabel}: ${product.title}`}
+              className={styles.iconAction}
+            />
+          </Stack>
         </Stack>
       </CardContent>
     </Card>

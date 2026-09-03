@@ -61,7 +61,6 @@ const HomePage = async ({ searchParams }: HomePageProps) => {
   return (
     <Storefront
       locale={defaultLocale}
-      country={country}
       shopCategories={shopCategories}
       books={books}
       shopProducts={shopProducts}

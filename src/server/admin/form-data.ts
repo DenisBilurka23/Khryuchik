@@ -3,7 +3,6 @@ import "server-only";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryUpsertInput,
-  AdminHeroContentUpsertInput,
   AdminLocaleUpsertInput,
   AdminProductPayload,
   AdminRegionUpsertInput,
@@ -155,13 +154,6 @@ export const parseAdminRegionFormData = (
   isActive: parseBoolean(formData, "isActive"),
   isDefault: parseBoolean(formData, "isDefault"),
   sortOrder: parseNumber(formData, "sortOrder", 100),
-});
-
-export const parseAdminHeroContentFormData = (
-  formData: FormData,
-): AdminHeroContentUpsertInput => ({
-  featuredProductId: parseOptionalString(formData, "featuredProductId"),
-  newBookProductId: parseOptionalString(formData, "newBookProductId"),
 });
 
 const parseCurrencyPricing = (formData: FormData, currency: CurrencyCode) => ({

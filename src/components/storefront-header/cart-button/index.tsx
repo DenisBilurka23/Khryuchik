@@ -1,7 +1,7 @@
 "use client";
 
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import { Badge, Button } from "@mui/material";
+import { Badge, IconButton } from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
@@ -15,26 +15,23 @@ export const CartButton = ({ href }: CartButtonProps) => {
   const label = t("cartLabel");
 
   return (
-    <Button
+    <IconButton
       component={Link}
       href={href}
-      variant="contained"
       aria-label={label}
       sx={{
-        display: "inline-flex",
         flex: "0 0 auto",
-        width: 40,
-        minWidth: 40,
-        height: 40,
-        p: 0,
-        borderRadius: "999px",
-        justifyContent: "center",
+        color: "var(--color-text)",
+        "&:hover": {
+          color: "var(--color-action)",
+          bgcolor: "transparent",
+        },
       }}
     >
       <Badge badgeContent={totalCount} color="primary">
-        <ShoppingBagOutlinedIcon fontSize="small" />
+        <ShoppingBagOutlinedIcon />
       </Badge>
-    </Button>
+    </IconButton>
   );
 };
 

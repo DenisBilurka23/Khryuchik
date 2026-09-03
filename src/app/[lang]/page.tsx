@@ -80,7 +80,6 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
   return (
     <Storefront
       locale={lang}
-      country={country}
       shopCategories={shopCategories}
       books={books}
       shopProducts={shopProducts}

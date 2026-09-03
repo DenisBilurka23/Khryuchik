@@ -11,7 +11,7 @@ const eyebrowSx = {
   letterSpacing: "0.2em",
   fontSize: 12,
   fontWeight: 700,
-  color: "primary.main",
+  color: "var(--color-accent)",
 } as const;
 
 export const CategoryTabs = ({
@@ -100,39 +100,52 @@ export const CategoryTabs = ({
   }
 
   return (
-    <Stack direction="row" spacing={1.5} sx={sx}>
-      {options.map((option) => (
-        <Button
-          key={option.value}
-          variant={selectedValue === option.value ? "contained" : "outlined"}
-          color={selectedValue === option.value ? "primary" : "inherit"}
-          onClick={() => updateValue(option.value)}
-          className={className}
-          sx={
-            selectedValue === option.value
-              ? {
-                  color: "#fff",
-                  borderColor: "primary.main",
-                  bgcolor: "primary.main",
-                  "&:hover": {
-                    borderColor: "primary.main",
-                    bgcolor: "primary.main",
-                  },
-                }
-              : {
-                  borderColor: "#E8D6BF",
-                  color: "text.primary",
-                  bgcolor: "transparent",
-                  "&:hover": {
-                    borderColor: "#D4B894",
-                    bgcolor: "rgba(255, 255, 255, 0.5)",
-                  },
-                }
-          }
-        >
-          {option.label}
-        </Button>
-      ))}
+    <Stack
+      direction="row"
+      spacing={1.5}
+      useFlexGap
+      flexWrap="wrap"
+      sx={sx}
+    >
+      {options.map((option) => {
+        const isActive = selectedValue === option.value;
+
+        return (
+          <Button
+            key={option.value}
+            variant="text"
+            disableElevation
+            onClick={() => updateValue(option.value)}
+            className={className}
+            sx={{
+              minHeight: 40,
+              px: 2.5,
+              py: 1,
+              borderRadius: "var(--radius-pill)",
+              border: "1px solid",
+              fontWeight: isActive ? 600 : 500,
+              fontSize: 14,
+              borderColor: isActive
+                ? "var(--color-accent-soft)"
+                : "var(--color-border)",
+              bgcolor: isActive
+                ? "var(--color-accent-soft)"
+                : "var(--color-card)",
+              color: isActive
+                ? "var(--color-text)"
+                : "var(--color-text-secondary)",
+              "&:hover": {
+                bgcolor: isActive
+                  ? "var(--color-accent-soft)"
+                  : "var(--color-accent-pale)",
+                borderColor: "var(--color-border-rose)",
+              },
+            }}
+          >
+            {option.label}
+          </Button>
+        );
+      })}
     </Stack>
   );
 };

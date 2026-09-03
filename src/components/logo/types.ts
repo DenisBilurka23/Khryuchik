@@ -14,5 +14,6 @@ export type LogoProps = {
   title: string;
   subtitle?: string;
   textSx?: SxProps<Theme>;
+  subtitleSx?: SxProps<Theme>;
   markSize?: number;
 };

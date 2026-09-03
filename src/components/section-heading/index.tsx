@@ -1,6 +1,8 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 
+import { SectionEyebrow } from "../section-eyebrow";
+
 import styles from "./section-heading.module.css";
 import type { SectionHeadingProps } from "./types";
 
@@ -16,11 +18,11 @@ export const SectionHeading = ({
       justifyContent="space-between"
       alignItems={{ xs: "flex-start", md: "flex-end" }}
       spacing={3}
-      mb={5}
+      mb={4}
     >
       <Box>
-        <Typography className={styles.eyebrow}>{eyebrow}</Typography>
-        <Typography variant="h2" sx={{ mt: 1, fontSize: { xs: 32, md: 42 } }}>
+        <SectionEyebrow label={eyebrow} />
+        <Typography variant="h2" sx={{ mt: 1 }}>
           {title}
         </Typography>
       </Box>

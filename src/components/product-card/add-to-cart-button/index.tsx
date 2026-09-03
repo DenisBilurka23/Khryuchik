@@ -1,6 +1,7 @@
 "use client";
 
-import { Button } from "@mui/material";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import { Button, IconButton } from "@mui/material";
 
 import { showCartToast } from "@/components/cart/cart-toast-store";
 import { useCart } from "@/components/cart/store";
@@ -11,6 +12,7 @@ export const AddToCartButton = ({
   productId,
   label,
   className,
+  iconOnly = false,
 }: AddToCartButtonProps) => {
   const { addItem } = useCart();
 
@@ -20,6 +22,19 @@ export const AddToCartButton = ({
     });
     showCartToast();
   };
+
+  if (iconOnly) {
+    return (
+      <IconButton
+        aria-label={label}
+        title={label}
+        className={className}
+        onClick={handleAddToCart}
+      >
+        <ShoppingBagOutlinedIcon fontSize="small" />
+      </IconButton>
+    );
+  }
 
   return (
     <Button

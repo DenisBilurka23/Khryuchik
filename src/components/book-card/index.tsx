@@ -1,12 +1,7 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import Link from "next/link";
+
+import { ArrowLink } from "../arrow-link";
 
 import styles from "./book-card.module.css";
 import type { BookCardProps } from "./types";
@@ -21,7 +16,13 @@ export const BookCard = ({
   return (
     <Card className={styles.card}>
       <CardContent
-        sx={{ p: 3, display: "flex", flexDirection: "column", flexGrow: 1 }}
+        sx={{
+          p: 1.5,
+          "&:last-child": { pb: 1.5 },
+          display: "flex",
+          flexDirection: "column",
+          flexGrow: 1,
+        }}
       >
         <Link
           href={detailsHref}
@@ -40,15 +41,17 @@ export const BookCard = ({
               className={styles.coverImage}
             />
           ) : (
-            thumbnail?.emoji ?? book.emoji
+            (thumbnail?.emoji ?? book.emoji)
           )}
         </Link>
 
         {book.lang ? (
           <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ fontWeight: 500 }}
+            sx={{
+              fontSize: 12,
+              letterSpacing: "0.06em",
+              color: "var(--color-text-muted)",
+            }}
           >
             {book.lang}
           </Typography>
@@ -59,26 +62,15 @@ export const BookCard = ({
           style={{ textDecoration: "none", color: "inherit", display: "block" }}
         >
           <Typography
-            variant="h6"
-            sx={{
-              mt: 1,
-              fontWeight: 700,
-            }}
+            sx={{ mt: 0.5, fontSize: 17, fontWeight: 600, lineHeight: 1.3 }}
           >
             {book.title}
           </Typography>
         </Link>
 
-        <Stack direction="row" sx={{ mt: "auto", pt: 3 }}>
-          <Link
-            href={detailsHref}
-            style={{ textDecoration: "none", color: "inherit", display: "block", width: "100%" }}
-          >
-            <Button component="span" variant="contained" fullWidth>
-              {detailsButton}
-            </Button>
-          </Link>
-        </Stack>
+        <Box sx={{ mt: "auto", pt: 1.5 }}>
+          <ArrowLink href={detailsHref} label={detailsButton} />
+        </Box>
       </CardContent>
     </Card>
   );

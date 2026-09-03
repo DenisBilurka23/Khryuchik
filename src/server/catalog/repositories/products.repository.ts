@@ -77,24 +77,6 @@ export const findProductsForPlacement = async (
   return cursor.toArray();
 };
 
-export const findLatestBook = async (country: CountryCode) => {
-  const db = await getMongoDb();
-
-  return db
-    .collection<ProductDocument>("products")
-    .find(
-      {
-        "status.isActive": true,
-        "classification.type": "book",
-        availableRegions: country,
-      },
-      { projection: { _id: 0 } },
-    )
-    .sort({ _id: -1 })
-    .limit(1)
-    .next();
-};
-
 export const findShopVisibleProducts = async (
   country: CountryCode,
   options?: ShopProductsQueryOptions,

@@ -1,11 +1,9 @@
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/utils";
 import type { LocalizedCategory, LocalizedProductSummary } from "@/types/catalog";
 import type { HomeShopFilterValue } from "../shop-section/types";
 
 export type StorefrontProps = {
   locale: Locale;
-  country: CountryCode;
   shopCategories: LocalizedCategory[];
   books: LocalizedProductSummary[];
   shopProducts: LocalizedProductSummary[];

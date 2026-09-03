@@ -25,37 +25,37 @@ export const ShopSection = async ({
   return (
     <Box component="section" id="shop" className={styles.section}>
       <Container maxWidth="lg">
-        <SectionHeading
-          eyebrow={t("eyebrow")}
-          title={t("title")}
-          actionLabel={t("actionLabel")}
-          actionHref={getLocalizedPath(locale, "/shop")}
-        />
+        <Box className={styles.panel}>
+          <SectionHeading
+            eyebrow={t("eyebrow")}
+            title={t("title")}
+            actionLabel={t("actionLabel")}
+            actionHref={getLocalizedPath(locale, "/shop")}
+          />
 
-        <CategoryTabs
-          selectedValue={selectedFilter}
-          options={filterOptions}
-          className={styles.filterButton}
-          defaultValueWithoutQuery={defaultFilterValue}
-          sx={{ mb: 4, display: { xs: "none", md: "flex" } }}
-        />
+          <CategoryTabs
+            selectedValue={selectedFilter}
+            options={filterOptions}
+            defaultValueWithoutQuery={defaultFilterValue}
+            sx={{ mb: 4, display: { xs: "none", md: "flex" } }}
+          />
 
-        <Grid container spacing={3}>
-          {products.map((product) => (
-            <Grid key={product.id} size={{ xs: 12, sm: 6, xl: 3 }}>
-              <ProductCard
-                product={product}
-                locale={locale}
-                addToCart={t("addToCart")}
-                selectOptions={t("selectOptions")}
-                wishlistAriaLabel={t("wishlistAriaLabel")}
-                outOfStock={t("outOfStock")}
-                viewProduct={t("viewProduct")}
-                detailsHref={getLocalizedProductPath(locale, product.slug)}
-              />
-            </Grid>
-          ))}
-        </Grid>
+          <Grid container spacing={3}>
+            {products.map((product) => (
+              <Grid key={product.id} size={{ xs: 6, lg: 3 }}>
+                <ProductCard
+                  product={product}
+                  locale={locale}
+                  addToCart={t("addToCart")}
+                  wishlistAriaLabel={t("wishlistAriaLabel")}
+                  outOfStock={t("outOfStock")}
+                  viewProduct={t("viewProduct")}
+                  detailsHref={getLocalizedProductPath(locale, product.slug)}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       </Container>
     </Box>
   );

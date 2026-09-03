@@ -1,14 +1,15 @@
 .chip {
-  padding: 12px 16px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.8);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-card);
+  box-shadow: none;
 }
 
 .tag {
   padding: 6px 12px;
-  border-radius: 999px;
-  background: #fbf3ec;
-  border: 1px solid rgba(42, 37, 34, 0.14);
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-pale);
+  border: 1px solid var(--color-border);
   box-shadow: none;
 }

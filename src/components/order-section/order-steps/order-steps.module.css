@@ -1,0 +1,33 @@
+.mark {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--color-border);
+  background: transparent;
+}
+
+.toneBerry {
+  color: var(--color-action);
+  border-color: var(--color-border-rose);
+}
+
+.toneAqua {
+  color: var(--color-aqua);
+  border-color: var(--color-aqua);
+}
+
+.toneOlive {
+  color: var(--color-olive);
+  border-color: var(--color-olive);
+}
+
+@media (max-width: 899px) {
+  .mark {
+    width: 64px;
+    height: 64px;
+  }
+}

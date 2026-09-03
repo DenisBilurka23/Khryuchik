@@ -570,6 +570,7 @@ export type StorefrontDictionary = {
     signIn: string;
   };
   nav: {
+    home: string;
     books: string;
     shop: string;
     story: string;
@@ -581,24 +582,15 @@ export type StorefrontDictionary = {
     title: string;
     highlight: string;
     lead: string;
+    leadSecondary: string;
     primaryAction: string;
     secondaryAction: string;
-    chips: string[];
-    featuredHit: {
-      label: string;
-      title: string;
-      price: number;
-    };
     character: {
       eyebrow: string;
       title: string;
       subtitle: string;
-    };
-    newBook: {
-      label: string;
-      title: string;
-      edition: string;
-      emoji: string;
+      text: string;
+      actionLabel: string;
     };
     promos: Array<{
       eyebrow: string;
@@ -624,17 +616,6 @@ export type StorefrontDictionary = {
   };
   favoritesLabel: string;
   favoritesPage: FavoritesPageLabels;
-  storySection: {
-    eyebrow: string;
-    title: string;
-    text: string;
-    actionLabel: string;
-    features: Array<{
-      emoji: string;
-      title: string;
-      text: string;
-    }>;
-  };
   orderSection: {
     eyebrow: string;
     title: string;
@@ -642,6 +623,13 @@ export type StorefrontDictionary = {
     nextTitle: string;
     nextText: string;
     cartTitle: string;
+    shopAction: string;
+    cartAction: string;
+    steps: Array<{
+      icon: string;
+      title: string;
+      text: string;
+    }>;
     emptyTitle: string;
     emptyText: string;
     quantityLabel: string;

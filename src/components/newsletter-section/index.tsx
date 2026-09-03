@@ -1,5 +1,7 @@
 import { Box, Container, Grid, Paper, Typography } from "@mui/material";
 import { getTranslations } from "next-intl/server";
+
+import { SectionEyebrow } from "@/components/section-eyebrow";
 import { getServerAuthSession } from "@/server/auth/config";
 import { isSubscribedToNewsletter } from "@/server/newsletter/services/newsletter.service";
 import { NewsletterForm } from "./form";
@@ -25,19 +27,17 @@ export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
         <Paper
           elevation={0}
           className={styles.panel}
-          sx={{ px: { xs: 3, md: 6 }, py: { xs: 4, md: 6 } }}
+          sx={{ px: { xs: 3, md: 5 }, py: { xs: 4, md: 5 } }}
         >
           <Grid container spacing={4} alignItems="center">
             <Grid size={{ xs: 12, md: 8 }}>
-              <Typography className={styles.eyebrow}>{t("eyebrow")}</Typography>
-              <Typography
-                variant="h2"
-                sx={{ mt: 2, fontSize: { xs: 30, md: 42 } }}
-              >
+              <SectionEyebrow label={t("eyebrow")} />
+              <Typography variant="h2" sx={{ mt: 1 }}>
                 {t("title")}
               </Typography>
               <Typography
-                sx={{ mt: 2, color: "rgba(255,255,255,0.75)", lineHeight: 1.8 }}
+                color="text.secondary"
+                sx={{ mt: 2, lineHeight: 1.7 }}
               >
                 {t("text")}
               </Typography>
