@@ -929,6 +929,7 @@
         },
         {
           "title": "Соцсети",
+          "variant": "social",
           "items": [
             {
               "key": "instagram",

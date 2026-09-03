@@ -550,6 +550,7 @@ export type StorefrontFooterItem = {
 
 export type StorefrontFooterSection = {
   title: string;
+  variant?: string;
   items: StorefrontFooterItem[];
 };
 
