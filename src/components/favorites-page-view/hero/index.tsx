@@ -1,18 +1,13 @@
+import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
 import LoginOutlinedIcon from "@mui/icons-material/LoginOutlined";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
-import ChevronRightOutlinedIcon from "@mui/icons-material/ChevronRightOutlined";
-import {
-  Box,
-  Button,
-  Chip,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
+import { SectionEyebrow } from "@/components/section-eyebrow";
+
+import styles from "./favorites-hero.module.css";
 import type { FavoritesHeroProps } from "./types";
 
 export const FavoritesHero = ({
@@ -25,65 +20,39 @@ export const FavoritesHero = ({
 }: FavoritesHeroProps) => {
   const tFavorites = useTranslations("storefront.favoritesPage");
   const tAccount = useTranslations("accountPage");
+
   const renderGuestActions = () => (
     <>
-      <Stack
-        direction={{ xs: "column", sm: "row" }}
-        spacing={1.5}
-        sx={{ mt: 4, width: "100%" }}
-      >
-        <Box sx={{ width: { xs: "100%", sm: "auto" }, flex: "0 0 auto" }}>
-          <Link
-            href={loginHref}
-            style={{ textDecoration: "none", display: "flex" }}
-          >
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<LoginOutlinedIcon />}
-              fullWidth
-              sx={{ width: { xs: "100%", sm: "auto" } }}
-            >
-              {tFavorites("primaryAction")}
-            </Button>
-          </Link>
-        </Box>
-        <Box sx={{ width: { xs: "100%", sm: "auto" }, flex: "0 0 auto" }}>
-          <Link
-            href={registerHref}
-            style={{ textDecoration: "none", display: "flex" }}
-          >
-            <Button
-              fullWidth
-              variant="outlined"
-              color="inherit"
-              size="large"
-              startIcon={<PersonAddAltOutlinedIcon />}
-              sx={{
-                borderColor: "#E8D6BF",
-                bgcolor: "#fff",
-                width: { xs: "100%", sm: "auto" },
-              }}
-            >
-              {tFavorites("secondaryAction")}
-            </Button>
-          </Link>
-        </Box>
-      </Stack>
-
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: { xs: "center", sm: "flex-start" },
-        }}
-      >
-        <Link
-          href={shopHref}
-          style={{ textDecoration: "none", display: "inline-flex" }}
-        >
+      <Box className={styles.actions}>
+        <Link href={loginHref}>
           <Button
+            component="span"
+            variant="contained"
+            size="large"
+            startIcon={<LoginOutlinedIcon />}
+          >
+            {tFavorites("primaryAction")}
+          </Button>
+        </Link>
+
+        <Link href={registerHref}>
+          <Button
+            component="span"
+            variant="outlined"
+            size="large"
+            startIcon={<PersonAddAltOutlinedIcon />}
+            className={styles.secondaryAction}
+          >
+            {tFavorites("secondaryAction")}
+          </Button>
+        </Link>
+      </Box>
+
+      <Box className={styles.textAction}>
+        <Link href={shopHref}>
+          <Button
+            component="span"
             variant="text"
-            sx={{ mt: 1.5, px: 1.75 }}
             endIcon={<ChevronRightOutlinedIcon />}
           >
             {tFavorites("continueAction")}
@@ -94,65 +63,34 @@ export const FavoritesHero = ({
   );
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        p: { xs: 3, md: 5 },
-        borderRadius: "36px",
-        border: "1px solid #F0DFC8",
-        background:
-          "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.35), transparent 28%), #fff",
-      }}
-    >
-      <Grid container spacing={{ xs: 1.5, md: 4 }} alignItems="center">
-        <Grid size={{ xs: 12, md: "grow" }}>
-          <Box>
-            <Chip
-              label={authState ? tAccount("favoritesEyebrow") : tFavorites("eyebrow")}
-              sx={{ bgcolor: "#FCE5EA", fontWeight: 800 }}
-            />
-            <Typography
-              variant="h1"
-              sx={{ mt: 2, fontSize: { xs: 36, md: 58 } }}
-            >
-              {authState ? tAccount("favoritesTitle") : tFavorites("title")}
-            </Typography>
-            <Typography
-              color="text.secondary"
-              sx={{ mt: 2, lineHeight: 1.85, fontSize: { xs: 16, md: 18 } }}
-            >
-              {authState ? tAccount("favoritesLead") : tFavorites("lead")}
-            </Typography>
+    <Box className={styles.panel}>
+      <SectionEyebrow
+        label={authState ? tAccount("favoritesEyebrow") : tFavorites("eyebrow")}
+      />
 
-            {authState ? (
-              <Stack
-                direction="row"
-                spacing={1.5}
-                sx={{ mt: 4, width: { xs: "100%", md: "auto" } }}
-              >
-                <Box
-                  sx={{ width: { xs: "100%", md: "auto" }, flex: "0 0 auto" }}
-                >
-                  <Button
-                    variant="contained"
-                    size="large"
-                    fullWidth
-                    onClick={onAddAllToCart}
-                    disabled={isAddAllDisabled}
-                    sx={{ width: { xs: "100%", md: "auto" } }}
-                  >
-                      {tAccount("favoritesAddAllToCart")}
-                  </Button>
-                </Box>
-              </Stack>
-            ) : (
-              renderGuestActions()
-            )}
-          </Box>
-        </Grid>
+      <Typography variant="h1" className={styles.title}>
+        {authState ? tAccount("favoritesTitle") : tFavorites("title")}
+      </Typography>
 
-      </Grid>
-    </Paper>
+      <Typography className={styles.lead}>
+        {authState ? tAccount("favoritesLead") : tFavorites("lead")}
+      </Typography>
+
+      {authState ? (
+        <Box className={styles.actions}>
+          <Button
+            variant="contained"
+            size="large"
+            onClick={onAddAllToCart}
+            disabled={isAddAllDisabled}
+          >
+            {tAccount("favoritesAddAllToCart")}
+          </Button>
+        </Box>
+      ) : (
+        renderGuestActions()
+      )}
+    </Box>
   );
 };
 

@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   Divider,
-  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -18,6 +17,8 @@ import { formatCurrency } from "@/utils";
 import type { CartPageLabels } from "@/i18n/types";
 
 import type { OrderSummaryCardProps } from "../types";
+
+import styles from "./order-summary-card.module.css";
 
 export const OrderSummaryCard = ({
   locale,
@@ -36,76 +37,65 @@ export const OrderSummaryCard = ({
   const isCheckoutBlocked = isShopClosed || hasUnavailableItems;
 
   return (
-    <Card
-      sx={{
-        border: "1px solid #F0DFC8",
-        position: { md: "sticky" },
-        top: { md: 100 },
-      }}
-    >
-      <CardContent sx={{ p: 3 }}>
-        <Typography sx={{ fontSize: 24, fontWeight: 800 }}>
+    <Card className={styles.card}>
+      <CardContent className={styles.body}>
+        <Typography variant="h3" className={styles.title}>
           {labels.title}
         </Typography>
 
-        <Stack direction="row" spacing={1.5} sx={{ mt: 3 }}>
+        <Box className={styles.promo}>
           <TextField fullWidth placeholder={labels.promoPlaceholder} />
-          <Button
-            variant="outlined"
-            color="inherit"
-            sx={{ borderColor: "#E8D6BF", whiteSpace: "nowrap" }}
-          >
+          <Button variant="outlined" className={styles.promoButton}>
             {labels.promoButton}
           </Button>
-        </Stack>
+        </Box>
 
-        <Stack spacing={2} sx={{ mt: 3 }}>
-          <Stack direction="row" justifyContent="space-between">
-            <Typography color="text.secondary">{labels.itemsLabel}</Typography>
-            <Typography>
+        <Box className={styles.rows}>
+          <Box className={styles.row}>
+            <Typography component="span" className={styles.rowLabel}>
+              {labels.itemsLabel}
+            </Typography>
+            <Typography component="span" className={styles.rowValue}>
               {formatCurrency(subtotal, locale, currency)}
             </Typography>
-          </Stack>
+          </Box>
 
           {isDigitalOnly ? null : (
-            <Stack direction="row" justifyContent="space-between">
-              <Typography color="text.secondary">
+            <Box className={styles.row}>
+              <Typography component="span" className={styles.rowLabel}>
                 {labels.shippingLabel}
               </Typography>
-              <Typography color="text.secondary">
+              <Typography
+                component="span"
+                className={`${styles.rowValue} ${styles.rowValueMuted}`}
+              >
                 {labels.shippingAtCheckout}
               </Typography>
-            </Stack>
+            </Box>
           )}
 
           {discount > 0 ? (
-            <Stack direction="row" justifyContent="space-between">
-              <Typography color="text.secondary">
+            <Box className={styles.row}>
+              <Typography component="span" className={styles.rowLabel}>
                 {labels.discountLabel}
               </Typography>
-              <Typography>
+              <Typography component="span" className={styles.rowValue}>
                 {`-${formatCurrency(discount, locale, currency)}`}
               </Typography>
-            </Stack>
+            </Box>
           ) : null}
-        </Stack>
+        </Box>
 
-        <Divider sx={{ my: 3 }} />
+        <Divider className={styles.divider} />
 
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography sx={{ fontSize: 20, fontWeight: 800 }}>
+        <Box className={styles.total}>
+          <Typography component="span" className={styles.totalLabel}>
             {labels.totalLabel}
           </Typography>
-          <Typography
-            sx={{ fontSize: 28, fontWeight: 800, color: "primary.main" }}
-          >
+          <Typography component="span" className={styles.totalValue}>
             {formatCurrency(total, locale, currency)}
           </Typography>
-        </Stack>
+        </Box>
 
         {isCheckoutBlocked ? (
           <Button
@@ -113,92 +103,58 @@ export const OrderSummaryCard = ({
             fullWidth
             variant="contained"
             size="large"
-            sx={{ mt: 3 }}
+            className={styles.checkoutButton}
           >
             {labels.checkoutButton}
           </Button>
         ) : (
-          <Link
-            href={checkoutHref}
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
+          <Link href={checkoutHref}>
             <Button
               component="span"
               fullWidth
               variant="contained"
               size="large"
-              sx={{ mt: 3 }}
+              className={styles.checkoutButton}
             >
               {labels.checkoutButton}
             </Button>
           </Link>
         )}
 
-        <Link
-          href={continueShoppingHref}
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
+        <Link href={continueShoppingHref}>
           <Button
             component="span"
             fullWidth
             variant="outlined"
-            color="inherit"
             size="large"
-            sx={{ mt: 2, borderColor: "#E8D6BF", bgcolor: "#fff" }}
+            className={styles.continueButton}
           >
             {labels.continueShopping}
           </Button>
         </Link>
 
         {isCheckoutBlocked ? (
-          <Box
-            sx={{
-              mt: 3,
-              p: 2,
-              borderRadius: "20px",
-              bgcolor: "#FFF8F0",
-              border: "1px solid #F0DFC8",
-            }}
-          >
-            <Stack direction="row" spacing={1.5} alignItems="flex-start">
-              {isShopClosed ? (
-                <ScheduleOutlinedIcon fontSize="small" sx={{ mt: "2px" }} />
-              ) : (
-                <ReportProblemOutlinedIcon
-                  fontSize="small"
-                  sx={{ mt: "2px" }}
-                />
-              )}
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ lineHeight: 1.7 }}
-              >
-                {isShopClosed ? labels.closedNote : labels.unavailableNote}
-              </Typography>
-            </Stack>
+          <Box className={styles.note}>
+            {isShopClosed ? (
+              <ScheduleOutlinedIcon className={styles.noteIcon} />
+            ) : (
+              <ReportProblemOutlinedIcon className={styles.noteIcon} />
+            )}
+            <Typography className={styles.noteText}>
+              {isShopClosed ? labels.closedNote : labels.unavailableNote}
+            </Typography>
           </Box>
         ) : null}
 
         <Box
-          sx={{
-            mt: isCheckoutBlocked ? 1.5 : 3,
-            p: 2,
-            borderRadius: "20px",
-            bgcolor: "#FFF8F0",
-            border: "1px solid #F0DFC8",
-          }}
+          className={
+            isCheckoutBlocked
+              ? `${styles.note} ${styles.noteTight}`
+              : styles.note
+          }
         >
-          <Stack direction="row" spacing={1.5} alignItems="flex-start">
-            <LocalOfferOutlinedIcon fontSize="small" sx={{ mt: "2px" }} />
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ lineHeight: 1.7 }}
-            >
-              {labels.infoText}
-            </Typography>
-          </Stack>
+          <LocalOfferOutlinedIcon className={styles.noteIcon} />
+          <Typography className={styles.noteText}>{labels.infoText}</Typography>
         </Box>
       </CardContent>
     </Card>

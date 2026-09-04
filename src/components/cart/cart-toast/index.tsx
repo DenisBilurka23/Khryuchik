@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 
 import { hideCartToast, useCartToast } from "../cart-toast-store";
 
+import styles from "./cart-toast.module.css";
+
 export const CartToast = () => {
   const t = useTranslations("storefront.cartToast");
   const { open, addedCount } = useCartToast();
@@ -21,7 +23,7 @@ export const CartToast = () => {
         onClose={hideCartToast}
         severity="success"
         variant="filled"
-        sx={{ width: "100%" }}
+        className={styles.alert}
       >
         {t("addedToCart")}
       </Alert>

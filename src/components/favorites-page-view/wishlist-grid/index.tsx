@@ -1,18 +1,12 @@
 "use client";
 
-import {
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import { getLocalizedProductPath } from "@/utils";
 import { ProductCard } from "@/components/product-card";
+import { getLocalizedProductPath } from "@/utils";
 
+import styles from "./favorites-wishlist-grid.module.css";
 import type { FavoritesWishlistGridProps } from "./types";
 
 export const FavoritesWishlistGrid = ({
@@ -25,43 +19,33 @@ export const FavoritesWishlistGrid = ({
   const tShopSection = useTranslations("storefront.shopSection");
 
   return (
-    <Card sx={{ border: "1px solid #F0DFC8" }}>
-      <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          justifyContent="space-between"
-          alignItems={{ xs: "flex-start", sm: "center" }}
-          spacing={1.5}
-          sx={{ mb: 2.5 }}
-        >
-          <Box>
-            <Typography sx={{ fontSize: { xs: 20, sm: 22 }, fontWeight: 800 }}>
-              {authState ? tAccount("favoritesListTitle") : tFavorites("listTitle")}
-            </Typography>
-            {!authState ? (
-              <Typography color="text.secondary" sx={{ mt: 0.5 }}>
-                {tFavorites("guestListText")}
-              </Typography>
-            ) : null}
-          </Box>
-        </Stack>
+    <Box className={styles.panel}>
+      <Box className={styles.header}>
+        <Typography variant="h2" className={styles.title}>
+          {authState ? tAccount("favoritesListTitle") : tFavorites("listTitle")}
+        </Typography>
 
-        <Grid container spacing={3}>
-          {items.map((item) => (
-            <Grid key={item.productId} size={{ xs: 12, sm: 6, md: 4, xl: 3 }}>
-              <ProductCard
-                product={item.product}
-                locale={locale}
-                wishlistAriaLabel={tShopSection("wishlistAriaLabel")}
-                outOfStock={tShopSection("outOfStock")}
-                viewProduct={tShopSection("viewProduct")}
-                detailsHref={getLocalizedProductPath(locale, item.product.slug)}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </CardContent>
-    </Card>
+        {!authState ? (
+          <Typography className={styles.sub}>
+            {tFavorites("guestListText")}
+          </Typography>
+        ) : null}
+      </Box>
+
+      <Box className={styles.grid}>
+        {items.map((item) => (
+          <ProductCard
+            key={item.productId}
+            product={item.product}
+            locale={locale}
+            wishlistAriaLabel={tShopSection("wishlistAriaLabel")}
+            outOfStock={tShopSection("outOfStock")}
+            viewProduct={tShopSection("viewProduct")}
+            detailsHref={getLocalizedProductPath(locale, item.product.slug)}
+          />
+        ))}
+      </Box>
+    </Box>
   );
 };
 

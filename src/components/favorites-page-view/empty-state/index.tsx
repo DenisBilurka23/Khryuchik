@@ -3,6 +3,7 @@ import { Box, Button, Paper, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
+import styles from "./favorites-empty-state.module.css";
 import type { FavoritesEmptyStateProps } from "./types";
 
 export const FavoritesEmptyState = ({
@@ -23,41 +24,24 @@ export const FavoritesEmptyState = ({
     : tFavorites("continueAction");
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        p: { xs: 4, md: 6 },
-        borderRadius: "28px",
-        border: "1px dashed #E8D6BF",
-        bgcolor: "#FFFDFA",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-      }}
-    >
-      <Box
-        sx={{
-          width: 72,
-          height: 72,
-          borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          bgcolor: "#FCE5EA",
-          color: "#D06A80",
-        }}
-      >
-        <FavoriteBorderOutlinedIcon sx={{ fontSize: 34 }} />
+    <Paper elevation={0} className={styles.panel}>
+      <Box className={styles.icon}>
+        <FavoriteBorderOutlinedIcon className={styles.iconGlyph} />
       </Box>
-      <Typography sx={{ mt: 2.5, fontSize: 24, fontWeight: 800 }}>
+
+      <Typography variant="h3" className={styles.title}>
         {title}
       </Typography>
-      <Typography color="text.secondary" sx={{ mt: 1.5, maxWidth: 520 }}>
-        {text}
-      </Typography>
-      <Link href={shopHref} style={{ textDecoration: "none", display: "inline-flex" }}>
-        <Button variant="contained" size="large" sx={{ mt: 3.5 }}>
+
+      <Typography className={styles.text}>{text}</Typography>
+
+      <Link href={shopHref}>
+        <Button
+          component="span"
+          variant="contained"
+          size="large"
+          className={styles.action}
+        >
           {action}
         </Button>
       </Link>

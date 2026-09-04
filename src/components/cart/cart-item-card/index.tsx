@@ -1,5 +1,3 @@
-"use client";
-
 import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -9,10 +7,10 @@ import {
   CardContent,
   Chip,
   IconButton,
-  Stack,
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 
 import {
   formatCurrency,
@@ -21,6 +19,8 @@ import {
 } from "@/utils";
 
 import type { CartItemCardProps } from "../types";
+
+import styles from "./cart-item-card.module.css";
 
 export const CartItemCard = ({
   item,
@@ -36,142 +36,95 @@ export const CartItemCard = ({
   const isSoldOut = !isPurchasableAvailability(item.availability);
 
   return (
-    <Card sx={{ border: "1px solid #F0DFC8" }}>
-      <CardContent sx={{ p: 3 }}>
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={3}
-          alignItems={{ xs: "flex-start", sm: "center" }}
-        >
-          <Link href={productHref} style={{ width: "100%", maxWidth: 140 }}>
-            <Box
-              sx={{
-                width: { xs: "100%", sm: 140 },
-                minWidth: { sm: 140 },
-                height: 140,
-                borderRadius: "24px",
-                bgcolor:
-                  item.thumbnail?.bgColor ||
-                  item.thumbnailBackgroundColor ||
-                  "#FFF8F0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 56,
-                overflow: "hidden",
-                cursor: "pointer",
-              }}
-            >
-              {item.thumbnail?.src ? (
-                <Box
-                  component="img"
-                  src={item.thumbnail.src}
-                  alt={item.thumbnail.alt ?? item.title}
-                  sx={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                  }}
-                />
-              ) : (
-                (item.thumbnail?.emoji ?? item.emoji)
-              )}
-            </Box>
-          </Link>
-
-          <Box sx={{ flex: 1, width: "100%" }}>
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              <Link
-                href={productHref}
-                style={{ color: "inherit", textDecoration: "none" }}
-              >
-                {item.title}
-              </Link>
-            </Typography>
-
-            {isSoldOut ? (
-              <Chip
-                label={soldOutLabel}
-                size="small"
-                color="warning"
-                variant="outlined"
-                sx={{ mt: 1, fontWeight: 700 }}
+    <Card className={styles.card}>
+      <CardContent className={styles.body}>
+        <Link href={productHref} className={styles.thumbLink}>
+          <Box
+            className={styles.thumb}
+            style={
+              {
+                "--thumb-bg":
+                  item.thumbnail?.bgColor ?? item.thumbnailBackgroundColor,
+              } as CSSProperties
+            }
+          >
+            {item.thumbnail?.src ? (
+              <Box
+                component="img"
+                src={item.thumbnail.src}
+                alt={item.thumbnail.alt ?? item.title}
+                className={styles.thumbImage}
               />
-            ) : null}
+            ) : (
+              (item.thumbnail?.emoji ?? item.emoji)
+            )}
+          </Box>
+        </Link>
 
-            {item.variant ? (
-              <Typography color="text.secondary" sx={{ mt: 1 }}>
-                {variantLabel}: {item.variant}
-              </Typography>
-            ) : null}
+        <Box>
+          <Typography variant="h3" className={styles.title}>
+            <Link href={productHref}>{item.title}</Link>
+          </Typography>
 
-            <Typography color="text.secondary" sx={{ mt: 0.5 }}>
-              {formatCurrency(item.price, locale, item.currency)}
+          {isSoldOut ? (
+            <Chip
+              label={soldOutLabel}
+              size="small"
+              variant="outlined"
+              className={styles.soldOut}
+            />
+          ) : null}
+
+          {item.variant ? (
+            <Typography className={styles.meta}>
+              {variantLabel}: {item.variant}
             </Typography>
+          ) : null}
 
-            <Stack
-              direction={{ xs: "column", md: "row" }}
-              justifyContent={item.isDigital ? "flex-end" : "space-between"}
-              alignItems={{ xs: "flex-start", md: "center" }}
-              spacing={2}
-              sx={{ mt: 3 }}
-            >
-              {!item.isDigital ? (
-              <Stack direction="row" alignItems="center" spacing={1}>
+          <Typography className={styles.meta}>
+            {formatCurrency(item.price, locale, item.currency)}
+          </Typography>
+
+          <Box className={styles.controls}>
+            {!item.isDigital ? (
+              <Box className={styles.quantity}>
                 <IconButton
                   onClick={() => onDecrease(item.id)}
-                  sx={{ border: "1px solid #E8D6BF", bgcolor: "#fff" }}
+                  className={styles.quantityButton}
                 >
                   <RemoveIcon fontSize="small" />
                 </IconButton>
 
-                <Box
-                  sx={{
-                    minWidth: 44,
-                    textAlign: "center",
-                    px: 1.5,
-                    py: 1,
-                    borderRadius: "999px",
-                    bgcolor: "#FFF8F0",
-                    border: "1px solid #F0DFC8",
-                  }}
-                >
-                  <Typography sx={{ fontWeight: 700 }}>{item.quantity}</Typography>
-                </Box>
+                <Box className={styles.quantityValue}>{item.quantity}</Box>
 
                 <IconButton
                   onClick={() => onIncrease(item.id)}
-                  sx={{ border: "1px solid #E8D6BF", bgcolor: "#fff" }}
+                  className={styles.quantityButton}
                 >
                   <AddIcon fontSize="small" />
                 </IconButton>
-              </Stack>
+              </Box>
             ) : null}
 
-              <Stack
-                direction="row"
-                alignItems="center"
-                spacing={2}
-                sx={{
-                  width: { xs: "100%", md: "auto" },
-                  justifyContent: "space-between",
-                }}
-              >
-                <Typography sx={{ fontSize: 22, fontWeight: 800, color: "primary.main" }}>
-                  {formatCurrency(
-                    item.price * item.quantity,
-                    locale,
-                    item.currency,
-                  )}
-                </Typography>
+            <Box className={styles.priceRow}>
+              <Typography component="span" className={styles.price}>
+                {formatCurrency(
+                  item.price * item.quantity,
+                  locale,
+                  item.currency,
+                )}
+              </Typography>
 
-                <IconButton aria-label={removeLabel} onClick={() => onRemove(item.id)}>
-                  <DeleteOutlineIcon />
-                </IconButton>
-              </Stack>
-            </Stack>
+              <IconButton
+                aria-label={removeLabel}
+                onClick={() => onRemove(item.id)}
+                className={styles.removeButton}
+              >
+                <DeleteOutlineIcon />
+              </IconButton>
+            </Box>
           </Box>
-        </Stack>
+        </Box>
       </CardContent>
     </Card>
   );

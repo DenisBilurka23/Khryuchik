@@ -4,6 +4,8 @@ import Link from "next/link";
 
 import type { EmptyCartStateProps } from "../types";
 
+import styles from "./empty-cart-state.module.css";
+
 export const EmptyCartState = ({
   title,
   text,
@@ -11,41 +13,24 @@ export const EmptyCartState = ({
   actionHref,
 }: EmptyCartStateProps) => {
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        borderRadius: "32px",
-        border: "1px dashed #E8D6BF",
-        bgcolor: "#fff",
-        p: { xs: 4, md: 6 },
-        textAlign: "center",
-      }}
-    >
-      <Box
-        sx={{
-          width: 88,
-          height: 88,
-          borderRadius: "28px",
-          bgcolor: "#FCE5EA",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          mx: "auto",
-        }}
-      >
-        <ShoppingBagOutlinedIcon sx={{ fontSize: 40 }} />
+    <Paper elevation={0} className={styles.panel}>
+      <Box className={styles.icon}>
+        <ShoppingBagOutlinedIcon className={styles.iconGlyph} />
       </Box>
 
-      <Typography sx={{ mt: 3, fontSize: { xs: 28, md: 36 }, fontWeight: 800 }}>
+      <Typography variant="h2" className={styles.title}>
         {title}
       </Typography>
 
-      <Typography color="text.secondary" sx={{ mt: 1.5, maxWidth: 560, mx: "auto", lineHeight: 1.8 }}>
-        {text}
-      </Typography>
+      <Typography className={styles.text}>{text}</Typography>
 
-      <Link href={actionHref} style={{ textDecoration: "none", color: "inherit" }}>
-        <Button component="span" variant="contained" size="large" sx={{ mt: 4 }}>
+      <Link href={actionHref}>
+        <Button
+          component="span"
+          variant="contained"
+          size="large"
+          className={styles.action}
+        >
           {actionLabel}
         </Button>
       </Link>

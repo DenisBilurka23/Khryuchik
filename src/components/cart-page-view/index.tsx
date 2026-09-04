@@ -1,14 +1,17 @@
 "use client";
 
-import { Alert, Box, Breadcrumbs, Container, Grid, Link as MuiLink, Typography } from "@mui/material";
-import Link from "next/link";
+import { Alert, Box, Container, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { SectionEyebrow } from "@/components/section-eyebrow";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
 import { CartItemCard, EmptyCartState, OrderSummaryCard } from "../cart";
-import styles from "../storefront/storefront.module.css";
+import shellStyles from "../storefront/storefront.module.css";
+
+import styles from "./cart-page-view.module.css";
 
 import type { CartPageViewProps } from "./types";
 
@@ -80,101 +83,66 @@ export const CartPageView = ({
   const discount = 0;
 
   return (
-    <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
-      <Box className={styles.pageContent}>
-        <Box sx={{ py: { xs: 4, md: 6 } }}>
+    <Box className={shellStyles.pageShell}>
+      <Box className={shellStyles.pageContent}>
+        <Box component="section" className={styles.section}>
           <Container maxWidth="lg">
-            <Breadcrumbs sx={{ mb: 4 }}>
-              <MuiLink component={Link} underline="hover" color="inherit" href={homeHref}>
-                {cartPage.breadcrumbs.home}
-              </MuiLink>
-              <MuiLink component={Link} underline="hover" color="inherit" href={shopHref}>
-                {cartPage.breadcrumbs.shop}
-              </MuiLink>
-              <Typography color="text.primary">
-                {cartPage.breadcrumbs.current}
-              </Typography>
-            </Breadcrumbs>
+            <Breadcrumbs
+              items={[
+                { label: cartPage.breadcrumbs.home, href: homeHref },
+                { label: cartPage.breadcrumbs.shop, href: shopHref },
+                { label: cartPage.breadcrumbs.current },
+              ]}
+            />
 
-            <Box
-              sx={{
-                borderRadius: "32px",
-                p: { xs: 3, md: 5 },
-                background:
-                  "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.45), transparent 28%), #FFF8F0",
-                border: "1px solid #F0DFC8",
-                mb: 5,
-              }}
-            >
-              <Typography
-                sx={{
-                  textTransform: "uppercase",
-                  letterSpacing: "0.2em",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: "primary.main",
-                }}
-              >
-                {cartPage.eyebrow}
-              </Typography>
+            <Box className={styles.hero}>
+              <SectionEyebrow label={cartPage.eyebrow} />
 
-              <Typography variant="h1" sx={{ mt: 2, fontSize: { xs: 36, md: 56 } }}>
+              <Typography variant="h1" className={styles.title}>
                 {cartPage.title}
               </Typography>
 
-              <Typography
-                color="text.secondary"
-                sx={{ mt: 2, maxWidth: 760, lineHeight: 1.8, fontSize: { xs: 16, md: 18 } }}
-              >
-                {cartPage.lead}
-              </Typography>
+              <Typography className={styles.lead}>{cartPage.lead}</Typography>
             </Box>
 
             {isPricingUnavailable ? (
-              <Alert severity="warning" sx={{ mb: 3, borderRadius: "16px" }}>
+              <Alert severity="warning" className={styles.alert}>
                 {cartPage.pricingUnavailable}
               </Alert>
             ) : null}
 
             {!hasStoredItems && !isLoading ? (
-              <EmptyCartState
-                title={cartPage.emptyState.title}
-                text={cartPage.emptyState.text}
-                actionLabel={cartPage.emptyState.action}
-                actionHref={shopHref}
-              />
+              <Box className={styles.empty}>
+                <EmptyCartState
+                  title={cartPage.emptyState.title}
+                  text={cartPage.emptyState.text}
+                  actionLabel={cartPage.emptyState.action}
+                  actionHref={shopHref}
+                />
+              </Box>
             ) : isLoading ? (
-              <Box
-                sx={{
-                  borderRadius: "24px",
-                  border: "1px solid #F0DFC8",
-                  bgcolor: "#fff",
-                  p: 4,
-                }}
-              >
+              <Box className={styles.loading}>
                 <Typography color="text.secondary">Loading cart...</Typography>
               </Box>
             ) : (
-              <Grid container spacing={4} alignItems="flex-start">
-                <Grid size={{ xs: 12, md: 7, lg: 8 }}>
-                  <Box sx={{ display: "grid", gap: 3 }}>
-                    {items.map((item) => (
-                      <CartItemCard
-                        key={item.id}
-                        item={item}
-                        locale={locale}
-                        variantLabel={cartPage.itemCard.variantLabel}
-                        removeLabel={cartPage.itemCard.removeLabel}
-                        soldOutLabel={cartPage.itemCard.soldOut}
-                        onIncrease={handleIncrease}
-                        onDecrease={handleDecrease}
-                        onRemove={handleRemove}
-                      />
-                    ))}
-                  </Box>
-                </Grid>
+              <Box className={styles.content}>
+                <Box className={styles.items}>
+                  {items.map((item) => (
+                    <CartItemCard
+                      key={item.id}
+                      item={item}
+                      locale={locale}
+                      variantLabel={cartPage.itemCard.variantLabel}
+                      removeLabel={cartPage.itemCard.removeLabel}
+                      soldOutLabel={cartPage.itemCard.soldOut}
+                      onIncrease={handleIncrease}
+                      onDecrease={handleDecrease}
+                      onRemove={handleRemove}
+                    />
+                  ))}
+                </Box>
 
-                <Grid size={{ xs: 12, md: 5, lg: 4 }}>
+                <Box className={styles.summary}>
                   <OrderSummaryCard
                     locale={locale}
                     currency={currency}
@@ -186,8 +154,8 @@ export const CartPageView = ({
                     isShopClosed={isShopClosed}
                     hasUnavailableItems={hasUnavailableItems}
                   />
-                </Grid>
-              </Grid>
+                </Box>
+              </Box>
             )}
           </Container>
         </Box>
