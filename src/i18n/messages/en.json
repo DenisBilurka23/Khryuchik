@@ -233,9 +233,15 @@
       }
     },
     "shopPage": {
-      "eyebrow": "Catalog",
-      "title": "Khryuchik shop — books, gifts, and cozy merch",
-      "lead": "Browse bilingual books, mugs, T-shirts, stickers, and gift-ready items inspired by Khryuchik's gentle stories.",
+      "hero": {
+        "eyebrow": "Khryuchik shop",
+        "title": "Welcome to the Khryuchik shop",
+        "lead": "Books, games, and gifts with Khryuchik — for reading, making things, and cozy family days."
+      },
+      "catalog": {
+        "eyebrow": "Catalog",
+        "title": "All products"
+      },
       "filters": {
         "all": "All"
       },

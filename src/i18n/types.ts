@@ -93,9 +93,15 @@ export type ProductPageLabels = {
 };
 
 export type ShopPageLabels = {
-  eyebrow: string;
-  title: string;
-  lead: string;
+  hero: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+  };
+  catalog: {
+    eyebrow: string;
+    title: string;
+  };
   filters: {
     all: string;
   };

@@ -10,6 +10,8 @@ export const BRAND_ORDER_IMAGE_SRC = "/assets/MainBottomTransparent.png";
 export const BRAND_ORDER_IMAGE_WIDTH = 1218;
 export const BRAND_ORDER_IMAGE_HEIGHT = 1252;
 
+export const BRAND_SHOP_HERO_IMAGE_SRC = "/assets/StoreHero.png";
+
 export const BRAND_NEWSLETTER_IMAGE_SRC = "/assets/Newsletter.png";
 export const BRAND_NEWSLETTER_IMAGE_WIDTH = 1536;
 export const BRAND_NEWSLETTER_IMAGE_HEIGHT = 1024;

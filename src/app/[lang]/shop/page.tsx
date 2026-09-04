@@ -31,7 +31,7 @@ export const generateMetadata = async ({
 
   return {
     title: `${tStorefront("nav.shop")} | ${tStorefront("brand.title")}`,
-    description: tStorefront("shopPage.lead"),
+    description: tStorefront("shopPage.hero.lead"),
     alternates: {
       canonical: lang === defaultLocale ? "/shop" : `/${lang}/shop`,
       languages: Object.fromEntries(
@@ -45,7 +45,7 @@ export const generateMetadata = async ({
       type: "website",
       locale: lang,
       title: `${tStorefront("nav.shop")} | ${tStorefront("brand.title")}`,
-      description: tStorefront("shopPage.lead"),
+      description: tStorefront("shopPage.hero.lead"),
       siteName: tStorefront("brand.title"),
     },
   };

@@ -1,17 +1,9 @@
-import {
-  Box,
-  Breadcrumbs,
-  Button,
-  Container,
-  Grid,
-  Link as MuiLink,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Breadcrumbs, Button, Container, Typography } from "@mui/material";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 import { CategoryTabs } from "@/components/category-tabs";
+import { SectionEyebrow } from "@/components/section-eyebrow";
 import { BOOK_SERIES, BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import { getLocalizedProductPath } from "@/utils";
 import {
@@ -23,8 +15,10 @@ import {
 import { NewsletterSection } from "../newsletter-section";
 import { ProductCard } from "../product-card";
 import { ShopSearchField } from "../shop-search-field";
-import styles from "../storefront/storefront.module.css";
+import shellStyles from "../storefront/storefront.module.css";
 
+import { ShopHero } from "./shop-hero";
+import styles from "./shop-page-view.module.css";
 import type {
   ShopFilterValue,
   ShopPageViewProps,
@@ -52,9 +46,7 @@ export const ShopPageView = async ({
   )
     ? initialCategoryParam
     : "all";
-  const hasSeriesProducts = products.some((product) =>
-    Boolean(product.series),
-  );
+  const hasSeriesProducts = products.some((product) => Boolean(product.series));
   const showSeriesFilter =
     hasSeriesProducts && selectedFilter === BOOKS_CATEGORY_KEY;
   const seriesParam = initialSeries ?? null;
@@ -80,139 +72,102 @@ export const ShopPageView = async ({
     });
 
   return (
-    <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
-      <Box className={styles.pageContent}>
-        <Box sx={{ py: { xs: 4, md: 6 } }}>
+    <Box className={shellStyles.pageShell} sx={{ color: "text.primary" }}>
+      <Box className={shellStyles.pageContent}>
+        <Box component="section" className={styles.section}>
           <Container maxWidth="lg">
-            <Breadcrumbs sx={{ mb: 4 }}>
-              <Link href={homeHref}>
-                <MuiLink component="span" underline="hover" color="inherit">
-                  {tShopPage("breadcrumbs.home")}
-                </MuiLink>
+            <Breadcrumbs separator="→" className={styles.breadcrumbs}>
+              <Link href={homeHref} className={styles.breadcrumbLink}>
+                {tShopPage("breadcrumbs.home")}
               </Link>
-              <Typography color="text.primary">
+              <Typography component="span" className={styles.breadcrumbCurrent}>
                 {tShopPage("breadcrumbs.current")}
               </Typography>
             </Breadcrumbs>
 
-            <Box
-              sx={{
-                borderRadius: "32px",
-                p: { xs: 3, md: 5 },
-                background:
-                  "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.45), transparent 28%), #FFF8F0",
-                border: "1px solid #F0DFC8",
-              }}
-            >
-              <Typography
-                sx={{
-                  textTransform: "uppercase",
-                  letterSpacing: "0.2em",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: "primary.main",
-                }}
-              >
-                {tShopPage("eyebrow")}
+            <ShopHero
+              eyebrow={tShopPage("hero.eyebrow")}
+              title={tShopPage("hero.title")}
+              lead={tShopPage("hero.lead")}
+            />
+
+            <Box className={styles.catalog}>
+              <SectionEyebrow label={tShopPage("catalog.eyebrow")} />
+
+              <Typography variant="h2" className={styles.catalogTitle}>
+                {tShopPage("catalog.title")}
               </Typography>
 
-              <Typography
-                variant="h1"
-                sx={{ mt: 2, fontSize: { xs: 38, md: 58 }, maxWidth: 800 }}
-              >
-                {tShopPage("title")}
-              </Typography>
-
-              <Typography
-                color="text.secondary"
-                sx={{
-                  mt: 2,
-                  maxWidth: 760,
-                  lineHeight: 1.8,
-                  fontSize: { xs: 16, md: 18 },
-                }}
-              >
-                {tShopPage("lead")}
-              </Typography>
-            </Box>
-
-            <Stack
-              direction={{ xs: "column", md: "row" }}
-              justifyContent="space-between"
-              alignItems={{ xs: "stretch", md: "center" }}
-              spacing={3}
-              sx={{ mt: 5, mb: showSeriesFilter ? 3 : 4 }}
-            >
               <CategoryTabs
                 selectedValue={selectedFilter}
                 options={filters}
                 preserveQueryParams={["q"]}
-                sx={{ flexWrap: "wrap", rowGap: 1.5 }}
+                className={styles.filters}
               />
 
-              <ShopSearchField
-                initialValue={search}
-                placeholder={tShopPage("searchPlaceholder")}
-              />
-            </Stack>
+              {showSeriesFilter ? (
+                <CategoryTabs
+                  variant="text"
+                  label={tShopPage("seriesFilterLabel")}
+                  selectedValue={selectedSeries}
+                  options={seriesFilters}
+                  queryParamName="series"
+                  preserveQueryParams={["q", "category"]}
+                  className={styles.seriesFilters}
+                />
+              ) : null}
 
-            {showSeriesFilter ? (
-              <CategoryTabs
-                variant="text"
-                label={tShopPage("seriesFilterLabel")}
-                selectedValue={selectedSeries}
-                options={seriesFilters}
-                queryParamName="series"
-                preserveQueryParams={["q", "category"]}
-                sx={{ mb: 4 }}
-              />
-            ) : null}
+              <Box className={styles.toolbar}>
+                <Typography component="p" className={styles.resultsLabel}>
+                  {tShopPage("resultsLabel")}: {filteredProducts.length}
+                </Typography>
 
-            <Typography color="text.secondary" sx={{ mb: 3 }}>
-              {tShopPage("resultsLabel")}: {filteredProducts.length}
-            </Typography>
-
-            <Grid container spacing={3}>
-              {filteredProducts.map((product) => (
-                <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4, xl: 3 }}>
-                  <ProductCard
-                    product={product}
-                    locale={locale}
-                    wishlistAriaLabel={tShopSection("wishlistAriaLabel")}
-                    outOfStock={tShopSection("outOfStock")}
-                    viewProduct={tShopSection("viewProduct")}
-                    detailsHref={getLocalizedProductPath(locale, product.slug)}
+                <Box className={styles.search}>
+                  <ShopSearchField
+                    initialValue={search}
+                    placeholder={tShopPage("searchPlaceholder")}
                   />
-                </Grid>
-              ))}
-            </Grid>
-
-            {filteredProducts.length === 0 ? (
-              <Box
-                sx={{
-                  mt: 6,
-                  borderRadius: "28px",
-                  border: "1px dashed #E8D6BF",
-                  p: 5,
-                  textAlign: "center",
-                  bgcolor: "#fff",
-                }}
-              >
-                <Typography sx={{ fontSize: 22, fontWeight: 800 }}>
-                  {tShopPage(isRegionEmpty ? "emptyRegionTitle" : "emptyTitle")}
-                </Typography>
-                <Typography color="text.secondary" sx={{ mt: 1.5 }}>
-                  {tShopPage(isRegionEmpty ? "emptyRegionText" : "emptyText")}
-                </Typography>
-                {isRegionEmpty ? null : (
-                  <Link href={shopHref}>
-                    <Button variant="contained" component="span" sx={{ mt: 3 }}>
-                      {tShopPage("resetFilters")}
-                    </Button>
-                  </Link>
-                )}
+                </Box>
               </Box>
-            ) : null}
+
+              {filteredProducts.length > 0 ? (
+                <Box className={styles.grid}>
+                  {filteredProducts.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      locale={locale}
+                      wishlistAriaLabel={tShopSection("wishlistAriaLabel")}
+                      outOfStock={tShopSection("outOfStock")}
+                      viewProduct={tShopSection("viewProduct")}
+                      detailsHref={getLocalizedProductPath(locale, product.slug)}
+                    />
+                  ))}
+                </Box>
+              ) : (
+                <Box className={styles.empty}>
+                  <Typography component="p" className={styles.emptyTitle}>
+                    {tShopPage(
+                      isRegionEmpty ? "emptyRegionTitle" : "emptyTitle",
+                    )}
+                  </Typography>
+                  <Typography component="p" className={styles.emptyText}>
+                    {tShopPage(isRegionEmpty ? "emptyRegionText" : "emptyText")}
+                  </Typography>
+                  {isRegionEmpty ? null : (
+                    <Link href={shopHref}>
+                      <Button
+                        component="span"
+                        variant="outlined"
+                        className={styles.emptyAction}
+                      >
+                        {tShopPage("resetFilters")}
+                      </Button>
+                    </Link>
+                  )}
+                </Box>
+              )}
+            </Box>
           </Container>
         </Box>
 
