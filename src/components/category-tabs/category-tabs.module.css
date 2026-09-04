@@ -1,0 +1,91 @@
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pill.pill {
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-text-secondary);
+}
+
+.pill.pill:hover {
+  border-color: var(--color-border-rose);
+  background: var(--color-accent-pale);
+  color: var(--color-action-hover);
+}
+
+.pillActive.pillActive {
+  border-color: transparent;
+  background: var(--color-accent-tint);
+  font-weight: 600;
+  color: var(--color-action);
+}
+
+.pillActive.pillActive:hover {
+  border-color: transparent;
+  background: var(--color-accent-tint);
+  color: var(--color-action);
+}
+
+.textLabel.textLabel {
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.textTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+
+.textTab.textTab {
+  min-width: 0;
+  min-height: 0;
+  padding: 4px 0;
+  border-radius: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.textTab.textTab:hover {
+  background: transparent;
+  color: var(--color-action);
+}
+
+.textTabActive.textTabActive {
+  border-bottom-color: var(--color-accent);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+@media (max-width: 767px) {
+  .pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pill.pill {
+    flex: 0 0 auto;
+  }
+}
