@@ -1,13 +1,19 @@
+import { Box, Container } from "@mui/material";
 import { getTranslations } from "next-intl/server";
+
 import { CONTACT_EMAIL } from "@/constants/contact";
 import type { ContactPageLabels } from "@/i18n/types";
 import { getServerAuthSession } from "@/server/auth/config";
 import { formatPersonName } from "@/utils";
 import { getFooterItemHref } from "@/utils/footer";
+
+import shellStyles from "../storefront/storefront.module.css";
+
 import styles from "./contact-page-view.module.css";
 import { ContactChannelsSection } from "./sections/contact-channels-section";
 import type { ContactChannelItem } from "./sections/contact-channels-section/types";
 import { ContactForm } from "./sections/contact-form-section";
+import { ContactHero } from "./sections/contact-hero";
 import type { ContactPageViewProps } from "./types";
 import { getInstagramHandle } from "./utils";
 
@@ -59,33 +65,41 @@ export const ContactPageView = async ({
   ];
 
   return (
-    <div className={styles.page}>
-      <section className={styles.heroSection}>
-        <div className={styles.heroInner}>
-          <span className={styles.heroEyebrow}>{hero.eyebrow}</span>
-          <h1 className={styles.heroTitle}>
-            {hero.titlePrefix} <em>{hero.titleAccent}</em>
-          </h1>
-          <p className={styles.heroLede}>{hero.lede}</p>
-        </div>
-      </section>
+    <Box className={shellStyles.pageShell} sx={{ color: "text.primary" }}>
+      <Box className={shellStyles.pageContent}>
+        <Box component="section" className={styles.section}>
+          <Container maxWidth="lg">
+            <ContactHero
+              eyebrow={hero.eyebrow}
+              titlePrefix={hero.titlePrefix}
+              titleAccent={hero.titleAccent}
+              lede={hero.lede}
+            />
 
-      <div className={styles.main}>
-        <ContactChannelsSection
-          title={channels.title}
-          sub={channels.sub}
-          note={channels.note}
-          channels={channelItems}
-        />
-        <ContactForm
-          locale={locale}
-          contactEmail={CONTACT_EMAIL}
-          defaultName={defaultName}
-          defaultEmail={defaultEmail}
-          labels={form}
-        />
-      </div>
-    </div>
+            <Box className={styles.content}>
+              <Box className={styles.panel}>
+                <ContactChannelsSection
+                  title={channels.title}
+                  sub={channels.sub}
+                  note={channels.note}
+                  channels={channelItems}
+                />
+              </Box>
+
+              <Box className={styles.panel}>
+                <ContactForm
+                  locale={locale}
+                  contactEmail={CONTACT_EMAIL}
+                  defaultName={defaultName}
+                  defaultEmail={defaultEmail}
+                  labels={form}
+                />
+              </Box>
+            </Box>
+          </Container>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

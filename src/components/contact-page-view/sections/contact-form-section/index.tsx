@@ -1,14 +1,33 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
+import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 
 import { sendContactMessageClient } from "@/client-api/contact";
+import { SectionEyebrow } from "@/components/section-eyebrow";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
-import styles from "../../contact-page-view.module.css";
+import styles from "./contact-form-section.module.css";
 import type { ContactFieldErrors, ContactFormProps } from "./types";
 
 const MIN_MESSAGE_LENGTH = 10;
+
+const ArrowIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.8"
+  >
+    <path
+      d="M5 12h14M13 6l6 6-6 6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 export const ContactForm = ({
   locale,
@@ -82,129 +101,155 @@ export const ContactForm = ({
 
   if (isSent) {
     return (
-      <div className={styles.formCard}>
-        <div className={styles.success}>
-          <div className={styles.successBadge}>
-            <svg
-              width="34"
-              height="34"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-            >
-              <path
-                d="M4 12l5 5 11-11"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <h2 className={styles.successTitle}>
-            {labels.success.titlePrefix} <em>{labels.success.titleAccent}</em>
-          </h2>
-          <p className={styles.successText}>
-            {labels.success.text}{" "}
-            <a className={styles.successLink} href={`mailto:${contactEmail}`}>
-              {contactEmail}
-            </a>
-            .
-          </p>
-          <button
-            type="button"
-            className={`${styles.btn} ${styles.btnGhost}`}
-            onClick={handleReset}
+      <Box className={styles.success}>
+        <Box className={styles.successBadge}>
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.2"
           >
-            {labels.success.againLabel}
-          </button>
-        </div>
-      </div>
+            <path
+              d="M4 12l5 5 11-11"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </Box>
+
+        <Typography variant="h2" className={styles.title}>
+          {labels.success.titlePrefix} <em>{labels.success.titleAccent}</em>
+        </Typography>
+
+        <Typography className={styles.successText}>
+          {labels.success.text}{" "}
+          <Box
+            component="a"
+            className={styles.successLink}
+            href={`mailto:${contactEmail}`}
+          >
+            {contactEmail}
+          </Box>
+          .
+        </Typography>
+
+        <Button
+          type="button"
+          variant="outlined"
+          className={styles.successAction}
+          onClick={handleReset}
+        >
+          {labels.success.againLabel}
+        </Button>
+      </Box>
     );
   }
 
   return (
-    <form className={styles.formCard} onSubmit={handleSubmit} noValidate>
-      <span className={styles.formEyebrow}>{labels.eyebrow}</span>
-      <h2 className={styles.formTitle}>
+    <Box component="form" onSubmit={handleSubmit} noValidate>
+      <SectionEyebrow label={labels.eyebrow} />
+
+      <Typography variant="h2" className={styles.title}>
         {labels.titlePrefix} <em>{labels.titleAccent}</em>
-      </h2>
-      <p className={styles.formSub}>{labels.sub}</p>
+      </Typography>
 
-      {formError ? <p className={styles.formAlert}>{formError}</p> : null}
+      <Typography className={styles.sub}>{labels.sub}</Typography>
 
-      <div className={styles.fieldRow}>
-        <div
-          className={`${styles.field}${errors.name ? ` ${styles.fieldInvalid}` : ""}`}
-        >
-          <label className={styles.fieldLabel} htmlFor="contact-name">
-            {labels.nameLabel} <span>{labels.requiredMark}</span>
-          </label>
-          <input
+      {formError ? (
+        <Alert severity="error" className={styles.alert}>
+          {formError}
+        </Alert>
+      ) : null}
+
+      <Box className={styles.row}>
+        <Box className={styles.field}>
+          <Typography
+            component="label"
+            htmlFor="contact-name"
+            className={styles.label}
+          >
+            {labels.nameLabel}{" "}
+            <Box component="span" className={styles.required}>
+              {labels.requiredMark}
+            </Box>
+          </Typography>
+          <TextField
             id="contact-name"
-            className={styles.fieldInput}
-            type="text"
+            className={styles.input}
             placeholder={labels.namePlaceholder}
             value={name}
             onChange={(event) => setName(event.target.value)}
+            error={Boolean(errors.name)}
+            helperText={errors.name}
             autoComplete="name"
+            fullWidth
           />
-          <span className={styles.fieldError}>{errors.name}</span>
-        </div>
-        <div
-          className={`${styles.field}${errors.email ? ` ${styles.fieldInvalid}` : ""}`}
-        >
-          <label className={styles.fieldLabel} htmlFor="contact-email">
-            {labels.emailLabel} <span>{labels.requiredMark}</span>
-          </label>
-          <input
+        </Box>
+
+        <Box className={styles.field}>
+          <Typography
+            component="label"
+            htmlFor="contact-email"
+            className={styles.label}
+          >
+            {labels.emailLabel}{" "}
+            <Box component="span" className={styles.required}>
+              {labels.requiredMark}
+            </Box>
+          </Typography>
+          <TextField
             id="contact-email"
-            className={styles.fieldInput}
             type="email"
+            className={styles.input}
             placeholder={labels.emailPlaceholder}
             value={email}
             onChange={(event) => setEmail(event.target.value)}
+            error={Boolean(errors.email)}
+            helperText={errors.email}
             autoComplete="email"
+            fullWidth
           />
-          <span className={styles.fieldError}>{errors.email}</span>
-        </div>
-      </div>
+        </Box>
+      </Box>
 
-      <div
-        className={`${styles.field}${errors.message ? ` ${styles.fieldInvalid}` : ""}`}
-      >
-        <label className={styles.fieldLabel} htmlFor="contact-message">
-          {labels.messageLabel} <span>{labels.requiredMark}</span>
-        </label>
-        <textarea
+      <Box className={styles.field} sx={{ mt: 2.5 }}>
+        <Typography
+          component="label"
+          htmlFor="contact-message"
+          className={styles.label}
+        >
+          {labels.messageLabel}{" "}
+          <Box component="span" className={styles.required}>
+            {labels.requiredMark}
+          </Box>
+        </Typography>
+        <TextField
           id="contact-message"
-          className={styles.fieldTextarea}
+          className={`${styles.input} ${styles.textarea}`}
           placeholder={labels.messagePlaceholder}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
+          error={Boolean(errors.message)}
+          helperText={errors.message}
+          multiline
+          minRows={7}
+          fullWidth
         />
-        <span className={styles.fieldError}>{errors.message}</span>
-      </div>
+      </Box>
 
-      <div className={styles.formFoot}>
-        <button
-          type="submit"
-          className={`${styles.btn} ${styles.btnPrimary} ${styles.btnLg} ${styles.btnBlock}`}
-          disabled={isSubmitting}
-        >
-          {labels.submitLabel}
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M5 12h14M13 6l6 6-6 6" />
-          </svg>
-        </button>
-      </div>
-    </form>
+      <Button
+        type="submit"
+        variant="contained"
+        className={styles.submit}
+        endIcon={<ArrowIcon />}
+        loading={isSubmitting}
+        fullWidth
+      >
+        {labels.submitLabel}
+      </Button>
+    </Box>
   );
 };
 

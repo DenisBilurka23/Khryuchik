@@ -1,8 +1,7 @@
-import styles from "../../contact-page-view.module.css";
-import type {
-  ContactChannelKind,
-  ContactChannelsSectionProps,
-} from "./types";
+import { Box, Typography } from "@mui/material";
+
+import styles from "./contact-channels-section.module.css";
+import type { ContactChannelKind, ContactChannelsSectionProps } from "./types";
 
 const channelModifierClass: Record<ContactChannelKind, string> = {
   ig: styles.channelIg,
@@ -14,8 +13,8 @@ const ChannelIcon = ({ kind }: { kind: ContactChannelKind }) => {
   if (kind === "ig") {
     return (
       <svg
-        width="26"
-        height="26"
+        width="24"
+        height="24"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -31,8 +30,8 @@ const ChannelIcon = ({ kind }: { kind: ContactChannelKind }) => {
   if (kind === "fb") {
     return (
       <svg
-        width="26"
-        height="26"
+        width="24"
+        height="24"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -48,8 +47,8 @@ const ChannelIcon = ({ kind }: { kind: ContactChannelKind }) => {
 
   return (
     <svg
-      width="26"
-      height="26"
+      width="24"
+      height="24"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -61,20 +60,6 @@ const ChannelIcon = ({ kind }: { kind: ContactChannelKind }) => {
   );
 };
 
-const ArrowIcon = () => (
-  <svg
-    className={styles.channelArrow}
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.8"
-  >
-    <path d="M7 17L17 7M9 7h8v8" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
 export const ContactChannelsSection = ({
   title,
   sub,
@@ -82,39 +67,61 @@ export const ContactChannelsSection = ({
   channels,
 }: ContactChannelsSectionProps) => {
   return (
-    <div>
-      <div className={styles.channelsHead}>
-        <h2 className={styles.channelsTitle}>{title}</h2>
-        <p className={styles.channelsSub}>{sub}</p>
-      </div>
+    <Box className={styles.root}>
+      <Typography variant="h2" className={styles.title}>
+        {title}
+      </Typography>
 
-      <div className={styles.channelsList}>
+      <Typography className={styles.sub}>{sub}</Typography>
+
+      <Box className={styles.list}>
         {channels.map((channel) => (
-          <a
+          <Box
             key={channel.kind}
+            component="a"
             className={`${styles.channel} ${channelModifierClass[channel.kind]}`}
             href={channel.href}
             {...(channel.external
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
           >
-            <span className={styles.channelIcon}>
+            <Box component="span" className={styles.channelIcon}>
               <ChannelIcon kind={channel.kind} />
-            </span>
-            <span className={styles.channelCopy}>
-              <span className={styles.channelLabel}>{channel.label}</span>
-              <span className={styles.channelValue}>{channel.value}</span>
-            </span>
-            <ArrowIcon />
-          </a>
-        ))}
-      </div>
+            </Box>
 
-      <div className={styles.channelsNote}>
-        <span className={styles.channelsNoteDot} />
+            <Box component="span" className={styles.channelCopy}>
+              <Box component="span" className={styles.channelLabel}>
+                {channel.label}
+              </Box>
+              <Box component="span" className={styles.channelValue}>
+                {channel.value}
+              </Box>
+            </Box>
+
+            <svg
+              className={styles.channelArrow}
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+            >
+              <path
+                d="M7 17L17 7M9 7h8v8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Box>
+        ))}
+      </Box>
+
+      <Box className={styles.note}>
+        <Box component="span" className={styles.noteDot} />
         {note}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
