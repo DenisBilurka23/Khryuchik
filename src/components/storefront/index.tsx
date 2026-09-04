@@ -22,7 +22,7 @@ export const Storefront = async ({
   const { shop: shopHref, cart: cartHref } = navigationPaths;
 
   return (
-    <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={styles.pageShell}>
       <Box className={styles.pageContent}>
         <HeroSection locale={locale} />
         {books.length > 0 ? (

@@ -38,7 +38,7 @@ export const DeliveryPageView = async ({
   });
 
   return (
-    <Box className={storefrontStyles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={storefrontStyles.pageShell}>
       <Box className={storefrontStyles.pageContent}>
         <DeliveryHeroSection {...hero} locale={locale} country={country} />
         <DeliveryPaymentSection {...payment} paymentVariant={paymentVariant} />

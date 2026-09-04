@@ -28,7 +28,7 @@ export const StoryPageView = async ({
   const shopHref = getLocalizedPath(locale, "/shop");
 
   return (
-    <Box className={storefrontStyles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={storefrontStyles.pageShell}>
       <Box className={storefrontStyles.pageContent}>
         <StorySeriesSection
           {...series}

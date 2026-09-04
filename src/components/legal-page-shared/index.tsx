@@ -14,7 +14,7 @@ export const LegalPageShared = ({
   sections,
 }: LegalPageSharedProps) => {
   return (
-    <Box className={storefrontStyles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={storefrontStyles.pageShell}>
       <Box className={storefrontStyles.pageContent}>
         <Container maxWidth="md" sx={{ py: { xs: 6, md: 9 } }}>
           <Typography

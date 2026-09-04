@@ -65,19 +65,24 @@ export const CheckoutResultView = ({
       paymentMethod === "telegram_transfer"
         ? confirmation.telegramText
         : confirmation.codText;
-    orderLabel = orderNumber ? `${confirmation.orderLabel} ${orderNumber}` : null;
+    orderLabel = orderNumber
+      ? `${confirmation.orderLabel} ${orderNumber}`
+      : null;
     primary = { label: confirmation.backToShop, href: shopHref };
   }
 
   return (
-    <Box className={storefrontStyles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={storefrontStyles.pageShell}>
       <Box className={storefrontStyles.pageContent}>
         <Box sx={{ py: { xs: 6, md: 10 } }}>
           <Container maxWidth="sm">
             <Card sx={{ border: "1px solid #F0DFC8" }}>
               <CardContent sx={{ p: { xs: 3, md: 5 } }}>
                 <Stack spacing={3} alignItems="flex-start">
-                  <Typography variant="h1" sx={{ fontSize: { xs: 32, md: 44 } }}>
+                  <Typography
+                    variant="h1"
+                    sx={{ fontSize: { xs: 32, md: 44 } }}
+                  >
                     {title}
                   </Typography>
                   {orderLabel ? (

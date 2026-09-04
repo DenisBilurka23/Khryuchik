@@ -65,7 +65,7 @@ export const ContactPageView = async ({
   ];
 
   return (
-    <Box className={shellStyles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={shellStyles.pageShell}>
       <Box className={shellStyles.pageContent}>
         <Box component="section" className={styles.section}>
           <Container maxWidth="lg">

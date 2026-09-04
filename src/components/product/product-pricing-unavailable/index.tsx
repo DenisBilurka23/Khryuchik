@@ -17,7 +17,7 @@ export const ProductPricingUnavailable = async ({
   });
 
   return (
-    <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={styles.pageShell}>
       <Box className={styles.pageContent}>
         <Box sx={{ py: { xs: 4, md: 6 } }}>
           <Container maxWidth="sm">

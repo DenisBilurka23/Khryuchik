@@ -29,7 +29,7 @@ export const OrderDownloadsPageView = ({
   const isExpired = !downloads || downloads.length === 0;
 
   return (
-    <Box className={storefrontStyles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={storefrontStyles.pageShell}>
       <Box className={storefrontStyles.pageContent}>
         <Box sx={{ py: { xs: 6, md: 10 } }}>
           <Container maxWidth="sm">
