@@ -3,13 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import heroImage from "@/assets/MainHeroTransparent.png";
 import { ArrowLink } from "@/components/arrow-link";
 import { SectionEyebrow } from "@/components/section-eyebrow";
-import {
-  BRAND_HERO_IMAGE_HEIGHT,
-  BRAND_HERO_IMAGE_SRC,
-  BRAND_HERO_IMAGE_WIDTH,
-} from "@/constants/brand";
 import type { StorefrontDictionary } from "@/i18n/types";
 import { getLocalizedPath } from "@/utils";
 
@@ -104,10 +100,8 @@ export const HeroSection = async ({ locale }: HeroSectionProps) => {
 
             <Box className={styles.illustrationArea}>
               <Image
-                src={BRAND_HERO_IMAGE_SRC}
+                src={heroImage}
                 alt={character.title}
-                width={BRAND_HERO_IMAGE_WIDTH}
-                height={BRAND_HERO_IMAGE_HEIGHT}
                 sizes="(max-width: 900px) 100vw, 700px"
                 priority
                 className={styles.illustration}

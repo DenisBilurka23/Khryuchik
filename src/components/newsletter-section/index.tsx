@@ -2,12 +2,8 @@ import { Box, Container, Typography } from "@mui/material";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 
+import newsletterImage from "@/assets/Newsletter.png";
 import { SectionEyebrow } from "@/components/section-eyebrow";
-import {
-  BRAND_NEWSLETTER_IMAGE_HEIGHT,
-  BRAND_NEWSLETTER_IMAGE_SRC,
-  BRAND_NEWSLETTER_IMAGE_WIDTH,
-} from "@/constants/brand";
 import { getServerAuthSession } from "@/server/auth/config";
 import { isSubscribedToNewsletter } from "@/server/newsletter/services/newsletter.service";
 
@@ -51,11 +47,9 @@ export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
           />
 
           <Image
-            src={BRAND_NEWSLETTER_IMAGE_SRC}
+            src={newsletterImage}
             alt=""
             aria-hidden
-            width={BRAND_NEWSLETTER_IMAGE_WIDTH}
-            height={BRAND_NEWSLETTER_IMAGE_HEIGHT}
             sizes="200px"
             className={styles.illustration}
           />

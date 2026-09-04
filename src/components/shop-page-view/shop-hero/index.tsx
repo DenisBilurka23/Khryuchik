@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 
+import shopHeroImage from "@/assets/StoreHero.png";
 import { SectionEyebrow } from "@/components/section-eyebrow";
-import { BRAND_SHOP_HERO_IMAGE_SRC } from "@/constants/brand";
 
 import styles from "./shop-hero.module.css";
 import type { ShopHeroProps } from "./types";
@@ -22,7 +22,7 @@ export const ShopHero = ({ eyebrow, title, lead }: ShopHeroProps) => {
 
       <Box className={styles.illustrationArea}>
         <Image
-          src={BRAND_SHOP_HERO_IMAGE_SRC}
+          src={shopHeroImage}
           alt={title}
           fill
           sizes="(max-width: 767px) 100vw, (max-width: 1023px) 55vw, 760px"

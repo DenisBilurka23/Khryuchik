@@ -3,12 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import orderImage from "@/assets/MainBottomTransparent.png";
 import { SectionEyebrow } from "@/components/section-eyebrow";
-import {
-  BRAND_ORDER_IMAGE_HEIGHT,
-  BRAND_ORDER_IMAGE_SRC,
-  BRAND_ORDER_IMAGE_WIDTH,
-} from "@/constants/brand";
 import type { StorefrontDictionary } from "@/i18n/types";
 
 import { OrderSteps } from "./order-steps";
@@ -43,10 +39,8 @@ export const OrderSection = async ({
 
             <Grid size={{ xs: 12, lg: 3 }}>
               <Image
-                src={BRAND_ORDER_IMAGE_SRC}
+                src={orderImage}
                 alt=""
-                width={BRAND_ORDER_IMAGE_WIDTH}
-                height={BRAND_ORDER_IMAGE_HEIGHT}
                 sizes="(max-width: 1200px) 40vw, 260px"
                 className={styles.illustration}
               />
