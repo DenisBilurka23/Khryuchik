@@ -2,8 +2,10 @@
   --color-page: #fffcf8;
   --color-cream: #fbf7f2;
   --color-hero: #fbf7f5;
+  --color-hero-rose: #f9eaef;
   --color-products: #f4ece6;
   --color-entertainment: #f3e8ed;
+  --color-newsletter: #faeaef;
   --color-card: #fffdfc;
   --color-white: #ffffff;
 
@@ -16,6 +18,7 @@
   --color-action-hover: #754252;
   --color-accent-soft: #e8d5dc;
   --color-accent-pale: #f5ecef;
+  --color-accent-tint: #f3e4e8;
 
   --color-border: #ded4ce;
   --color-border-rose: #cda7b2;
