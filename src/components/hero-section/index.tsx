@@ -1,4 +1,4 @@
-import { Box, Button, Container, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -22,80 +22,44 @@ export const HeroSection = async ({ locale }: HeroSectionProps) => {
   const storyHref = getLocalizedPath(locale, "/story");
 
   return (
-    <Box component="section">
-      <Container maxWidth="lg" sx={{ py: { xs: 2, md: 2 } }}>
+    <Box component="section" className={styles.section}>
+      <Container maxWidth="lg">
         <Box className={styles.panel}>
           <Box className={styles.layout}>
             <Box>
               <SectionEyebrow label={t("badge")} />
 
-              <Typography variant="h1" sx={{ mt: 2.5 }}>
+              <Typography variant="h1" className={styles.title}>
                 {t("title")}
               </Typography>
 
-              <Typography
-                sx={{
-                  mt: 2.5,
-                  maxWidth: 500,
-                  fontSize: { xs: 16, md: 17 },
-                  lineHeight: 1.6,
-                  color: "text.secondary",
-                }}
-              >
-                {t("lead")}
-              </Typography>
+              <Typography className={styles.lead}>{t("lead")}</Typography>
 
-              <Typography
-                sx={{
-                  mt: 2,
-                  maxWidth: 500,
-                  fontSize: { xs: 16, md: 17 },
-                  lineHeight: 1.6,
-                  color: "text.secondary",
-                }}
-              >
+              <Typography className={styles.lead}>
                 {t("leadSecondary")}
               </Typography>
 
-              <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={2}
-                useFlexGap
-                flexWrap="wrap"
-                sx={{ mt: 4 }}
-              >
-                <Link
-                  href={`${homeHref}#books`}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
+              <Box className={styles.actions}>
+                <Link href={`${homeHref}#books`}>
                   <Button
                     component="span"
                     variant="contained"
-                    sx={{
-                      width: { xs: "100%", sm: "auto" },
-                      whiteSpace: "nowrap",
-                    }}
+                    className={styles.action}
                   >
                     {t("primaryAction")}
                   </Button>
                 </Link>
-                <Link
-                  href={`${homeHref}#entertainment`}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
+
+                <Link href={`${homeHref}#entertainment`}>
                   <Button
                     component="span"
                     variant="outlined"
-                    className={styles.secondaryButton}
-                    sx={{
-                      width: { xs: "100%", sm: "auto" },
-                      whiteSpace: "nowrap",
-                    }}
+                    className={`${styles.action} ${styles.secondaryButton}`}
                   >
                     {t("secondaryAction")}
                   </Button>
                 </Link>
-              </Stack>
+              </Box>
             </Box>
 
             <Box className={styles.illustrationArea}>
@@ -108,31 +72,18 @@ export const HeroSection = async ({ locale }: HeroSectionProps) => {
               />
 
               <Box className={styles.characterCard}>
-                <Typography
-                  sx={{
-                    fontFamily:
-                      "var(--font-display, var(--font-display-fallback)), serif",
-                    fontSize: 22,
-                    fontWeight: 600,
-                    lineHeight: 1.2,
-                  }}
-                >
+                <Typography component="p" className={styles.characterTitle}>
                   {character.title}
                 </Typography>
-                <Typography
-                  sx={{
-                    mt: 1.25,
-                    fontSize: 14,
-                    lineHeight: 1.6,
-                    color: "text.secondary",
-                  }}
-                >
+
+                <Typography className={styles.characterText}>
                   {character.text}
                 </Typography>
+
                 <ArrowLink
                   href={storyHref}
                   label={character.actionLabel}
-                  sx={{ mt: 2 }}
+                  className={styles.characterAction}
                 />
               </Box>
             </Box>

@@ -39,6 +39,8 @@
   position: absolute;
   top: 50%;
   left: 0;
+  --rail-fill: 0%;
+  width: var(--rail-fill);
   height: 3px;
   transform: translateY(-50%);
   border-radius: var(--radius-pill);
@@ -49,6 +51,8 @@
 .node {
   position: absolute;
   top: 50%;
+  --node-offset: 0%;
+  left: var(--node-offset);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -109,6 +113,8 @@
 
 .detailAnim {
   overflow: hidden;
+  --detail-height: auto;
+  height: var(--detail-height);
   transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -209,7 +215,8 @@
   width: 260px;
   aspect-ratio: 3 / 4;
   border-radius: var(--radius-card);
-  background: var(--color-accent-soft);
+  --cover-bg: var(--color-accent-soft);
+  background: var(--cover-bg);
   font-size: 72px;
 }
 

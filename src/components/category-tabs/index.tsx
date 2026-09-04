@@ -16,7 +16,6 @@ export const CategoryTabs = ({
   preserveQueryParams = [],
   variant = "pills",
   label,
-  sx,
 }: CategoryTabsProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -47,7 +46,7 @@ export const CategoryTabs = ({
 
   if (variant === "text") {
     return (
-      <Box className={className} sx={sx}>
+      <Box className={className}>
         {label ? (
           <Typography component="p" className={styles.textLabel}>
             {label}
@@ -76,7 +75,7 @@ export const CategoryTabs = ({
   }
 
   return (
-    <Box className={`${styles.pills} ${className ?? ""}`} sx={sx}>
+    <Box className={`${styles.pills} ${className ?? ""}`}>
       {options.map((option) => {
         const isActive = selectedValue === option.value;
 

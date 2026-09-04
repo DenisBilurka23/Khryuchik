@@ -1,5 +1,6 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 
 import { ArrowLink } from "../arrow-link";
 
@@ -15,23 +16,11 @@ export const BookCard = ({
 
   return (
     <Card className={styles.card}>
-      <CardContent
-        sx={{
-          p: 1.5,
-          "&:last-child": { pb: 1.5 },
-          display: "flex",
-          flexDirection: "column",
-          flexGrow: 1,
-        }}
-      >
+      <CardContent className={styles.body}>
         <Link
           href={detailsHref}
           className={styles.cover}
-          style={{
-            textDecoration: "none",
-            color: "inherit",
-            backgroundColor: thumbnail?.bgColor ?? undefined,
-          }}
+          style={{ "--cover-bg": thumbnail?.bgColor } as CSSProperties}
         >
           {thumbnail?.src ? (
             <Box
@@ -46,29 +35,18 @@ export const BookCard = ({
         </Link>
 
         {book.lang ? (
-          <Typography
-            sx={{
-              fontSize: 12,
-              letterSpacing: "0.06em",
-              color: "var(--color-text-muted)",
-            }}
-          >
+          <Typography component="p" className={styles.lang}>
             {book.lang}
           </Typography>
         ) : null}
 
-        <Link
-          href={detailsHref}
-          style={{ textDecoration: "none", color: "inherit", display: "block" }}
-        >
-          <Typography
-            sx={{ mt: 0.5, fontSize: 17, fontWeight: 600, lineHeight: 1.3 }}
-          >
+        <Link href={detailsHref} className={styles.titleLink}>
+          <Typography component="p" className={styles.title}>
             {book.title}
           </Typography>
         </Link>
 
-        <Box sx={{ mt: "auto", pt: 1.5 }}>
+        <Box className={styles.foot}>
           <ArrowLink href={detailsHref} label={detailsButton} />
         </Box>
       </CardContent>

@@ -1,12 +1,13 @@
-import { IconButton, Stack } from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import Link from "next/link";
 
 import { getSocialIcon } from "./icons";
+import styles from "./social-links.module.css";
 import type { FooterSocialLinksProps } from "./types";
 
 export const FooterSocialLinks = ({ items }: FooterSocialLinksProps) => {
   return (
-    <Stack direction="row" sx={{ flexWrap: "wrap", gap: 1.5 }}>
+    <Box className={styles.list}>
       {items.map((item) => {
         const Icon = getSocialIcon(item.key);
         const isExternal = item.href.startsWith("http");
@@ -16,27 +17,18 @@ export const FooterSocialLinks = ({ items }: FooterSocialLinksProps) => {
             key={item.key}
             href={item.href}
             aria-label={item.label}
-            style={{ display: "inline-flex", textDecoration: "none" }}
+            className={styles.link}
             {...(isExternal
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
           >
-            <IconButton
-              component="span"
-              sx={{
-                width: 44,
-                height: 44,
-                color: "var(--color-white)",
-                bgcolor: "var(--color-accent)",
-                "&:hover": { bgcolor: "var(--color-action)" },
-              }}
-            >
+            <IconButton component="span" className={styles.button}>
               <Icon fontSize="small" />
             </IconButton>
           </Link>
         );
       })}
-    </Stack>
+    </Box>
   );
 };
 

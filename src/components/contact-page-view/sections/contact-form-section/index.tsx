@@ -214,7 +214,7 @@ export const ContactForm = ({
         </Box>
       </Box>
 
-      <Box className={styles.field} sx={{ mt: 2.5 }}>
+      <Box className={`${styles.field} ${styles.fieldWide}`}>
         <Typography
           component="label"
           htmlFor="contact-message"

@@ -17,3 +17,13 @@
     padding: 24px 20px;
   }
 }
+
+.filters {
+  margin-bottom: 32px;
+}
+
+@media (max-width: 899px) {
+  .filters {
+    display: none;
+  }
+}

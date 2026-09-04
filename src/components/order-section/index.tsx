@@ -1,4 +1,4 @@
-import { Box, Button, Container, Grid, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -26,59 +26,46 @@ export const OrderSection = async ({
     <Box component="section" id="order" className={styles.section}>
       <Container maxWidth="lg">
         <Box className={styles.panel}>
-          <Grid container spacing={4} alignItems="center">
-            <Grid size={{ xs: 12, lg: 9 }}>
+          <Box className={styles.layout}>
+            <Box>
               <SectionEyebrow label={t("eyebrow")} />
 
-              <Typography variant="h2" sx={{ mt: 1, mb: 4 }}>
+              <Typography variant="h2" className={styles.title}>
                 {t("title")}
               </Typography>
 
               <OrderSteps steps={steps} />
-            </Grid>
+            </Box>
 
-            <Grid size={{ xs: 12, lg: 3 }}>
-              <Image
-                src={orderImage}
-                alt=""
-                sizes="(max-width: 1200px) 40vw, 260px"
-                className={styles.illustration}
-              />
-            </Grid>
-          </Grid>
+            <Image
+              src={orderImage}
+              alt=""
+              sizes="(max-width: 1200px) 40vw, 260px"
+              className={styles.illustration}
+            />
+          </Box>
 
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={2}
-            justifyContent="center"
-            sx={{ mt: 5 }}
-          >
-            <Link
-              href={shopHref}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
+          <Box className={styles.actions}>
+            <Link href={shopHref}>
               <Button
                 component="span"
                 variant="contained"
-                sx={{ width: { xs: "100%", sm: "auto" } }}
+                className={styles.action}
               >
                 {t("shopAction")}
               </Button>
             </Link>
-            <Link
-              href={cartHref}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
+
+            <Link href={cartHref}>
               <Button
                 component="span"
                 variant="outlined"
-                className={styles.cartButton}
-                sx={{ width: { xs: "100%", sm: "auto" } }}
+                className={`${styles.action} ${styles.cartButton}`}
               >
                 {t("cartAction")}
               </Button>
             </Link>
-          </Stack>
+          </Box>
         </Box>
       </Container>
     </Box>

@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 
 import { SectionEyebrow } from "../section-eyebrow";
@@ -13,36 +13,25 @@ export const SectionHeading = ({
   actionHref,
 }: SectionHeadingProps) => {
   return (
-    <Stack
-      direction={{ xs: "column", md: "row" }}
-      justifyContent="space-between"
-      alignItems={{ xs: "flex-start", md: "flex-end" }}
-      spacing={3}
-      mb={4}
-    >
+    <Box className={styles.root}>
       <Box>
         <SectionEyebrow label={eyebrow} />
-        <Typography variant="h2" sx={{ mt: 1 }}>
+        <Typography variant="h2" className={styles.title}>
           {title}
         </Typography>
       </Box>
 
       {actionLabel && actionHref ? (
-        <Link
-          href={actionHref}
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
+        <Link href={actionHref} className={styles.actionLink}>
           <Button
             component="span"
             variant="outlined"
-            color="inherit"
             className={styles.actionButton}
-            sx={{ display: { xs: "none", md: "inline-flex" } }}
           >
             {actionLabel}
           </Button>
         </Link>
       ) : null}
-    </Stack>
+    </Box>
   );
 };

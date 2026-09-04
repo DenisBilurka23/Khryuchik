@@ -1,5 +1,6 @@
 import { Box, Card, Typography } from "@mui/material";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 
 import { formatCurrency, isPurchasableAvailability } from "@/utils";
 
@@ -30,12 +31,12 @@ export const ProductCard = ({
 
         <Box
           className={styles.preview}
-          sx={{
-            bgcolor:
-              thumbnail?.bgColor ??
-              product.thumbnailBackgroundColor ??
-              undefined,
-          }}
+          style={
+            {
+              "--preview-bg":
+                thumbnail?.bgColor ?? product.thumbnailBackgroundColor,
+            } as CSSProperties
+          }
         >
           {thumbnail?.src ? (
             <Box

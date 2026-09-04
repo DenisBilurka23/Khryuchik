@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Stack, Typography } from "@mui/material";
+import { Box, Container, Grid, Typography } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
@@ -27,15 +27,11 @@ export const FooterSection = async ({
 
   return (
     <Box component="footer" className={styles.footer}>
-      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 8 } }}>
+      <Container maxWidth="lg" className={styles.inner}>
         <Grid container spacing={5}>
           <Grid size={{ xs: 12, lg: 4 }}>
             <Logo markSize={40} title={tStorefront("brand.shortLabel")} />
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mt: 2, lineHeight: 1.7 }}
-            >
+            <Typography className={styles.description}>
               {tFooter("description")}
             </Typography>
           </Grid>
@@ -45,18 +41,12 @@ export const FooterSection = async ({
               key={section.title}
               size={{ xs: 6, sm: 3, lg: sectionColumnWidth }}
             >
-              <Typography
-                sx={{
-                  fontWeight: 700,
-                  fontSize: 15,
-                  color: "var(--color-accent)",
-                }}
-              >
+              <Typography component="p" className={styles.columnTitle}>
                 {section.title}
               </Typography>
 
               {section.variant === "social" ? (
-                <Box sx={{ mt: 2 }}>
+                <Box className={styles.social}>
                   <FooterSocialLinks
                     items={section.items.map((item) => ({
                       key: item.key,
@@ -66,7 +56,7 @@ export const FooterSection = async ({
                   />
                 </Box>
               ) : (
-                <Stack spacing={1.5} sx={{ mt: 2, color: "text.secondary" }}>
+                <Box className={styles.links}>
                   {section.items.map((item) => {
                     const href = getFooterItemHref(item.key, locale, country);
 
@@ -79,13 +69,11 @@ export const FooterSection = async ({
                           ? { target: "_blank", rel: "noopener noreferrer" }
                           : {})}
                       >
-                        <Typography component="span" sx={{ fontSize: 15 }}>
-                          {item.label}
-                        </Typography>
+                        {item.label}
                       </Link>
                     );
                   })}
-                </Stack>
+                </Box>
               )}
             </Grid>
           ))}

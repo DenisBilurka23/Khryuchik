@@ -16,7 +16,7 @@ export const ContactHero = ({
   return (
     <Box className={styles.panel}>
       <Box className={styles.content}>
-        <SectionEyebrow label={eyebrow} sx={{ justifyContent: "center" }} />
+        <SectionEyebrow label={eyebrow} className={styles.eyebrow} />
 
         <Typography variant="h1" className={styles.title}>
           {titlePrefix} <em>{titleAccent}</em>

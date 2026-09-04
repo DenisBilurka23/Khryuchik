@@ -31,3 +31,38 @@
     height: 64px;
   }
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+}
+
+.mark svg {
+  font-size: 26px;
+}
+
+.stepTitle.stepTitle {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.stepText.stepText {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 599px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

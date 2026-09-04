@@ -23,7 +23,8 @@
   margin-bottom: 14px;
   aspect-ratio: 297 / 210;
   border-radius: 12px;
-  background: var(--color-accent-pale);
+  --cover-bg: var(--color-accent-pale);
+  background: var(--cover-bg);
   font-size: 56px;
   overflow: hidden;
 }
@@ -32,4 +33,37 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.body.body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 12px;
+}
+
+.body.body:last-child {
+  padding-bottom: 12px;
+}
+
+.lang.lang {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--color-text-muted);
+}
+
+.titleLink {
+  display: block;
+}
+
+.title.title {
+  margin-top: 4px;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.foot {
+  margin-top: auto;
+  padding-top: 12px;
 }

@@ -3,7 +3,7 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Box, Button, Container, Paper, Typography } from "@mui/material";
 import Link from "next/link";
-import { useState } from "react";
+import { type CSSProperties, useState } from "react";
 
 import { SectionEyebrow } from "@/components/section-eyebrow";
 import { useAnimatedHeight } from "@/hooks/useAnimatedHeight";
@@ -52,7 +52,11 @@ export const StoryTimelineSection = ({
             <Box className={styles.rail}>
               <Box
                 className={styles.railFill}
-                style={{ width: `${(safeIndex / lastIndex) * 100}%` }}
+                style={
+                  {
+                    "--rail-fill": `${(safeIndex / lastIndex) * 100}%`,
+                  } as CSSProperties
+                }
               />
               {books.map((book, index) => {
                 const nodeClassName = [
@@ -68,7 +72,11 @@ export const StoryTimelineSection = ({
                     key={book.slug}
                     type="button"
                     className={nodeClassName}
-                    style={{ left: `${(index / lastIndex) * 100}%` }}
+                    style={
+                      {
+                        "--node-offset": `${(index / lastIndex) * 100}%`,
+                      } as CSSProperties
+                    }
                     onClick={() => setActiveIndex(index)}
                     aria-label={book.title}
                     aria-pressed={index === safeIndex}
@@ -84,7 +92,10 @@ export const StoryTimelineSection = ({
           </Box>
 
           <Paper elevation={0} className={styles.detail}>
-            <Box className={styles.detailAnim} style={{ height: detailHeight }}>
+            <Box
+              className={styles.detailAnim}
+              style={{ "--detail-height": detailHeight } as CSSProperties}
+            >
               <Box ref={detailRef} className={styles.detailBody}>
                 <Box className={styles.detailGrid}>
                   <Box className={styles.detailText}>
@@ -117,12 +128,13 @@ export const StoryTimelineSection = ({
                     ) : (
                       <Box
                         className={styles.bookFallback}
-                        style={{
-                          background:
-                            active.thumbnail?.bgColor ??
-                            active.thumbnailBackgroundColor ??
-                            undefined,
-                        }}
+                        style={
+                          {
+                            "--cover-bg":
+                              active.thumbnail?.bgColor ??
+                              active.thumbnailBackgroundColor,
+                          } as CSSProperties
+                        }
                       >
                         {active.emoji}
                       </Box>

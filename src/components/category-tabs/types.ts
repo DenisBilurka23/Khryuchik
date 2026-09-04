@@ -1,5 +1,3 @@
-import type { SxProps, Theme } from "@mui/material";
-
 export type CategoryTabOption = {
   value: string;
   label: string;
@@ -14,5 +12,4 @@ export type CategoryTabsProps = {
   preserveQueryParams?: string[];
   variant?: "pills" | "text";
   label?: string;
-  sx?: SxProps<Theme>;
 };

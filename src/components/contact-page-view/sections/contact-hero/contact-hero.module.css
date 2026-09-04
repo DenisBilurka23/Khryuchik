@@ -29,6 +29,10 @@
   text-align: center;
 }
 
+.eyebrow {
+  justify-content: center;
+}
+
 .title.title {
   margin-top: 24px;
 }

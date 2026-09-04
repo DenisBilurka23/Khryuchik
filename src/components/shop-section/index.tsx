@@ -15,7 +15,10 @@ export const ShopSection = async ({
   products,
   selectedFilter,
 }: ShopSectionProps) => {
-  const t = await getTranslations({ locale, namespace: "storefront.shopSection" });
+  const t = await getTranslations({
+    locale,
+    namespace: "storefront.shopSection",
+  });
   const defaultFilterValue = categories[0]?.key;
   const filterOptions = createCategoryTabOptions({
     categories,
@@ -37,7 +40,7 @@ export const ShopSection = async ({
             selectedValue={selectedFilter}
             options={filterOptions}
             defaultValueWithoutQuery={defaultFilterValue}
-            sx={{ mb: 4, display: { xs: "none", md: "flex" } }}
+            className={styles.filters}
           />
 
           <Grid container spacing={3}>

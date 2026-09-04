@@ -2,8 +2,6 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Box, Button, Typography } from "@mui/material";
 
-import { STRIPE_BRAND_COLOR } from "../../../region-config";
-
 import styles from "./stripe-pay-card.module.css";
 import type { StripePayCardProps } from "./types";
 
@@ -23,11 +21,7 @@ export const StripePayCard = ({
   return (
     <Box className={styles.card}>
       <Box className={styles.head}>
-        <Typography
-          component="span"
-          className={styles.wordmark}
-          sx={{ color: STRIPE_BRAND_COLOR }}
-        >
+        <Typography component="span" className={styles.wordmark}>
           stripe
         </Typography>
 

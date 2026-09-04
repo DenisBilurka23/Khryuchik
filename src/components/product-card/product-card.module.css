@@ -30,7 +30,8 @@
   justify-content: center;
   overflow: hidden;
   border-radius: 13px;
-  background: var(--color-cream);
+  --preview-bg: var(--color-cream);
+  background: var(--preview-bg);
   font-size: 48px;
 }
 
