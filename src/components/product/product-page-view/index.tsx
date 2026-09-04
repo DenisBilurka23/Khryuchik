@@ -1,16 +1,14 @@
 import {
   Box,
-  Breadcrumbs,
   Container,
   Divider,
   Grid,
-  Link as MuiLink,
   Stack,
   Typography,
 } from "@mui/material";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import type { Locale } from "@/i18n/config";
 import type { ProductPageLabels } from "@/i18n/types";
 import {
@@ -106,29 +104,17 @@ export const ProductPageView = async ({
     });
 
   return (
-    <Box className={styles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={styles.pageShell}>
       <Box className={styles.pageContent}>
-        <Box sx={{ py: { xs: 4, md: 6 } }}>
+        <Box sx={{ pb: { xs: 4, md: 6 } }}>
           <Container maxWidth="lg">
-            <Breadcrumbs sx={{ mb: 4 }}>
-              <Link
-                href={homeHref}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <MuiLink underline="hover" color="inherit" component="span">
-                  {labels.breadcrumbs.home}
-                </MuiLink>
-              </Link>
-              <Link
-                href={shopHref}
-                style={{ textDecoration: "none", color: "inherit" }}
-              >
-                <MuiLink underline="hover" color="inherit" component="span">
-                  {labels.breadcrumbs.shop}
-                </MuiLink>
-              </Link>
-              <Typography color="text.primary">{product.title}</Typography>
-            </Breadcrumbs>
+            <Breadcrumbs
+              items={[
+                { label: labels.breadcrumbs.home, href: homeHref },
+                { label: labels.breadcrumbs.shop, href: shopHref },
+                { label: product.title },
+              ]}
+            />
 
             <Grid container spacing={5} alignItems="flex-start">
               <Grid size={{ xs: 12, md: 6 }}>
@@ -147,7 +133,9 @@ export const ProductPageView = async ({
                   {product.languages?.length ? (
                     <Typography variant="body2" color="text.secondary">
                       {tProductPage("details.languageSupportLabel", {
-                        langs: product.languages.map((l) => l.value.toUpperCase()).join(" / "),
+                        langs: product.languages
+                          .map((l) => l.value.toUpperCase())
+                          .join(" / "),
                       })}
                     </Typography>
                   ) : null}

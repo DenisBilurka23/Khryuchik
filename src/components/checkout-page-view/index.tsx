@@ -1,18 +1,10 @@
 "use client";
 
-import {
-  Box,
-  Breadcrumbs,
-  Container,
-  Grid,
-  Link as MuiLink,
-  Stack,
-  Typography,
-} from "@mui/material";
-import Link from "next/link";
+import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { submitCheckoutClient } from "@/client-api/checkout";
 import { useCart } from "@/components/cart/store";
 import { clearBuyNowItem } from "@/components/cart/buy-now-store";
@@ -430,31 +422,17 @@ export const CheckoutPageView = ({
   const showAddressForm = selectedSavedAddressId === "" || !hasSavedAddresses;
 
   return (
-    <Box className={storefrontStyles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={storefrontStyles.pageShell}>
       <Box className={storefrontStyles.pageContent}>
-        <Box sx={{ py: { xs: 4, md: 6 } }}>
+        <Box sx={{ pb: { xs: 4, md: 6 } }}>
           <Container maxWidth="lg">
-            <Breadcrumbs sx={{ mb: 4 }}>
-              <MuiLink
-                component={Link}
-                underline="hover"
-                color="inherit"
-                href={homeHref}
-              >
-                {labels.breadcrumbs.home}
-              </MuiLink>
-              <MuiLink
-                component={Link}
-                underline="hover"
-                color="inherit"
-                href={cartHref}
-              >
-                {labels.breadcrumbs.cart}
-              </MuiLink>
-              <Typography color="text.primary">
-                {labels.breadcrumbs.current}
-              </Typography>
-            </Breadcrumbs>
+            <Breadcrumbs
+              items={[
+                { label: labels.breadcrumbs.home, href: homeHref },
+                { label: labels.breadcrumbs.cart, href: cartHref },
+                { label: labels.breadcrumbs.current },
+              ]}
+            />
 
             <Box
               sx={{

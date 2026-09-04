@@ -2,27 +2,6 @@
   padding-bottom: 56px;
 }
 
-.breadcrumbs.breadcrumbs {
-  padding-top: 36px;
-  padding-bottom: 28px;
-  font-size: 14px;
-  color: var(--color-text-muted);
-}
-
-.breadcrumbs.breadcrumbs :global(.MuiBreadcrumbs-separator) {
-  margin-inline: 12px;
-  color: var(--color-accent);
-}
-
-.breadcrumbLink:hover {
-  color: var(--color-action);
-}
-
-.breadcrumbCurrent.breadcrumbCurrent {
-  font-size: 14px;
-  color: var(--color-text-muted);
-}
-
 .catalog {
   margin-top: 56px;
 }

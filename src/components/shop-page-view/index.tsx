@@ -1,7 +1,8 @@
-import { Box, Breadcrumbs, Button, Container, Typography } from "@mui/material";
+import { Box, Button, Container, Typography } from "@mui/material";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CategoryTabs } from "@/components/category-tabs";
 import { SectionEyebrow } from "@/components/section-eyebrow";
 import { BOOK_SERIES, BOOKS_CATEGORY_KEY } from "@/constants/catalog";
@@ -72,18 +73,16 @@ export const ShopPageView = async ({
     });
 
   return (
-    <Box className={shellStyles.pageShell} sx={{ color: "text.primary" }}>
+    <Box className={shellStyles.pageShell}>
       <Box className={shellStyles.pageContent}>
         <Box component="section" className={styles.section}>
           <Container maxWidth="lg">
-            <Breadcrumbs separator="→" className={styles.breadcrumbs}>
-              <Link href={homeHref} className={styles.breadcrumbLink}>
-                {tShopPage("breadcrumbs.home")}
-              </Link>
-              <Typography component="span" className={styles.breadcrumbCurrent}>
-                {tShopPage("breadcrumbs.current")}
-              </Typography>
-            </Breadcrumbs>
+            <Breadcrumbs
+              items={[
+                { label: tShopPage("breadcrumbs.home"), href: homeHref },
+                { label: tShopPage("breadcrumbs.current") },
+              ]}
+            />
 
             <ShopHero
               eyebrow={tShopPage("hero.eyebrow")}
@@ -140,7 +139,10 @@ export const ShopPageView = async ({
                       wishlistAriaLabel={tShopSection("wishlistAriaLabel")}
                       outOfStock={tShopSection("outOfStock")}
                       viewProduct={tShopSection("viewProduct")}
-                      detailsHref={getLocalizedProductPath(locale, product.slug)}
+                      detailsHref={getLocalizedProductPath(
+                        locale,
+                        product.slug,
+                      )}
                     />
                   ))}
                 </Box>
