@@ -178,7 +178,6 @@ export const ShopPageView = async ({
                   <ProductCard
                     product={product}
                     locale={locale}
-                    addToCart={tShopSection("addToCart")}
                     wishlistAriaLabel={tShopSection("wishlistAriaLabel")}
                     outOfStock={tShopSection("outOfStock")}
                     viewProduct={tShopSection("viewProduct")}

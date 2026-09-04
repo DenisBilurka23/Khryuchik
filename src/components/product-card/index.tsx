@@ -1,17 +1,16 @@
-import { Box, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
+import { Box, Card, Typography } from "@mui/material";
 import Link from "next/link";
 
-import { ArrowLink } from "../arrow-link";
 import { formatCurrency, isPurchasableAvailability } from "@/utils";
-import { AddToCartButton } from "./add-to-cart-button";
-import { WishlistButton } from "./wishlist-button";
+
+import { ArrowLink } from "../arrow-link";
 import styles from "./product-card.module.css";
+import { WishlistButton } from "./wishlist-button";
 import type { ProductCardProps } from "./types";
 
 export const ProductCard = ({
   product,
   locale,
-  addToCart,
   wishlistAriaLabel,
   outOfStock,
   viewProduct,
@@ -19,99 +18,61 @@ export const ProductCard = ({
 }: ProductCardProps) => {
   const thumbnail = product.thumbnail;
   const isSoldOut = !isPurchasableAvailability(product.availability);
-  const canAddDirectly = !isSoldOut && !product.hasOptions;
 
   return (
     <Card className={styles.card}>
-      <CardContent
-        sx={{
-          p: 1.5,
-          "&:last-child": { pb: 1.5 },
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-        }}
-      >
-        <Link
-          href={detailsHref}
-          style={{
-            textDecoration: "none",
-            color: "inherit",
-            display: "block",
-            position: "relative",
+      <Link href={detailsHref} className={styles.previewLink}>
+        {isSoldOut ? (
+          <Typography component="span" className={styles.soldOutChip}>
+            {outOfStock}
+          </Typography>
+        ) : null}
+
+        <Box
+          className={styles.preview}
+          sx={{
+            bgcolor:
+              thumbnail?.bgColor ??
+              product.thumbnailBackgroundColor ??
+              undefined,
           }}
         >
-          {isSoldOut ? (
-            <Chip
-              label={outOfStock}
-              size="small"
-              className={styles.soldOutChip}
+          {thumbnail?.src ? (
+            <Box
+              component="img"
+              src={thumbnail.src}
+              alt={thumbnail.alt ?? product.title}
+              className={styles.previewImage}
             />
-          ) : null}
-          <Box
-            className={styles.preview}
-            sx={{
-              bgcolor:
-                thumbnail?.bgColor ??
-                product.thumbnailBackgroundColor ??
-                undefined,
-            }}
-          >
-            {thumbnail?.src ? (
-              <Box
-                component="img"
-                src={thumbnail.src}
-                alt={thumbnail.alt ?? product.title}
-                className={styles.previewImage}
-              />
-            ) : (
-              (thumbnail?.emoji ?? product.emoji)
-            )}
-          </Box>
-        </Link>
+          ) : (
+            (thumbnail?.emoji ?? product.emoji)
+          )}
+        </Box>
+      </Link>
 
-        <Link
-          href={detailsHref}
-          style={{ textDecoration: "none", color: "inherit", display: "block" }}
-        >
-          <Typography
-            sx={{ mt: 1.75, fontSize: 16, fontWeight: 600, lineHeight: 1.35 }}
-          >
-            {product.title}
-          </Typography>
-        </Link>
-
-        <Typography sx={{ mt: 0.75, fontSize: 17, fontWeight: 700 }}>
-          {formatCurrency(product.price, locale, product.currency)}
+      <Link href={detailsHref}>
+        <Typography component="p" className={styles.title}>
+          {product.title}
         </Typography>
+      </Link>
 
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          spacing={1}
-          sx={{ mt: "auto", pt: 1.5 }}
-        >
-          <ArrowLink href={detailsHref} label={viewProduct} />
+      <Box className={styles.meta}>
+        <Box className={styles.metaText}>
+          <Typography component="p" className={styles.price}>
+            {formatCurrency(product.price, locale, product.currency)}
+          </Typography>
 
-          <Stack direction="row" spacing={0.5} alignItems="center">
-            {canAddDirectly ? (
-              <AddToCartButton
-                productId={product.id}
-                label={addToCart}
-                className={styles.iconAction}
-                iconOnly
-              />
-            ) : null}
+          <ArrowLink href={detailsHref} label={viewProduct} size="sm" />
+        </Box>
 
-            <WishlistButton
-              productId={product.id}
-              label={`${wishlistAriaLabel}: ${product.title}`}
-              className={styles.iconAction}
-            />
-          </Stack>
-        </Stack>
-      </CardContent>
+        <WishlistButton
+          productId={product.id}
+          label={`${wishlistAriaLabel}: ${product.title}`}
+          className={styles.wishlist}
+        />
+      </Box>
     </Card>
   );
 };
+
+export type { ProductCardProps } from "./types";

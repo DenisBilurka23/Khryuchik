@@ -46,7 +46,6 @@ export const ShopSection = async ({
                 <ProductCard
                   product={product}
                   locale={locale}
-                  addToCart={t("addToCart")}
                   wishlistAriaLabel={t("wishlistAriaLabel")}
                   outOfStock={t("outOfStock")}
                   viewProduct={t("viewProduct")}
