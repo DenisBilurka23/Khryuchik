@@ -1,0 +1,76 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.controls {
+  display: flex;
+  align-items: stretch;
+}
+
+.field.field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.field.field :global(.MuiOutlinedInput-root) {
+  height: 52px;
+  padding-inline: 18px;
+  border-radius: 12px 0 0 12px;
+  background: var(--color-card);
+  font-size: 15px;
+}
+
+.field.field :global(.MuiOutlinedInput-input) {
+  padding: 0;
+}
+
+.field.field :global(.MuiOutlinedInput-input)::placeholder {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+.field.field :global(.MuiOutlinedInput-notchedOutline) {
+  border-color: var(--color-border-rose);
+}
+
+.field.field :global(.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline) {
+  border-width: 1px;
+  border-color: var(--color-border-rose);
+}
+
+.button.button {
+  flex: 0 0 auto;
+  min-height: 52px;
+  padding-inline: 28px;
+  border: none;
+  border-radius: 0 11px 11px 0;
+  background: var(--color-accent);
+  color: var(--color-white);
+  white-space: nowrap;
+}
+
+.button.button:hover {
+  background: var(--color-action-hover);
+}
+
+.button.button:focus-visible {
+  outline: 2px solid var(--color-border-rose);
+  outline-offset: 3px;
+}
+
+@media (max-width: 767px) {
+  .controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .field.field :global(.MuiOutlinedInput-root) {
+    border-radius: 12px;
+  }
+
+  .button.button {
+    border-radius: 11px;
+  }
+}

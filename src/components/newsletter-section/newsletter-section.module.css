@@ -1,16 +1,52 @@
 .section {
-  padding: 16px 0 56px;
+  padding: 56px 0;
 }
 
 .panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr) auto;
+  align-items: center;
+  gap: 32px;
+  padding: 18px 40px;
   border-radius: var(--radius-panel);
-  border: 1px solid var(--color-border);
-  background: var(--color-cream);
+  background: var(--color-newsletter);
   color: var(--color-text);
 }
 
-.formCard {
-  border-radius: var(--radius-card);
-  border: 1px solid var(--color-border);
-  background: var(--color-card);
+.title.title {
+  margin-top: 10px;
+  font-size: 30px;
+  line-height: 1.15;
+}
+
+.illustration {
+  width: clamp(130px, 14vw, 200px);
+  height: auto;
+  justify-self: end;
+}
+
+@media (max-width: 1023px) {
+  .panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .illustration {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .section {
+    padding: 40px 0;
+  }
+
+  .panel {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 28px 20px;
+  }
+
+  .title.title {
+    font-size: 26px;
+  }
 }

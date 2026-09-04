@@ -840,8 +840,7 @@
     },
     "newsletter": {
       "eyebrow": "Newsletter",
-      "title": "Get updates on new books and Khryuchik collections",
-      "text": "Announcements about new stories, product drops, gift bundles, and seasonal releases — without extra noise.",
+      "title": "Get updates on new books and products from Khryuchik",
       "emailPlaceholder": "Your email",
       "buttonLabel": "Subscribe",
       "successMessage": "Thanks! You're subscribed.",

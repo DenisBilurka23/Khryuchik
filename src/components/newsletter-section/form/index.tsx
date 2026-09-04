@@ -1,12 +1,13 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
-import { Alert, Button, Stack, TextField } from "@mui/material";
+import { Alert, Box, Button, TextField } from "@mui/material";
 
 import { subscribeToNewsletterClient } from "@/client-api/newsletter";
 import { NewsletterErrorCode } from "@/types/newsletter";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
+import styles from "./newsletter-form.module.css";
 import type { NewsletterFormProps } from "./types";
 
 export const NewsletterForm = ({
@@ -51,23 +52,33 @@ export const NewsletterForm = ({
   };
 
   return (
-    <Stack component="form" spacing={2} onSubmit={handleSubmit}>
+    <Box component="form" className={styles.form} onSubmit={handleSubmit}>
+      <Box className={styles.controls}>
+        <TextField
+          type="email"
+          className={styles.field}
+          placeholder={emailPlaceholder}
+          variant="outlined"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          autoComplete="email"
+          required
+        />
+
+        <Button
+          type="submit"
+          variant="contained"
+          className={styles.button}
+          loading={isSubmitting}
+        >
+          {buttonLabel}
+        </Button>
+      </Box>
+
       {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
       {isSubscribed ? <Alert severity="success">{successMessage}</Alert> : null}
-
-      <TextField
-        fullWidth
-        type="email"
-        placeholder={emailPlaceholder}
-        variant="outlined"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-        autoComplete="email"
-        required
-      />
-      <Button type="submit" fullWidth variant="contained" loading={isSubmitting}>
-        {buttonLabel}
-      </Button>
-    </Stack>
+    </Box>
   );
 };
+
+export type { NewsletterFormProps } from "./types";

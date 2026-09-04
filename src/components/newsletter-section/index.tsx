@@ -1,9 +1,16 @@
-import { Box, Container, Grid, Paper, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 
 import { SectionEyebrow } from "@/components/section-eyebrow";
+import {
+  BRAND_NEWSLETTER_IMAGE_HEIGHT,
+  BRAND_NEWSLETTER_IMAGE_SRC,
+  BRAND_NEWSLETTER_IMAGE_WIDTH,
+} from "@/constants/brand";
 import { getServerAuthSession } from "@/server/auth/config";
 import { isSubscribedToNewsletter } from "@/server/newsletter/services/newsletter.service";
+
 import { NewsletterForm } from "./form";
 import styles from "./newsletter-section.module.css";
 import type { NewsletterSectionProps } from "./types";
@@ -22,43 +29,40 @@ export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
   });
 
   return (
-    <Box className={styles.section}>
+    <Box component="section" className={styles.section}>
       <Container maxWidth="lg">
-        <Paper
-          elevation={0}
-          className={styles.panel}
-          sx={{ px: { xs: 3, md: 5 }, py: { xs: 4, md: 5 } }}
-        >
-          <Grid container spacing={4} alignItems="center">
-            <Grid size={{ xs: 12, md: 8 }}>
-              <SectionEyebrow label={t("eyebrow")} />
-              <Typography variant="h2" sx={{ mt: 1 }}>
-                {t("title")}
-              </Typography>
-              <Typography
-                color="text.secondary"
-                sx={{ mt: 2, lineHeight: 1.7 }}
-              >
-                {t("text")}
-              </Typography>
-            </Grid>
+        <Box className={styles.panel}>
+          <Box>
+            <SectionEyebrow label={t("eyebrow")} />
 
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Paper elevation={0} className={styles.formCard} sx={{ p: 2 }}>
-                <NewsletterForm
-                  locale={locale}
-                  defaultEmail={accountEmail}
-                  emailPlaceholder={t("emailPlaceholder")}
-                  buttonLabel={t("buttonLabel")}
-                  successMessage={t("successMessage")}
-                  invalidEmailMessage={t("invalidEmail")}
-                  unexpectedErrorMessage={t("unexpectedError")}
-                />
-              </Paper>
-            </Grid>
-          </Grid>
-        </Paper>
+            <Typography variant="h2" className={styles.title}>
+              {t("title")}
+            </Typography>
+          </Box>
+
+          <NewsletterForm
+            locale={locale}
+            defaultEmail={accountEmail}
+            emailPlaceholder={t("emailPlaceholder")}
+            buttonLabel={t("buttonLabel")}
+            successMessage={t("successMessage")}
+            invalidEmailMessage={t("invalidEmail")}
+            unexpectedErrorMessage={t("unexpectedError")}
+          />
+
+          <Image
+            src={BRAND_NEWSLETTER_IMAGE_SRC}
+            alt=""
+            aria-hidden
+            width={BRAND_NEWSLETTER_IMAGE_WIDTH}
+            height={BRAND_NEWSLETTER_IMAGE_HEIGHT}
+            sizes="200px"
+            className={styles.illustration}
+          />
+        </Box>
       </Container>
     </Box>
   );
 };
+
+export type { NewsletterSectionProps } from "./types";

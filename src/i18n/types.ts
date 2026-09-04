@@ -687,7 +687,6 @@ export type StorefrontDictionary = {
   newsletter: {
     eyebrow: string;
     title: string;
-    text: string;
     emailPlaceholder: string;
     buttonLabel: string;
     successMessage: string;
