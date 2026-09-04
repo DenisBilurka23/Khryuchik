@@ -261,16 +261,16 @@
     "storyPage": {
       "lead": "Khryuchik's story — the journey of a hero who grows up alongside the reader, from the first fairy tales to the big roads.",
       "timeline": {
-        "eyebrow": "Khryuchik's path",
-        "title": "Khryuchik grows up alongside the reader",
-        "lead": "Move the marker and walk through the series by age — from the first fairy tales to the stories about the big roads.",
+        "eyebrow": "The hero's path",
+        "title": "\"Books by age\". Khryuchik grows up alongside the reader",
+        "lead": "Move the marker and watch the Khryuchik stories grow up: from childhood and first discoveries to journeys, big changes, and the search for oneself.",
         "ctaLabel": "Open \"{book}\"",
         "ctaLabelShort": "Open"
       },
       "series": {
         "eyebrow": "Two series",
-        "title": "One hero, two roads",
-        "lead": "Each series has its own age and its own mood. You can start with either one, but it is more interesting to go in order and grow up together with Khryuchik.",
+        "title": "From childhood to adulthood — together with Khryuchik",
+        "lead": "Khryuchik grows up, and his stories and his readers grow up with him: from warm tales of childhood to journeys, change, and the search for oneself.",
         "openLabel": "Open the series",
         "bookCount": {
           "one": "book",
@@ -286,7 +286,7 @@
             "label": "Series 1",
             "name": "Khryuchik when he was little",
             "age": "3 — 7 years",
-            "desc": "Warm family stories, humour, first discoveries and the big feelings of a little piglet. Books you read aloud — and live through together.",
+            "desc": "Stories about Khryuchik's childhood, his family, friends, first discoveries, and important life lessons. A young reader can grow, learn, and grow up alongside a beloved hero.",
             "themes": ["Family", "Friendship", "Kindness", "Humor"]
           },
           {
@@ -295,39 +295,39 @@
             "label": "Series 2",
             "name": "Khryuchik's adventures",
             "age": "8 — 12+ years",
-            "desc": "Change, roads, new countries and the search for yourself. The stories come from the author's own travels — that is why they smell of the sea, of a train and of a real morning.",
+            "desc": "A grown-up Khryuchik sets off on a journey that slowly turns into a long road toward himself. He discovers new countries, meets new people, and along with the new world he discovers new sides of himself. \"Khryuchik in France\" will appeal to teenagers and adults, while the later stories in this series are meant for adult readers.",
             "themes": ["Dream", "The road", "Courage", "Growing up"]
           }
         ]
       },
       "values": {
         "eyebrow": "What's inside",
-        "title": "Six simple things the stories teach",
-        "lead": "These are not lectures. This is what Khryuchik does himself — and the reader quietly does the same.",
+        "title": "Six important things children learn together with Khryuchik",
+        "lead": "As they listen to a story, children mentally stand beside the hero: they make decisions with him, make mistakes, try again, and delight in what worked out. Khryuchik doesn't preach — through his actions he shows how to act, how to treat others, and how to handle difficulties. So the qualities a child needs in modern life come through naturally — in engaging, kind stories.",
         "items": [
           {
             "title": "Initiative",
-            "text": "Khryuchik doesn't wait for things to sort themselves out. He tries, he asks, he takes the step."
+            "text": "Khryuchik doesn't wait for everything to happen on its own. When he has an idea, he tries, asks, looks for a solution, and takes the first step."
           },
           {
-            "title": "Persistence",
-            "text": "Didn't work out? Try again. Out of strength? Rest, then try again."
+            "title": "Not being afraid of mistakes",
+            "text": "Not everything works the first time — and that's fine. A mistake isn't a failure or a disaster, it's part of the path. It helps you see what to do differently next time."
           },
           {
-            "title": "Responsibility",
-            "text": "If you started it, finish it. If you promised, show up."
+            "title": "Caring for others",
+            "text": "Even after he succeeds, Khryuchik doesn't forget those around him. He knows how to empathise, to share what he has, and to help those who are having a harder time."
           },
           {
-            "title": "Kindness",
-            "text": "Small kind acts add up to a big life — that is the main plot of the series."
+            "title": "Bringing people together",
+            "text": "Khryuchik doesn't wait to be invited into the game. He comes up with something interesting to do, calls others over, and builds a team where there's a place for everyone."
           },
           {
-            "title": "Optimism",
-            "text": "There is light in every story. Sometimes you just have to be the first to notice it."
+            "title": "Turning difficulties into opportunities",
+            "text": "Khryuchik knows that a setback doesn't mean everything is lost. Even in a hard situation he finds a new opportunity, acts, and works toward a result that benefits not only him but others too."
           },
           {
-            "title": "Action",
-            "text": "Khryuchik's main lesson: between \"I want to\" and \"I did it\" lies \"I tried\"."
+            "title": "Accepting your feelings",
+            "text": "Khryuchik can feel joy and sadness, fear and wonder, anger and gratitude. He lets himself be different, but even strong emotions don't stop him from thinking, finding a solution, and moving on."
           }
         ]
       },
@@ -354,6 +354,12 @@
           "lines": ["Khryuchik", "comes to you —"],
           "accent": "however suits you."
         },
+        "lede": "Everything about your order in one place: how the parcel travels, how you pay, and what to do if a book arrives damaged or wrong.",
+        "highlights": [
+          "Card payment online",
+          "A tracking number for every parcel",
+          "E-books right after payment"
+        ],
         "toggleAriaLabel": "Region selection",
         "options": {
           "BY": {

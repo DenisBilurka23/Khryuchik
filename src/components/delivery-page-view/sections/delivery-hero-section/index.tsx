@@ -1,127 +1,74 @@
-import { Box, Chip, Container, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
+
+import { SectionEyebrow } from "@/components/section-eyebrow";
 import { getCountryDisplayName } from "@/utils";
+
+import styles from "./delivery-hero-section.module.css";
 import { RegionMap } from "./region-map";
 import type { DeliveryHeroSectionProps } from "./types";
-
-const serif = "var(--font-display, var(--font-display-fallback)), serif";
 
 export const DeliveryHeroSection = ({
   eyebrow,
   title,
+  lede,
+  highlights,
   options,
   mapBadgeLabel,
   mapCity,
   locale,
   country,
-  accent,
-  heroGradient,
 }: DeliveryHeroSectionProps) => {
-  // Regions without their own delivery copy (options only cover the built-in
-  // set) fall back to the localized country name so the page never crashes.
   const activeCountryLabel =
     options[country]?.country ?? getCountryDisplayName(locale, country);
 
   return (
-    <Box
-      component="section"
-      sx={{ pt: { xs: 4, md: 7 }, pb: { xs: 3, md: 4 } }}
-    >
+    <Box component="section" className={styles.section}>
       <Container maxWidth="lg">
-        <Box
-          sx={{
-            borderRadius: 4,
-            p: { xs: 3.5, md: 8 },
-            display: "grid",
-            gridTemplateColumns: { xs: "1fr", md: "1.1fr 1fr" },
-            gap: { xs: 4, md: 6 },
-            position: "relative",
-            overflow: "hidden",
-            background: heroGradient,
-          }}
-        >
-          <Box sx={{ position: "relative", zIndex: 1 }}>
-            <Chip
-              label={eyebrow}
-              sx={{
-                backgroundColor: "rgba(255,255,255,0.6)",
-                color: accent,
-                fontWeight: 700,
-                fontSize: 12,
-                letterSpacing: "0.16em",
-                textTransform: "uppercase",
-                mb: 3,
-              }}
-            />
-            <Typography
-              variant="h1"
-              sx={{
-                fontFamily: serif,
-                fontWeight: 500,
-                fontSize: { xs: 40, md: 60 },
-                lineHeight: 1.02,
-                letterSpacing: "-0.015em",
-                mb: 2.5,
-              }}
-            >
+        <Box className={styles.panel}>
+          <Box className={styles.content}>
+            <SectionEyebrow label={eyebrow} />
+
+            <Typography variant="h1" className={styles.title}>
               {title.lines.map((line) => (
-                <Box component="span" key={line} sx={{ display: "block" }}>
+                <Box component="span" key={line} className={styles.titleLine}>
                   {line}
                 </Box>
               ))}
-              <Box
-                component="span"
-                sx={{ display: "block", fontStyle: "italic", color: accent }}
-              >
+              <Box component="span" className={styles.titleAccent}>
                 {title.accent}
               </Box>
             </Typography>
+
+            <Typography className={styles.lede}>{lede}</Typography>
+
+            <Box className={styles.highlights}>
+              {highlights.map((highlight) => (
+                <Box key={highlight} className={styles.highlight}>
+                  <Box
+                    component="span"
+                    className={styles.highlightDot}
+                    aria-hidden
+                  />
+                  {highlight}
+                </Box>
+              ))}
+            </Box>
           </Box>
 
-          <Box
-            sx={{
-              position: "relative",
-              borderRadius: 2,
-              width: "100%",
-              aspectRatio: "320 / 260",
-              minHeight: { xs: 240, md: 320 },
-              backgroundColor: "#fff",
-              boxShadow: "0 16px 40px rgba(42,37,34,0.07)",
-              overflow: "hidden",
-            }}
-          >
+          <Box className={styles.mapCard}>
             <RegionMap country={country} city={mapCity} />
-            <Chip
-              icon={
-                <Box
-                  component="span"
-                  sx={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    backgroundColor: accent,
-                  }}
-                />
-              }
-              label={
-                <Box component="span">
-                  {mapBadgeLabel}{" "}
-                  <Box component="strong" sx={{ fontWeight: 700 }}>
-                    {activeCountryLabel}
-                  </Box>
-                </Box>
-              }
-              sx={{
-                position: "absolute",
-                bottom: 16,
-                left: 16,
-                backgroundColor: "#fff",
-                color: "text.secondary",
-                fontSize: 13,
-                boxShadow:
-                  "0 1px 2px rgba(42,37,34,0.04), 0 4px 14px rgba(42,37,34,0.04)",
-                "& .MuiChip-icon": { ml: 1 },
-              }}
-            />
+
+            <Box className={styles.mapBadge}>
+              <Box
+                component="span"
+                className={styles.mapBadgeDot}
+                aria-hidden
+              />
+              {mapBadgeLabel}{" "}
+              <Box component="strong" className={styles.mapBadgeCountry}>
+                {activeCountryLabel}
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Container>

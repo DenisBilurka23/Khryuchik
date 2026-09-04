@@ -99,7 +99,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: auto;
+  padding-top: 20px;
 }
 
 .foot {
@@ -107,7 +108,6 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-top: auto;
   padding-top: 24px;
 }
 

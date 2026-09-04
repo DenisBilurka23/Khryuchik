@@ -1,0 +1,104 @@
+.root {
+  position: relative;
+  width: 100%;
+  padding-bottom: 28px;
+}
+
+.receipt {
+  padding: 28px;
+  border: 1px dashed var(--color-border-rose);
+  border-radius: var(--radius-plate);
+  background: var(--color-cream);
+  font-variant-numeric: tabular-nums;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.type.type {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.num.num {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 6px 0;
+}
+
+.rowLabel.rowLabel {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.rowValue.rowValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--color-border);
+}
+
+.totalLabel.totalLabel,
+.totalValue.totalValue {
+  font-family: var(--font-display, var(--font-display-fallback)), serif;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.totalValue.totalValue {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.stamp {
+  position: absolute;
+  right: 16px;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-field);
+  background: var(--color-card);
+  transform: rotate(-4deg);
+}
+
+.stampIcon.stampIcon {
+  font-size: 22px;
+  color: var(--color-accent);
+}
+
+.stampText.stampText {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}

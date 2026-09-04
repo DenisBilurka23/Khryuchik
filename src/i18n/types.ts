@@ -498,6 +498,8 @@ export type DeliveryPageLabels = {
       lines: string[];
       accent: string;
     };
+    lede: string;
+    highlights: string[];
     toggleAriaLabel: string;
     options: Record<CountryCode, DeliveryRegionOptionLabels>;
     mapBadgeLabel: string;

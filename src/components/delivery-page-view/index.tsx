@@ -12,7 +12,7 @@ import { DeliveryMethodsSection } from "./sections/delivery-methods-section";
 import { DeliveryPaymentSection } from "./sections/delivery-payment-section";
 import { DeliveryReturnsSection } from "./sections/delivery-returns-section";
 import { DeliveryStepsSection } from "./sections/delivery-steps-section";
-import { getDeliveryRegionTheme } from "./region-config";
+import { getDeliveryPaymentVariant } from "./region-config";
 import type { DeliveryPageViewProps } from "./types";
 
 export const DeliveryPageView = async ({
@@ -31,10 +31,8 @@ export const DeliveryPageView = async ({
   const returns = t.raw("returns") as DeliveryPageLabels["returns"];
   const finalCta = t.raw("finalCta") as DeliveryPageLabels["finalCta"];
 
-  const { accent, heroGradient, paymentVariant } = getDeliveryRegionTheme(country);
+  const paymentVariant = getDeliveryPaymentVariant(country);
   const shopHref = getLocalizedPath(locale, "/shop");
-  // The methods heading names the region, so it uses a {country} placeholder
-  // instead of baking the name into each region's copy.
   const methodsTitlePrefix = t("methods.titlePrefix", {
     country: getCountryDisplayName(locale, country),
   });
@@ -42,27 +40,13 @@ export const DeliveryPageView = async ({
   return (
     <Box className={storefrontStyles.pageShell} sx={{ color: "text.primary" }}>
       <Box className={storefrontStyles.pageContent}>
-        <DeliveryHeroSection
-          {...hero}
-          locale={locale}
-          country={country}
-          accent={accent}
-          heroGradient={heroGradient}
-        />
-        <DeliveryPaymentSection
-          {...payment}
-          paymentVariant={paymentVariant}
-          accent={accent}
-        />
-        <DeliveryMethodsSection
-          {...methods}
-          titlePrefix={methodsTitlePrefix}
-          accent={accent}
-        />
-        <DeliveryStepsSection {...steps} accent={accent} />
-        <DeliveryFaqSection {...faq} accent={accent} />
-        <DeliveryReturnsSection {...returns} accent={accent} />
-        <DeliveryCtaSection {...finalCta} shopHref={shopHref} accent={accent} />
+        <DeliveryHeroSection {...hero} locale={locale} country={country} />
+        <DeliveryPaymentSection {...payment} paymentVariant={paymentVariant} />
+        <DeliveryMethodsSection {...methods} titlePrefix={methodsTitlePrefix} />
+        <DeliveryStepsSection {...steps} />
+        <DeliveryFaqSection {...faq} />
+        <DeliveryReturnsSection {...returns} />
+        <DeliveryCtaSection {...finalCta} shopHref={shopHref} />
       </Box>
     </Box>
   );
