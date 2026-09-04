@@ -72,14 +72,37 @@ export const ShopSearchField = ({
       placeholder={placeholder}
       inputRef={inputRef}
       sx={{
-        minWidth: { xs: "100%", md: 320 },
-        bgcolor: "#fff",
-        borderRadius: "999px",
+        width: "100%",
         "& .MuiOutlinedInput-root": {
-          borderRadius: "999px",
+          height: 52,
+          paddingInline: "20px",
+          borderRadius: "26px",
+          backgroundColor: "var(--color-card)",
+          fontSize: 14,
+        },
+        "& .MuiOutlinedInput-input": {
+          padding: 0,
+        },
+        "& .MuiOutlinedInput-input::placeholder": {
+          color: "var(--color-text-muted)",
+          opacity: 1,
         },
         "& .MuiOutlinedInput-notchedOutline": {
-          borderRadius: "999px",
+          borderColor: "var(--color-border)",
+        },
+        "&:hover .MuiOutlinedInput-notchedOutline": {
+          borderColor: "var(--color-border-rose)",
+        },
+        "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+          borderWidth: 1,
+          borderColor: "var(--color-border-rose)",
+        },
+        "& .MuiInputAdornment-root": {
+          marginRight: "10px",
+        },
+        "& .MuiInputAdornment-root .MuiSvgIcon-root": {
+          fontSize: 20,
+          color: "var(--color-text-muted)",
         },
       }}
       slotProps={{
