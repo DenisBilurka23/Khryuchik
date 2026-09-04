@@ -42,7 +42,7 @@ export const ShopSection = async ({
 
           <Grid container spacing={3}>
             {products.map((product) => (
-              <Grid key={product.id} size={{ xs: 6, lg: 3 }}>
+              <Grid key={product.id} size={{ xs: 6, md: 4, lg: 3 }}>
                 <ProductCard
                   product={product}
                   locale={locale}

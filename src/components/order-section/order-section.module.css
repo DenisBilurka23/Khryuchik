@@ -1,9 +1,9 @@
 .section {
-  padding: 40px 0;
+  padding: 16px 0;
 }
 
 .panel {
-  padding: 40px;
+  padding: 32px;
   border-radius: var(--radius-panel);
   background: var(--color-cream);
 }
@@ -29,7 +29,7 @@
 
 @media (max-width: 899px) {
   .section {
-    padding: 24px 0;
+    padding: 12px 0;
   }
 
   .panel {

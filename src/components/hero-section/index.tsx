@@ -27,7 +27,7 @@ export const HeroSection = async ({ locale }: HeroSectionProps) => {
 
   return (
     <Box component="section">
-      <Container maxWidth="lg" sx={{ py: { xs: 2, md: 3 } }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 2, md: 2 } }}>
         <Box className={styles.panel}>
           <Box className={styles.layout}>
             <Box>
