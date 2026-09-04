@@ -4,10 +4,13 @@ import Link from "next/link";
 import styles from "./arrow-link.module.css";
 import type { ArrowLinkProps } from "./types";
 
-export const ArrowLink = ({ href, label, sx }: ArrowLinkProps) => {
+export const ArrowLink = ({ href, label, size = "md", sx }: ArrowLinkProps) => {
   return (
     <Box component="span" className={styles.wrapper} sx={sx}>
-      <Link href={href} className={styles.link}>
+      <Link
+        href={href}
+        className={`${styles.link} ${size === "sm" ? styles.linkSm : ""}`}
+      >
         {label}
         <span aria-hidden className={styles.arrow}>
           →
@@ -17,4 +20,4 @@ export const ArrowLink = ({ href, label, sx }: ArrowLinkProps) => {
   );
 };
 
-export type { ArrowLinkProps } from "./types";
+export type { ArrowLinkProps, ArrowLinkSize } from "./types";

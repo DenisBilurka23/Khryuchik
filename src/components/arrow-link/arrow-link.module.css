@@ -12,6 +12,11 @@
   text-decoration: none;
 }
 
+.linkSm {
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .arrow {
   transition: transform 0.2s ease;
 }
