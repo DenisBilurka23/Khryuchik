@@ -345,7 +345,6 @@ export type StoryPageLabels = {
     title: string;
     name: string;
     role: string;
-    emoji: string;
     paragraphs: string[];
     actionLabel: string;
   };

@@ -1,3 +1,4 @@
 export type SeriesArtProps = {
-  tone: string;
+  series: string;
+  alt: string;
 };
