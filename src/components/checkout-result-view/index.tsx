@@ -14,7 +14,7 @@ import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 import { clearCart } from "@/components/cart/store";
-import storefrontStyles from "@/components/storefront/storefront.module.css";
+import { PageShell } from "@/components/storefront/page-shell";
 import type { CheckoutResultLabels } from "@/i18n/types";
 import { formatOrderNumber, getLocalizedPath } from "@/utils";
 
@@ -72,76 +72,67 @@ export const CheckoutResultView = ({
   }
 
   return (
-    <Box className={storefrontStyles.pageShell}>
-      <Box className={storefrontStyles.pageContent}>
-        <Box sx={{ py: { xs: 6, md: 10 } }}>
-          <Container maxWidth="sm">
-            <Card sx={{ border: "1px solid #F0DFC8" }}>
-              <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-                <Stack spacing={3} alignItems="flex-start">
+    <PageShell>
+      <Box sx={{ py: { xs: 6, md: 10 } }}>
+        <Container maxWidth="sm">
+          <Card sx={{ border: "1px solid #F0DFC8" }}>
+            <CardContent sx={{ p: { xs: 3, md: 5 } }}>
+              <Stack spacing={3} alignItems="flex-start">
+                <Typography variant="h1" sx={{ fontSize: { xs: 32, md: 44 } }}>
+                  {title}
+                </Typography>
+                {orderLabel ? (
                   <Typography
-                    variant="h1"
-                    sx={{ fontSize: { xs: 32, md: 44 } }}
+                    sx={{
+                      textTransform: "uppercase",
+                      letterSpacing: "0.18em",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: "primary.main",
+                    }}
                   >
-                    {title}
+                    {orderLabel}
                   </Typography>
-                  {orderLabel ? (
-                    <Typography
-                      sx={{
-                        textTransform: "uppercase",
-                        letterSpacing: "0.18em",
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: "primary.main",
-                      }}
+                ) : null}
+                <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                  {text}
+                </Typography>
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={1.5}
+                  alignItems={{ xs: "stretch", sm: "center" }}
+                >
+                  {downloadsHref ? (
+                    <Link
+                      href={downloadsHref}
+                      style={{ textDecoration: "none" }}
                     >
-                      {orderLabel}
-                    </Typography>
+                      <Button component="span" variant="contained" size="large">
+                        {success.downloadsAction}
+                      </Button>
+                    </Link>
                   ) : null}
-                  <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                    {text}
-                  </Typography>
-                  <Stack
-                    direction={{ xs: "column", sm: "row" }}
-                    spacing={1.5}
-                    alignItems={{ xs: "stretch", sm: "center" }}
-                  >
-                    {downloadsHref ? (
-                      <Link
-                        href={downloadsHref}
-                        style={{ textDecoration: "none" }}
+                  {primary ? (
+                    <Link
+                      href={primary.href}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <Button
+                        component="span"
+                        variant={downloadsHref ? "outlined" : "contained"}
+                        size="large"
                       >
-                        <Button
-                          component="span"
-                          variant="contained"
-                          size="large"
-                        >
-                          {success.downloadsAction}
-                        </Button>
-                      </Link>
-                    ) : null}
-                    {primary ? (
-                      <Link
-                        href={primary.href}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Button
-                          component="span"
-                          variant={downloadsHref ? "outlined" : "contained"}
-                          size="large"
-                        >
-                          {primary.label}
-                        </Button>
-                      </Link>
-                    ) : null}
-                  </Stack>
+                        {primary.label}
+                      </Button>
+                    </Link>
+                  ) : null}
                 </Stack>
-              </CardContent>
-            </Card>
-          </Container>
-        </Box>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Container>
       </Box>
-    </Box>
+    </PageShell>
   );
 };
 

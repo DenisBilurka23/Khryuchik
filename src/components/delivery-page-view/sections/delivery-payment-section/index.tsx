@@ -1,9 +1,9 @@
 import { Box, Container, Typography } from "@mui/material";
 
 import { SectionEyebrow } from "@/components/section-eyebrow";
+import { displayFont, leadSx } from "@/theme/sx";
 
 import { ByReceiptCard } from "./by-receipt-card";
-import styles from "./delivery-payment-section.module.css";
 import { StripePayCard } from "./stripe-pay-card";
 import type { DeliveryPaymentSectionProps } from "./types";
 
@@ -20,31 +20,91 @@ export const DeliveryPaymentSection = ({
   const isStripe = paymentVariant === "stripe";
 
   return (
-    <Box component="section" className={styles.section}>
+    <Box component="section" sx={{ pt: 4 }}>
       <Container maxWidth="lg">
-        <Box className={styles.panel}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "minmax(0, 1fr)",
+              lg: "minmax(0, 1fr) 360px",
+            },
+            alignItems: "center",
+            gap: { xs: 4, lg: 6 },
+            p: { xs: "24px 20px", md: 4, lg: 5 },
+            border: "1px solid var(--color-border)",
+            borderRadius: "var(--radius-panel)",
+            background: "var(--color-card)",
+          }}
+        >
           <Box>
             <SectionEyebrow label={eyebrow} />
 
-            <Typography variant="h2" className={styles.title}>
+            <Typography variant="h2" sx={{ mt: 1.5 }}>
               {title}
             </Typography>
 
-            <Typography component="p" className={styles.short}>
+            <Typography
+              component="p"
+              sx={{
+                mt: 2,
+                fontFamily: displayFont,
+                fontSize: { xs: 20, md: 22 },
+                fontStyle: "italic",
+                lineHeight: 1.3,
+                color: "var(--color-text)",
+              }}
+            >
               {short}
             </Typography>
 
-            <Typography component="p" className={styles.desc}>
+            <Typography
+              component="p"
+              sx={{
+                maxWidth: "52ch",
+                mt: 1.75,
+                ...leadSx,
+              }}
+            >
               {desc}
             </Typography>
 
-            <Box className={styles.badge}>
-              <Box component="span" className={styles.badgeDot} aria-hidden />
+            <Box
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 1,
+                minHeight: 36,
+                mt: 3,
+                padding: "0 14px",
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-pill)",
+                background: "var(--color-cream)",
+                fontSize: 13,
+                color: "var(--color-text-secondary)",
+              }}
+            >
+              <Box
+                component="span"
+                aria-hidden
+                sx={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "var(--radius-pill)",
+                  background: "var(--color-action)",
+                }}
+              />
               {badge}
             </Box>
           </Box>
 
-          <Box className={styles.card}>
+          <Box
+            sx={{
+              justifySelf: { xs: "stretch", lg: "end" },
+              width: "100%",
+              maxWidth: { xs: "none", lg: 360 },
+            }}
+          >
             {isStripe
               ? stripe && <StripePayCard {...stripe} />
               : receipt && <ByReceiptCard {...receipt} />}

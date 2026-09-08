@@ -9,7 +9,6 @@ import { FavoritesButton } from "./favorites-button";
 import { LocaleSwitcher } from "./locale-switcher";
 import { MobileMenu } from "./mobile-menu";
 import { HeaderNavLinks } from "./nav-links";
-import styles from "./storefront-header.module.css";
 import type { StorefrontHeaderProps, StorefrontNavItem } from "./types";
 import { UserButton } from "./user-button";
 
@@ -57,12 +56,14 @@ export const StorefrontHeader = async ({
         position="sticky"
         color="transparent"
         elevation={0}
-        className={styles.appBar}
         sx={{
           position: { xs: "fixed", md: "sticky" },
           top: 0,
           left: 0,
           right: 0,
+          backdropFilter: "blur(14px)",
+          background: "rgba(255, 252, 248, 0.94)",
+          borderBottom: "1px solid var(--color-border-rose)",
         }}
       >
         <Container maxWidth="lg">
@@ -148,7 +149,10 @@ export const StorefrontHeader = async ({
         </Container>
       </AppBar>
 
-      <Box aria-hidden sx={{ display: { xs: "block", md: "none" }, height: 72 }} />
+      <Box
+        aria-hidden
+        sx={{ display: { xs: "block", md: "none" }, height: 72 }}
+      />
     </>
   );
 };

@@ -4,19 +4,24 @@ import { getTranslations } from "next-intl/server";
 import { BookCard } from "../book-card";
 import { SectionHeading } from "../section-heading";
 import { getLocalizedPath, getLocalizedProductPath } from "@/utils";
-import styles from "./books-section.module.css";
 import type { BooksSectionProps } from "./types";
 
-export const BookSection = async ({
-  locale,
-  books,
-}: BooksSectionProps) => {
-  const t = await getTranslations({ locale, namespace: "storefront.booksSection" });
+export const BookSection = async ({ locale, books }: BooksSectionProps) => {
+  const t = await getTranslations({
+    locale,
+    namespace: "storefront.booksSection",
+  });
 
   return (
-    <Box component="section" id="books" className={styles.section}>
+    <Box component="section" id="books" sx={{ py: { xs: 1.5, md: 2 } }}>
       <Container maxWidth="lg">
-        <Box className={styles.panel}>
+        <Box
+          sx={{
+            p: { xs: "24px 20px", md: 4 },
+            borderRadius: "var(--radius-panel)",
+            background: "var(--color-cream)",
+          }}
+        >
           <SectionHeading
             eyebrow={t("eyebrow")}
             title={t("title")}

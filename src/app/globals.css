@@ -1,39 +1,7 @@
 :root {
-  --color-page: #fffcf8;
-  --color-cream: #fbf7f2;
-  --color-hero: #fbf7f5;
-  --color-hero-rose: #f9eaef;
-  --color-products: #f4ece6;
-  --color-entertainment: #f3e8ed;
-  --color-newsletter: #faeaef;
-  --color-card: #fffdfc;
-  --color-white: #ffffff;
-
-  --color-text: #34272d;
-  --color-text-secondary: #756a70;
-  --color-text-muted: #9b8f94;
-
-  --color-accent: #a96375;
-  --color-action: #8f5263;
-  --color-action-hover: #754252;
-  --color-accent-soft: #e8d5dc;
-  --color-accent-pale: #f5ecef;
-  --color-accent-tint: #f3e4e8;
-
-  --color-border: #ded4ce;
-  --color-border-rose: #cda7b2;
-
-  --color-aqua: #86bdb8;
-  --color-aqua-light: #e7f1ef;
-
-  --color-olive: #9b985a;
-  --color-green: #b9d66b;
-  --color-green-light: #eef4d0;
-
-  --color-lilac: #d9aec2;
-
   --shadow-card: 0 6px 20px rgba(52, 39, 45, 0.05);
   --shadow-floating: 0 12px 30px rgba(52, 39, 45, 0.08);
+  --shadow-focus: 0 0 0 3px rgba(143, 82, 99, 0.12);
 
   --radius-panel: 24px;
   --radius-hero: 28px;
@@ -49,12 +17,6 @@
   --layout-gutter-md: 24px;
   --layout-gutter-sm: 16px;
   --layout-section-gap: 80px;
-
-  --background: var(--color-page);
-  --foreground: var(--color-text);
-  --color-primary-main: var(--color-action);
-  --color-secondary-main: var(--color-accent-soft);
-  --color-text-primary: var(--color-text);
 
   --font-body-fallback: "Manrope", sans-serif;
   --font-display-fallback: "Cormorant Garamond", serif;
@@ -77,8 +39,8 @@ body {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--color-text);
+  background: var(--color-page);
   font-family: var(--font-body, var(--font-body-fallback)), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -91,7 +53,7 @@ body {
 }
 
 *::selection {
-  background: rgba(169, 99, 117, 0.2);
+  background: var(--color-selection);
 }
 
 a {

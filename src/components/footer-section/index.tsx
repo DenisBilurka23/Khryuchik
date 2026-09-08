@@ -8,7 +8,6 @@ import type { StorefrontFooterSection } from "@/i18n/types";
 import type { CountryCode } from "@/utils";
 import { getFooterItemHref } from "@/utils/footer";
 
-import styles from "./footer-section.module.css";
 import { FooterSocialLinks } from "./social-links";
 
 export const FooterSection = async ({
@@ -26,12 +25,25 @@ export const FooterSection = async ({
   const sectionColumnWidth = (12 - 4) / sections.length;
 
   return (
-    <Box component="footer" className={styles.footer}>
-      <Container maxWidth="lg" className={styles.inner}>
+    <Box
+      component="footer"
+      sx={{
+        borderTop: "1px solid var(--color-border-rose)",
+        background: "var(--color-cream)",
+      }}
+    >
+      <Container maxWidth="lg" sx={{ py: { xs: 6, md: 8 } }}>
         <Grid container spacing={5}>
           <Grid size={{ xs: 12, lg: 4 }}>
             <Logo markSize={40} title={tStorefront("brand.shortLabel")} />
-            <Typography className={styles.description}>
+            <Typography
+              sx={{
+                mt: 2,
+                fontSize: 14,
+                lineHeight: 1.7,
+                color: "var(--color-text-secondary)",
+              }}
+            >
               {tFooter("description")}
             </Typography>
           </Grid>
@@ -41,12 +53,19 @@ export const FooterSection = async ({
               key={section.title}
               size={{ xs: 6, sm: 3, lg: sectionColumnWidth }}
             >
-              <Typography component="p" className={styles.columnTitle}>
+              <Typography
+                component="p"
+                sx={{
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: "var(--color-accent)",
+                }}
+              >
                 {section.title}
               </Typography>
 
               {section.variant === "social" ? (
-                <Box className={styles.social}>
+                <Box sx={{ mt: 2 }}>
                   <FooterSocialLinks
                     items={section.items.map((item) => ({
                       key: item.key,
@@ -56,7 +75,16 @@ export const FooterSection = async ({
                   />
                 </Box>
               ) : (
-                <Box className={styles.links}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1.5,
+                    mt: 2,
+                    fontSize: 15,
+                    color: "var(--color-text-secondary)",
+                  }}
+                >
                   {section.items.map((item) => {
                     const href = getFooterItemHref(item.key, locale, country);
 
@@ -64,12 +92,24 @@ export const FooterSection = async ({
                       <Link
                         key={item.key}
                         href={href}
-                        className={styles.footerLink}
                         {...(href.startsWith("http")
                           ? { target: "_blank", rel: "noopener noreferrer" }
                           : {})}
                       >
-                        {item.label}
+                        <Box
+                          component="span"
+                          sx={{
+                            display: "block",
+                            width: "fit-content",
+                            color: "inherit",
+                            "&:hover": {
+                              color: "var(--color-action)",
+                              textDecoration: "underline",
+                            },
+                          }}
+                        >
+                          {item.label}
+                        </Box>
                       </Link>
                     );
                   })}

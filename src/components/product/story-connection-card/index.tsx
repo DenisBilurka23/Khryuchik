@@ -16,7 +16,7 @@ export const StoryConnectionCard = ({
       sx={{
         mt: 6,
         p: 4,
-        borderRadius: "28px",
+        borderRadius: "var(--radius-hero)",
         bgcolor: "#FCE5EA",
         border: "1px solid #F0DFC8",
       }}
@@ -38,7 +38,11 @@ export const StoryConnectionCard = ({
             fontSize: 36,
           }}
         >
-          {product.emoji ? <span>{product.emoji}</span> : <AutoStoriesOutlinedIcon />}
+          {product.emoji ? (
+            <span>{product.emoji}</span>
+          ) : (
+            <AutoStoriesOutlinedIcon />
+          )}
         </Box>
 
         <Box sx={{ flex: 1 }}>
@@ -50,7 +54,10 @@ export const StoryConnectionCard = ({
           </Typography>
         </Box>
 
-        <Link href={product.href} style={{ textDecoration: "none", color: "inherit" }}>
+        <Link
+          href={product.href}
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
           <Button component="span" variant="contained">
             {actionLabel}
           </Button>

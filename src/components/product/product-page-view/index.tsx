@@ -9,6 +9,7 @@ import {
 import { getTranslations } from "next-intl/server";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { StoryConnectionCard } from "@/components/product";
 import type { Locale } from "@/i18n/config";
 import type { ProductPageLabels } from "@/i18n/types";
 import {
@@ -17,12 +18,11 @@ import {
   getLocalizedProductPath,
 } from "@/utils";
 
-import styles from "../../storefront/storefront.module.css";
+import { PageShell } from "../../storefront/page-shell";
 import { ProductGallery } from "../product-gallery";
 import { ProductInfo } from "../product-info";
 import { ProductTabs } from "../product-tabs";
 import { RelatedProducts } from "../related-products";
-import { StoryConnectionCard } from "@/components/product";
 import type { ProductPageViewProps } from "../types";
 
 const createProductPageViewModel = ({
@@ -104,86 +104,84 @@ export const ProductPageView = async ({
     });
 
   return (
-    <Box className={styles.pageShell}>
-      <Box className={styles.pageContent}>
-        <Box sx={{ pb: { xs: 4, md: 6 } }}>
-          <Container maxWidth="lg">
-            <Breadcrumbs
-              items={[
-                { label: labels.breadcrumbs.home, href: homeHref },
-                { label: labels.breadcrumbs.shop, href: shopHref },
-                { label: product.title },
-              ]}
-            />
+    <PageShell>
+      <Box sx={{ pb: { xs: 4, md: 6 } }}>
+        <Container maxWidth="lg">
+          <Breadcrumbs
+            items={[
+              { label: labels.breadcrumbs.home, href: homeHref },
+              { label: labels.breadcrumbs.shop, href: shopHref },
+              { label: product.title },
+            ]}
+          />
 
-            <Grid container spacing={5} alignItems="flex-start">
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ProductGallery images={product.images} />
-                <Divider sx={{ my: 3 }} />
-                <Stack spacing={1.5}>
+          <Grid container spacing={5} alignItems="flex-start">
+            <Grid size={{ xs: 12, md: 6 }}>
+              <ProductGallery images={product.images} />
+              <Divider sx={{ my: 3 }} />
+              <Stack spacing={1.5}>
+                <Typography variant="body2" color="text.secondary">
+                  {tProductPage("details.sku")}: {product.sku}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {tProductPage("details.securePayment")}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {tProductPage("details.shipping")}
+                </Typography>
+                {product.languages?.length ? (
                   <Typography variant="body2" color="text.secondary">
-                    {tProductPage("details.sku")}: {product.sku}
+                    {tProductPage("details.languageSupportLabel", {
+                      langs: product.languages
+                        .map((l) => l.value.toUpperCase())
+                        .join(" / "),
+                    })}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {tProductPage("details.securePayment")}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {tProductPage("details.shipping")}
-                  </Typography>
-                  {product.languages?.length ? (
-                    <Typography variant="body2" color="text.secondary">
-                      {tProductPage("details.languageSupportLabel", {
-                        langs: product.languages
-                          .map((l) => l.value.toUpperCase())
-                          .join(" / "),
-                      })}
-                    </Typography>
-                  ) : null}
-                </Stack>
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <ProductInfo
-                  locale={locale}
-                  product={product}
-                  ownedLanguages={ownedLanguages}
-                />
-              </Grid>
+                ) : null}
+              </Stack>
             </Grid>
 
-            {storyProductCard ? (
-              <StoryConnectionCard
-                product={storyProductCard}
-                titleTemplate={labels.storyConnection.title}
-                description={labels.storyConnection.description}
-                actionLabel={tProductPage("actions.viewBook")}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <ProductInfo
+                locale={locale}
+                product={product}
+                ownedLanguages={ownedLanguages}
               />
-            ) : null}
-            <ProductTabs
-              labels={labels.tabs}
-              product={product}
-              ownPendingReview={
-                userReview?.status === "pending" ? userReview : null
-              }
-              reviewForm={{
-                isAuthenticated,
-                hasPurchased,
-                existingStatus: userReview?.status ?? null,
-                productId: product.productId,
-                productSlug: product.slug,
-                loginHref: getLocalizedPath(locale, "/login"),
-                labels: reviewFormLabels,
-              }}
+            </Grid>
+          </Grid>
+
+          {storyProductCard ? (
+            <StoryConnectionCard
+              product={storyProductCard}
+              titleTemplate={labels.storyConnection.title}
+              description={labels.storyConnection.description}
+              actionLabel={tProductPage("actions.viewBook")}
             />
-            {relatedProductCards.length > 0 ? (
-              <RelatedProducts
-                title={labels.relatedTitle}
-                relatedProducts={relatedProductCards}
-              />
-            ) : null}
-          </Container>
-        </Box>
+          ) : null}
+          <ProductTabs
+            labels={labels.tabs}
+            product={product}
+            ownPendingReview={
+              userReview?.status === "pending" ? userReview : null
+            }
+            reviewForm={{
+              isAuthenticated,
+              hasPurchased,
+              existingStatus: userReview?.status ?? null,
+              productId: product.productId,
+              productSlug: product.slug,
+              loginHref: getLocalizedPath(locale, "/login"),
+              labels: reviewFormLabels,
+            }}
+          />
+          {relatedProductCards.length > 0 ? (
+            <RelatedProducts
+              title={labels.relatedTitle}
+              relatedProducts={relatedProductCards}
+            />
+          ) : null}
+        </Container>
       </Box>
-    </Box>
+    </PageShell>
   );
 };

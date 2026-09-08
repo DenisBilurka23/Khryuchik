@@ -1,10 +1,9 @@
-import { Box } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
 import type { DeliveryPageLabels } from "@/i18n/types";
 import { getCountryDisplayName, getLocalizedPath } from "@/utils";
 
-import storefrontStyles from "../storefront/storefront.module.css";
+import { PageShell } from "../storefront/page-shell";
 import { DeliveryCtaSection } from "./sections/delivery-cta-section";
 import { DeliveryFaqSection } from "./sections/delivery-faq-section";
 import { DeliveryHeroSection } from "./sections/delivery-hero-section";
@@ -38,17 +37,15 @@ export const DeliveryPageView = async ({
   });
 
   return (
-    <Box className={storefrontStyles.pageShell}>
-      <Box className={storefrontStyles.pageContent}>
-        <DeliveryHeroSection {...hero} locale={locale} country={country} />
-        <DeliveryPaymentSection {...payment} paymentVariant={paymentVariant} />
-        <DeliveryMethodsSection {...methods} titlePrefix={methodsTitlePrefix} />
-        <DeliveryStepsSection {...steps} />
-        <DeliveryFaqSection {...faq} />
-        <DeliveryReturnsSection {...returns} />
-        <DeliveryCtaSection {...finalCta} shopHref={shopHref} />
-      </Box>
-    </Box>
+    <PageShell>
+      <DeliveryHeroSection {...hero} locale={locale} country={country} />
+      <DeliveryPaymentSection {...payment} paymentVariant={paymentVariant} />
+      <DeliveryMethodsSection {...methods} titlePrefix={methodsTitlePrefix} />
+      <DeliveryStepsSection {...steps} />
+      <DeliveryFaqSection {...faq} />
+      <DeliveryReturnsSection {...returns} />
+      <DeliveryCtaSection {...finalCta} shopHref={shopHref} />
+    </PageShell>
   );
 };
 

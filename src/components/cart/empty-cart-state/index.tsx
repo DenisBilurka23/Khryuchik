@@ -1,10 +1,8 @@
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
-import { Box, Button, Paper, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 
 import type { EmptyCartStateProps } from "../types";
-
-import styles from "./empty-cart-state.module.css";
 
 export const EmptyCartState = ({
   title,
@@ -13,27 +11,61 @@ export const EmptyCartState = ({
   actionHref,
 }: EmptyCartStateProps) => {
   return (
-    <Paper elevation={0} className={styles.panel}>
-      <Box className={styles.icon}>
-        <ShoppingBagOutlinedIcon className={styles.iconGlyph} />
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        p: { xs: "32px 20px", md: "48px 40px" },
+        border: "1px dashed var(--color-border)",
+        borderRadius: "var(--radius-panel)",
+        background: "var(--color-card)",
+        textAlign: "center",
+      }}
+    >
+      <Box
+        sx={{
+          display: "grid",
+          placeItems: "center",
+          width: 80,
+          height: 80,
+          borderRadius: "var(--radius-card)",
+          background: "var(--color-accent-tint)",
+          color: "var(--color-accent)",
+        }}
+      >
+        <ShoppingBagOutlinedIcon sx={{ fontSize: 36 }} />
       </Box>
 
-      <Typography variant="h2" className={styles.title}>
+      <Typography
+        variant="h2"
+        sx={{ mt: 3, fontSize: { xs: 24, md: 30 }, lineHeight: 1.15 }}
+      >
         {title}
       </Typography>
 
-      <Typography className={styles.text}>{text}</Typography>
+      <Typography
+        sx={{
+          maxWidth: "56ch",
+          mt: 1.5,
+          fontSize: 16,
+          lineHeight: 1.65,
+          color: "var(--color-text-secondary)",
+        }}
+      >
+        {text}
+      </Typography>
 
       <Link href={actionHref}>
         <Button
           component="span"
           variant="contained"
           size="large"
-          className={styles.action}
+          sx={{ mt: 3.5 }}
         >
           {actionLabel}
         </Button>
       </Link>
-    </Paper>
+    </Box>
   );
 };

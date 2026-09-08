@@ -1,5 +1,0 @@
-.appBar {
-  backdrop-filter: blur(14px);
-  background: rgba(255, 252, 248, 0.94);
-  border-bottom: 1px solid var(--color-border-rose);
-}

@@ -5,10 +5,67 @@ import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 
 import { sendContactMessageClient } from "@/client-api/contact";
 import { SectionEyebrow } from "@/components/section-eyebrow";
+import { accentSx } from "@/theme/sx";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
-import styles from "./contact-form-section.module.css";
 import type { ContactFieldErrors, ContactFormProps } from "./types";
+
+const titleSx = {
+  mt: 1.75,
+  fontSize: { xs: 30, md: 36 },
+  lineHeight: 1.05,
+  "& em": accentSx,
+} as const;
+
+const labelSx = {
+  mb: 1,
+  fontSize: 13,
+  fontWeight: 500,
+  lineHeight: 1.3,
+  color: "var(--color-text)",
+} as const;
+
+const fieldSx = { display: "flex", flexDirection: "column" } as const;
+
+const inputSx = {
+  "& .MuiOutlinedInput-root": {
+    minHeight: 56,
+    paddingInline: "16px",
+    borderRadius: "var(--radius-field)",
+    background: "var(--color-card)",
+    fontSize: 15,
+  },
+  "& .MuiOutlinedInput-input": { padding: 0 },
+  "& .MuiOutlinedInput-input::placeholder": {
+    color: "var(--color-text-muted)",
+    opacity: 1,
+  },
+  "& .MuiOutlinedInput-notchedOutline": { borderColor: "var(--color-border)" },
+  "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+    borderColor: "var(--color-border-rose)",
+  },
+  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    borderWidth: 1,
+    borderColor: "var(--color-action)",
+  },
+  "& .MuiOutlinedInput-root.Mui-focused": {
+    boxShadow: "var(--shadow-focus)",
+  },
+  "& .MuiFormHelperText-root": { margin: "6px 0 0", fontSize: 12 },
+} as const;
+
+const textareaSx = {
+  ...inputSx,
+  "& .MuiOutlinedInput-root": {
+    ...inputSx["& .MuiOutlinedInput-root"],
+    alignItems: "flex-start",
+    minHeight: 190,
+    padding: "16px",
+    lineHeight: 1.5,
+  },
+} as const;
+
+const requiredSx = { color: "var(--color-action)" } as const;
 
 const MIN_MESSAGE_LENGTH = 10;
 
@@ -101,8 +158,19 @@ export const ContactForm = ({
 
   if (isSent) {
     return (
-      <Box className={styles.success}>
-        <Box className={styles.successBadge}>
+      <Box sx={{ py: 1, textAlign: "center" }}>
+        <Box
+          sx={{
+            display: "grid",
+            placeItems: "center",
+            width: 72,
+            height: 72,
+            margin: "0 auto 20px",
+            borderRadius: "var(--radius-pill)",
+            background: "var(--color-accent-pale)",
+            color: "var(--color-action)",
+          }}
+        >
           <svg
             width="32"
             height="32"
@@ -119,15 +187,23 @@ export const ContactForm = ({
           </svg>
         </Box>
 
-        <Typography variant="h2" className={styles.title}>
+        <Typography variant="h2" sx={titleSx}>
           {labels.success.titlePrefix} <em>{labels.success.titleAccent}</em>
         </Typography>
 
-        <Typography className={styles.successText}>
+        <Typography
+          sx={{
+            maxWidth: "44ch",
+            margin: "12px auto 0",
+            fontSize: 15,
+            lineHeight: 1.6,
+            color: "var(--color-text-secondary)",
+          }}
+        >
           {labels.success.text}{" "}
           <Box
             component="a"
-            className={styles.successLink}
+            sx={{ fontWeight: 500, color: "var(--color-action)" }}
             href={`mailto:${contactEmail}`}
           >
             {contactEmail}
@@ -138,7 +214,7 @@ export const ContactForm = ({
         <Button
           type="button"
           variant="outlined"
-          className={styles.successAction}
+          sx={{ mt: 3 }}
           onClick={handleReset}
         >
           {labels.success.againLabel}
@@ -151,33 +227,51 @@ export const ContactForm = ({
     <Box component="form" onSubmit={handleSubmit} noValidate>
       <SectionEyebrow label={labels.eyebrow} />
 
-      <Typography variant="h2" className={styles.title}>
+      <Typography variant="h2" sx={titleSx}>
         {labels.titlePrefix} <em>{labels.titleAccent}</em>
       </Typography>
 
-      <Typography className={styles.sub}>{labels.sub}</Typography>
+      <Typography
+        sx={{
+          mt: 1.5,
+          fontSize: 16,
+          lineHeight: 1.6,
+          color: "var(--color-text-secondary)",
+        }}
+      >
+        {labels.sub}
+      </Typography>
 
       {formError ? (
-        <Alert severity="error" className={styles.alert}>
+        <Alert
+          severity="error"
+          sx={{ mt: 2.5, borderRadius: "var(--radius-field)" }}
+        >
           {formError}
         </Alert>
       ) : null}
 
-      <Box className={styles.row}>
-        <Box className={styles.field}>
-          <Typography
-            component="label"
-            htmlFor="contact-name"
-            className={styles.label}
-          >
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "minmax(0, 1fr)",
+            md: "minmax(0, 1fr) minmax(0, 1fr)",
+          },
+          gap: 2,
+          mt: 3.5,
+        }}
+      >
+        <Box sx={fieldSx}>
+          <Typography component="label" htmlFor="contact-name" sx={labelSx}>
             {labels.nameLabel}{" "}
-            <Box component="span" className={styles.required}>
+            <Box component="span" sx={requiredSx}>
               {labels.requiredMark}
             </Box>
           </Typography>
           <TextField
             id="contact-name"
-            className={styles.input}
+            sx={inputSx}
             placeholder={labels.namePlaceholder}
             value={name}
             onChange={(event) => setName(event.target.value)}
@@ -188,21 +282,17 @@ export const ContactForm = ({
           />
         </Box>
 
-        <Box className={styles.field}>
-          <Typography
-            component="label"
-            htmlFor="contact-email"
-            className={styles.label}
-          >
+        <Box sx={fieldSx}>
+          <Typography component="label" htmlFor="contact-email" sx={labelSx}>
             {labels.emailLabel}{" "}
-            <Box component="span" className={styles.required}>
+            <Box component="span" sx={requiredSx}>
               {labels.requiredMark}
             </Box>
           </Typography>
           <TextField
             id="contact-email"
             type="email"
-            className={styles.input}
+            sx={inputSx}
             placeholder={labels.emailPlaceholder}
             value={email}
             onChange={(event) => setEmail(event.target.value)}
@@ -214,20 +304,16 @@ export const ContactForm = ({
         </Box>
       </Box>
 
-      <Box className={`${styles.field} ${styles.fieldWide}`}>
-        <Typography
-          component="label"
-          htmlFor="contact-message"
-          className={styles.label}
-        >
+      <Box sx={{ ...fieldSx, mt: 2.5 }}>
+        <Typography component="label" htmlFor="contact-message" sx={labelSx}>
           {labels.messageLabel}{" "}
-          <Box component="span" className={styles.required}>
+          <Box component="span" sx={requiredSx}>
             {labels.requiredMark}
           </Box>
         </Typography>
         <TextField
           id="contact-message"
-          className={`${styles.input} ${styles.textarea}`}
+          sx={textareaSx}
           placeholder={labels.messagePlaceholder}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
@@ -242,7 +328,7 @@ export const ContactForm = ({
       <Button
         type="submit"
         variant="contained"
-        className={styles.submit}
+        sx={{ mt: 3, gap: 0.75 }}
         endIcon={<ArrowIcon />}
         loading={isSubmitting}
         fullWidth

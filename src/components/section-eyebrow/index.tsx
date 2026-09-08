@@ -1,18 +1,26 @@
-import { Box, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 
 import { BrandCurl } from "../brand-curl";
 
-import styles from "./section-eyebrow.module.css";
 import type { SectionEyebrowProps } from "./types";
 
-export const SectionEyebrow = ({ label, className }: SectionEyebrowProps) => {
+export const SectionEyebrow = ({ label, sx }: SectionEyebrowProps) => {
   return (
-    <Box className={[styles.root, className].filter(Boolean).join(" ")}>
-      <Typography component="span" className={styles.label}>
+    <Stack direction="row" alignItems="center" spacing={1.5} sx={sx}>
+      <Typography
+        component="span"
+        sx={{
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+          color: "var(--color-accent)",
+        }}
+      >
         {label}
       </Typography>
       <BrandCurl />
-    </Box>
+    </Stack>
   );
 };
 

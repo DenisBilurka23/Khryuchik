@@ -4,17 +4,17 @@ import { Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
-import { Breadcrumbs } from "@/components/breadcrumbs";
 import { submitCheckoutClient } from "@/client-api/checkout";
-import { useCart } from "@/components/cart/store";
-import { clearBuyNowItem } from "@/components/cart/buy-now-store";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { EmptyCartState } from "@/components/cart";
-import storefrontStyles from "@/components/storefront/storefront.module.css";
+import { clearBuyNowItem } from "@/components/cart/buy-now-store";
+import { useCart } from "@/components/cart/store";
+import { PageShell } from "@/components/storefront/page-shell";
 import { useBuyNowCheckoutItems } from "@/hooks/useBuyNowCheckoutItems";
-import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { usePickupPoints } from "@/hooks/usePickupPoints";
-import type { ShippingPickupPoint } from "@/types/shipping";
+import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { useShippingQuote } from "@/hooks/useShippingQuote";
+import type { ShippingPickupPoint } from "@/types/shipping";
 import {
   type CountryCode,
   getAllCountriesSorted,
@@ -422,167 +422,163 @@ export const CheckoutPageView = ({
   const showAddressForm = selectedSavedAddressId === "" || !hasSavedAddresses;
 
   return (
-    <Box className={storefrontStyles.pageShell}>
-      <Box className={storefrontStyles.pageContent}>
-        <Box sx={{ pb: { xs: 4, md: 6 } }}>
-          <Container maxWidth="lg">
-            <Breadcrumbs
-              items={[
-                { label: labels.breadcrumbs.home, href: homeHref },
-                { label: labels.breadcrumbs.cart, href: cartHref },
-                { label: labels.breadcrumbs.current },
-              ]}
-            />
+    <PageShell>
+      <Box sx={{ pb: { xs: 4, md: 6 } }}>
+        <Container maxWidth="lg">
+          <Breadcrumbs
+            items={[
+              { label: labels.breadcrumbs.home, href: homeHref },
+              { label: labels.breadcrumbs.cart, href: cartHref },
+              { label: labels.breadcrumbs.current },
+            ]}
+          />
 
-            <Box
+          <Box
+            sx={{
+              borderRadius: "32px",
+              p: { xs: 3, md: 5 },
+              background:
+                "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.45), transparent 28%), #FFF8F0",
+              border: "1px solid #F0DFC8",
+              mb: 5,
+            }}
+          >
+            <Typography
               sx={{
-                borderRadius: "32px",
-                p: { xs: 3, md: 5 },
-                background:
-                  "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.45), transparent 28%), #FFF8F0",
-                border: "1px solid #F0DFC8",
-                mb: 5,
+                textTransform: "uppercase",
+                letterSpacing: "0.2em",
+                fontSize: 13,
+                fontWeight: 700,
+                color: "primary.main",
               }}
             >
-              <Typography
-                sx={{
-                  textTransform: "uppercase",
-                  letterSpacing: "0.2em",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: "primary.main",
-                }}
-              >
-                {labels.eyebrow}
-              </Typography>
-              <Typography
-                variant="h1"
-                sx={{ mt: 2, fontSize: { xs: 36, md: 56 } }}
-              >
-                {labels.title}
-              </Typography>
-              <Typography
-                color="text.secondary"
-                sx={{
-                  mt: 2,
-                  maxWidth: 760,
-                  lineHeight: 1.8,
-                  fontSize: { xs: 16, md: 18 },
-                }}
-              >
-                {labels.lead}
-              </Typography>
-            </Box>
+              {labels.eyebrow}
+            </Typography>
+            <Typography
+              variant="h1"
+              sx={{ mt: 2, fontSize: { xs: 36, md: 56 } }}
+            >
+              {labels.title}
+            </Typography>
+            <Typography
+              color="text.secondary"
+              sx={{
+                mt: 2,
+                maxWidth: 760,
+                lineHeight: 1.8,
+                fontSize: { xs: 16, md: 18 },
+              }}
+            >
+              {labels.lead}
+            </Typography>
+          </Box>
 
-            {!hasStoredItems && !isLoading ? (
-              <EmptyCartState
-                title={labels.emptyState.title}
-                text={labels.emptyState.text}
-                actionLabel={labels.emptyState.action}
-                actionHref={shopHref}
-              />
-            ) : (
-              <Box component="form" onSubmit={handleSubmit} noValidate>
-                <Grid container spacing={4} alignItems="flex-start">
-                  <Grid size={{ xs: 12, md: 7, lg: 8 }}>
-                    <Stack spacing={4}>
-                      <CheckoutContactSection
+          {!hasStoredItems && !isLoading ? (
+            <EmptyCartState
+              title={labels.emptyState.title}
+              text={labels.emptyState.text}
+              actionLabel={labels.emptyState.action}
+              actionHref={shopHref}
+            />
+          ) : (
+            <Box component="form" onSubmit={handleSubmit} noValidate>
+              <Grid container spacing={4} alignItems="flex-start">
+                <Grid size={{ xs: 12, md: 7, lg: 8 }}>
+                  <Stack spacing={4}>
+                    <CheckoutContactSection
+                      form={form}
+                      fieldErrors={fieldErrors}
+                      onField={handleField}
+                      labels={labels}
+                    />
+
+                    {!isDigitalOnly && hasSavedAddresses ? (
+                      <CheckoutSavedAddressesSection
+                        addresses={initialShippingAddresses!}
+                        selectedAddressId={selectedSavedAddressId}
+                        onSelect={handleSavedAddressSelect}
+                        locale={locale}
+                        labels={labels}
+                      />
+                    ) : null}
+
+                    {!isDigitalOnly && showAddressForm ? (
+                      <CheckoutShippingAddressSection
                         form={form}
                         fieldErrors={fieldErrors}
                         onField={handleField}
+                        countries={allCountries}
+                        onCountryChange={handleCountryChange}
+                        onRegionChange={handleRegionChange}
+                        onLocationFieldFocusChange={setIsLocationFieldFocused}
                         labels={labels}
                       />
+                    ) : null}
 
-                      {!isDigitalOnly && hasSavedAddresses ? (
-                        <CheckoutSavedAddressesSection
-                          addresses={initialShippingAddresses!}
-                          selectedAddressId={selectedSavedAddressId}
-                          onSelect={handleSavedAddressSelect}
-                          locale={locale}
-                          labels={labels}
-                        />
-                      ) : null}
-
-                      {!isDigitalOnly && showAddressForm ? (
-                        <CheckoutShippingAddressSection
-                          form={form}
-                          fieldErrors={fieldErrors}
-                          onField={handleField}
-                          countries={allCountries}
-                          onCountryChange={handleCountryChange}
-                          onRegionChange={handleRegionChange}
-                          onLocationFieldFocusChange={setIsLocationFieldFocused}
-                          labels={labels}
-                        />
-                      ) : null}
-
-                      {!isDigitalOnly ? (
-                        <CheckoutShippingMethodSection
-                          groups={shippingQuote.groups}
-                          items={items}
-                          isLoading={shippingQuote.status === "loading"}
-                          errorMessage={globalShippingError ?? undefined}
-                          selectedOptionIds={selectedShippingOptionIds}
-                          onOptionChange={handleShippingOptionChange}
-                          onRemoveGroup={handleRemoveGroup}
-                          pickupPoints={pickupPoints.points}
-                          pickupPointsStatus={pickupPoints.status}
-                          selectedPickupPoints={selectedPickupPoints}
-                          onPickupPointChange={handlePickupPointChange}
-                          pickupPointErrorMessage={
-                            pickupPointError ?? undefined
-                          }
-                          currency={currency}
-                          locale={locale}
-                          labels={labels}
-                        />
-                      ) : null}
-
-                      <CheckoutPaymentSection
-                        availableMethods={availableMethods}
-                        selectedMethod={paymentMethod}
-                        onMethodChange={setSelectedMethod}
+                    {!isDigitalOnly ? (
+                      <CheckoutShippingMethodSection
+                        groups={shippingQuote.groups}
+                        items={items}
+                        isLoading={shippingQuote.status === "loading"}
+                        errorMessage={globalShippingError ?? undefined}
+                        selectedOptionIds={selectedShippingOptionIds}
+                        onOptionChange={handleShippingOptionChange}
+                        onRemoveGroup={handleRemoveGroup}
+                        pickupPoints={pickupPoints.points}
+                        pickupPointsStatus={pickupPoints.status}
+                        selectedPickupPoints={selectedPickupPoints}
+                        onPickupPointChange={handlePickupPointChange}
+                        pickupPointErrorMessage={pickupPointError ?? undefined}
+                        currency={currency}
+                        locale={locale}
                         labels={labels}
                       />
-                    </Stack>
-                  </Grid>
+                    ) : null}
 
-                  {/* Order summary */}
-                  <Grid size={{ xs: 12, md: 5, lg: 4 }}>
-                    <CheckoutOrderSummarySection
-                      items={items}
-                      subtotal={subtotal}
-                      shipping={shipping}
-                      shippingStatus={shippingQuote.status}
-                      isDigitalOnly={isDigitalOnly}
-                      total={total}
-                      currency={currency}
-                      locale={locale}
-                      error={
-                        isPricingUnavailable
-                          ? labels.errors.pricingUnavailable
-                          : hasUnavailableItems
-                            ? labels.errors.itemOutOfStock
-                            : error
-                      }
-                      isSubmitting={isSubmitting}
-                      isBlocked={
-                        isPricingUnavailable ||
-                        hasUnavailableItems ||
-                        isBlockedByShipping
-                      }
-                      hasStoredItems={hasStoredItems}
-                      paymentMethod={paymentMethod}
+                    <CheckoutPaymentSection
+                      availableMethods={availableMethods}
+                      selectedMethod={paymentMethod}
+                      onMethodChange={setSelectedMethod}
                       labels={labels}
                     />
-                  </Grid>
+                  </Stack>
                 </Grid>
-              </Box>
-            )}
-          </Container>
-        </Box>
+
+                {/* Order summary */}
+                <Grid size={{ xs: 12, md: 5, lg: 4 }}>
+                  <CheckoutOrderSummarySection
+                    items={items}
+                    subtotal={subtotal}
+                    shipping={shipping}
+                    shippingStatus={shippingQuote.status}
+                    isDigitalOnly={isDigitalOnly}
+                    total={total}
+                    currency={currency}
+                    locale={locale}
+                    error={
+                      isPricingUnavailable
+                        ? labels.errors.pricingUnavailable
+                        : hasUnavailableItems
+                          ? labels.errors.itemOutOfStock
+                          : error
+                    }
+                    isSubmitting={isSubmitting}
+                    isBlocked={
+                      isPricingUnavailable ||
+                      hasUnavailableItems ||
+                      isBlockedByShipping
+                    }
+                    hasStoredItems={hasStoredItems}
+                    paymentMethod={paymentMethod}
+                    labels={labels}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+          )}
+        </Container>
       </Box>
-    </Box>
+    </PageShell>
   );
 };
 

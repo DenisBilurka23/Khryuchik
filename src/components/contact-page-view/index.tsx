@@ -1,15 +1,14 @@
 import { Box, Container } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
+import { Plate } from "@/components/primitives";
 import { CONTACT_EMAIL } from "@/constants/contact";
 import type { ContactPageLabels } from "@/i18n/types";
 import { getServerAuthSession } from "@/server/auth/config";
 import { formatPersonName } from "@/utils";
 import { getFooterItemHref } from "@/utils/footer";
 
-import shellStyles from "../storefront/storefront.module.css";
-
-import styles from "./contact-page-view.module.css";
+import { PageShell } from "../storefront/page-shell";
 import { ContactChannelsSection } from "./sections/contact-channels-section";
 import type { ContactChannelItem } from "./sections/contact-channels-section/types";
 import { ContactForm } from "./sections/contact-form-section";
@@ -65,41 +64,56 @@ export const ContactPageView = async ({
   ];
 
   return (
-    <Box className={shellStyles.pageShell}>
-      <Box className={shellStyles.pageContent}>
-        <Box component="section" className={styles.section}>
-          <Container maxWidth="lg">
-            <ContactHero
-              eyebrow={hero.eyebrow}
-              titlePrefix={hero.titlePrefix}
-              titleAccent={hero.titleAccent}
-              lede={hero.lede}
-            />
+    <PageShell>
+      <Box
+        component="section"
+        sx={{ pt: { xs: 3, md: 6 }, pb: { xs: 4, md: 5 } }}
+      >
+        <Container maxWidth="lg">
+          <ContactHero
+            eyebrow={hero.eyebrow}
+            titlePrefix={hero.titlePrefix}
+            titleAccent={hero.titleAccent}
+            lede={hero.lede}
+          />
 
-            <Box className={styles.content}>
-              <Box className={styles.panel}>
-                <ContactChannelsSection
-                  title={channels.title}
-                  sub={channels.sub}
-                  note={channels.note}
-                  channels={channelItems}
-                />
-              </Box>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "minmax(0, 1fr)",
+                lg: "minmax(0, 0.86fr) minmax(0, 1.14fr)",
+              },
+              alignItems: "stretch",
+              gap: { xs: 2, md: 3 },
+              mt: { xs: 3, md: 4 },
+              p: { xs: 2, md: 3 },
+              borderRadius: "var(--radius-panel)",
+              background: "var(--color-accent-pale)",
+            }}
+          >
+            <Plate pad="lg">
+              <ContactChannelsSection
+                title={channels.title}
+                sub={channels.sub}
+                note={channels.note}
+                channels={channelItems}
+              />
+            </Plate>
 
-              <Box className={styles.panel}>
-                <ContactForm
-                  locale={locale}
-                  contactEmail={CONTACT_EMAIL}
-                  defaultName={defaultName}
-                  defaultEmail={defaultEmail}
-                  labels={form}
-                />
-              </Box>
-            </Box>
-          </Container>
-        </Box>
+            <Plate pad="lg">
+              <ContactForm
+                locale={locale}
+                contactEmail={CONTACT_EMAIL}
+                defaultName={defaultName}
+                defaultEmail={defaultEmail}
+                labels={form}
+              />
+            </Plate>
+          </Box>
+        </Container>
       </Box>
-    </Box>
+    </PageShell>
   );
 };
 

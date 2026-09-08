@@ -5,8 +5,41 @@ import { InputAdornment, TextField } from "@mui/material";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { startTransition, useEffect, useRef } from "react";
 
-import styles from "./shop-search-field.module.css";
 import type { ShopSearchFieldProps } from "./types";
+
+const fieldSx = {
+  width: "100%",
+  "& .MuiOutlinedInput-root": {
+    height: 52,
+    paddingInline: "20px",
+    borderRadius: "var(--radius-pill)",
+    background: "var(--color-card)",
+    fontSize: 14,
+  },
+  "& .MuiOutlinedInput-input": { padding: 0 },
+  "& .MuiOutlinedInput-input::placeholder": {
+    color: "var(--color-text-muted)",
+    opacity: 1,
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    borderColor: "var(--color-border)",
+  },
+  "&:hover .MuiOutlinedInput-notchedOutline": {
+    borderColor: "var(--color-border-rose)",
+  },
+  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+    borderWidth: 1,
+    borderColor: "var(--color-action)",
+  },
+  "& .MuiOutlinedInput-root.Mui-focused": {
+    boxShadow: "var(--shadow-focus)",
+  },
+  "& .MuiInputAdornment-root": { marginRight: "10px" },
+  "& .MuiInputAdornment-root .MuiSvgIcon-root": {
+    fontSize: 20,
+    color: "var(--color-text-muted)",
+  },
+} as const;
 
 export const ShopSearchField = ({
   initialValue,
@@ -72,7 +105,7 @@ export const ShopSearchField = ({
       onChange={(event) => handleChange(event.target.value)}
       placeholder={placeholder}
       inputRef={inputRef}
-      className={styles.field}
+      sx={fieldSx}
       slotProps={{
         input: {
           startAdornment: (

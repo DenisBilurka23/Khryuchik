@@ -4,9 +4,9 @@ import { Box, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { ProductCard } from "@/components/product-card";
+import { Panel } from "@/components/primitives";
 import { getLocalizedProductPath } from "@/utils";
 
-import styles from "./favorites-wishlist-grid.module.css";
 import type { FavoritesWishlistGridProps } from "./types";
 
 export const FavoritesWishlistGrid = ({
@@ -19,20 +19,40 @@ export const FavoritesWishlistGrid = ({
   const tShopSection = useTranslations("storefront.shopSection");
 
   return (
-    <Box className={styles.panel}>
-      <Box className={styles.header}>
-        <Typography variant="h2" className={styles.title}>
+    <Panel tone="cream">
+      <Box sx={{ mb: 3.5 }}>
+        <Typography
+          variant="h2"
+          sx={{ fontSize: { xs: 22, md: 26 }, lineHeight: 1.2 }}
+        >
           {authState ? tAccount("favoritesListTitle") : tFavorites("listTitle")}
         </Typography>
 
         {!authState ? (
-          <Typography className={styles.sub}>
+          <Typography
+            sx={{
+              mt: 1.25,
+              fontSize: 15,
+              lineHeight: 1.6,
+              color: "var(--color-text-secondary)",
+            }}
+          >
             {tFavorites("guestListText")}
           </Typography>
         ) : null}
       </Box>
 
-      <Box className={styles.grid}>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "minmax(0, 1fr)",
+            sm: "repeat(2, minmax(0, 1fr))",
+            lg: "repeat(3, minmax(0, 1fr))",
+          },
+          gap: { xs: 2, md: 3 },
+        }}
+      >
         {items.map((item) => (
           <ProductCard
             key={item.productId}
@@ -45,7 +65,7 @@ export const FavoritesWishlistGrid = ({
           />
         ))}
       </Box>
-    </Box>
+    </Panel>
   );
 };
 

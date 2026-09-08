@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
 import { getBookCountsBySeries } from "@/server/catalog/services/catalog.service";
@@ -9,7 +8,7 @@ import { StoryAuthorSection } from "../story-author-section";
 import { StorySeriesSection } from "../story-series-section";
 import { StoryTimelineSection } from "../story-timeline-section";
 import { StoryValuesSection } from "../story-values-section";
-import storefrontStyles from "../storefront/storefront.module.css";
+import { PageShell } from "../storefront/page-shell";
 import type { StoryPageDictionary, StoryPageViewProps } from "./types";
 
 export const StoryPageView = async ({
@@ -28,20 +27,18 @@ export const StoryPageView = async ({
   const shopHref = getLocalizedPath(locale, "/shop");
 
   return (
-    <Box className={storefrontStyles.pageShell}>
-      <Box className={storefrontStyles.pageContent}>
-        <StorySeriesSection
-          {...series}
-          locale={locale}
-          shopHref={shopHref}
-          seriesCounts={seriesCounts}
-        />
-        <StoryValuesSection {...values} />
-        <StoryTimelineSection {...timeline} books={timelineBooks} />
-        <StoryAuthorSection {...author} />
-        <NewsletterSection locale={locale} />
-      </Box>
-    </Box>
+    <PageShell>
+      <StorySeriesSection
+        {...series}
+        locale={locale}
+        shopHref={shopHref}
+        seriesCounts={seriesCounts}
+      />
+      <StoryValuesSection {...values} />
+      <StoryTimelineSection {...timeline} books={timelineBooks} />
+      <StoryAuthorSection {...author} />
+      <NewsletterSection locale={locale} />
+    </PageShell>
   );
 };
 

@@ -1,4 +1,6 @@
+import type { SxProps, Theme } from "@mui/material";
+
 export type SectionEyebrowProps = {
   label: string;
-  className?: string;
+  sx?: SxProps<Theme>;
 };

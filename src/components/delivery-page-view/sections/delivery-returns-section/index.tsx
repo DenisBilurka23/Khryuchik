@@ -1,13 +1,14 @@
 import CheckroomOutlinedIcon from "@mui/icons-material/CheckroomOutlined";
 import CloudDownloadOutlinedIcon from "@mui/icons-material/CloudDownloadOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
-import { Box, Container, Paper, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import type { ReactNode } from "react";
 
 import { SectionEyebrow } from "@/components/section-eyebrow";
+import { IconTile, Pill, Plate } from "@/components/primitives";
 import type { DeliveryReturnsIcon } from "@/i18n/types";
+import { accentSx, leadSx } from "@/theme/sx";
 
-import styles from "./delivery-returns-section.module.css";
 import type { DeliveryReturnsSectionProps } from "./types";
 
 const returnsIcons: Record<DeliveryReturnsIcon, ReactNode> = {
@@ -19,8 +20,6 @@ const returnsIcons: Record<DeliveryReturnsIcon, ReactNode> = {
 const resolveReturnsIcon = (icon: string): ReactNode =>
   returnsIcons[icon as DeliveryReturnsIcon] ?? returnsIcons.physical;
 
-const iconTones = [styles.iconRose, styles.iconAqua, styles.iconOlive];
-
 export const DeliveryReturnsSection = ({
   eyebrow,
   titlePrefix,
@@ -29,41 +28,80 @@ export const DeliveryReturnsSection = ({
   items,
 }: DeliveryReturnsSectionProps) => {
   return (
-    <Box component="section" id="returns" className={styles.section}>
+    <Box component="section" id="returns" sx={{ pt: 4 }}>
       <Container maxWidth="lg">
-        <Box className={styles.header}>
+        <Box sx={{ maxWidth: 760, mb: 4 }}>
           <SectionEyebrow label={eyebrow} />
 
-          <Typography variant="h2" className={styles.title}>
-            {titlePrefix} <em className={styles.titleAccent}>{titleAccent}</em>
+          <Typography variant="h2" sx={{ mt: 1.5 }}>
+            {titlePrefix}{" "}
+            <Box component="em" sx={accentSx}>
+              {titleAccent}
+            </Box>
           </Typography>
 
-          <Typography className={styles.lead}>{sub}</Typography>
+          <Typography
+            sx={{
+              mt: 2,
+              ...leadSx,
+            }}
+          >
+            {sub}
+          </Typography>
         </Box>
 
-        <Box className={styles.grid}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "minmax(0, 1fr)",
+              sm: "repeat(2, minmax(0, 1fr))",
+              lg: "repeat(3, minmax(0, 1fr))",
+            },
+            gap: { xs: 2, md: 3 },
+          }}
+        >
           {items.map((item, index) => (
-            <Paper key={item.title} elevation={0} className={styles.card}>
-              <Box
-                className={[
-                  styles.icon,
-                  iconTones[index % iconTones.length],
-                ].join(" ")}
-              >
+            <Plate
+              key={item.title}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+              }}
+            >
+              <IconTile cycle={index} sx={{ mb: 2.5 }}>
                 {resolveReturnsIcon(item.icon)}
-              </Box>
+              </IconTile>
 
-              <Box className={styles.cardHead}>
-                <Typography variant="h3" className={styles.name}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  gap: 1.5,
+                }}
+              >
+                <Typography
+                  variant="h3"
+                  sx={{ fontSize: 22, lineHeight: 1.15 }}
+                >
                   {item.title}
                 </Typography>
-                <Typography component="span" className={styles.window}>
-                  {item.window}
-                </Typography>
+                <Pill sx={{ flexShrink: 0, fontSize: 11 }}>{item.window}</Pill>
               </Box>
 
-              <Typography className={styles.desc}>{item.desc}</Typography>
-            </Paper>
+              <Typography
+                sx={{
+                  mt: 1.5,
+                  fontSize: 15,
+                  lineHeight: 1.6,
+                  color: "var(--color-text-secondary)",
+                }}
+              >
+                {item.desc}
+              </Typography>
+            </Plate>
           ))}
         </Box>
       </Container>

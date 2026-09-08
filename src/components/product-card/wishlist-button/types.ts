@@ -1,5 +1,7 @@
+import type { SxProps, Theme } from "@mui/material";
+
 export type WishlistButtonProps = {
   productId: string;
   label: string;
-  className?: string;
+  sx?: SxProps<Theme>;
 };

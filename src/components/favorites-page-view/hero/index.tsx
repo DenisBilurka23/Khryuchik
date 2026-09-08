@@ -7,8 +7,16 @@ import Link from "next/link";
 
 import { SectionEyebrow } from "@/components/section-eyebrow";
 
-import styles from "./favorites-hero.module.css";
 import type { FavoritesHeroProps } from "./types";
+
+const actionsSx = {
+  display: "flex",
+  flexDirection: { xs: "column", sm: "row" },
+  flexWrap: "wrap",
+  alignItems: { xs: "stretch", sm: "center" },
+  gap: 1.5,
+  mt: 3.5,
+} as const;
 
 export const FavoritesHero = ({
   authState,
@@ -23,7 +31,7 @@ export const FavoritesHero = ({
 
   const renderGuestActions = () => (
     <>
-      <Box className={styles.actions}>
+      <Box sx={actionsSx}>
         <Link href={loginHref}>
           <Button
             component="span"
@@ -41,14 +49,14 @@ export const FavoritesHero = ({
             variant="outlined"
             size="large"
             startIcon={<PersonAddAltOutlinedIcon />}
-            className={styles.secondaryAction}
+            sx={{ background: "var(--color-card)" }}
           >
             {tFavorites("secondaryAction")}
           </Button>
         </Link>
       </Box>
 
-      <Box className={styles.textAction}>
+      <Box sx={{ mt: 1.75 }}>
         <Link href={shopHref}>
           <Button
             component="span"
@@ -63,21 +71,41 @@ export const FavoritesHero = ({
   );
 
   return (
-    <Box className={styles.panel}>
+    <Box
+      sx={{
+        p: { xs: "28px 20px", md: 5 },
+        borderRadius: {
+          xs: "var(--radius-panel)",
+          md: "var(--radius-hero)",
+        },
+        background: "var(--color-hero-rose)",
+      }}
+    >
       <SectionEyebrow
         label={authState ? tAccount("favoritesEyebrow") : tFavorites("eyebrow")}
       />
 
-      <Typography variant="h1" className={styles.title}>
+      <Typography
+        variant="h1"
+        sx={{ mt: 2.5, fontSize: "clamp(32px, 3.6vw, 48px)" }}
+      >
         {authState ? tAccount("favoritesTitle") : tFavorites("title")}
       </Typography>
 
-      <Typography className={styles.lead}>
+      <Typography
+        sx={{
+          maxWidth: "62ch",
+          mt: 2.25,
+          fontSize: { xs: 16, md: 17 },
+          lineHeight: 1.65,
+          color: "var(--color-text)",
+        }}
+      >
         {authState ? tAccount("favoritesLead") : tFavorites("lead")}
       </Typography>
 
       {authState ? (
-        <Box className={styles.actions}>
+        <Box sx={actionsSx}>
           <Button
             variant="contained"
             size="large"

@@ -1,15 +1,15 @@
 "use client";
 
-import { Box, Container, Paper } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { Plate } from "@/components/primitives";
 import { useWishlist } from "@/hooks/useWishlist";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
 import { useCart } from "../cart/store";
 import { FavoritesEmptyState } from "./empty-state";
-import styles from "./favorites-page-view.module.css";
 import { FavoritesHero } from "./hero";
 import type { FavoritesPageViewProps } from "./types";
 import { FavoritesWishlistGrid } from "./wishlist-grid";
@@ -54,11 +54,17 @@ export const FavoritesPageView = ({
         isAddAllDisabled={purchasableItems.length === 0}
       />
 
-      <Box className={styles.content}>
+      <Box sx={{ mt: { xs: 3, md: 4 } }}>
         {isLoading ? (
-          <Paper elevation={0} className={styles.loading}>
+          <Plate
+            pad="lg"
+            sx={{
+              fontSize: 15,
+              color: "var(--color-text-secondary)",
+            }}
+          >
             {locale === "ru" ? "Загружаем избранное..." : "Loading wishlist..."}
-          </Paper>
+          </Plate>
         ) : resolvedItems.length === 0 ? (
           <FavoritesEmptyState authState={authState} shopHref={shopHref} />
         ) : (
@@ -77,7 +83,7 @@ export const FavoritesPageView = ({
   }
 
   return (
-    <Box component="section" className={styles.section}>
+    <Box component="section" sx={{ pb: { xs: 5, md: 7 } }}>
       <Container maxWidth="lg">
         <Breadcrumbs
           items={[

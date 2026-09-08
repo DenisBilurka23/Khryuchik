@@ -24,7 +24,9 @@ export const AuthSectionHeader = ({
     </Box>
     <Box>
       <Typography sx={{ fontWeight: 800, fontSize: 22 }}>{title}</Typography>
-      {description ? <Typography color="text.secondary">{description}</Typography> : null}
+      {description ? (
+        <Typography color="text.secondary">{description}</Typography>
+      ) : null}
     </Box>
   </Stack>
 );

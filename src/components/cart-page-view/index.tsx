@@ -9,10 +9,7 @@ import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
 import { CartItemCard, EmptyCartState, OrderSummaryCard } from "../cart";
-import shellStyles from "../storefront/storefront.module.css";
-
-import styles from "./cart-page-view.module.css";
-
+import { PageShell } from "../storefront/page-shell";
 import type { CartPageViewProps } from "./types";
 
 export const CartPageView = ({
@@ -83,84 +80,128 @@ export const CartPageView = ({
   const discount = 0;
 
   return (
-    <Box className={shellStyles.pageShell}>
-      <Box className={shellStyles.pageContent}>
-        <Box component="section" className={styles.section}>
-          <Container maxWidth="lg">
-            <Breadcrumbs
-              items={[
-                { label: cartPage.breadcrumbs.home, href: homeHref },
-                { label: cartPage.breadcrumbs.shop, href: shopHref },
-                { label: cartPage.breadcrumbs.current },
-              ]}
-            />
+    <PageShell>
+      <Box component="section" sx={{ pb: { xs: 5, md: 7 } }}>
+        <Container maxWidth="lg">
+          <Breadcrumbs
+            items={[
+              { label: cartPage.breadcrumbs.home, href: homeHref },
+              { label: cartPage.breadcrumbs.shop, href: shopHref },
+              { label: cartPage.breadcrumbs.current },
+            ]}
+          />
 
-            <Box className={styles.hero}>
-              <SectionEyebrow label={cartPage.eyebrow} />
+          <Box
+            sx={{
+              p: { xs: "28px 20px", md: 5 },
+              borderRadius: {
+                xs: "var(--radius-panel)",
+                md: "var(--radius-hero)",
+              },
+              background: "var(--color-hero-rose)",
+            }}
+          >
+            <SectionEyebrow label={cartPage.eyebrow} />
 
-              <Typography variant="h1" className={styles.title}>
-                {cartPage.title}
-              </Typography>
+            <Typography
+              variant="h1"
+              sx={{ mt: 2.5, fontSize: "clamp(32px, 3.6vw, 48px)" }}
+            >
+              {cartPage.title}
+            </Typography>
 
-              <Typography className={styles.lead}>{cartPage.lead}</Typography>
+            <Typography
+              sx={{
+                maxWidth: "62ch",
+                mt: 2.25,
+                fontSize: { xs: 16, md: 17 },
+                lineHeight: 1.65,
+                color: "var(--color-text)",
+              }}
+            >
+              {cartPage.lead}
+            </Typography>
+          </Box>
+
+          {isPricingUnavailable ? (
+            <Alert
+              severity="warning"
+              sx={{ mt: 3, borderRadius: "var(--radius-field)" }}
+            >
+              {cartPage.pricingUnavailable}
+            </Alert>
+          ) : null}
+
+          {!hasStoredItems && !isLoading ? (
+            <Box sx={{ mt: 4 }}>
+              <EmptyCartState
+                title={cartPage.emptyState.title}
+                text={cartPage.emptyState.text}
+                actionLabel={cartPage.emptyState.action}
+                actionHref={shopHref}
+              />
             </Box>
+          ) : isLoading ? (
+            <Box
+              sx={{
+                mt: 4,
+                p: 4,
+                border: "1px solid var(--color-border)",
+                borderRadius: "var(--radius-panel)",
+                fontSize: 15,
+                color: "var(--color-text-secondary)",
+                background: "var(--color-card)",
+              }}
+            >
+              <Typography color="text.secondary">Loading cart...</Typography>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "minmax(0, 1fr)",
+                  lg: "minmax(0, 1fr) 380px",
+                },
+                alignItems: "flex-start",
+                gap: 3,
+                mt: 4,
+              }}
+            >
+              <Box sx={{ display: "grid", gap: 2 }}>
+                {items.map((item) => (
+                  <CartItemCard
+                    key={item.id}
+                    item={item}
+                    locale={locale}
+                    variantLabel={cartPage.itemCard.variantLabel}
+                    removeLabel={cartPage.itemCard.removeLabel}
+                    soldOutLabel={cartPage.itemCard.soldOut}
+                    onIncrease={handleIncrease}
+                    onDecrease={handleDecrease}
+                    onRemove={handleRemove}
+                  />
+                ))}
+              </Box>
 
-            {isPricingUnavailable ? (
-              <Alert severity="warning" className={styles.alert}>
-                {cartPage.pricingUnavailable}
-              </Alert>
-            ) : null}
-
-            {!hasStoredItems && !isLoading ? (
-              <Box className={styles.empty}>
-                <EmptyCartState
-                  title={cartPage.emptyState.title}
-                  text={cartPage.emptyState.text}
-                  actionLabel={cartPage.emptyState.action}
-                  actionHref={shopHref}
+              <Box sx={{ position: { lg: "sticky" }, top: { lg: 100 } }}>
+                <OrderSummaryCard
+                  locale={locale}
+                  currency={currency}
+                  subtotal={subtotal}
+                  discount={discount}
+                  isDigitalOnly={isDigitalOnly}
+                  continueShoppingHref={shopHref}
+                  checkoutHref={checkoutHref}
+                  isShopClosed={isShopClosed}
+                  hasUnavailableItems={hasUnavailableItems}
                 />
               </Box>
-            ) : isLoading ? (
-              <Box className={styles.loading}>
-                <Typography color="text.secondary">Loading cart...</Typography>
-              </Box>
-            ) : (
-              <Box className={styles.content}>
-                <Box className={styles.items}>
-                  {items.map((item) => (
-                    <CartItemCard
-                      key={item.id}
-                      item={item}
-                      locale={locale}
-                      variantLabel={cartPage.itemCard.variantLabel}
-                      removeLabel={cartPage.itemCard.removeLabel}
-                      soldOutLabel={cartPage.itemCard.soldOut}
-                      onIncrease={handleIncrease}
-                      onDecrease={handleDecrease}
-                      onRemove={handleRemove}
-                    />
-                  ))}
-                </Box>
-
-                <Box className={styles.summary}>
-                  <OrderSummaryCard
-                    locale={locale}
-                    currency={currency}
-                    subtotal={subtotal}
-                    discount={discount}
-                    isDigitalOnly={isDigitalOnly}
-                    continueShoppingHref={shopHref}
-                    checkoutHref={checkoutHref}
-                    isShopClosed={isShopClosed}
-                    hasUnavailableItems={hasUnavailableItems}
-                  />
-                </Box>
-              </Box>
-            )}
-          </Container>
-        </Box>
+            </Box>
+          )}
+        </Container>
       </Box>
-    </Box>
+    </PageShell>
   );
 };
 

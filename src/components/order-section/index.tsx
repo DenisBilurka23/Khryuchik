@@ -8,8 +8,12 @@ import { SectionEyebrow } from "@/components/section-eyebrow";
 import type { StorefrontDictionary } from "@/i18n/types";
 
 import { OrderSteps } from "./order-steps";
-import styles from "./order-section.module.css";
 import type { OrderSectionProps } from "./types";
+
+const actionSx = {
+  whiteSpace: "nowrap",
+  width: { xs: "100%", sm: "auto" },
+} as const;
 
 export const OrderSection = async ({
   locale,
@@ -23,14 +27,30 @@ export const OrderSection = async ({
   const steps = t.raw("steps") as StorefrontDictionary["orderSection"]["steps"];
 
   return (
-    <Box component="section" id="order" className={styles.section}>
+    <Box component="section" id="order" sx={{ py: { xs: 1.5, md: 2 } }}>
       <Container maxWidth="lg">
-        <Box className={styles.panel}>
-          <Box className={styles.layout}>
+        <Box
+          sx={{
+            p: { xs: "24px 20px", md: 4 },
+            borderRadius: "var(--radius-panel)",
+            background: "var(--color-cream)",
+          }}
+        >
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "minmax(0, 1fr)",
+                lg: "minmax(0, 3fr) minmax(0, 1fr)",
+              },
+              alignItems: "center",
+              gap: 4,
+            }}
+          >
             <Box>
               <SectionEyebrow label={t("eyebrow")} />
 
-              <Typography variant="h2" className={styles.title}>
+              <Typography variant="h2" sx={{ mt: 1, mb: 4 }}>
                 {t("title")}
               </Typography>
 
@@ -41,17 +61,28 @@ export const OrderSection = async ({
               src={orderImage}
               alt=""
               sizes="(max-width: 1200px) 40vw, 260px"
-              className={styles.illustration}
+              style={{
+                display: "block",
+                width: "100%",
+                maxWidth: 260,
+                height: "auto",
+                marginInline: "auto",
+              }}
             />
           </Box>
 
-          <Box className={styles.actions}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              flexWrap: "wrap",
+              justifyContent: "center",
+              gap: 2,
+              mt: 5,
+            }}
+          >
             <Link href={shopHref}>
-              <Button
-                component="span"
-                variant="contained"
-                className={styles.action}
-              >
+              <Button component="span" variant="contained" sx={actionSx}>
                 {t("shopAction")}
               </Button>
             </Link>
@@ -60,7 +91,7 @@ export const OrderSection = async ({
               <Button
                 component="span"
                 variant="outlined"
-                className={`${styles.action} ${styles.cartButton}`}
+                sx={{ ...actionSx, background: "var(--color-card)" }}
               >
                 {t("cartAction")}
               </Button>

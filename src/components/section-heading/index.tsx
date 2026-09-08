@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { SectionEyebrow } from "../section-eyebrow";
 
-import styles from "./section-heading.module.css";
 import type { SectionHeadingProps } from "./types";
 
 export const SectionHeading = ({
@@ -13,20 +12,38 @@ export const SectionHeading = ({
   actionHref,
 }: SectionHeadingProps) => {
   return (
-    <Box className={styles.root}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", md: "row" },
+        alignItems: { xs: "flex-start", md: "flex-end" },
+        justifyContent: "space-between",
+        gap: 3,
+        mb: 4,
+      }}
+    >
       <Box>
         <SectionEyebrow label={eyebrow} />
-        <Typography variant="h2" className={styles.title}>
+        <Typography variant="h2" sx={{ mt: 1 }}>
           {title}
         </Typography>
       </Box>
 
       {actionLabel && actionHref ? (
-        <Link href={actionHref} className={styles.actionLink}>
+        <Link href={actionHref} style={{ flexShrink: 0 }}>
           <Button
             component="span"
             variant="outlined"
-            className={styles.actionButton}
+            sx={{
+              display: { xs: "none", md: "inline-flex" },
+              border: "1px solid var(--color-border-rose)",
+              background: "var(--color-card)",
+              color: "var(--color-text)",
+              "&:hover": {
+                borderColor: "var(--color-border-rose)",
+                background: "var(--color-accent-pale)",
+              },
+            }}
           >
             {actionLabel}
           </Button>

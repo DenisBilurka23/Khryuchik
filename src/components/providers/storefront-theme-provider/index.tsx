@@ -1,9 +1,10 @@
 "use client";
 
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, GlobalStyles } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 
 import { storefrontTheme } from "@/theme";
+import { colorCustomProperties } from "@/theme/colors";
 
 import type { StorefrontThemeProviderProps } from "./types";
 
@@ -13,6 +14,7 @@ export const StorefrontThemeProvider = ({
   return (
     <ThemeProvider theme={storefrontTheme}>
       <CssBaseline />
+      <GlobalStyles styles={{ ":root": colorCustomProperties }} />
       {children}
     </ThemeProvider>
   );

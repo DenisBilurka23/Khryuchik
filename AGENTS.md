@@ -45,6 +45,20 @@ You are the project architecture specialist for the Khryuchik repository. Your j
 - When extending complex forms, follow the existing `sections/`, `field/`, and `types.ts` split instead of collapsing everything into one file.
 - Avoid introducing shadow files such as `src/components/foo.tsx` when the real component already lives in `src/components/foo/index.tsx`.
 
+## Styling Rules
+- Styling is `sx` plus MUI `styled()`. There are no CSS modules in the storefront; do not add one back.
+- Colours live once in `src/theme/colors.ts`. The MUI palette reads them directly, and `StorefrontThemeProvider` publishes the same values as the `--color-*` custom properties — never add a hex to `globals.css` or to the theme.
+- Radii, shadows, spacing and fonts come from the variables in `src/app/globals.css`. Do not write hex colours or raw radii in components; add a token first if one is missing.
+- Reach for a shared primitive from `src/components/primitives` before writing the same block again: `Panel` (section background, `tone`), `Plate` (bordered card, `pad`/`interactive`), `Pill` (small badge, `tone`), `IconTile` (52px icon tile, `tone`), `Note` (tinted callout).
+- Small cross-component fragments live in `src/theme/sx.ts` (`leadSx`, `accentSx`, `displaySx`, `displayFont`). Add to it only when a fragment is genuinely reused across features.
+- Lift an `sx` object out of the JSX into a named `const …Sx` at the top of the file once it grows past a few declarations, so the markup stays readable.
+- Use `styled()` when an element has variants driven by props; keep the variant map as a `Record<Tone, CSSObject>` next to it and filter the prop with `shouldForwardProp`.
+- `styled()` needs `"use client"`. Do not add that directive to a section just to style it — put the styled pieces in a child module (`parts/`, or `src/components/primitives`) and keep the section a server component.
+- Only components cross the RSC boundary. Never export a plain value (a palette, a tone list) from a `"use client"` module and read it in a server component — it arrives as `undefined`. Put such data in its own directive-free module.
+- A component that lets callers adjust its placement takes an `sx` prop, and applies it last so callers win.
+- Runtime-only values go through `style`, not `sx`, when they change per render (a progress width, a cover colour): `style={{ width: `${percent}%` }}`.
+- Admin components use `sx` as well. They are not part of the storefront design system; convert them only when a task already rewrites that UI.
+
 ## Hooks Rules
 - All new reusable React hooks go in `src/hooks/`, named in camelCase: `useXxx.ts`.
 - Extract the hook's public types into a companion `useXxx.types.ts` file in the same folder.

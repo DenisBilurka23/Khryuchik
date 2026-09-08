@@ -1,29 +1,32 @@
 import { createTheme } from "@mui/material";
 
+import { colors } from "./colors";
+
 export const storefrontTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#8F5263",
-      dark: "#754252",
-      light: "#E8D5DC",
-      contrastText: "#FFFFFF",
+      main: colors.action,
+      dark: colors.actionHover,
+      light: colors.accentSoft,
+      contrastText: colors.white,
     },
     secondary: {
-      main: "#A96375",
-      light: "#F5ECEF",
-      contrastText: "#FFFFFF",
+      main: colors.accent,
+      dark: colors.action,
+      light: colors.accentPale,
+      contrastText: colors.white,
     },
     background: {
-      default: "#FFFCF8",
-      paper: "#FFFDFC",
+      default: colors.page,
+      paper: colors.card,
     },
     text: {
-      primary: "#34272D",
-      secondary: "#756A70",
-      disabled: "#9B8F94",
+      primary: colors.text,
+      secondary: colors.textSecondary,
+      disabled: colors.textMuted,
     },
-    divider: "#DED4CE",
+    divider: colors.border,
   },
   shape: {
     borderRadius: 16,
@@ -95,12 +98,12 @@ export const storefrontTheme = createTheme({
           paddingBlock: 8,
         },
         outlined: {
-          borderColor: "#CDA7B2",
-          color: "#34272D",
+          borderColor: colors.borderRose,
+          color: colors.text,
           backgroundColor: "transparent",
           "&:hover": {
-            borderColor: "#CDA7B2",
-            backgroundColor: "#F5ECEF",
+            borderColor: colors.borderRose,
+            backgroundColor: colors.accentPale,
           },
         },
       },

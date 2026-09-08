@@ -34,7 +34,9 @@ export const ResetPasswordForm = ({
           />
 
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-          {successMessage ? <Alert severity="success">{successMessage}</Alert> : null}
+          {successMessage ? (
+            <Alert severity="success">{successMessage}</Alert>
+          ) : null}
 
           <TextField
             label={t("passwordLabel")}

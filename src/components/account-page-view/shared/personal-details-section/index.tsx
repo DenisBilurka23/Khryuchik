@@ -1,6 +1,14 @@
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
-import { Box, Button, Chip, Grid, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { SectionCard } from "../section-card";
@@ -64,9 +72,13 @@ export const PersonalDetailsSection = ({
       <Box component="form" onSubmit={onSave}>
         <Stack spacing={2} sx={{ mb: 2.5 }}>
           {profileError ? <Chip color="error" label={profileError} /> : null}
-          {profileSuccess ? <Chip color="success" label={profileSuccess} /> : null}
+          {profileSuccess ? (
+            <Chip color="success" label={profileSuccess} />
+          ) : null}
           {!isEmailEditable ? (
-            <Typography color="text.secondary">{t("emailManagedByGoogle")}</Typography>
+            <Typography color="text.secondary">
+              {t("emailManagedByGoogle")}
+            </Typography>
           ) : null}
         </Stack>
 
@@ -94,7 +106,9 @@ export const PersonalDetailsSection = ({
               fullWidth
               label={t("emailLabel")}
               value={email}
-              onChange={(event) => onEmailChange(event.target.value.toLowerCase())}
+              onChange={(event) =>
+                onEmailChange(event.target.value.toLowerCase())
+              }
               disabled={!isEditingProfile || !isEmailEditable}
             />
           </Grid>

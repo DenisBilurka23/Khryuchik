@@ -1,4 +1,6 @@
+import type { SxProps, Theme } from "@mui/material";
+
 export type BrandCurlProps = {
   width?: number;
-  className?: string;
+  sx?: SxProps<Theme>;
 };

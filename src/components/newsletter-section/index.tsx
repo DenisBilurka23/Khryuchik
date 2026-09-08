@@ -8,7 +8,6 @@ import { getServerAuthSession } from "@/server/auth/config";
 import { isSubscribedToNewsletter } from "@/server/newsletter/services/newsletter.service";
 
 import { NewsletterForm } from "./form";
-import styles from "./newsletter-section.module.css";
 import type { NewsletterSectionProps } from "./types";
 
 export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
@@ -25,13 +24,31 @@ export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
   });
 
   return (
-    <Box component="section" className={styles.section}>
+    <Box component="section" sx={{ py: { xs: 5, md: 7 } }}>
       <Container maxWidth="lg">
-        <Box className={styles.panel}>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "minmax(0, 1fr)",
+              md: "minmax(0, 1fr) minmax(0, 1fr)",
+              lg: "minmax(0, 1fr) minmax(0, 0.95fr) auto",
+            },
+            alignItems: "center",
+            gap: { xs: 3, lg: 4 },
+            p: { xs: "28px 20px", md: "18px 40px" },
+            borderRadius: "var(--radius-panel)",
+            background: "var(--color-newsletter)",
+            color: "var(--color-text)",
+          }}
+        >
           <Box>
             <SectionEyebrow label={t("eyebrow")} />
 
-            <Typography variant="h2" className={styles.title}>
+            <Typography
+              variant="h2"
+              sx={{ mt: 1.25, fontSize: { xs: 26, md: 30 }, lineHeight: 1.15 }}
+            >
               {t("title")}
             </Typography>
           </Box>
@@ -46,13 +63,17 @@ export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
             unexpectedErrorMessage={t("unexpectedError")}
           />
 
-          <Image
-            src={newsletterImage}
-            alt=""
-            aria-hidden
-            sizes="200px"
-            className={styles.illustration}
-          />
+          <Box
+            sx={{ display: { xs: "none", lg: "block" }, justifySelf: "end" }}
+          >
+            <Image
+              src={newsletterImage}
+              alt=""
+              aria-hidden
+              sizes="200px"
+              style={{ width: "clamp(130px, 14vw, 200px)", height: "auto" }}
+            />
+          </Box>
         </Box>
       </Container>
     </Box>

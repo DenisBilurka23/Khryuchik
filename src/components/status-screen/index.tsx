@@ -1,33 +1,35 @@
-import Link from "next/link";
+import { Box } from "@mui/material";
 
-import styles from "./status-screen.module.css";
+import {
+  ActionButton,
+  ActionLink,
+  Blob,
+  Code,
+  FloatBook,
+  FloatSparkle,
+  FloatStar,
+  Footer,
+  Screen,
+  Text,
+  Title,
+} from "./parts";
 import type { StatusScreenAction, StatusScreenProps } from "./types";
 
-const actionClassName = (variant: "primary" | "ghost") =>
-  `${styles.btn} ${variant === "primary" ? styles.btnPrimary : styles.btnGhost}`;
-
-const renderAction = (action: StatusScreenAction) => {
-  const className = actionClassName(action.variant);
-
-  if (action.kind === "link") {
-    return (
-      <Link key={action.label} href={action.href} className={className}>
-        {action.label}
-      </Link>
-    );
-  }
-
-  return (
-    <button
+const renderAction = (action: StatusScreenAction) =>
+  action.kind === "link" ? (
+    <ActionLink key={action.label} variant={action.variant} href={action.href}>
+      {action.label}
+    </ActionLink>
+  ) : (
+    <ActionButton
       key={action.label}
       type="button"
+      variant={action.variant}
       onClick={action.onClick}
-      className={className}
     >
       {action.label}
-    </button>
+    </ActionButton>
   );
-};
 
 export const StatusScreen = ({
   emoji,
@@ -40,56 +42,57 @@ export const StatusScreen = ({
   showFloats = false,
   footer,
 }: StatusScreenProps) => {
-  const blobClassName = [
-    styles.blob,
-    blobTone === "warm" ? styles.blobWarm : styles.blobPink,
-    code ? styles.blobOverlap : styles.blobStandalone,
-  ].join(" ");
+  const blob = (
+    <Blob aria-hidden tone={blobTone} compact={Boolean(code)}>
+      {emoji}
+    </Blob>
+  );
 
   return (
-    <section className={styles.page}>
+    <Screen>
       {showFloats && (
         <>
-          <span className={`${styles.float} ${styles.floatStar}`} aria-hidden>
-            ⭐
-          </span>
-          <span className={`${styles.float} ${styles.floatBook}`} aria-hidden>
-            📖
-          </span>
-          <span className={`${styles.float} ${styles.floatSparkle}`} aria-hidden>
-            ✨
-          </span>
+          <FloatStar aria-hidden>⭐</FloatStar>
+          <FloatBook aria-hidden>📖</FloatBook>
+          <FloatSparkle aria-hidden>✨</FloatSparkle>
         </>
       )}
 
-      <div className={styles.content}>
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 1,
+          maxWidth: 520,
+          textAlign: "center",
+        }}
+      >
         {code ? (
-          <div className={styles.scene}>
-            <span className={styles.code}>{code}</span>
-            <span className={blobClassName} aria-hidden>
-              {emoji}
-            </span>
-          </div>
+          <Box sx={{ position: "relative", mb: 1 }}>
+            <Code>{code}</Code>
+            {blob}
+          </Box>
         ) : (
-          <span className={blobClassName} aria-hidden>
-            {emoji}
-          </span>
+          blob
         )}
 
-        <h1
-          className={
-            titleTone === "danger"
-              ? `${styles.title} ${styles.titleDanger}`
-              : styles.title
-          }
+        <Title tone={titleTone}>{title}</Title>
+
+        <Text>{text}</Text>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: 1.5,
+          }}
         >
-          {title}
-        </h1>
-        <p className={styles.text}>{text}</p>
-        <div className={styles.cta}>{actions.map(renderAction)}</div>
-        {footer ? <p className={styles.footer}>{footer}</p> : null}
-      </div>
-    </section>
+          {actions.map(renderAction)}
+        </Box>
+
+        {footer ? <Footer>{footer}</Footer> : null}
+      </Box>
+    </Screen>
   );
 };
 

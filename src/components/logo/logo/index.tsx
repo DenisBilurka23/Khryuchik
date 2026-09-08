@@ -1,6 +1,7 @@
 import { Box, Stack, Typography } from "@mui/material";
 
 import { BRAND_LOGO_MARK_SIZE } from "@/constants/brand";
+import { displayFont } from "@/theme/sx";
 
 import { LogoMark } from "../logo-mark";
 import type { LogoProps } from "../types";
@@ -24,8 +25,7 @@ export const Logo = ({
       <Box sx={textSx}>
         <Typography
           sx={{
-            fontFamily:
-              "var(--font-display, var(--font-display-fallback)), serif",
+            fontFamily: displayFont,
             fontWeight: 600,
             fontSize: 24,
             lineHeight: 1.1,

@@ -1,12 +1,12 @@
 import { Box, Container, Grid } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
-import { CategoryTabs } from "../category-tabs";
+import { getLocalizedPath, getLocalizedProductPath } from "@/utils";
 import { createCategoryTabOptions } from "@/utils/category-tabs";
+
+import { CategoryTabs } from "../category-tabs";
 import { ProductCard } from "../product-card";
 import { SectionHeading } from "../section-heading";
-import { getLocalizedPath, getLocalizedProductPath } from "@/utils";
-import styles from "./shop-section.module.css";
 import type { ShopSectionProps } from "./types";
 
 export const ShopSection = async ({
@@ -26,9 +26,15 @@ export const ShopSection = async ({
   });
 
   return (
-    <Box component="section" id="shop" className={styles.section}>
+    <Box component="section" id="shop" sx={{ py: { xs: 1.5, md: 2 } }}>
       <Container maxWidth="lg">
-        <Box className={styles.panel}>
+        <Box
+          sx={{
+            p: { xs: "24px 20px", md: 4 },
+            borderRadius: "var(--radius-panel)",
+            background: "var(--color-products)",
+          }}
+        >
           <SectionHeading
             eyebrow={t("eyebrow")}
             title={t("title")}
@@ -40,7 +46,7 @@ export const ShopSection = async ({
             selectedValue={selectedFilter}
             options={filterOptions}
             defaultValueWithoutQuery={defaultFilterValue}
-            className={styles.filters}
+            sx={{ mb: 4, display: { xs: "none", md: "flex" } }}
           />
 
           <Grid container spacing={3}>

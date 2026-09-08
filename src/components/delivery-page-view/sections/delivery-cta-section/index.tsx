@@ -3,8 +3,8 @@ import { Box, Button, Container, Typography } from "@mui/material";
 import Link from "next/link";
 
 import { SectionEyebrow } from "@/components/section-eyebrow";
+import { accentSx } from "@/theme/sx";
 
-import styles from "./delivery-cta-section.module.css";
 import type { DeliveryCtaSectionProps } from "./types";
 
 export const DeliveryCtaSection = ({
@@ -17,21 +17,52 @@ export const DeliveryCtaSection = ({
   shopHref,
 }: DeliveryCtaSectionProps) => {
   return (
-    <Box component="section" className={styles.section}>
+    <Box
+      component="section"
+      sx={{ pt: { xs: 3, md: 4 }, pb: { xs: 5, md: 7 } }}
+    >
       <Container maxWidth="lg">
-        <Box className={styles.panel}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: { xs: "flex-start", md: "center" },
+            justifyContent: "space-between",
+            gap: { xs: 3.5, md: 5 },
+            p: { xs: "28px 20px", md: 5 },
+            borderRadius: "var(--radius-panel)",
+            background: "var(--color-newsletter)",
+          }}
+        >
           <Box>
             <SectionEyebrow label={eyebrow} />
 
-            <Typography variant="h2" className={styles.title}>
+            <Typography
+              variant="h2"
+              sx={{
+                mt: 1.5,
+                fontSize: { xs: 28, md: 36 },
+                lineHeight: 1.15,
+              }}
+            >
               {titlePrefix}{" "}
-              <em className={styles.titleAccent}>{titleAccent}</em>
+              <Box component="em" sx={accentSx}>
+                {titleAccent}
+              </Box>
               <br />
               {titleSuffix}
             </Typography>
           </Box>
 
-          <Box className={styles.actions}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: { xs: "flex-start", md: "flex-end" },
+              gap: 1.25,
+              flexShrink: 0,
+            }}
+          >
             <Link href={shopHref}>
               <Button
                 component="span"
@@ -43,7 +74,10 @@ export const DeliveryCtaSection = ({
               </Button>
             </Link>
 
-            <Typography component="p" className={styles.sub}>
+            <Typography
+              component="p"
+              sx={{ fontSize: 12, color: "var(--color-text-secondary)" }}
+            >
               {sub}
             </Typography>
           </Box>
