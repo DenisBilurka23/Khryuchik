@@ -8,6 +8,7 @@ import { Plate } from "@/components/primitives";
 import { useWishlist } from "@/hooks/useWishlist";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
+import { PageShell } from "../storefront/page-shell";
 import { useCart } from "../cart/store";
 import { FavoritesEmptyState } from "./empty-state";
 import { FavoritesHero } from "./hero";
@@ -54,7 +55,7 @@ export const FavoritesPageView = ({
         isAddAllDisabled={purchasableItems.length === 0}
       />
 
-      <Box sx={{ mt: { xs: 3, md: 4 } }}>
+      <Box sx={{ mt: 3 }}>
         {isLoading ? (
           <Plate
             pad="lg"
@@ -83,21 +84,23 @@ export const FavoritesPageView = ({
   }
 
   return (
-    <Box component="section">
-      <Container maxWidth="lg">
-        <Breadcrumbs
-          items={[
-            {
-              label: t("breadcrumbs.home"),
-              href: getLocalizedPath(locale, "/"),
-            },
-            { label: t("breadcrumbs.current") },
-          ]}
-        />
+    <PageShell>
+      <Box component="section">
+        <Container maxWidth="lg">
+          <Breadcrumbs
+            items={[
+              {
+                label: t("breadcrumbs.home"),
+                href: getLocalizedPath(locale, "/"),
+              },
+              { label: t("breadcrumbs.current") },
+            ]}
+          />
 
-        {content}
-      </Container>
-    </Box>
+          {content}
+        </Container>
+      </Box>
+    </PageShell>
   );
 };
 

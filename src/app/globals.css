@@ -2,6 +2,7 @@
   --shadow-card: 0 6px 20px rgba(52, 39, 45, 0.05);
   --shadow-card-soft: 0 6px 20px rgba(52, 39, 45, 0.035);
   --shadow-floating: 0 12px 30px rgba(52, 39, 45, 0.08);
+  --shadow-panel: 0 12px 30px rgba(52, 39, 45, 0.05);
   --shadow-focus: 0 0 0 3px rgba(143, 82, 99, 0.12);
 
   --radius-panel: 24px;

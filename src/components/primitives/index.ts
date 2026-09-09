@@ -5,4 +5,4 @@ export { Panel } from "./panel";
 export { Pill } from "./pill";
 export { Plate } from "./plate";
 
-export type { IconTileTone } from "./types";
+export type { HeroPanelTone, IconTileTone } from "./types";

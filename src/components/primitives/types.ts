@@ -1,5 +1,7 @@
 export type PanelTone = "cream" | "rose" | "blush" | "sand" | "card";
 
+export type HeroPanelTone = "rose" | "pale";
+
 export type PlatePad = "none" | "sm" | "md" | "lg";
 
 export type PillTone = "cream" | "card" | "accent";

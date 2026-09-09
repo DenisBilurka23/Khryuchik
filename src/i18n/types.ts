@@ -132,6 +132,7 @@ export type FavoritesPageLabels = {
   guestListText: string;
   emptyTitle: string;
   emptyText: string;
+  emptyAction: string;
   itemCount: CountLabelForms;
   addToCart: string;
   view: string;

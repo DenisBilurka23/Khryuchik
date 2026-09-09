@@ -20,6 +20,9 @@ export const colors = {
   accentPale: "#f5ecef",
   accentTint: "#f3e4e8",
 
+  disabled: "#e3dadd",
+  disabledText: "#aaa0a3",
+
   border: "#ded4ce",
   borderRose: "#cda7b2",
 

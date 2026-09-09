@@ -85,6 +85,7 @@
       "guestListText": "These saved products are ready now and can be attached to your account later.",
       "emptyTitle": "Your wishlist is empty",
       "emptyText": "Tap the heart on any book or product you want to buy later — it will show up here, and you can attach the list to your account.",
+      "emptyAction": "Browse the catalog",
       "itemCount": {
         "one": "item",
         "few": "items",
@@ -888,7 +889,7 @@
       "helpPrefix": "Still stuck? Write to us:"
     },
     "footer": {
-      "description": "Gentle family stories and cozy products for children and adults.",
+      "description": "Gentle family stories and products for children and adults.",
       "sections": [
         {
           "title": "Sections",

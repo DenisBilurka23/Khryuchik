@@ -29,6 +29,10 @@ export const storefrontTheme = createTheme({
       secondary: colors.textSecondary,
       disabled: colors.textMuted,
     },
+    action: {
+      disabled: colors.disabledText,
+      disabledBackground: colors.disabled,
+    },
     divider: colors.border,
   },
   shape: {

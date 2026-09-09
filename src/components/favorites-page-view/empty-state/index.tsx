@@ -1,9 +1,44 @@
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import { Box, Button, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import Link from "next/link";
 
+import emptyImage from "@/assets/FavoriteEmpty.png";
+
 import type { FavoritesEmptyStateProps } from "./types";
+
+const panelSx = {
+  display: "grid",
+  gridTemplateColumns: { xs: "minmax(0, 1fr)", md: "0.9fr 1.1fr" },
+  alignItems: "center",
+  gap: { xs: 3, md: 6 },
+  minHeight: { xs: 0, md: 385 },
+  p: { xs: "28px 22px", md: "36px 42px" },
+  border: "1px solid var(--color-border)",
+  borderRadius: "var(--radius-panel)",
+  background: "var(--color-card)",
+  boxShadow: "var(--shadow-panel)",
+} as const;
+
+const artSx = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  minWidth: 0,
+} as const;
+
+const artImageStyle = {
+  width: "100%",
+  maxWidth: 450,
+  height: "auto",
+} as const;
+
+const contentSx = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: { xs: "center", md: "flex-start" },
+  textAlign: { xs: "center", md: "left" },
+} as const;
 
 export const FavoritesEmptyState = ({
   authState,
@@ -20,64 +55,50 @@ export const FavoritesEmptyState = ({
     : tFavorites("emptyText");
   const action = authState
     ? tAccount("favoritesEmptyAction")
-    : tFavorites("continueAction");
+    : tFavorites("emptyAction");
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        p: { xs: "32px 20px", md: "48px 40px" },
-        border: "1px dashed var(--color-border)",
-        borderRadius: "var(--radius-panel)",
-        background: "var(--color-card)",
-        textAlign: "center",
-      }}
-    >
-      <Box
-        sx={{
-          display: "grid",
-          placeItems: "center",
-          width: 72,
-          height: 72,
-          borderRadius: "var(--radius-pill)",
-          background: "var(--color-accent-tint)",
-          color: "var(--color-accent)",
-        }}
-      >
-        <FavoriteBorderOutlinedIcon sx={{ fontSize: 32 }} />
+    <Box sx={panelSx}>
+      <Box sx={artSx}>
+        <Image
+          src={emptyImage}
+          alt={title}
+          sizes="(max-width: 900px) 90vw, 450px"
+          style={artImageStyle}
+        />
       </Box>
 
-      <Typography
-        variant="h3"
-        sx={{ mt: 2.75, fontSize: { xs: 22, md: 26 }, lineHeight: 1.2 }}
-      >
-        {title}
-      </Typography>
-
-      <Typography
-        sx={{
-          maxWidth: "52ch",
-          mt: 1.5,
-          fontSize: 16,
-          lineHeight: 1.65,
-          color: "var(--color-text-secondary)",
-        }}
-      >
-        {text}
-      </Typography>
-
-      <Link href={shopHref}>
-        <Button
-          component="span"
-          variant="contained"
-          size="large"
-          sx={{ mt: 3.5 }}
+      <Box sx={contentSx}>
+        <Typography
+          variant="h3"
+          sx={{ fontSize: { xs: 26, md: 32 }, lineHeight: 1.2 }}
         >
-          {action}
-        </Button>
-      </Link>
+          {title}
+        </Typography>
+
+        <Typography
+          sx={{
+            maxWidth: 500,
+            mt: 2,
+            fontSize: 16,
+            lineHeight: 1.55,
+            color: "var(--color-text-secondary)",
+          }}
+        >
+          {text}
+        </Typography>
+
+        <Link href={shopHref}>
+          <Button
+            component="span"
+            variant="contained"
+            size="large"
+            sx={{ mt: 3 }}
+          >
+            {action}
+          </Button>
+        </Link>
+      </Box>
     </Box>
   );
 };
