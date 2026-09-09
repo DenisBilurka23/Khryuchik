@@ -4,13 +4,13 @@ import { Alert, Box, Container, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { HeroPanel } from "@/components/primitives";
-import { SectionEyebrow } from "@/components/section-eyebrow";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
-import { CartItemCard, EmptyCartState, OrderSummaryCard } from "../cart";
+import { CartItemCard, OrderSummaryCard } from "../cart";
 import { PageShell } from "../storefront/page-shell";
+import { CartEmptyState } from "./empty-state";
+import { CartHero } from "./hero";
 import type { CartPageViewProps } from "./types";
 
 export const CartPageView = ({
@@ -92,28 +92,11 @@ export const CartPageView = ({
             ]}
           />
 
-          <HeroPanel sx={{ p: { xs: "28px 20px", md: 5 } }}>
-            <SectionEyebrow label={cartPage.eyebrow} />
-
-            <Typography
-              variant="h1"
-              sx={{ mt: 2.5, fontSize: "clamp(32px, 3.6vw, 48px)" }}
-            >
-              {cartPage.title}
-            </Typography>
-
-            <Typography
-              sx={{
-                maxWidth: "62ch",
-                mt: 2.25,
-                fontSize: { xs: 16, md: 17 },
-                lineHeight: 1.65,
-                color: "var(--color-text)",
-              }}
-            >
-              {cartPage.lead}
-            </Typography>
-          </HeroPanel>
+          <CartHero
+            eyebrow={cartPage.eyebrow}
+            title={cartPage.title}
+            lead={cartPage.lead}
+          />
 
           {isPricingUnavailable ? (
             <Alert
@@ -126,7 +109,7 @@ export const CartPageView = ({
 
           {!hasStoredItems && !isLoading ? (
             <Box sx={{ mt: 4 }}>
-              <EmptyCartState
+              <CartEmptyState
                 title={cartPage.emptyState.title}
                 text={cartPage.emptyState.text}
                 actionLabel={cartPage.emptyState.action}

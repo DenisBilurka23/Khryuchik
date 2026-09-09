@@ -648,8 +648,8 @@
     },
     "cartPage": {
       "eyebrow": "Cart",
-      "title": "Your cozy Khryuchik order",
-      "lead": "Review the selected books and merch, adjust quantities, and continue to the next checkout step.",
+      "title": "Your order",
+      "lead": "Review the selected books and products, adjust quantities, and continue to the next checkout step.",
       "breadcrumbs": {
         "home": "Home",
         "shop": "Shop",
@@ -657,7 +657,7 @@
       },
       "emptyState": {
         "title": "Your cart is still empty",
-        "text": "Add books, mugs, T-shirts, and other warm Khryuchik items to build your cozy bundle.",
+        "text": "Take a look in the shop and pick something you like.",
         "action": "Go to the shop"
       },
       "itemCard": {
