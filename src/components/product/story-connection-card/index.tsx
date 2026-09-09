@@ -17,8 +17,8 @@ export const StoryConnectionCard = ({
         mt: 6,
         p: 4,
         borderRadius: "var(--radius-hero)",
-        bgcolor: "#FCE5EA",
-        border: "1px solid #F0DFC8",
+        bgcolor: "var(--color-accent-tint)",
+        border: "1px solid var(--color-border)",
       }}
     >
       <Stack
@@ -31,7 +31,7 @@ export const StoryConnectionCard = ({
             width: 64,
             height: 64,
             borderRadius: "20px",
-            bgcolor: product.thumbnailBackgroundColor ?? "#fff",
+            bgcolor: product.thumbnailBackgroundColor ?? "var(--color-white)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -54,10 +54,7 @@ export const StoryConnectionCard = ({
           </Typography>
         </Box>
 
-        <Link
-          href={product.href}
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
+        <Link href={product.href}>
           <Button component="span" variant="contained">
             {actionLabel}
           </Button>

@@ -16,6 +16,21 @@ import {
 
 import type { HeaderSelectProps } from "./types";
 
+const triggerSx = {
+  minWidth: 64,
+  height: 40,
+  px: 1.5,
+  borderRadius: "var(--radius-pill)",
+  bgcolor: "var(--color-card)",
+  boxShadow: "var(--shadow-card)",
+  border: "1px solid var(--color-border)",
+  justifyContent: "center",
+  gap: 0.75,
+  "&:hover": {
+    borderColor: "var(--color-border-rose)",
+  },
+} as const;
+
 export const HeaderSelect = ({
   value,
   label,
@@ -53,21 +68,7 @@ export const HeaderSelect = ({
         aria-controls={isOpen ? `${buttonId}-menu` : undefined}
         disabled={disabled}
         onClick={handleOpen}
-        sx={{
-          minWidth: 64,
-          height: 40,
-          px: 1.5,
-          borderRadius: "999px",
-          bgcolor: "var(--color-card)",
-          boxShadow: "var(--shadow-card)",
-          border: "1px solid var(--color-border)",
-          justifyContent: "center",
-          gap: 0.75,
-          "&:hover": {
-            borderColor: "var(--color-border-rose)",
-          },
-          ...sx,
-        }}
+        sx={{ ...triggerSx, ...sx }}
       >
         <Stack direction="row" spacing={0.75} alignItems="center">
           <Box
@@ -115,7 +116,7 @@ export const HeaderSelect = ({
               minWidth: anchorEl?.offsetWidth ?? 96,
               width: "max-content",
               maxWidth: "calc(100vw - 32px)",
-              borderRadius: "18px",
+              borderRadius: "var(--radius-plate)",
               boxShadow: "var(--shadow-floating)",
             }}
           >
@@ -138,7 +139,7 @@ export const HeaderSelect = ({
                   sx={{
                     mx: 0.75,
                     my: 0.25,
-                    borderRadius: "12px",
+                    borderRadius: "var(--radius-field)",
                     whiteSpace: "nowrap",
                   }}
                 >

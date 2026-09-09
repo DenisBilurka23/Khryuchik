@@ -47,8 +47,8 @@ export const AccountAvatarUploadField = ({
         fallbackLabel={fallbackLabel}
         ariaLabel={imageSrc ? replaceLabel : changeLabel}
         avatarSx={{
-          bgcolor: "#FCE5EA",
-          color: "#27272A",
+          bgcolor: "var(--color-accent-tint)",
+          color: "var(--color-text)",
           fontSize: 30,
         }}
         onClickAction={() => {

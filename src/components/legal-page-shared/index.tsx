@@ -15,7 +15,7 @@ export const LegalPageShared = ({
 }: LegalPageSharedProps) => {
   return (
     <PageShell>
-      <Container maxWidth="md" sx={{ py: { xs: 6, md: 9 } }}>
+      <Container maxWidth="md" sx={{ pt: { xs: 6, md: 9 } }}>
         <Typography
           sx={{
             textTransform: "uppercase",

@@ -11,7 +11,9 @@ export const PageShell = ({ children }: PageShellProps) => {
         background: "var(--color-page)",
       }}
     >
-      <Box sx={{ position: "relative", zIndex: 1 }}>{children}</Box>
+      <Box sx={{ position: "relative", zIndex: 1, pb: { xs: 5, md: 7 } }}>
+        {children}
+      </Box>
     </Box>
   );
 };

@@ -101,7 +101,7 @@ export const ProductInfo = ({
             <Chip
               label={product.storyLabel}
               variant="outlined"
-              sx={{ borderColor: "#E8D6BF" }}
+              sx={{ borderColor: "var(--color-border-rose)" }}
             />
           ) : null}
         </Stack>
@@ -126,8 +126,8 @@ export const ProductInfo = ({
             void toggleWishlist(product.productId);
           }}
           sx={{
-            border: "1px solid #E8D6BF",
-            bgcolor: "#fff",
+            border: "1px solid var(--color-border-rose)",
+            bgcolor: "var(--color-white)",
             mt: 0.5,
           }}
         >
@@ -374,7 +374,11 @@ export const ProductInfo = ({
               variant="outlined"
               color="inherit"
               size="large"
-              sx={{ flex: 1, borderColor: "#E8D6BF", bgcolor: "#fff" }}
+              sx={{
+                flex: 1,
+                borderColor: "var(--color-border-rose)",
+                bgcolor: "var(--color-white)",
+              }}
               disabled={selectionAvailability !== "available"}
               onClick={handleBuyNow}
             >

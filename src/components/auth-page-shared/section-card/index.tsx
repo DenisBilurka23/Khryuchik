@@ -5,7 +5,7 @@ import type { AuthSectionCardProps } from "./types";
 export const AuthSectionCard = ({ children }: AuthSectionCardProps) => (
   <Card
     sx={{
-      border: "1px solid #F0DFC8",
+      border: "1px solid var(--color-border)",
       bgcolor: "rgba(255,255,255,0.86)",
     }}
   >

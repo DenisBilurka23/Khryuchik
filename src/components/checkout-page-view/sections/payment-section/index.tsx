@@ -37,8 +37,10 @@ export const CheckoutPaymentSection = ({
                 sx={{
                   border: "1px solid",
                   borderColor:
-                    selectedMethod === method ? "primary.main" : "#F0DFC8",
-                  borderRadius: 2,
+                    selectedMethod === method
+                      ? "primary.main"
+                      : "var(--color-border)",
+                  borderRadius: "var(--radius-field)",
                   p: 2,
                   transition: "border-color .2s ease",
                 }}

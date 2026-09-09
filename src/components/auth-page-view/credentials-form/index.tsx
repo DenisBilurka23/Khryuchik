@@ -34,7 +34,7 @@ export const AuthCredentialsForm = ({
             title={t("credentialsTitle")}
             description={t("credentialsLead")}
             icon={<LockOutlinedIcon />}
-            iconBackground="#FFF2D6"
+            iconBackground="var(--color-butter)"
           />
 
           {errorMessage ? (

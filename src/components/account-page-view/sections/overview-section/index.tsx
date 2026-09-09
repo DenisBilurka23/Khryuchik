@@ -1,6 +1,14 @@
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import { Box, Button, Chip, Grid, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Chip,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { customerOrderStatusColors } from "@/constants/order";
@@ -41,8 +49,8 @@ export const OverviewSection = ({
               sx={{
                 p: 2.25,
                 borderRadius: "22px",
-                border: "1px solid #F0DFC8",
-                bgcolor: "#fff",
+                border: "1px solid var(--color-border)",
+                bgcolor: "var(--color-white)",
               }}
             >
               <Typography color="text.secondary">{t("noOrders")}</Typography>
@@ -55,8 +63,8 @@ export const OverviewSection = ({
                 sx={{
                   p: 2.25,
                   borderRadius: "22px",
-                  border: "1px solid #F0DFC8",
-                  bgcolor: "#fff",
+                  border: "1px solid var(--color-border)",
+                  bgcolor: "var(--color-white)",
                 }}
               >
                 <Stack
@@ -65,13 +73,24 @@ export const OverviewSection = ({
                   spacing={2}
                 >
                   <Box>
-                    <Typography sx={{ fontWeight: 800 }}>{order.number}</Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                    <Typography sx={{ fontWeight: 800 }}>
+                      {order.number}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 0.5 }}
+                    >
                       {new Date(order.createdAt).toLocaleDateString(locale)}
                     </Typography>
-                    <Typography sx={{ mt: 1.25 }}>{order.itemsSummary}</Typography>
+                    <Typography sx={{ mt: 1.25 }}>
+                      {order.itemsSummary}
+                    </Typography>
                   </Box>
-                  <Stack alignItems={{ xs: "flex-start", md: "flex-end" }} spacing={1}>
+                  <Stack
+                    alignItems={{ xs: "flex-start", md: "flex-end" }}
+                    spacing={1}
+                  >
                     <Chip
                       label={tStatus(order.status)}
                       sx={{
@@ -79,7 +98,9 @@ export const OverviewSection = ({
                         fontWeight: 700,
                       }}
                     />
-                    <Typography sx={{ fontWeight: 800 }}>{order.total}</Typography>
+                    <Typography sx={{ fontWeight: 800 }}>
+                      {order.total}
+                    </Typography>
                   </Stack>
                 </Stack>
               </Paper>
@@ -102,8 +123,8 @@ export const OverviewSection = ({
                     sx={{
                       p: 2.25,
                       borderRadius: "22px",
-                      border: "1px solid #F0DFC8",
-                      bgcolor: "#fff",
+                      border: "1px solid var(--color-border)",
+                      bgcolor: "var(--color-white)",
                     }}
                   >
                     <Stack
@@ -123,7 +144,11 @@ export const OverviewSection = ({
                         >
                           {item.productTitle}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ mt: 0.5 }}
+                        >
                           {item.format}
                           {item.sizeBytes
                             ? ` • ${formatFileSize(item.sizeBytes)}`
@@ -137,7 +162,11 @@ export const OverviewSection = ({
                         startIcon={<DownloadOutlinedIcon />}
                         component="a"
                         href={item.downloadUrl}
-                        sx={{ borderColor: "#E8D6BF", bgcolor: "#fff", flexShrink: 0 }}
+                        sx={{
+                          borderColor: "var(--color-border-rose)",
+                          bgcolor: "var(--color-white)",
+                          flexShrink: 0,
+                        }}
                       >
                         {t("download")}
                       </Button>
@@ -165,11 +194,13 @@ export const OverviewSection = ({
                   sx={{
                     p: 2.25,
                     borderRadius: "22px",
-                    border: "1px solid #F0DFC8",
-                    bgcolor: "#fff",
+                    border: "1px solid var(--color-border)",
+                    bgcolor: "var(--color-white)",
                   }}
                 >
-                  <Typography color="text.secondary">{t("noAddressesYet")}</Typography>
+                  <Typography color="text.secondary">
+                    {t("noAddressesYet")}
+                  </Typography>
                 </Paper>
               ) : null}
 
@@ -184,11 +215,17 @@ export const OverviewSection = ({
                     sx={{
                       p: 2.25,
                       borderRadius: "22px",
-                      border: isCurrent ? "1px solid #D9876C" : "1px solid #F0DFC8",
-                      bgcolor: "#fff",
+                      border: isCurrent
+                        ? "1px solid var(--color-action)"
+                        : "1px solid var(--color-border)",
+                      bgcolor: "var(--color-white)",
                     }}
                   >
-                    <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                    <Stack
+                      direction="row"
+                      spacing={1.5}
+                      alignItems="flex-start"
+                    >
                       <LocationOnOutlinedIcon />
                       <Box sx={{ flex: 1 }}>
                         <Stack
@@ -201,7 +238,11 @@ export const OverviewSection = ({
                             {getUserShippingAddressTitle(address)}
                           </Typography>
                           {isCurrent ? (
-                            <Chip label={t("currentAddress")} color="primary" size="small" />
+                            <Chip
+                              label={t("currentAddress")}
+                              color="primary"
+                              size="small"
+                            />
                           ) : null}
                         </Stack>
                         <Typography

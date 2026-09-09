@@ -16,9 +16,9 @@ export const AuthPageShell = ({ children }: AuthPageShellProps) => (
       sx={{
         width: "100%",
         maxWidth: 960,
-        border: "1px solid #F0DFC8",
+        border: "1px solid var(--color-border)",
         background:
-          "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.35), transparent 28%), #fff",
+          "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.35), transparent 28%), var(--color-white)",
       }}
     >
       <CardContent sx={{ p: { xs: 3, md: 5 } }}>

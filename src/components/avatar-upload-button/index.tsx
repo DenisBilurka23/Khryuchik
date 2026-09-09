@@ -47,9 +47,10 @@ export const AvatarUploadButton = ({
             transform: "translateY(-1px)",
             boxShadow: "0 20px 42px rgba(196, 155, 120, 0.24)",
           },
-          "&:hover .avatar-upload-overlay, &:focus-visible .avatar-upload-overlay": {
-            opacity: 1,
-          },
+          "&:hover .avatar-upload-overlay, &:focus-visible .avatar-upload-overlay":
+            {
+              opacity: 1,
+            },
         }}
       >
         <Avatar
@@ -66,7 +67,7 @@ export const AvatarUploadButton = ({
             display: "grid",
             placeItems: "center",
             bgcolor: "rgba(39, 33, 42, 0.34)",
-            color: "#fff",
+            color: "var(--color-white)",
             opacity: imageSrc ? 0 : 1,
             transition: "opacity 160ms ease",
           }}
@@ -85,9 +86,9 @@ export const AvatarUploadButton = ({
           display: "grid",
           placeItems: "center",
           borderRadius: "50%",
-          bgcolor: "#FF7B92",
-          color: "#fff",
-          border: "3px solid #fff",
+          bgcolor: "var(--color-accent)",
+          color: "var(--color-white)",
+          border: "3px solid var(--color-white)",
           boxShadow: "0 10px 24px rgba(255, 123, 146, 0.35)",
           pointerEvents: "none",
         }}

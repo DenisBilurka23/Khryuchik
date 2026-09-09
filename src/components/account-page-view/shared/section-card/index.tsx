@@ -4,7 +4,7 @@ import type { SectionCardProps } from "./types";
 
 export const SectionCard = ({ title, action, children }: SectionCardProps) => {
   return (
-    <Card sx={{ border: "1px solid #F0DFC8" }}>
+    <Card sx={{ border: "1px solid var(--color-border)" }}>
       <CardContent sx={{ p: 3 }}>
         <Stack
           direction="row"
@@ -12,7 +12,9 @@ export const SectionCard = ({ title, action, children }: SectionCardProps) => {
           alignItems="center"
           sx={{ mb: 2.5 }}
         >
-          <Typography sx={{ fontSize: 22, fontWeight: 800 }}>{title}</Typography>
+          <Typography sx={{ fontSize: 22, fontWeight: 800 }}>
+            {title}
+          </Typography>
           {action}
         </Stack>
         {children}

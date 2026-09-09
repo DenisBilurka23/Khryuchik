@@ -37,6 +37,17 @@ import { LocaleSwitcher } from "../locale-switcher";
 
 import type { MobileMenuItem, MobileMenuProps } from "./types";
 
+const menuItemSx = (active: boolean) =>
+  ({
+    borderRadius: "var(--radius-plate)",
+    mb: 1,
+    bgcolor: active ? "var(--color-accent-pale)" : "var(--color-card)",
+    border: "1px solid",
+    borderColor: active ? "var(--color-border-rose)" : "var(--color-border)",
+    color: active ? "var(--color-action)" : "inherit",
+    py: 1.5,
+  }) as const;
+
 const iconByKey: Record<MobileMenuItem["key"], React.ReactNode> = {
   home: <HomeOutlinedIcon fontSize="small" />,
   shop: <StorefrontOutlinedIcon fontSize="small" />,
@@ -91,7 +102,7 @@ export const MobileMenu = ({
           display: { xs: "inline-flex", md: "none" },
           width: 40,
           height: 40,
-          borderRadius: "999px",
+          borderRadius: "var(--radius-pill)",
           border: "1px solid var(--color-border)",
           bgcolor: "var(--color-card)",
         }}
@@ -119,11 +130,7 @@ export const MobileMenu = ({
             justifyContent="space-between"
             alignItems="center"
           >
-            <Link
-              href={homeHref}
-              onClick={() => setOpen(false)}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
+            <Link href={homeHref} onClick={() => setOpen(false)}>
               <Logo title={t("brand.title")} subtitle={t("brand.subtitle")} />
             </Link>
 
@@ -184,24 +191,11 @@ export const MobileMenu = ({
                   key={item.key}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  style={{ textDecoration: "none", color: "inherit" }}
                 >
                   <ListItemButton
                     component="span"
                     aria-current={active ? "page" : undefined}
-                    sx={{
-                      borderRadius: "18px",
-                      mb: 1,
-                      bgcolor: active
-                        ? "var(--color-accent-pale)"
-                        : "var(--color-card)",
-                      border: "1px solid",
-                      borderColor: active
-                        ? "var(--color-border-rose)"
-                        : "var(--color-border)",
-                      color: active ? "var(--color-action)" : "inherit",
-                      py: 1.5,
-                    }}
+                    sx={menuItemSx(active)}
                   >
                     <ListItemIcon
                       sx={{
@@ -225,11 +219,7 @@ export const MobileMenu = ({
             })}
           </List>
 
-          <Link
-            href={cartHref}
-            onClick={() => setOpen(false)}
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
+          <Link href={cartHref} onClick={() => setOpen(false)}>
             <Button
               fullWidth
               variant="contained"

@@ -42,7 +42,7 @@ const createProductPageViewModel = ({
     title: relatedProduct.title,
     emoji: relatedProduct.emoji,
     thumbnailBackgroundColor:
-      relatedProduct.thumbnailBackgroundColor ?? "#FFF8F0",
+      relatedProduct.thumbnailBackgroundColor ?? "var(--color-cream)",
     formattedPrice: formatCurrency(
       relatedProduct.price,
       locale,
@@ -105,7 +105,7 @@ export const ProductPageView = async ({
 
   return (
     <PageShell>
-      <Box sx={{ pb: { xs: 4, md: 6 } }}>
+      <Box>
         <Container maxWidth="lg">
           <Breadcrumbs
             items={[

@@ -37,7 +37,7 @@ export const RegisterForm = ({
           <AuthSectionHeader
             title={t("submitButton")}
             icon={<BadgeOutlinedIcon />}
-            iconBackground="#FCE5EA"
+            iconBackground="var(--color-accent-tint)"
           />
 
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}

@@ -5,6 +5,18 @@ import { Box, Grid, Paper } from "@mui/material";
 
 import type { ProductGalleryProps } from "../types";
 
+const thumbSx = {
+  height: 96,
+  borderRadius: "var(--radius-plate)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: 36,
+  cursor: "pointer",
+  overflow: "hidden",
+  transition: "border-color .2s ease",
+} as const;
+
 export const ProductGallery = ({ images }: ProductGalleryProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const activeImage = images[activeIndex] ?? images[0];
@@ -16,8 +28,8 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
         sx={{
           aspectRatio: "5 / 3",
           borderRadius: "32px",
-          border: "1px solid #F0DFC8",
-          bgcolor: activeImage?.bgColor || "#FFF8F0",
+          border: "1px solid var(--color-border)",
+          bgcolor: activeImage?.bgColor || "var(--color-cream)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -44,20 +56,12 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
               elevation={0}
               onClick={() => setActiveIndex(index)}
               sx={{
-                height: 96,
-                borderRadius: "20px",
+                ...thumbSx,
                 border:
                   activeIndex === index
-                    ? "2px solid #D96C82"
-                    : "1px solid #F0DFC8",
-                bgcolor: image.bgColor || "#FFF8F0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 36,
-                cursor: "pointer",
-                overflow: "hidden",
-                transition: "all .2s ease",
+                    ? "2px solid var(--color-accent)"
+                    : "1px solid var(--color-border)",
+                bgcolor: image.bgColor || "var(--color-cream)",
               }}
             >
               {image.src ? (

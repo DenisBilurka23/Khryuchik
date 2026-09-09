@@ -247,8 +247,8 @@ export const AddressesSection = ({
             sx={{
               p: 2.5,
               borderRadius: "22px",
-              border: "1px solid #F0DFC8",
-              bgcolor: "#fff",
+              border: "1px solid var(--color-border)",
+              bgcolor: "var(--color-white)",
             }}
           >
             <Grid container spacing={2}>
@@ -362,8 +362,8 @@ export const AddressesSection = ({
             sx={{
               p: 2.5,
               borderRadius: "22px",
-              border: "1px solid #F0DFC8",
-              bgcolor: "#fff",
+              border: "1px solid var(--color-border)",
+              bgcolor: "var(--color-white)",
             }}
           >
             <Typography color="text.secondary">
@@ -398,9 +398,9 @@ export const AddressesSection = ({
                       p: 2.5,
                       borderRadius: "22px",
                       border: isCurrent
-                        ? "1px solid #D9876C"
-                        : "1px solid #F0DFC8",
-                      bgcolor: "#fff",
+                        ? "1px solid var(--color-action)"
+                        : "1px solid var(--color-border)",
+                      bgcolor: "var(--color-white)",
                       height: "100%",
                       opacity: isSelecting ? 0.72 : 1,
                       transition: "opacity 0.2s ease, border-color 0.2s ease",

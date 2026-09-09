@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 
 import contactHeroImage from "@/assets/ContactsHero.png";
+import { HeroPanel } from "@/components/primitives";
 import { SectionEyebrow } from "@/components/section-eyebrow";
 import { accentSx } from "@/theme/sx";
 
@@ -16,17 +17,7 @@ export const ContactHero = ({
   lede,
 }: ContactHeroProps) => {
   return (
-    <Box
-      sx={{
-        display: "grid",
-        overflow: "hidden",
-        borderRadius: {
-          xs: "var(--radius-panel)",
-          md: "var(--radius-hero)",
-        },
-        background: "var(--color-hero-rose)",
-      }}
-    >
+    <HeroPanel sx={{ display: "grid", overflow: "hidden" }}>
       <Box
         sx={{
           zIndex: 1,
@@ -81,7 +72,7 @@ export const ContactHero = ({
           style={{ width: "100%", height: "auto" }}
         />
       </Box>
-    </Box>
+    </HeroPanel>
   );
 };
 

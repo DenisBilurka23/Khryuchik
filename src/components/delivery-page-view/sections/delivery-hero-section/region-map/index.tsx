@@ -68,8 +68,8 @@ export const BelarusMap = (city: string) => {
     <svg {...svgProps}>
       <defs>
         <radialGradient id="deliveryByBg" cx="50%" cy="40%" r="70%">
-          <stop offset="0%" stopColor="#f9eaef" />
-          <stop offset="100%" stopColor="#e8d5dc" />
+          <stop offset="0%" stopColor="var(--color-hero-rose)" />
+          <stop offset="100%" stopColor="var(--color-accent-soft)" />
         </radialGradient>
 
         <filter id="mapShadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -77,7 +77,7 @@ export const BelarusMap = (city: string) => {
             dx="0"
             dy="1.5"
             stdDeviation="2"
-            floodColor="#a96375"
+            floodColor="var(--color-accent)"
             floodOpacity="0.16"
           />
         </filter>
@@ -87,32 +87,38 @@ export const BelarusMap = (city: string) => {
 
       <path
         d={mapPath}
-        fill="#fff"
-        stroke="#a96375"
+        fill="var(--color-white)"
+        stroke="var(--color-accent)"
         strokeWidth="2.8"
         strokeLinejoin="round"
         strokeLinecap="round"
         filter="url(#mapShadow)"
       />
 
-      <circle cx="158" cy="117" r="14" fill="#fff" opacity="0.82" />
+      <circle
+        cx="158"
+        cy="117"
+        r="14"
+        fill="var(--color-white)"
+        opacity="0.82"
+      />
       <circle
         cx="158"
         cy="117"
         r="13"
         fill="none"
-        stroke="#a96375"
+        stroke="var(--color-accent)"
         strokeWidth="2.4"
         opacity="0.42"
       />
-      <circle cx="158" cy="117" r="7" fill="#a96375" />
+      <circle cx="158" cy="117" r="7" fill="var(--color-accent)" />
 
       <text
         x="175"
         y="121"
         fontSize="13"
         fontWeight="700"
-        fill="#34272d"
+        fill="var(--color-text)"
         style={labelFont}
       >
         {city}
@@ -125,18 +131,18 @@ export const BelarusMap = (city: string) => {
           width="52"
           height="42"
           rx="4"
-          fill="#fff"
-          stroke="#34272d"
+          fill="var(--color-white)"
+          stroke="var(--color-text)"
           strokeWidth="1.8"
         />
         <path
           d="M0 15 L52 15 M26 0 L26 42"
-          stroke="#34272d"
+          stroke="var(--color-text)"
           strokeWidth="1.8"
         />
         <path
           d="M14 6 L26 15 L38 6"
-          stroke="#a96375"
+          stroke="var(--color-accent)"
           strokeWidth="2.4"
           fill="none"
           strokeLinecap="round"
@@ -158,26 +164,30 @@ export const UnitedStatesMap = (city: string) => {
       aria-label={`Карта США с отмеченным городом ${city}`}
       {...svgProps}
     >
-      <rect width="320" height="260" fill="#e8d5dc" />
+      <rect width="320" height="260" fill="var(--color-accent-soft)" />
 
       <g transform="translate(-18 2) scale(0.24)">
-        <path d={mapPath} fill="#fbf7f2" transform="translate(249 184)" />
+        <path
+          d={mapPath}
+          fill="var(--color-cream)"
+          transform="translate(249 184)"
+        />
         <path
           d={mapPath}
           fill="none"
-          stroke="#8f5263"
+          stroke="var(--color-action)"
           strokeWidth="6"
           strokeLinejoin="round"
           strokeLinecap="round"
           transform="translate(249 184)"
         />
       </g>
-      <circle cx="146" cy="135" r="5.8" fill="#a96375" />
-      <circle cx="217" cy="119" r="5.8" fill="#a96375" />
+      <circle cx="146" cy="135" r="5.8" fill="var(--color-accent)" />
+      <circle cx="217" cy="119" r="5.8" fill="var(--color-accent)" />
 
       <path
         d="M146 135 L217 119 L272 104"
-        stroke="#e8d5dc"
+        stroke="var(--color-accent-soft)"
         strokeWidth="1.9"
         strokeDasharray="4 4"
         strokeLinecap="round"
@@ -185,24 +195,30 @@ export const UnitedStatesMap = (city: string) => {
         opacity="0.9"
       />
 
-      <circle cx="272" cy="104" r="14" fill="#fff" opacity="0.95" />
+      <circle
+        cx="272"
+        cy="104"
+        r="14"
+        fill="var(--color-white)"
+        opacity="0.95"
+      />
       <circle
         cx="272"
         cy="104"
         r="13"
         fill="none"
-        stroke="#a96375"
+        stroke="var(--color-accent)"
         strokeWidth="2.6"
         opacity="0.42"
       />
-      <circle cx="272" cy="104" r="7.4" fill="#a96375" />
+      <circle cx="272" cy="104" r="7.4" fill="var(--color-accent)" />
 
       <text
         x="240"
         y="108"
         fontSize="13"
         fontWeight="700"
-        fill="#34272d"
+        fill="var(--color-text)"
         textAnchor="end"
         style={labelFont}
       >
@@ -216,12 +232,19 @@ export const UnitedStatesMap = (city: string) => {
           width="56"
           height="38"
           rx="5"
-          fill="#fff"
-          stroke="#34272d"
+          fill="var(--color-white)"
+          stroke="var(--color-text)"
           strokeWidth="1.8"
         />
-        <rect x="0" y="9" width="56" height="8" fill="#34272d" />
-        <rect x="8" y="25" width="20" height="6" rx="1" fill="#a96375" />
+        <rect x="0" y="9" width="56" height="8" fill="var(--color-text)" />
+        <rect
+          x="8"
+          y="25"
+          width="20"
+          height="6"
+          rx="1"
+          fill="var(--color-accent)"
+        />
       </g>
     </svg>
   );
@@ -231,8 +254,8 @@ const FallbackMap = (): ReactNode => (
   <svg {...svgProps}>
     <defs>
       <radialGradient id="deliveryFallbackBg" cx="50%" cy="40%" r="70%">
-        <stop offset="0%" stopColor="#f9eaef" />
-        <stop offset="100%" stopColor="#e8d5dc" />
+        <stop offset="0%" stopColor="var(--color-hero-rose)" />
+        <stop offset="100%" stopColor="var(--color-accent-soft)" />
       </radialGradient>
     </defs>
     <rect width="320" height="260" fill="url(#deliveryFallbackBg)" />
@@ -240,14 +263,14 @@ const FallbackMap = (): ReactNode => (
       cx="160"
       cy="132"
       r="74"
-      fill="#fff"
-      stroke="#a96375"
+      fill="var(--color-white)"
+      stroke="var(--color-accent)"
       strokeWidth="2.5"
     />
     <path
       d="M86 132 H234 M160 58 V206 M104 92 Q160 116 216 92 M104 172 Q160 148 216 172"
       fill="none"
-      stroke="#a96375"
+      stroke="var(--color-accent)"
       strokeWidth="1.5"
       opacity="0.45"
     />
@@ -258,12 +281,19 @@ const FallbackMap = (): ReactNode => (
         width="56"
         height="38"
         rx="5"
-        fill="#fff"
-        stroke="#34272d"
+        fill="var(--color-white)"
+        stroke="var(--color-text)"
         strokeWidth="1.5"
       />
-      <rect x="0" y="9" width="56" height="8" fill="#34272d" />
-      <rect x="6" y="25" width="20" height="6" rx="1" fill="#a96375" />
+      <rect x="0" y="9" width="56" height="8" fill="var(--color-text)" />
+      <rect
+        x="6"
+        y="25"
+        width="20"
+        height="6"
+        rx="1"
+        fill="var(--color-accent)"
+      />
     </g>
   </svg>
 );

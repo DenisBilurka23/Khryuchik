@@ -3,7 +3,10 @@ import Link from "next/link";
 
 import type { RelatedProductsProps } from "../types";
 
-export const RelatedProducts = ({ title, relatedProducts }: RelatedProductsProps) => {
+export const RelatedProducts = ({
+  title,
+  relatedProducts,
+}: RelatedProductsProps) => {
   if (relatedProducts.length === 0) {
     return null;
   }
@@ -31,8 +34,10 @@ export const RelatedProducts = ({ title, relatedProducts }: RelatedProductsProps
                     <Box
                       sx={{
                         minHeight: 180,
-                        borderRadius: "24px",
-                        bgcolor: product.thumbnailBackgroundColor ?? "#FFF8F0",
+                        borderRadius: "var(--radius-panel)",
+                        bgcolor:
+                          product.thumbnailBackgroundColor ??
+                          "var(--color-cream)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -42,11 +47,16 @@ export const RelatedProducts = ({ title, relatedProducts }: RelatedProductsProps
                       {product.emoji}
                     </Box>
 
-                    <Typography variant="h6" sx={{ mt: 3, fontSize: 18, fontWeight: 700 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ mt: 3, fontSize: 18, fontWeight: 700 }}
+                    >
                       {product.title}
                     </Typography>
 
-                    <Typography sx={{ mt: 1, color: "primary.main", fontWeight: 700 }}>
+                    <Typography
+                      sx={{ mt: 1, color: "primary.main", fontWeight: 700 }}
+                    >
                       {product.formattedPrice}
                     </Typography>
                   </CardContent>

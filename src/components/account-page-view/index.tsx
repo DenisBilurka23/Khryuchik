@@ -231,7 +231,11 @@ export const AccountPageView = ({
           sx={{ display: "flex" }}
         >
           <Card
-            sx={{ border: "1px solid #F0DFC8", width: "100%", height: "100%" }}
+            sx={{
+              border: "1px solid var(--color-border)",
+              width: "100%",
+              height: "100%",
+            }}
           >
             <CardContent sx={{ p: 3 }}>
               <Stack alignItems="center" textAlign="center">
@@ -262,7 +266,11 @@ export const AccountPageView = ({
                   sx={
                     isEditingProfile
                       ? { mt: 2.5 }
-                      : { mt: 2.5, borderColor: "#E8D6BF", bgcolor: "#fff" }
+                      : {
+                          mt: 2.5,
+                          borderColor: "var(--color-border-rose)",
+                          bgcolor: "var(--color-white)",
+                        }
                   }
                   onClick={
                     isEditingProfile
@@ -289,8 +297,8 @@ export const AccountPageView = ({
               p: { xs: 3, md: 4 },
               borderRadius: "32px",
               background:
-                "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.45), transparent 28%), #fff",
-              border: "1px solid #F0DFC8",
+                "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.45), transparent 28%), var(--color-white)",
+              border: "1px solid var(--color-border)",
               width: "100%",
               height: "100%",
             }}
@@ -322,7 +330,7 @@ export const AccountPageView = ({
         </Grid>
 
         <Grid size={{ xs: 12, md: 4, lg: 3.5 }} order={{ xs: 2, md: 3 }}>
-          <Card sx={{ border: "1px solid #F0DFC8" }}>
+          <Card sx={{ border: "1px solid var(--color-border)" }}>
             <CardContent sx={{ p: 2 }}>
               <List sx={{ p: 0 }}>
                 {sidebarItems.map((item) => (

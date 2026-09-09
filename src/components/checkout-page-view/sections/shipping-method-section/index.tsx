@@ -112,8 +112,8 @@ export const CheckoutShippingMethodSection = ({
                     direction="row"
                     justifyContent="space-between"
                     sx={{
-                      border: "1px solid #F0DFC8",
-                      borderRadius: 2,
+                      border: "1px solid var(--color-border)",
+                      borderRadius: "var(--radius-field)",
                       p: 2,
                     }}
                   >
@@ -159,8 +159,8 @@ export const CheckoutShippingMethodSection = ({
                                 border: "1px solid",
                                 borderColor: isSelected
                                   ? "primary.main"
-                                  : "#F0DFC8",
-                                borderRadius: 2,
+                                  : "var(--color-border)",
+                                borderRadius: "var(--radius-field)",
                                 px: 2,
                                 py: 1,
                                 transition: "border-color .2s ease",

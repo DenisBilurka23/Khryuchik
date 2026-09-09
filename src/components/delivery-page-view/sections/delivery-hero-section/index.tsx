@@ -1,5 +1,6 @@
 import { Box, Container, Typography } from "@mui/material";
 
+import { HeroPanel } from "@/components/primitives";
 import { SectionEyebrow } from "@/components/section-eyebrow";
 import { accentSx } from "@/theme/sx";
 import { getCountryDisplayName } from "@/utils";
@@ -17,8 +18,6 @@ const heroSx = {
   alignItems: "center",
   gap: { xs: 3.5, md: 4, lg: 6 },
   p: { xs: "28px 20px", md: "28px 32px", lg: "32px 40px" },
-  borderRadius: { xs: "var(--radius-panel)", md: "var(--radius-hero)" },
-  background: "var(--color-hero-rose)",
 } as const;
 
 const ledeSx = {
@@ -76,7 +75,7 @@ export const DeliveryHeroSection = ({
   return (
     <Box component="section" sx={{ pt: { xs: 3, md: 6 } }}>
       <Container maxWidth="lg">
-        <Box sx={heroSx}>
+        <HeroPanel sx={heroSx}>
           <Box>
             <SectionEyebrow label={eyebrow} />
 
@@ -136,7 +135,7 @@ export const DeliveryHeroSection = ({
               </Box>
             </Box>
           </Box>
-        </Box>
+        </HeroPanel>
       </Container>
     </Box>
   );

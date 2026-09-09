@@ -24,8 +24,8 @@ export const ProductPricingUnavailable = async ({
             elevation={0}
             sx={{
               borderRadius: "32px",
-              border: "1px dashed #E8D6BF",
-              bgcolor: "#fff",
+              border: "1px dashed var(--color-border-rose)",
+              bgcolor: "var(--color-white)",
               p: { xs: 4, md: 6 },
               textAlign: "center",
             }}
@@ -48,10 +48,7 @@ export const ProductPricingUnavailable = async ({
               {t("text")}
             </Typography>
 
-            <Link
-              href={getLocalizedPath(locale, "/shop")}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
+            <Link href={getLocalizedPath(locale, "/shop")}>
               <Button
                 component="span"
                 variant="contained"

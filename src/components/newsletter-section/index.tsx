@@ -10,6 +10,21 @@ import { isSubscribedToNewsletter } from "@/server/newsletter/services/newslette
 import { NewsletterForm } from "./form";
 import type { NewsletterSectionProps } from "./types";
 
+const panelSx = {
+  display: "grid",
+  gridTemplateColumns: {
+    xs: "minmax(0, 1fr)",
+    md: "minmax(0, 1fr) minmax(0, 1fr)",
+    lg: "minmax(0, 1fr) minmax(0, 0.95fr) auto",
+  },
+  alignItems: "center",
+  gap: { xs: 3, lg: 4 },
+  p: { xs: "28px 20px", md: "18px 40px" },
+  borderRadius: "var(--radius-panel)",
+  background: "var(--color-newsletter)",
+  color: "var(--color-text)",
+} as const;
+
 export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
   const session = await getServerAuthSession();
   const accountEmail = session?.user?.email ?? "";
@@ -24,24 +39,9 @@ export const NewsletterSection = async ({ locale }: NewsletterSectionProps) => {
   });
 
   return (
-    <Box component="section" sx={{ py: { xs: 5, md: 7 } }}>
+    <Box component="section" sx={{ pt: { xs: 5, md: 7 } }}>
       <Container maxWidth="lg">
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "minmax(0, 1fr)",
-              md: "minmax(0, 1fr) minmax(0, 1fr)",
-              lg: "minmax(0, 1fr) minmax(0, 0.95fr) auto",
-            },
-            alignItems: "center",
-            gap: { xs: 3, lg: 4 },
-            p: { xs: "28px 20px", md: "18px 40px" },
-            borderRadius: "var(--radius-panel)",
-            background: "var(--color-newsletter)",
-            color: "var(--color-text)",
-          }}
-        >
+        <Box sx={panelSx}>
           <Box>
             <SectionEyebrow label={t("eyebrow")} />
 

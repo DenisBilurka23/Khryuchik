@@ -31,8 +31,12 @@ export const colors = {
   greenLight: "#eef4d0",
 
   lilac: "#d9aec2",
+  butter: "#fff2d6",
 
   selection: "rgba(169, 99, 117, 0.2)",
+  headerVeil: "rgba(255, 252, 248, 0.94)",
+  washRose: "rgba(247, 201, 209, 0.45)",
+  washButter: "rgba(255, 224, 167, 0.45)",
 } as const;
 
 const toCustomProperty = (key: string) =>

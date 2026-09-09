@@ -191,9 +191,7 @@ export const SettingsSection = ({
               />
             </Grid>
           )}
-          <Grid
-            size={{ xs: 12, md: availableCountries.length > 1 ? 6 : 12 }}
-          >
+          <Grid size={{ xs: 12, md: availableCountries.length > 1 ? 6 : 12 }}>
             <LocaleSwitcher
               locale={locale}
               localizedPaths={localizedAccountPaths}
@@ -211,7 +209,10 @@ export const SettingsSection = ({
             variant="outlined"
             color="inherit"
             startIcon={<NotificationsOutlinedIcon />}
-            sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
+            sx={{
+              borderColor: "var(--color-border-rose)",
+              bgcolor: "var(--color-white)",
+            }}
           >
             {t("notifications")}
           </Button>
@@ -221,9 +222,9 @@ export const SettingsSection = ({
           elevation={0}
           sx={{
             p: 2,
-            borderRadius: "18px",
-            border: "1px solid #F0DFC8",
-            bgcolor: "#fff",
+            borderRadius: "var(--radius-plate)",
+            border: "1px solid var(--color-border)",
+            bgcolor: "var(--color-white)",
           }}
         >
           <Box

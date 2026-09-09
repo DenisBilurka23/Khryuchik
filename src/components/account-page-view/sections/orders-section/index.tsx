@@ -31,8 +31,8 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
             sx={{
               p: 2.5,
               borderRadius: "22px",
-              border: "1px solid #F0DFC8",
-              bgcolor: "#fff",
+              border: "1px solid var(--color-border)",
+              bgcolor: "var(--color-white)",
             }}
           >
             <Stack
@@ -70,7 +70,7 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
                                 label={part}
                                 size="small"
                                 sx={{
-                                  bgcolor: "#F5F0EB",
+                                  bgcolor: "var(--color-cream)",
                                   fontWeight: 500,
                                   height: 22,
                                   fontSize: "0.7rem",
@@ -86,7 +86,7 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
                             }
                             size="small"
                             sx={{
-                              bgcolor: "#F5F0EB",
+                              bgcolor: "var(--color-cream)",
                               fontWeight: 500,
                               height: 22,
                               fontSize: "0.7rem",

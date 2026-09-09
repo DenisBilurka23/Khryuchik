@@ -18,7 +18,9 @@ import { CheckoutSectionCard } from "../../section-card";
 import type { SavedAddressesSectionProps } from "./types";
 
 const selectedBorder = (isSelected: boolean) =>
-  isSelected ? "1px solid #D9876C" : "1px solid #F0DFC8";
+  isSelected
+    ? "1px solid var(--color-action)"
+    : "1px solid var(--color-border)";
 
 export const CheckoutSavedAddressesSection = ({
   addresses,
@@ -41,9 +43,9 @@ export const CheckoutSavedAddressesSection = ({
               key={address.id}
               elevation={0}
               sx={{
-                borderRadius: "18px",
+                borderRadius: "var(--radius-plate)",
                 border: selectedBorder(selectedAddressId === address.id),
-                bgcolor: "#fff",
+                bgcolor: "var(--color-white)",
                 transition: "border-color 0.2s ease",
               }}
             >
@@ -82,9 +84,9 @@ export const CheckoutSavedAddressesSection = ({
         <Paper
           elevation={0}
           sx={{
-            borderRadius: "18px",
+            borderRadius: "var(--radius-plate)",
             border: selectedBorder(selectedAddressId === ""),
-            bgcolor: "#fff",
+            bgcolor: "var(--color-white)",
             transition: "border-color 0.2s ease",
           }}
         >
@@ -93,7 +95,9 @@ export const CheckoutSavedAddressesSection = ({
             control={<Radio />}
             sx={{ alignItems: "center", m: 0, p: 2, width: "100%" }}
             label={
-              <Typography sx={{ ml: 0.5 }}>{labels.newAddressOption}</Typography>
+              <Typography sx={{ ml: 0.5 }}>
+                {labels.newAddressOption}
+              </Typography>
             }
           />
         </Paper>

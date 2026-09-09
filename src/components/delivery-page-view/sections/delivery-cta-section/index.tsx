@@ -17,10 +17,7 @@ export const DeliveryCtaSection = ({
   shopHref,
 }: DeliveryCtaSectionProps) => {
   return (
-    <Box
-      component="section"
-      sx={{ pt: { xs: 3, md: 4 }, pb: { xs: 5, md: 7 } }}
-    >
+    <Box component="section" sx={{ pt: { xs: 3, md: 4 } }}>
       <Container maxWidth="lg">
         <Box
           sx={{

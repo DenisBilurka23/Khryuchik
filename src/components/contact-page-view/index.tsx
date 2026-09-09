@@ -14,6 +14,20 @@ import type { ContactChannelItem } from "./sections/contact-channels-section/typ
 import { ContactForm } from "./sections/contact-form-section";
 import { ContactHero } from "./sections/contact-hero";
 import type { ContactPageViewProps } from "./types";
+
+const panelSx = {
+  display: "grid",
+  gridTemplateColumns: {
+    xs: "minmax(0, 1fr)",
+    lg: "minmax(0, 0.86fr) minmax(0, 1.14fr)",
+  },
+  alignItems: "stretch",
+  gap: { xs: 2, md: 3 },
+  mt: { xs: 3, md: 4 },
+  p: { xs: 2, md: 3 },
+  borderRadius: "var(--radius-panel)",
+  background: "var(--color-accent-pale)",
+} as const;
 import { getInstagramHandle } from "./utils";
 
 export const ContactPageView = async ({
@@ -65,10 +79,7 @@ export const ContactPageView = async ({
 
   return (
     <PageShell>
-      <Box
-        component="section"
-        sx={{ pt: { xs: 3, md: 6 }, pb: { xs: 4, md: 5 } }}
-      >
+      <Box component="section" sx={{ pt: { xs: 3, md: 6 } }}>
         <Container maxWidth="lg">
           <ContactHero
             eyebrow={hero.eyebrow}
@@ -77,21 +88,7 @@ export const ContactPageView = async ({
             lede={hero.lede}
           />
 
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "minmax(0, 1fr)",
-                lg: "minmax(0, 0.86fr) minmax(0, 1.14fr)",
-              },
-              alignItems: "stretch",
-              gap: { xs: 2, md: 3 },
-              mt: { xs: 3, md: 4 },
-              p: { xs: 2, md: 3 },
-              borderRadius: "var(--radius-panel)",
-              background: "var(--color-accent-pale)",
-            }}
-          >
+          <Box sx={panelSx}>
             <Plate pad="lg">
               <ContactChannelsSection
                 title={channels.title}

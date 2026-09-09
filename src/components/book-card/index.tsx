@@ -1,23 +1,16 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, CardContent, Typography } from "@mui/material";
 import Link from "next/link";
+
+import { cardFrameSx } from "@/theme/sx";
 
 import { ArrowLink } from "../arrow-link";
 
 import type { BookCardProps } from "./types";
 
 const cardSx = {
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
-  background: "var(--color-card)",
-  border: "1px solid var(--color-border)",
+  ...cardFrameSx,
   borderRadius: "var(--radius-card)",
   boxShadow: "none",
-  transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-  "&:hover": {
-    borderColor: "var(--color-border-rose)",
-    boxShadow: "var(--shadow-card)",
-  },
 } as const;
 
 const contentSx = {
@@ -47,7 +40,7 @@ export const BookCard = ({
   const thumbnail = book.thumbnail;
 
   return (
-    <Card sx={cardSx}>
+    <Box sx={cardSx}>
       <CardContent sx={contentSx}>
         <Link href={detailsHref}>
           <Box
@@ -95,6 +88,6 @@ export const BookCard = ({
           <ArrowLink href={detailsHref} label={detailsButton} />
         </Box>
       </CardContent>
-    </Card>
+    </Box>
   );
 };

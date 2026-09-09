@@ -14,6 +14,16 @@ import {
 
 import type { CartItemCardProps } from "../types";
 
+const thumbnailSx = {
+  display: "grid",
+  placeItems: "center",
+  width: { xs: "100%", sm: 140 },
+  height: { xs: 180, sm: 140 },
+  overflow: "hidden",
+  borderRadius: "var(--radius-card)",
+  fontSize: 52,
+} as const;
+
 const metaSx = {
   mt: 1,
   fontSize: 14,
@@ -60,17 +70,11 @@ export const CartItemCard = ({
       <Link href={productHref} style={{ display: "block" }}>
         <Box
           sx={{
-            display: "grid",
-            placeItems: "center",
-            width: { xs: "100%", sm: 140 },
-            height: { xs: 180, sm: 140 },
-            overflow: "hidden",
-            borderRadius: "var(--radius-card)",
+            ...thumbnailSx,
             background:
               item.thumbnail?.bgColor ??
               item.thumbnailBackgroundColor ??
               "var(--color-cream)",
-            fontSize: 52,
           }}
         >
           {item.thumbnail?.src ? (

@@ -40,7 +40,10 @@ export const PersonalDetailsSection = ({
         <Button
           variant="outlined"
           color="inherit"
-          sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
+          sx={{
+            borderColor: "var(--color-border-rose)",
+            bgcolor: "var(--color-white)",
+          }}
           onClick={onCancel}
         >
           {t("cancel")}
@@ -60,7 +63,10 @@ export const PersonalDetailsSection = ({
       variant="outlined"
       color="inherit"
       startIcon={<EditOutlinedIcon />}
-      sx={{ borderColor: "#E8D6BF", bgcolor: "#fff" }}
+      sx={{
+        borderColor: "var(--color-border-rose)",
+        bgcolor: "var(--color-white)",
+      }}
       onClick={onBeginEdit}
     >
       {t("editProfile")}

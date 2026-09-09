@@ -22,8 +22,8 @@ export const BooksSection = ({ downloads }: BooksSectionProps) => {
               sx={{
                 p: 2.5,
                 borderRadius: "22px",
-                border: "1px solid #F0DFC8",
-                bgcolor: "#fff",
+                border: "1px solid var(--color-border)",
+                bgcolor: "var(--color-white)",
               }}
             >
               <Stack
@@ -43,8 +43,8 @@ export const BooksSection = ({ downloads }: BooksSectionProps) => {
                       width: 56,
                       height: 56,
                       flexShrink: 0,
-                      borderRadius: "18px",
-                      bgcolor: "#FCE5EA",
+                      borderRadius: "var(--radius-plate)",
+                      bgcolor: "var(--color-accent-tint)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",

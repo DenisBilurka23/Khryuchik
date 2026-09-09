@@ -24,7 +24,7 @@ export const AuthGoogleSignIn = ({
           title={t("googleTitle")}
           description={isGoogleEnabled ? t("ready") : t("unavailable")}
           icon={<GoogleIcon />}
-          iconBackground="#FCE5EA"
+          iconBackground="var(--color-accent-tint)"
         />
 
         <Button

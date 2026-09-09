@@ -1,17 +1,27 @@
-import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import {
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 
 import type { SidebarItemProps } from "./types";
 
-export const SidebarItem = ({ icon, label, active, onClick }: SidebarItemProps) => {
+export const SidebarItem = ({
+  icon,
+  label,
+  active,
+  onClick,
+}: SidebarItemProps) => {
   return (
     <ListItem disablePadding>
       <ListItemButton
         onClick={onClick}
         sx={{
-          borderRadius: "18px",
+          borderRadius: "var(--radius-plate)",
           mb: 1,
-          bgcolor: active ? "#FCE5EA" : "#fff",
-          border: `1px solid ${active ? "#F3B7C3" : "#F0DFC8"}`,
+          bgcolor: active ? "var(--color-accent-tint)" : "var(--color-white)",
+          border: `1px solid ${active ? "var(--color-border-rose)" : "var(--color-border)"}`,
           py: 1.25,
         }}
       >

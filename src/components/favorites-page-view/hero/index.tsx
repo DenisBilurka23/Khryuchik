@@ -5,6 +5,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
+import { HeroPanel } from "@/components/primitives";
 import { SectionEyebrow } from "@/components/section-eyebrow";
 
 import type { FavoritesHeroProps } from "./types";
@@ -71,16 +72,7 @@ export const FavoritesHero = ({
   );
 
   return (
-    <Box
-      sx={{
-        p: { xs: "28px 20px", md: 5 },
-        borderRadius: {
-          xs: "var(--radius-panel)",
-          md: "var(--radius-hero)",
-        },
-        background: "var(--color-hero-rose)",
-      }}
-    >
+    <HeroPanel sx={{ p: { xs: "28px 20px", md: 5 } }}>
       <SectionEyebrow
         label={authState ? tAccount("favoritesEyebrow") : tFavorites("eyebrow")}
       />
@@ -118,7 +110,7 @@ export const FavoritesHero = ({
       ) : (
         renderGuestActions()
       )}
-    </Box>
+    </HeroPanel>
   );
 };
 

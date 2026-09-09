@@ -4,6 +4,18 @@ import type { UndeliverableGroupProps } from "./types";
 
 const THUMBNAIL_SIZE = 44;
 
+const thumbnailSx = {
+  width: THUMBNAIL_SIZE,
+  height: THUMBNAIL_SIZE,
+  flexShrink: 0,
+  borderRadius: "var(--radius-field)",
+  overflow: "hidden",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: 22,
+} as const;
+
 export const CheckoutUndeliverableGroup = ({
   title,
   message,
@@ -40,19 +52,11 @@ export const CheckoutUndeliverableGroup = ({
           >
             <Box
               sx={{
-                width: THUMBNAIL_SIZE,
-                height: THUMBNAIL_SIZE,
-                flexShrink: 0,
-                borderRadius: 2,
-                overflow: "hidden",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 22,
+                ...thumbnailSx,
                 bgcolor:
                   item.thumbnail?.bgColor ||
                   item.thumbnailBackgroundColor ||
-                  "#FFF8F0",
+                  "var(--color-cream)",
               }}
             >
               {item.thumbnail?.src ? (

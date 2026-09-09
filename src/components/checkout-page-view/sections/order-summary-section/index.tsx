@@ -32,7 +32,7 @@ export const CheckoutOrderSummarySection = ({
 }: OrderSummarySectionProps) => (
   <Card
     sx={{
-      border: "1px solid #F0DFC8",
+      border: "1px solid var(--color-border)",
       position: { md: "sticky" },
       top: { md: 100 },
     }}
@@ -68,7 +68,7 @@ export const CheckoutOrderSummarySection = ({
                         label={part}
                         size="small"
                         sx={{
-                          bgcolor: "#F5F0EB",
+                          bgcolor: "var(--color-cream)",
                           fontWeight: 500,
                           height: 22,
                           fontSize: "0.7rem",

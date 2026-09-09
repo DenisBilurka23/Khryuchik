@@ -9,6 +9,19 @@ export const leadSx = {
   color: "var(--color-text-secondary)",
 } as const satisfies SxProps<Theme>;
 
+export const cardFrameSx = {
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  background: "var(--color-card)",
+  border: "1px solid var(--color-border)",
+  transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+  "&:hover": {
+    borderColor: "var(--color-border-rose)",
+    boxShadow: "var(--shadow-card)",
+  },
+} as const satisfies SxProps<Theme>;
+
 export const accentSx = {
   fontStyle: "italic",
   color: "var(--color-accent)",

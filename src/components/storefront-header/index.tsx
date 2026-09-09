@@ -62,7 +62,7 @@ export const StorefrontHeader = async ({
           left: 0,
           right: 0,
           backdropFilter: "blur(14px)",
-          background: "rgba(255, 252, 248, 0.94)",
+          background: "var(--color-header-veil)",
           borderBottom: "1px solid var(--color-border-rose)",
         }}
       >
@@ -75,10 +75,7 @@ export const StorefrontHeader = async ({
               gap: 2,
             }}
           >
-            <Link
-              href={homeHref}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
+            <Link href={homeHref}>
               <Logo
                 markSize={48}
                 title={t("brand.title")}

@@ -1,20 +1,12 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
 import { clearCart } from "@/components/cart/store";
-import { PageShell } from "@/components/storefront/page-shell";
+import { NoticePage } from "@/components/notice-page";
 import type { CheckoutResultLabels } from "@/i18n/types";
 import { formatOrderNumber, getLocalizedPath } from "@/utils";
 
@@ -72,67 +64,32 @@ export const CheckoutResultView = ({
   }
 
   return (
-    <PageShell>
-      <Box sx={{ py: { xs: 6, md: 10 } }}>
-        <Container maxWidth="sm">
-          <Card sx={{ border: "1px solid #F0DFC8" }}>
-            <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-              <Stack spacing={3} alignItems="flex-start">
-                <Typography variant="h1" sx={{ fontSize: { xs: 32, md: 44 } }}>
-                  {title}
-                </Typography>
-                {orderLabel ? (
-                  <Typography
-                    sx={{
-                      textTransform: "uppercase",
-                      letterSpacing: "0.18em",
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: "primary.main",
-                    }}
-                  >
-                    {orderLabel}
-                  </Typography>
-                ) : null}
-                <Typography color="text.secondary" sx={{ lineHeight: 1.7 }}>
-                  {text}
-                </Typography>
-                <Stack
-                  direction={{ xs: "column", sm: "row" }}
-                  spacing={1.5}
-                  alignItems={{ xs: "stretch", sm: "center" }}
-                >
-                  {downloadsHref ? (
-                    <Link
-                      href={downloadsHref}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <Button component="span" variant="contained" size="large">
-                        {success.downloadsAction}
-                      </Button>
-                    </Link>
-                  ) : null}
-                  {primary ? (
-                    <Link
-                      href={primary.href}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <Button
-                        component="span"
-                        variant={downloadsHref ? "outlined" : "contained"}
-                        size="large"
-                      >
-                        {primary.label}
-                      </Button>
-                    </Link>
-                  ) : null}
-                </Stack>
-              </Stack>
-            </CardContent>
-          </Card>
-        </Container>
-      </Box>
-    </PageShell>
+    <NoticePage title={title} label={orderLabel} text={text}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={1.5}
+        alignItems={{ xs: "stretch", sm: "center" }}
+      >
+        {downloadsHref ? (
+          <Link href={downloadsHref}>
+            <Button component="span" variant="contained" size="large">
+              {success.downloadsAction}
+            </Button>
+          </Link>
+        ) : null}
+        {primary ? (
+          <Link href={primary.href}>
+            <Button
+              component="span"
+              variant={downloadsHref ? "outlined" : "contained"}
+              size="large"
+            >
+              {primary.label}
+            </Button>
+          </Link>
+        ) : null}
+      </Stack>
+    </NoticePage>
   );
 };
 

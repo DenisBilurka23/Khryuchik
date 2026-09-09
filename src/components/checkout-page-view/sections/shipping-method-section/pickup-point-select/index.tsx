@@ -73,8 +73,10 @@ export const PickupPointSelect = ({
                 sx={{
                   border: "1px solid",
                   borderColor:
-                    selectedPointId === point.id ? "primary.main" : "#F0DFC8",
-                  borderRadius: 2,
+                    selectedPointId === point.id
+                      ? "primary.main"
+                      : "var(--color-border)",
+                  borderRadius: "var(--radius-field)",
                   px: 2,
                   py: 0.5,
                   transition: "border-color .2s ease",

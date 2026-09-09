@@ -83,7 +83,7 @@ export const FavoritesPageView = ({
   }
 
   return (
-    <Box component="section" sx={{ pb: { xs: 5, md: 7 } }}>
+    <Box component="section">
       <Container maxWidth="lg">
         <Breadcrumbs
           items={[

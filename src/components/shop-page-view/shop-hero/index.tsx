@@ -2,6 +2,7 @@ import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 
 import shopHeroImage from "@/assets/StoreHero.png";
+import { HeroPanel } from "@/components/primitives";
 import { SectionEyebrow } from "@/components/section-eyebrow";
 
 import type { ShopHeroProps } from "./types";
@@ -24,7 +25,6 @@ const heroSx = {
   minHeight: { xs: 0, md: 360 },
   p: { xs: "24px 20px", md: 5 },
   borderRadius: { xs: "20px", md: "var(--radius-hero)" },
-  background: "var(--color-hero-rose)",
 } as const;
 
 const titleSx = {
@@ -60,7 +60,7 @@ const artSx = {
 
 export const ShopHero = ({ eyebrow, title, lead }: ShopHeroProps) => {
   return (
-    <Box sx={heroSx}>
+    <HeroPanel sx={heroSx}>
       <Box sx={{ maxWidth: { xs: "none", md: 460 } }}>
         <SectionEyebrow label={eyebrow} />
 
@@ -89,7 +89,7 @@ export const ShopHero = ({ eyebrow, title, lead }: ShopHeroProps) => {
           }}
         />
       </Box>
-    </Box>
+    </HeroPanel>
   );
 };
 

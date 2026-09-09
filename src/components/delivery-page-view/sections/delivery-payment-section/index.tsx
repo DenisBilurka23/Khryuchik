@@ -7,6 +7,34 @@ import { ByReceiptCard } from "./by-receipt-card";
 import { StripePayCard } from "./stripe-pay-card";
 import type { DeliveryPaymentSectionProps } from "./types";
 
+const chipSx = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 1,
+  minHeight: 36,
+  mt: 3,
+  padding: "0 14px",
+  border: "1px solid var(--color-border)",
+  borderRadius: "var(--radius-pill)",
+  background: "var(--color-cream)",
+  fontSize: 13,
+  color: "var(--color-text-secondary)",
+} as const;
+
+const panelSx = {
+  display: "grid",
+  gridTemplateColumns: {
+    xs: "minmax(0, 1fr)",
+    lg: "minmax(0, 1fr) 360px",
+  },
+  alignItems: "center",
+  gap: { xs: 4, lg: 6 },
+  p: { xs: "24px 20px", md: 4, lg: 5 },
+  border: "1px solid var(--color-border)",
+  borderRadius: "var(--radius-panel)",
+  background: "var(--color-card)",
+} as const;
+
 export const DeliveryPaymentSection = ({
   eyebrow,
   title,
@@ -22,21 +50,7 @@ export const DeliveryPaymentSection = ({
   return (
     <Box component="section" sx={{ pt: 4 }}>
       <Container maxWidth="lg">
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "minmax(0, 1fr)",
-              lg: "minmax(0, 1fr) 360px",
-            },
-            alignItems: "center",
-            gap: { xs: 4, lg: 6 },
-            p: { xs: "24px 20px", md: 4, lg: 5 },
-            border: "1px solid var(--color-border)",
-            borderRadius: "var(--radius-panel)",
-            background: "var(--color-card)",
-          }}
-        >
+        <Box sx={panelSx}>
           <Box>
             <SectionEyebrow label={eyebrow} />
 
@@ -69,21 +83,7 @@ export const DeliveryPaymentSection = ({
               {desc}
             </Typography>
 
-            <Box
-              sx={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 1,
-                minHeight: 36,
-                mt: 3,
-                padding: "0 14px",
-                border: "1px solid var(--color-border)",
-                borderRadius: "var(--radius-pill)",
-                background: "var(--color-cream)",
-                fontSize: 13,
-                color: "var(--color-text-secondary)",
-              }}
-            >
+            <Box sx={chipSx}>
               <Box
                 component="span"
                 aria-hidden

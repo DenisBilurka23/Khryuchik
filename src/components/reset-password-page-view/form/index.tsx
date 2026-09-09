@@ -30,7 +30,7 @@ export const ResetPasswordForm = ({
           <AuthSectionHeader
             title={t("submitButton")}
             icon={<LockResetOutlinedIcon />}
-            iconBackground="#FFF2D6"
+            iconBackground="var(--color-butter)"
           />
 
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}

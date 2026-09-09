@@ -13,6 +13,20 @@ import { accentSx, displayFont } from "@/theme/sx";
 
 import type { DeliveryFaqSectionProps } from "./types";
 
+const itemSx = {
+  overflow: "hidden",
+  border: "1px solid var(--color-border)",
+  borderRadius: "var(--radius-plate)",
+  background: "var(--color-card)",
+  transition: "border-color 0.2s ease",
+  "&::before": { display: "none" },
+  "&:hover": { borderColor: "var(--color-border-rose)" },
+  "&.Mui-expanded": {
+    borderColor: "var(--color-border-rose)",
+    background: "var(--color-cream)",
+  },
+} as const;
+
 export const DeliveryFaqSection = ({
   eyebrow,
   titlePrefix,
@@ -47,19 +61,7 @@ export const DeliveryFaqSection = ({
               disableGutters
               elevation={0}
               square={false}
-              sx={{
-                overflow: "hidden",
-                border: "1px solid var(--color-border)",
-                borderRadius: "var(--radius-plate)",
-                background: "var(--color-card)",
-                transition: "border-color 0.2s ease",
-                "&::before": { display: "none" },
-                "&:hover": { borderColor: "var(--color-border-rose)" },
-                "&.Mui-expanded": {
-                  borderColor: "var(--color-border-rose)",
-                  background: "var(--color-cream)",
-                },
-              }}
+              sx={itemSx}
             >
               <AccordionSummary
                 expandIcon={<AddIcon sx={{ color: "var(--color-action)" }} />}

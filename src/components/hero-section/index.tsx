@@ -12,6 +12,20 @@ import { getLocalizedPath } from "@/utils";
 
 import type { HeroSectionProps } from "./types";
 
+const noteCardSx = {
+  position: { xs: "static", md: "absolute" },
+  right: 0,
+  top: "72%",
+  zIndex: 2,
+  width: { xs: "auto", md: "min(420px, 92%)" },
+  mt: { xs: 3, md: 0 },
+  p: 3,
+  borderRadius: "var(--radius-plate)",
+  border: "1px solid var(--color-border)",
+  background: "var(--color-card)",
+  boxShadow: "var(--shadow-floating)",
+} as const;
+
 const leadSx = {
   maxWidth: 500,
   mt: 2.5,
@@ -114,21 +128,7 @@ export const HeroSection = async ({ locale }: HeroSectionProps) => {
                 style={{ display: "block", width: "100%", height: "auto" }}
               />
 
-              <Box
-                sx={{
-                  position: { xs: "static", md: "absolute" },
-                  right: 0,
-                  top: "72%",
-                  zIndex: 2,
-                  width: { xs: "auto", md: "min(420px, 92%)" },
-                  mt: { xs: 3, md: 0 },
-                  p: 3,
-                  borderRadius: "var(--radius-plate)",
-                  border: "1px solid var(--color-border)",
-                  background: "var(--color-card)",
-                  boxShadow: "var(--shadow-floating)",
-                }}
-              >
+              <Box sx={noteCardSx}>
                 <Typography
                   component="p"
                   sx={{

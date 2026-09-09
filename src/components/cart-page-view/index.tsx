@@ -4,6 +4,7 @@ import { Alert, Box, Container, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { HeroPanel } from "@/components/primitives";
 import { SectionEyebrow } from "@/components/section-eyebrow";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
@@ -81,7 +82,7 @@ export const CartPageView = ({
 
   return (
     <PageShell>
-      <Box component="section" sx={{ pb: { xs: 5, md: 7 } }}>
+      <Box component="section">
         <Container maxWidth="lg">
           <Breadcrumbs
             items={[
@@ -91,16 +92,7 @@ export const CartPageView = ({
             ]}
           />
 
-          <Box
-            sx={{
-              p: { xs: "28px 20px", md: 5 },
-              borderRadius: {
-                xs: "var(--radius-panel)",
-                md: "var(--radius-hero)",
-              },
-              background: "var(--color-hero-rose)",
-            }}
-          >
+          <HeroPanel sx={{ p: { xs: "28px 20px", md: 5 } }}>
             <SectionEyebrow label={cartPage.eyebrow} />
 
             <Typography
@@ -121,7 +113,7 @@ export const CartPageView = ({
             >
               {cartPage.lead}
             </Typography>
-          </Box>
+          </HeroPanel>
 
           {isPricingUnavailable ? (
             <Alert

@@ -28,7 +28,7 @@ export const ForgotPasswordForm = ({
           <AuthSectionHeader
             title={t("submitButton")}
             icon={<MailOutlineIcon />}
-            iconBackground="#FCE5EA"
+            iconBackground="var(--color-accent-tint)"
           />
 
           {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}

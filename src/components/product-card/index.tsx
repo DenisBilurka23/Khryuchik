@@ -1,7 +1,7 @@
-import { Box, Card, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Link from "next/link";
 
-import { displayFont } from "@/theme/sx";
+import { cardFrameSx, displayFont } from "@/theme/sx";
 import { formatCurrency, isPurchasableAvailability } from "@/utils";
 
 import { ArrowLink } from "../arrow-link";
@@ -9,19 +9,10 @@ import { WishlistButton } from "./wishlist-button";
 import type { ProductCardProps } from "./types";
 
 const cardSx = {
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
+  ...cardFrameSx,
   p: 2.25,
-  background: "var(--color-card)",
-  border: "1px solid var(--color-border)",
   borderRadius: { xs: "14px", md: "var(--radius-card)" },
-  boxShadow: "0 6px 20px rgba(52, 39, 45, 0.035)",
-  transition: "border-color 0.2s ease, box-shadow 0.2s ease",
-  "&:hover": {
-    borderColor: "var(--color-border-rose)",
-    boxShadow: "var(--shadow-card)",
-  },
+  boxShadow: "var(--shadow-card-soft)",
 } as const;
 
 const soldOutSx = {
@@ -93,7 +84,7 @@ export const ProductCard = ({
   const isSoldOut = !isPurchasableAvailability(product.availability);
 
   return (
-    <Card sx={cardSx}>
+    <Box sx={cardSx}>
       <Link href={detailsHref}>
         <Box sx={{ position: "relative", display: "block" }}>
           {isSoldOut ? (
@@ -149,7 +140,7 @@ export const ProductCard = ({
           sx={wishlistSx}
         />
       </Box>
-    </Card>
+    </Box>
   );
 };
 

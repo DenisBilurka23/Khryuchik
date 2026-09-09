@@ -48,7 +48,11 @@ export const ProductTabs = ({
                   <Grid key={spec.label} size={{ xs: 12, md: 6 }}>
                     <Paper
                       elevation={0}
-                      sx={{ p: 2.5, borderRadius: "20px", bgcolor: "#FFF8F0" }}
+                      sx={{
+                        p: 2.5,
+                        borderRadius: "20px",
+                        bgcolor: "var(--color-cream)",
+                      }}
                     >
                       <Typography variant="body2" color="text.secondary">
                         {spec.label}
@@ -96,7 +100,12 @@ export const ProductTabs = ({
               <Paper
                 key={review.id}
                 elevation={0}
-                sx={{ p: 3, borderRadius: "20px", bgcolor: "#FFF8F0", mb: 2 }}
+                sx={{
+                  p: 3,
+                  borderRadius: "20px",
+                  bgcolor: "var(--color-cream)",
+                  mb: 2,
+                }}
               >
                 <Typography sx={{ fontWeight: 700 }}>
                   {review.author}
@@ -137,7 +146,7 @@ export const ProductTabs = ({
       sx={{
         mt: 6,
         borderRadius: "32px",
-        border: "1px solid #F0DFC8",
+        border: "1px solid var(--color-border)",
         overflow: "hidden",
       }}
     >
@@ -146,7 +155,11 @@ export const ProductTabs = ({
         onChange={handleChange}
         variant="scrollable"
         scrollButtons="auto"
-        sx={{ px: 2, borderBottom: "1px solid #F0DFC8", bgcolor: "#fff" }}
+        sx={{
+          px: 2,
+          borderBottom: "1px solid var(--color-border)",
+          bgcolor: "var(--color-white)",
+        }}
       >
         {availableTabs.map((t) => (
           <Tab key={t.label} label={t.label} />

@@ -423,7 +423,7 @@ export const CheckoutPageView = ({
 
   return (
     <PageShell>
-      <Box sx={{ pb: { xs: 4, md: 6 } }}>
+      <Box>
         <Container maxWidth="lg">
           <Breadcrumbs
             items={[
@@ -438,8 +438,8 @@ export const CheckoutPageView = ({
               borderRadius: "32px",
               p: { xs: 3, md: 5 },
               background:
-                "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.45), transparent 28%), #FFF8F0",
-              border: "1px solid #F0DFC8",
+                "radial-gradient(circle at top left, var(--color-wash-rose), transparent 30%), radial-gradient(circle at right, var(--color-wash-butter), transparent 28%), var(--color-cream)",
+              border: "1px solid var(--color-border)",
               mb: 5,
             }}
           >

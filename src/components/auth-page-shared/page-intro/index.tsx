@@ -24,7 +24,10 @@ export const AuthPageIntro = ({
       <Typography variant="h1" sx={{ fontSize: { xs: 34, md: 52 } }}>
         {title}
       </Typography>
-      <Typography color="text.secondary" sx={{ maxWidth: 620, lineHeight: 1.8 }}>
+      <Typography
+        color="text.secondary"
+        sx={{ maxWidth: 620, lineHeight: 1.8 }}
+      >
         {lead}
       </Typography>
     </Stack>
@@ -35,7 +38,10 @@ export const AuthPageIntro = ({
           <Chip
             key={chip}
             label={chip}
-            sx={{ bgcolor: "#fff", border: "1px solid #E8D6BF" }}
+            sx={{
+              bgcolor: "var(--color-white)",
+              border: "1px solid var(--color-border-rose)",
+            }}
           />
         ))}
       </Stack>

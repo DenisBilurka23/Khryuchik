@@ -20,8 +20,8 @@ export const UnsubscribePageView = async ({
           elevation={0}
           sx={{
             p: { xs: 3, md: 5 },
-            borderRadius: "28px",
-            border: "1px solid rgba(0,0,0,0.06)",
+            borderRadius: "var(--radius-hero)",
+            border: "1px solid var(--color-border)",
           }}
         >
           <Stack spacing={2.5}>
@@ -31,7 +31,7 @@ export const UnsubscribePageView = async ({
                 letterSpacing: "0.2em",
                 fontSize: 13,
                 fontWeight: 700,
-                color: "#d4607a",
+                color: "var(--color-accent)",
               }}
             >
               {t("eyebrow")}

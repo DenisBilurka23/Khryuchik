@@ -35,10 +35,10 @@ export const ReviewForm = ({
 
   if (!isAuthenticated) {
     return (
-      <Alert severity="info" sx={{ borderRadius: "16px" }}>
+      <Alert severity="info" sx={{ borderRadius: "var(--radius-card)" }}>
         <Stack spacing={1} alignItems="flex-start">
           <Typography variant="body2">{labels.loginPrompt}</Typography>
-          <Link href={loginHref} style={{ textDecoration: "none" }}>
+          <Link href={loginHref}>
             <MuiLink
               component="span"
               underline="hover"
@@ -54,7 +54,7 @@ export const ReviewForm = ({
 
   if (!hasPurchased) {
     return (
-      <Alert severity="info" sx={{ borderRadius: "16px" }}>
+      <Alert severity="info" sx={{ borderRadius: "var(--radius-card)" }}>
         <Typography variant="body2">{labels.purchasePrompt}</Typography>
       </Alert>
     );
@@ -66,7 +66,7 @@ export const ReviewForm = ({
 
   if (status === "success") {
     return (
-      <Alert severity="success" sx={{ borderRadius: "16px" }}>
+      <Alert severity="success" sx={{ borderRadius: "var(--radius-card)" }}>
         <Typography sx={{ fontWeight: 700 }}>{labels.successTitle}</Typography>
         <Typography variant="body2">{labels.successText}</Typography>
       </Alert>
@@ -128,8 +128,8 @@ export const ReviewForm = ({
       sx={{
         p: 3,
         borderRadius: "20px",
-        border: "1px solid #F0DFC8",
-        bgcolor: "#fff",
+        border: "1px solid var(--color-border)",
+        bgcolor: "var(--color-white)",
       }}
     >
       <Typography sx={{ fontWeight: 700, mb: 2 }}>{labels.title}</Typography>
@@ -156,7 +156,7 @@ export const ReviewForm = ({
         />
 
         {error ? (
-          <Alert severity="error" sx={{ borderRadius: "16px" }}>
+          <Alert severity="error" sx={{ borderRadius: "var(--radius-card)" }}>
             {error}
           </Alert>
         ) : null}
