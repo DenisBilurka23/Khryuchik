@@ -716,31 +716,33 @@ export type StorefrontDictionary = {
 };
 
 export type AuthPageDictionary = {
-  eyebrow: string;
   title: string;
   lead: string;
+  breadcrumbs: {
+    home: string;
+    current: string;
+  };
   credentialsTitle: string;
-  credentialsLead: string;
   emailLabel: string;
   emailPlaceholder: string;
   passwordLabel: string;
   passwordPlaceholder: string;
+  showPassword: string;
+  hidePassword: string;
   loginButton: string;
   forgotPasswordLinkLabel: string;
+  dividerLabel: string;
+  googleButton: string;
+  unavailable: string;
   registerPrompt: string;
   registerLinkLabel: string;
+  illustrationAlt: string;
   invalidCredentials: string;
   emailNotVerified: string;
   resendVerification: string;
   verificationSent: string;
   verificationResendFailed: string;
   unexpectedError: string;
-  googleTitle: string;
-  googleButton: string;
-  unavailable: string;
-  ready: string;
-  dividerLabel: string;
-  chips: string[];
 };
 
 export type ForgotPasswordPageDictionary = {

@@ -5,7 +5,7 @@ import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 
 import { sendContactMessageClient } from "@/client-api/contact";
 import { SectionEyebrow } from "@/components/section-eyebrow";
-import { accentSx } from "@/theme/sx";
+import { accentSx, inputFieldSx } from "@/theme/sx";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
 import type { ContactFieldErrors, ContactFormProps } from "./types";
@@ -27,37 +27,10 @@ const labelSx = {
 
 const fieldSx = { display: "flex", flexDirection: "column" } as const;
 
-const inputSx = {
-  "& .MuiOutlinedInput-root": {
-    minHeight: 56,
-    paddingInline: "16px",
-    borderRadius: "var(--radius-field)",
-    background: "var(--color-card)",
-    fontSize: 15,
-  },
-  "& .MuiOutlinedInput-input": { padding: 0 },
-  "& .MuiOutlinedInput-input::placeholder": {
-    color: "var(--color-text-muted)",
-    opacity: 1,
-  },
-  "& .MuiOutlinedInput-notchedOutline": { borderColor: "var(--color-border)" },
-  "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-    borderColor: "var(--color-border-rose)",
-  },
-  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-    borderWidth: 1,
-    borderColor: "var(--color-action)",
-  },
-  "& .MuiOutlinedInput-root.Mui-focused": {
-    boxShadow: "var(--shadow-focus)",
-  },
-  "& .MuiFormHelperText-root": { margin: "6px 0 0", fontSize: 12 },
-} as const;
-
 const textareaSx = {
-  ...inputSx,
+  ...inputFieldSx,
   "& .MuiOutlinedInput-root": {
-    ...inputSx["& .MuiOutlinedInput-root"],
+    ...inputFieldSx["& .MuiOutlinedInput-root"],
     alignItems: "flex-start",
     minHeight: 190,
     padding: "16px",
@@ -271,7 +244,7 @@ export const ContactForm = ({
           </Typography>
           <TextField
             id="contact-name"
-            sx={inputSx}
+            sx={inputFieldSx}
             placeholder={labels.namePlaceholder}
             value={name}
             onChange={(event) => setName(event.target.value)}
@@ -292,7 +265,7 @@ export const ContactForm = ({
           <TextField
             id="contact-email"
             type="email"
-            sx={inputSx}
+            sx={inputFieldSx}
             placeholder={labels.emailPlaceholder}
             value={email}
             onChange={(event) => setEmail(event.target.value)}

@@ -1,24 +1,37 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
-import { Stack } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { HeroPanel } from "@/components/primitives";
 import { useEmailVerificationResend } from "@/hooks/useEmailVerificationResend";
 import { SignInErrorCode } from "@/types/auth";
-import {
-  AuthPageIntro,
-  AuthPageShell,
-  AuthSectionDivider,
-} from "@/components/auth-page-shared";
+import { getLocalizedPath } from "@/utils";
 
-import { AuthCredentialsForm } from "./credentials-form";
-import { AuthGoogleSignIn } from "./google-sign-in";
+import { PageShell } from "../storefront/page-shell";
+import { AuthIntro } from "./intro";
+import { AuthRegisterInvite } from "./register-invite";
+import { AuthSignInCard } from "./sign-in-card";
 
 import type { AuthPageViewProps } from "./types";
+
+const panelSx = {
+  display: "grid",
+  gridTemplateColumns: {
+    xs: "minmax(0, 1fr)",
+    md: "minmax(0, 1fr) minmax(0, 1.4fr)",
+  },
+  alignItems: "stretch",
+  gap: 3,
+  mt: "14px",
+  p: { xs: "20px 16px", md: 3.5 },
+  boxShadow: "var(--shadow-panel)",
+} as const;
 
 export const AuthPageView = ({
   callbackUrl,
@@ -86,41 +99,48 @@ export const AuthPageView = ({
   };
 
   return (
-    <AuthPageShell>
-      <AuthPageIntro
-        eyebrow={t("eyebrow")}
-        title={t("title")}
-        lead={t("lead")}
-        chips={t.raw("chips") as string[]}
-      />
+    <PageShell>
+      <Box component="section">
+        <Container maxWidth="lg">
+          <Breadcrumbs
+            items={[
+              {
+                label: t("breadcrumbs.home"),
+                href: getLocalizedPath(locale, "/"),
+              },
+              { label: t("breadcrumbs.current") },
+            ]}
+          />
 
-      <Stack spacing={2.5}>
-        <AuthCredentialsForm
-          email={email}
-          password={password}
-          errorMessage={errorMessage}
-          isLoading={isCredentialsLoading}
-          forgotPasswordHref={forgotPasswordHref}
-          canResendVerification={isEmailUnverified}
-          isResendingVerification={verificationResend.status === "sending"}
-          resendVerificationMessage={resendMessages[verificationResend.status]}
-          onEmailChange={setEmail}
-          onPasswordChange={setPassword}
-          onResendVerification={() => {
-            void verificationResend.resend(email);
-          }}
-          onSubmit={handleCredentialsSignIn}
-        />
+          <AuthIntro title={t("title")} lead={t("lead")} />
 
-        <AuthSectionDivider label={t("dividerLabel")} />
+          <HeroPanel tone="rose" sx={panelSx}>
+            <AuthSignInCard
+              email={email}
+              password={password}
+              errorMessage={errorMessage}
+              isLoading={isCredentialsLoading}
+              forgotPasswordHref={forgotPasswordHref}
+              canResendVerification={isEmailUnverified}
+              isResendingVerification={verificationResend.status === "sending"}
+              resendVerificationMessage={
+                resendMessages[verificationResend.status]
+              }
+              isGoogleEnabled={isGoogleEnabled}
+              onEmailChange={setEmail}
+              onPasswordChange={setPassword}
+              onResendVerification={() => {
+                void verificationResend.resend(email);
+              }}
+              onSubmit={handleCredentialsSignIn}
+              onGoogleSignIn={handleGoogleSignIn}
+            />
 
-        <AuthGoogleSignIn
-          isGoogleEnabled={isGoogleEnabled}
-          registerHref={registerHref}
-          onGoogleSignIn={handleGoogleSignIn}
-        />
-      </Stack>
-    </AuthPageShell>
+            <AuthRegisterInvite registerHref={registerHref} />
+          </HeroPanel>
+        </Container>
+      </Box>
+    </PageShell>
   );
 };
 

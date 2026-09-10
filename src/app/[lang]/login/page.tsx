@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { Container } from "@mui/material";
 
 import { AuthPageView } from "@/components/auth-page-view";
 import { getLocalizedPath } from "@/utils";
@@ -8,7 +7,10 @@ import { isGoogleAuthEnabled } from "@/server/auth/config";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import type { LocalizedLoginPageProps } from "@/types/auth-pages";
 
-const LocalizedLoginPage = async ({ params, searchParams }: LocalizedLoginPageProps) => {
+const LocalizedLoginPage = async ({
+  params,
+  searchParams,
+}: LocalizedLoginPageProps) => {
   const { lang } = await params;
 
   if (!(await isActiveLocale(lang))) {
@@ -19,15 +21,13 @@ const LocalizedLoginPage = async ({ params, searchParams }: LocalizedLoginPagePr
   await getGuestAuthPageContext(lang);
 
   return (
-    <Container maxWidth="lg">
-      <AuthPageView
-        callbackUrl={callbackUrl ?? `/${lang}/account`}
-        isGoogleEnabled={isGoogleAuthEnabled}
-        locale={lang}
-        registerHref={getLocalizedPath(lang, "/register")}
-        forgotPasswordHref={getLocalizedPath(lang, "/forgot-password")}
-      />
-    </Container>
+    <AuthPageView
+      callbackUrl={callbackUrl ?? `/${lang}/account`}
+      isGoogleEnabled={isGoogleAuthEnabled}
+      locale={lang}
+      registerHref={getLocalizedPath(lang, "/register")}
+      forgotPasswordHref={getLocalizedPath(lang, "/forgot-password")}
+    />
   );
 };
 
