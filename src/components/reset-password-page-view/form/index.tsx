@@ -1,14 +1,57 @@
 import LockResetOutlinedIcon from "@mui/icons-material/LockResetOutlined";
-import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import {
-  AuthLinkPrompt,
-  AuthSectionCard,
-  AuthSectionHeader,
-} from "@/components/auth-page-shared";
+import { AuthField } from "@/components/auth-page-shared";
+import { IconTile, Plate } from "@/components/primitives";
 
 import type { ResetPasswordFormProps } from "./types";
+
+const cardSx = {
+  borderRadius: "var(--radius-card)",
+  boxShadow: "var(--shadow-floating)",
+  p: { xs: "22px 18px", md: "32px 34px" },
+} as const;
+
+const headerSx = {
+  display: "flex",
+  alignItems: "center",
+  gap: 1.75,
+  mb: 3,
+} as const;
+
+const iconTileSx = {
+  width: 56,
+  height: 56,
+  borderRadius: "var(--radius-pill)",
+  background: "var(--color-accent-pale)",
+  color: "var(--color-action)",
+} as const;
+
+const titleSx = {
+  fontSize: { xs: 24, md: 30 },
+  lineHeight: 1.2,
+} as const;
+
+const alertSx = {
+  mb: 2.5,
+  borderRadius: "var(--radius-field)",
+} as const;
+
+const fieldsSx = {
+  display: "grid",
+  gridTemplateColumns: "minmax(0, 1fr)",
+  gap: 2,
+} as const;
+
+const submitSx = {
+  minHeight: 54,
+  mt: 3,
+  borderRadius: "var(--radius-field)",
+  fontSize: 17,
+  transition: "background-color 0.2s ease, box-shadow 0.2s ease",
+  "&:hover": { background: "var(--color-action-hover)" },
+} as const;
 
 export const ResetPasswordForm = ({
   password,
@@ -16,7 +59,6 @@ export const ResetPasswordForm = ({
   errorMessage,
   successMessage,
   isSubmitting,
-  loginHref,
   onPasswordChange,
   onConfirmPasswordChange,
   onSubmit,
@@ -24,55 +66,69 @@ export const ResetPasswordForm = ({
   const t = useTranslations("resetPasswordPage");
 
   return (
-    <AuthSectionCard>
-      <Box component="form" onSubmit={onSubmit}>
-        <Stack spacing={2.5}>
-          <AuthSectionHeader
-            title={t("submitButton")}
-            icon={<LockResetOutlinedIcon />}
-            iconBackground="var(--color-butter)"
-          />
+    <Plate pad="none" sx={cardSx}>
+      <Box sx={headerSx}>
+        <IconTile tone="accent" sx={iconTileSx}>
+          <LockResetOutlinedIcon />
+        </IconTile>
 
-          {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-          {successMessage ? (
-            <Alert severity="success">{successMessage}</Alert>
+        <Typography variant="h3" sx={titleSx}>
+          {t("formTitle")}
+        </Typography>
+      </Box>
+
+      <Box component="form" onSubmit={onSubmit}>
+        <Box aria-live="polite">
+          {errorMessage ? (
+            <Alert severity="error" sx={alertSx}>
+              {errorMessage}
+            </Alert>
           ) : null}
 
-          <TextField
+          {successMessage ? (
+            <Alert severity="success" sx={alertSx}>
+              {successMessage}
+            </Alert>
+          ) : null}
+        </Box>
+
+        <Box sx={fieldsSx}>
+          <AuthField
+            id="reset-password"
+            type="password"
             label={t("passwordLabel")}
             placeholder={t("passwordPlaceholder")}
-            type="password"
             value={password}
-            onChange={(event) => onPasswordChange(event.target.value)}
             autoComplete="new-password"
-            required
-            fullWidth
+            onChange={onPasswordChange}
+            showPasswordLabel={t("showPassword")}
+            hidePasswordLabel={t("hidePassword")}
           />
-          <TextField
+
+          <AuthField
+            id="reset-confirm-password"
+            type="password"
             label={t("confirmPasswordLabel")}
             placeholder={t("confirmPasswordPlaceholder")}
-            type="password"
             value={confirmPassword}
-            onChange={(event) => onConfirmPasswordChange(event.target.value)}
             autoComplete="new-password"
-            required
-            fullWidth
+            onChange={onConfirmPasswordChange}
+            showPasswordLabel={t("showPassword")}
+            hidePasswordLabel={t("hidePassword")}
           />
+        </Box>
 
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            loading={isSubmitting}
-            sx={{ alignSelf: "flex-start" }}
-          >
-            {t("submitButton")}
-          </Button>
-
-          <AuthLinkPrompt href={loginHref} label={t("loginLinkLabel")} />
-        </Stack>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={submitSx}
+          loading={isSubmitting}
+          fullWidth
+        >
+          {t("submitButton")}
+        </Button>
       </Box>
-    </AuthSectionCard>
+    </Plate>
   );
 };
 

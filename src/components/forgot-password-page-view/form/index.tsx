@@ -1,70 +1,110 @@
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
-import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import {
-  AuthLinkPrompt,
-  AuthSectionCard,
-  AuthSectionHeader,
-} from "@/components/auth-page-shared";
+import { AuthField } from "@/components/auth-page-shared";
+import { IconTile, Plate } from "@/components/primitives";
 
 import type { ForgotPasswordFormProps } from "./types";
+
+const cardSx = {
+  borderRadius: "var(--radius-card)",
+  boxShadow: "var(--shadow-floating)",
+  p: { xs: "22px 18px", md: "32px 34px" },
+} as const;
+
+const headerSx = {
+  display: "flex",
+  alignItems: "center",
+  gap: 1.75,
+  mb: 3,
+} as const;
+
+const iconTileSx = {
+  width: 56,
+  height: 56,
+  borderRadius: "var(--radius-pill)",
+  background: "var(--color-accent-pale)",
+  color: "var(--color-action)",
+} as const;
+
+const titleSx = {
+  fontSize: { xs: 24, md: 30 },
+  lineHeight: 1.2,
+} as const;
+
+const alertSx = {
+  mb: 2.5,
+  borderRadius: "var(--radius-field)",
+} as const;
+
+const submitSx = {
+  minHeight: 54,
+  mt: 3,
+  borderRadius: "var(--radius-field)",
+  fontSize: 17,
+  transition: "background-color 0.2s ease, box-shadow 0.2s ease",
+  "&:hover": { background: "var(--color-action-hover)" },
+} as const;
 
 export const ForgotPasswordForm = ({
   email,
   errorMessage,
   successMessage,
   isSubmitting,
-  loginHref,
   onEmailChange,
   onSubmit,
 }: ForgotPasswordFormProps) => {
   const t = useTranslations("forgotPasswordPage");
 
   return (
-    <AuthSectionCard>
-      <Box component="form" onSubmit={onSubmit}>
-        <Stack spacing={2.5}>
-          <AuthSectionHeader
-            title={t("submitButton")}
-            icon={<MailOutlineIcon />}
-            iconBackground="var(--color-accent-tint)"
-          />
+    <Plate pad="none" sx={cardSx}>
+      <Box sx={headerSx}>
+        <IconTile tone="accent" sx={iconTileSx}>
+          <MailOutlineIcon />
+        </IconTile>
 
-          {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-          {successMessage ? (
-            <Alert severity="success">{successMessage}</Alert>
+        <Typography variant="h3" sx={titleSx}>
+          {t("formTitle")}
+        </Typography>
+      </Box>
+
+      <Box component="form" onSubmit={onSubmit}>
+        <Box aria-live="polite">
+          {errorMessage ? (
+            <Alert severity="error" sx={alertSx}>
+              {errorMessage}
+            </Alert>
           ) : null}
 
-          <TextField
-            label={t("emailLabel")}
-            placeholder={t("emailPlaceholder")}
-            type="email"
-            value={email}
-            onChange={(event) => onEmailChange(event.target.value)}
-            autoComplete="email"
-            required
-            fullWidth
-          />
+          {successMessage ? (
+            <Alert severity="success" sx={alertSx}>
+              {successMessage}
+            </Alert>
+          ) : null}
+        </Box>
 
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            loading={isSubmitting}
-            sx={{ alignSelf: "flex-start" }}
-          >
-            {t("submitButton")}
-          </Button>
+        <AuthField
+          id="forgot-password-email"
+          type="email"
+          label={t("emailLabel")}
+          placeholder={t("emailPlaceholder")}
+          value={email}
+          autoComplete="email"
+          onChange={onEmailChange}
+        />
 
-          <AuthLinkPrompt
-            href={loginHref}
-            label={t("loginLinkLabel")}
-            prefix={t("loginPrompt")}
-          />
-        </Stack>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={submitSx}
+          loading={isSubmitting}
+          fullWidth
+        >
+          {t("submitButton")}
+        </Button>
       </Box>
-    </AuthSectionCard>
+    </Plate>
   );
 };
 

@@ -749,10 +749,12 @@ export type ForgotPasswordPageDictionary = {
   eyebrow: string;
   title: string;
   lead: string;
-  chips: string[];
+  formTitle: string;
   emailLabel: string;
   emailPlaceholder: string;
   submitButton: string;
+  tokenHint: string;
+  illustrationAlt: string;
   loginPrompt: string;
   loginLinkLabel: string;
   successMessage: string;
@@ -764,12 +766,16 @@ export type ResetPasswordPageDictionary = {
   eyebrow: string;
   title: string;
   lead: string;
+  formTitle: string;
   passwordLabel: string;
   passwordPlaceholder: string;
   confirmPasswordLabel: string;
   confirmPasswordPlaceholder: string;
+  showPassword: string;
+  hidePassword: string;
   submitButton: string;
   successMessage: string;
+  loginPrompt: string;
   loginLinkLabel: string;
   passwordMismatch: string;
   passwordTooShort: string;
@@ -784,6 +790,7 @@ export type VerifyEmailPageDictionary = {
   successMessage: string;
   invalidToken: string;
   unexpectedError: string;
+  loginPrompt: string;
   loginLinkLabel: string;
 };
 
@@ -910,6 +917,7 @@ export type AccountPageDictionary = {
   favoritesEyebrow: string;
   favoritesTitle: string;
   favoritesLead: string;
+  favoritesCardLead: string;
   favoritesSavedLabel: string;
   favoritesListTitle: string;
   favoritesAddAllToCart: string;

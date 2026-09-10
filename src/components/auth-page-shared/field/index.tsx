@@ -8,11 +8,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useTranslations } from "next-intl";
 
 import { inputFieldSx } from "@/theme/sx";
 
-import type { RegisterFieldProps } from "./types";
+import type { AuthFieldProps } from "./types";
 
 const wrapperSx = {
   display: "flex",
@@ -38,7 +37,7 @@ const adornmentSx = {
   "& .MuiSvgIcon-root": { fontSize: 20 },
 } as const;
 
-export const RegisterField = ({
+export const AuthField = ({
   id,
   label,
   placeholder,
@@ -46,8 +45,9 @@ export const RegisterField = ({
   autoComplete,
   onChange,
   type = "text",
-}: RegisterFieldProps) => {
-  const t = useTranslations("registerPage");
+  showPasswordLabel,
+  hidePasswordLabel,
+}: AuthFieldProps) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const isSecret = type === "password";
 
@@ -78,7 +78,7 @@ export const RegisterField = ({
                   edge="end"
                   size="small"
                   aria-label={
-                    isPasswordVisible ? t("hidePassword") : t("showPassword")
+                    isPasswordVisible ? hidePasswordLabel : showPasswordLabel
                   }
                   onClick={() => setIsPasswordVisible((visible) => !visible)}
                 >
@@ -97,4 +97,4 @@ export const RegisterField = ({
   );
 };
 
-export type { RegisterFieldProps, RegisterFieldType } from "./types";
+export type { AuthFieldProps, AuthFieldType } from "./types";

@@ -9,7 +9,11 @@ import { signIn } from "next-auth/react";
 
 import { registerUserClient } from "@/client-api/auth";
 import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
-import { AuthLinkPrompt } from "@/components/auth-page-shared";
+import {
+  AuthInviteCard,
+  AuthLinkPrompt,
+  AuthPageHeading,
+} from "@/components/auth-page-shared";
 import { HeroPanel, IconTile, Plate } from "@/components/primitives";
 import { AuthInputErrorCode } from "@/types/auth";
 import { UserOperationErrorReason } from "@/types/users";
@@ -17,8 +21,6 @@ import { UserOperationErrorReason } from "@/types/users";
 import { PageShell } from "../storefront/page-shell";
 import { RegisterForm } from "./form";
 import { RegisterIllustration } from "./illustration";
-import { RegisterIntro } from "./intro";
-import { RegisterLoginInvite } from "./login-invite";
 
 import type { RegisterPageViewProps } from "./types";
 
@@ -145,7 +147,7 @@ export const RegisterPageView = ({
       <PageShell>
         <Box component="section">
           <Container maxWidth="lg">
-            <RegisterIntro
+            <AuthPageHeading
               eyebrow={t("eyebrow")}
               title={t("verificationSentTitle")}
               lead={t("verificationSentText", { email })}
@@ -168,7 +170,7 @@ export const RegisterPageView = ({
     <PageShell>
       <Box component="section">
         <Container maxWidth="lg">
-          <RegisterIntro
+          <AuthPageHeading
             eyebrow={t("eyebrow")}
             title={t("title")}
             lead={t("lead")}
@@ -196,7 +198,11 @@ export const RegisterPageView = ({
             <Box sx={asideSx}>
               <RegisterIllustration alt={t("illustrationAlt")} />
 
-              <RegisterLoginInvite loginHref={loginHref} />
+              <AuthInviteCard
+                title={t("loginPrompt")}
+                actionLabel={t("loginLinkLabel")}
+                href={loginHref}
+              />
             </Box>
           </HeroPanel>
         </Container>

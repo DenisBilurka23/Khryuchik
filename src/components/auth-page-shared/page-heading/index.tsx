@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { SectionEyebrow } from "@/components/section-eyebrow";
 import { leadSx } from "@/theme/sx";
 
-import type { RegisterIntroProps } from "./types";
+import type { AuthPageHeadingProps } from "./types";
 
 const wrapperSx = {
   pt: { xs: 3, md: 4.5 },
@@ -15,14 +15,18 @@ const titleSx = {
   lineHeight: 1.08,
 } as const;
 
-const introLeadSx = {
+const headingLeadSx = {
   ...leadSx,
   maxWidth: "56ch",
   mt: 2,
   fontSize: { xs: 16, md: 18 },
 } as const;
 
-export const RegisterIntro = ({ eyebrow, title, lead }: RegisterIntroProps) => (
+export const AuthPageHeading = ({
+  eyebrow,
+  title,
+  lead,
+}: AuthPageHeadingProps) => (
   <Box sx={wrapperSx}>
     <SectionEyebrow label={eyebrow} />
 
@@ -30,8 +34,8 @@ export const RegisterIntro = ({ eyebrow, title, lead }: RegisterIntroProps) => (
       {title}
     </Typography>
 
-    <Typography sx={introLeadSx}>{lead}</Typography>
+    <Typography sx={headingLeadSx}>{lead}</Typography>
   </Box>
 );
 
-export type { RegisterIntroProps } from "./types";
+export type { AuthPageHeadingProps } from "./types";

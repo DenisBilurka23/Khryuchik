@@ -1,15 +1,14 @@
 import ArrowForwardOutlinedIcon from "@mui/icons-material/ArrowForwardOutlined";
 import { Box, Button, Typography } from "@mui/material";
-import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 
 import branchLeftImage from "@/assets/BranchReceptionLeft.png";
 import branchRightImage from "@/assets/BranchReceptionRight.png";
 
-import type { RegisterLoginInviteProps } from "./types";
+import type { AuthInviteCardProps } from "./types";
 
-const inviteSx = {
+const cardSx = {
   position: "relative",
   display: "flex",
   flexDirection: "column",
@@ -51,7 +50,7 @@ const titleSx = {
   lineHeight: 1.2,
 } as const;
 
-const loginButtonSx = {
+const actionSx = {
   width: { xs: "100%", sm: "60%" },
   minHeight: 50,
   mt: 2.5,
@@ -68,38 +67,36 @@ const loginButtonSx = {
   },
 } as const;
 
-export const RegisterLoginInvite = ({
-  loginHref,
-}: RegisterLoginInviteProps) => {
-  const t = useTranslations("registerPage");
-
-  return (
-    <Box sx={inviteSx}>
-      <Box sx={branchLeftSx}>
-        <Image src={branchLeftImage} alt="" style={branchImageStyle} />
-      </Box>
-
-      <Box sx={branchRightSx}>
-        <Image src={branchRightImage} alt="" style={branchImageStyle} />
-      </Box>
-
-      <Box sx={contentSx}>
-        <Typography variant="h3" sx={titleSx}>
-          {t("loginPrompt")}
-        </Typography>
-
-        <Button
-          component={Link}
-          href={loginHref}
-          variant="outlined"
-          sx={loginButtonSx}
-          endIcon={<ArrowForwardOutlinedIcon />}
-        >
-          {t("loginLinkLabel")}
-        </Button>
-      </Box>
+export const AuthInviteCard = ({
+  title,
+  actionLabel,
+  href,
+}: AuthInviteCardProps) => (
+  <Box sx={cardSx}>
+    <Box sx={branchLeftSx}>
+      <Image src={branchLeftImage} alt="" style={branchImageStyle} />
     </Box>
-  );
-};
 
-export type { RegisterLoginInviteProps } from "./types";
+    <Box sx={branchRightSx}>
+      <Image src={branchRightImage} alt="" style={branchImageStyle} />
+    </Box>
+
+    <Box sx={contentSx}>
+      <Typography variant="h3" sx={titleSx}>
+        {title}
+      </Typography>
+
+      <Button
+        component={Link}
+        href={href}
+        variant="outlined"
+        sx={actionSx}
+        endIcon={<ArrowForwardOutlinedIcon />}
+      >
+        {actionLabel}
+      </Button>
+    </Box>
+  </Box>
+);
+
+export type { AuthInviteCardProps } from "./types";

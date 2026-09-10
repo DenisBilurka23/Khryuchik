@@ -2,9 +2,8 @@ import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import { Alert, Box, Button, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
+import { AuthField } from "@/components/auth-page-shared";
 import { IconTile, Plate } from "@/components/primitives";
-
-import { RegisterField } from "../field";
 
 import type { RegisterFormProps } from "./types";
 
@@ -98,7 +97,7 @@ export const RegisterForm = ({
         </Box>
 
         <Box sx={fieldsSx}>
-          <RegisterField
+          <AuthField
             id="register-first-name"
             label={t("firstNameLabel")}
             placeholder={t("firstNamePlaceholder")}
@@ -107,7 +106,7 @@ export const RegisterForm = ({
             onChange={onFirstNameChange}
           />
 
-          <RegisterField
+          <AuthField
             id="register-last-name"
             label={t("lastNameLabel")}
             placeholder={t("lastNamePlaceholder")}
@@ -116,7 +115,7 @@ export const RegisterForm = ({
             onChange={onLastNameChange}
           />
 
-          <RegisterField
+          <AuthField
             id="register-email"
             type="email"
             label={t("emailLabel")}
@@ -126,7 +125,7 @@ export const RegisterForm = ({
             onChange={onEmailChange}
           />
 
-          <RegisterField
+          <AuthField
             id="register-phone"
             type="tel"
             label={t("phoneLabel")}
@@ -136,9 +135,11 @@ export const RegisterForm = ({
             onChange={onPhoneChange}
           />
 
-          <RegisterField
+          <AuthField
             id="register-password"
             type="password"
+            showPasswordLabel={t("showPassword")}
+            hidePasswordLabel={t("hidePassword")}
             label={t("passwordLabel")}
             placeholder={t("passwordPlaceholder")}
             value={password}
@@ -146,9 +147,11 @@ export const RegisterForm = ({
             onChange={onPasswordChange}
           />
 
-          <RegisterField
+          <AuthField
             id="register-confirm-password"
             type="password"
+            showPasswordLabel={t("showPassword")}
+            hidePasswordLabel={t("hidePassword")}
             label={t("confirmPasswordLabel")}
             placeholder={t("confirmPasswordPlaceholder")}
             value={confirmPassword}

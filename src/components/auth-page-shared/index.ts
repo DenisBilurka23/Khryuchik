@@ -1,9 +1,8 @@
-export { AuthPageShell, type AuthPageShellProps } from "./page-shell";
-export { AuthPageIntro, type AuthPageIntroProps } from "./page-intro";
+export { AuthPageHeading, type AuthPageHeadingProps } from "./page-heading";
 export { AuthLinkPrompt, type AuthLinkPromptProps } from "./link-prompt";
-export { AuthSectionCard, type AuthSectionCardProps } from "./section-card";
+export { AuthInviteCard, type AuthInviteCardProps } from "./invite-card";
+export { AuthField, type AuthFieldProps, type AuthFieldType } from "./field";
 export {
-	AuthSectionDivider,
-	type AuthSectionDividerProps,
+  AuthSectionDivider,
+  type AuthSectionDividerProps,
 } from "./section-divider";
-export { AuthSectionHeader, type AuthSectionHeaderProps } from "./section-header";
