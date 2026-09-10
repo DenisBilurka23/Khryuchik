@@ -12,6 +12,7 @@
     "seed:mongodb": "node --env-file=.env.local --import tsx ./scripts/seed-mongodb.ts",
     "books:physical": "node --env-file=.env.local --import tsx ./scripts/set-book-physical.ts",
     "chitchats:quote": "node --env-file=.env.local --import tsx ./scripts/chitchats-quote.ts",
+    "email:logo": "node --import tsx ./scripts/build-email-logo.ts",
     "easyship:quote": "node --env-file=.env.local --import tsx ./scripts/easyship-quote.ts",
     "printify:publish": "node --env-file=.env.local --import tsx ./scripts/printify-publish.ts",
     "printify:webhooks": "node --env-file=.env.local --import tsx ./scripts/printify-webhooks.ts",

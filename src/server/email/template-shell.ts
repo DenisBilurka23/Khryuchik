@@ -3,6 +3,7 @@ import "server-only";
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getLocalizedPath } from "@/utils";
 
+import { BRAND_LOGO_CID } from "./brand-logo";
 import { getAppOrigin } from "./transport";
 
 const buildFooterUrl = (lang: string, path: string) => {
@@ -176,11 +177,13 @@ export const buildEmailShell = (strings: EmailShellStrings, bodyHtml: string) =>
                     align="center"
                     style="background-color:#fce8ec;padding:36px 40px 30px 40px;"
                   >
-                    <div
-                      style="width:100px;height:100px;background-color:#ffffff;border-radius:50%;text-align:center;line-height:100px;font-size:46px;margin:0 auto;box-shadow:0 8px 22px rgba(212,96,122,0.22);"
-                    >
-                      &#x1F437;
-                    </div>
+                    <img
+                      src="cid:${BRAND_LOGO_CID}"
+                      alt="Khryuchik"
+                      width="100"
+                      height="100"
+                      style="display:block;width:100px;height:100px;margin:0 auto;border-radius:40px;box-shadow:0 8px 22px rgba(212,96,122,0.22);"
+                    />
                     <div
                       style="font-family:'Manrope',Arial,sans-serif;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;color:#b94e64;padding-top:20px;"
                     >
