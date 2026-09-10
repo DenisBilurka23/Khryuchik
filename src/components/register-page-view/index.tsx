@@ -1,23 +1,59 @@
 "use client";
 
 import { type SyntheticEvent, useState } from "react";
+import MarkEmailReadOutlinedIcon from "@mui/icons-material/MarkEmailReadOutlined";
+import { Box, Container } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 import { registerUserClient } from "@/client-api/auth";
 import { mergeGuestWishlistAfterLogin } from "@/client-api/wishlist";
-import {
-  AuthLinkPrompt,
-  AuthPageIntro,
-  AuthPageShell,
-  AuthSectionCard,
-} from "@/components/auth-page-shared";
+import { AuthLinkPrompt } from "@/components/auth-page-shared";
+import { HeroPanel, IconTile, Plate } from "@/components/primitives";
 import { AuthInputErrorCode } from "@/types/auth";
 import { UserOperationErrorReason } from "@/types/users";
 
+import { PageShell } from "../storefront/page-shell";
 import { RegisterForm } from "./form";
+import { RegisterIllustration } from "./illustration";
+import { RegisterIntro } from "./intro";
+import { RegisterLoginInvite } from "./login-invite";
+
 import type { RegisterPageViewProps } from "./types";
+
+const panelSx = {
+  display: "grid",
+  gridTemplateColumns: {
+    xs: "minmax(0, 1fr)",
+    md: "minmax(0, 1.25fr) minmax(0, 1fr)",
+  },
+  alignItems: "stretch",
+  gap: { xs: 3, md: 2.5 },
+  mt: "18px",
+  p: { xs: "20px 16px", md: 2.5 },
+  border: "1px solid var(--color-accent-soft)",
+  boxShadow: "var(--shadow-panel)",
+} as const;
+
+const asideSx = {
+  display: "flex",
+  flexDirection: "column",
+  gap: { xs: 2.5, md: "18px" },
+  width: "100%",
+  maxWidth: { xs: 480, md: "none" },
+  mx: "auto",
+  minWidth: 0,
+} as const;
+
+const noticeSx = {
+  display: "flex",
+  alignItems: "center",
+  gap: 1.75,
+  mt: "18px",
+  borderRadius: "var(--radius-card)",
+  boxShadow: "var(--shadow-floating)",
+} as const;
 
 export const RegisterPageView = ({
   callbackUrl,
@@ -106,48 +142,66 @@ export const RegisterPageView = ({
 
   if (isVerificationPending) {
     return (
-      <AuthPageShell>
-        <AuthPageIntro
-          eyebrow={t("eyebrow")}
-          title={t("verificationSentTitle")}
-          lead={t("verificationSentText", { email })}
-        />
+      <PageShell>
+        <Box component="section">
+          <Container maxWidth="lg">
+            <RegisterIntro
+              eyebrow={t("eyebrow")}
+              title={t("verificationSentTitle")}
+              lead={t("verificationSentText", { email })}
+            />
 
-        <AuthSectionCard>
-          <AuthLinkPrompt href={loginHref} label={t("loginLinkLabel")} />
-        </AuthSectionCard>
-      </AuthPageShell>
+            <Plate sx={noticeSx}>
+              <IconTile tone="accent">
+                <MarkEmailReadOutlinedIcon />
+              </IconTile>
+
+              <AuthLinkPrompt href={loginHref} label={t("loginLinkLabel")} />
+            </Plate>
+          </Container>
+        </Box>
+      </PageShell>
     );
   }
 
   return (
-    <AuthPageShell>
-      <AuthPageIntro
-        eyebrow={t("eyebrow")}
-        title={t("title")}
-        lead={t("lead")}
-        chips={t.raw("chips") as string[]}
-      />
+    <PageShell>
+      <Box component="section">
+        <Container maxWidth="lg">
+          <RegisterIntro
+            eyebrow={t("eyebrow")}
+            title={t("title")}
+            lead={t("lead")}
+          />
 
-      <RegisterForm
-        firstName={firstName}
-        lastName={lastName}
-        email={email}
-        phone={phone}
-        password={password}
-        confirmPassword={confirmPassword}
-        errorMessage={errorMessage}
-        isSubmitting={isSubmitting}
-        loginHref={loginHref}
-        onFirstNameChange={setFirstName}
-        onLastNameChange={setLastName}
-        onEmailChange={setEmail}
-        onPhoneChange={setPhone}
-        onPasswordChange={setPassword}
-        onConfirmPasswordChange={setConfirmPassword}
-        onSubmit={handleSubmit}
-      />
-    </AuthPageShell>
+          <HeroPanel tone="pale" sx={panelSx}>
+            <RegisterForm
+              firstName={firstName}
+              lastName={lastName}
+              email={email}
+              phone={phone}
+              password={password}
+              confirmPassword={confirmPassword}
+              errorMessage={errorMessage}
+              isSubmitting={isSubmitting}
+              onFirstNameChange={setFirstName}
+              onLastNameChange={setLastName}
+              onEmailChange={setEmail}
+              onPhoneChange={setPhone}
+              onPasswordChange={setPassword}
+              onConfirmPasswordChange={setConfirmPassword}
+              onSubmit={handleSubmit}
+            />
+
+            <Box sx={asideSx}>
+              <RegisterIllustration alt={t("illustrationAlt")} />
+
+              <RegisterLoginInvite loginHref={loginHref} />
+            </Box>
+          </HeroPanel>
+        </Container>
+      </Box>
+    </PageShell>
   );
 };
 

@@ -1,14 +1,61 @@
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
-import { Alert, Box, Button, Stack, TextField } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import {
-  AuthLinkPrompt,
-  AuthSectionCard,
-  AuthSectionHeader,
-} from "@/components/auth-page-shared";
+import { IconTile, Plate } from "@/components/primitives";
+
+import { RegisterField } from "../field";
 
 import type { RegisterFormProps } from "./types";
+
+const cardSx = {
+  borderRadius: "var(--radius-card)",
+  boxShadow: "var(--shadow-floating)",
+  p: { xs: "22px 18px", md: "32px 34px" },
+} as const;
+
+const headerSx = {
+  display: "flex",
+  alignItems: "center",
+  gap: 1.75,
+  mb: 3,
+} as const;
+
+const iconTileSx = {
+  width: 56,
+  height: 56,
+  borderRadius: "var(--radius-pill)",
+  background: "var(--color-accent-pale)",
+  color: "var(--color-action)",
+} as const;
+
+const titleSx = {
+  fontSize: { xs: 24, md: 30 },
+  lineHeight: 1.2,
+} as const;
+
+const alertSx = {
+  mb: 2.5,
+  borderRadius: "var(--radius-field)",
+} as const;
+
+const fieldsSx = {
+  display: "grid",
+  gridTemplateColumns: {
+    xs: "minmax(0, 1fr)",
+    sm: "repeat(2, minmax(0, 1fr))",
+  },
+  gap: "16px 18px",
+} as const;
+
+const submitSx = {
+  minHeight: 54,
+  mt: 3,
+  borderRadius: "var(--radius-field)",
+  fontSize: 17,
+  transition: "background-color 0.2s ease, box-shadow 0.2s ease",
+  "&:hover": { background: "var(--color-action-hover)" },
+} as const;
 
 export const RegisterForm = ({
   firstName,
@@ -19,7 +66,6 @@ export const RegisterForm = ({
   confirmPassword,
   errorMessage,
   isSubmitting,
-  loginHref,
   onFirstNameChange,
   onLastNameChange,
   onEmailChange,
@@ -31,93 +77,97 @@ export const RegisterForm = ({
   const t = useTranslations("registerPage");
 
   return (
-    <AuthSectionCard>
+    <Plate pad="none" sx={cardSx}>
+      <Box sx={headerSx}>
+        <IconTile tone="accent" sx={iconTileSx}>
+          <BadgeOutlinedIcon />
+        </IconTile>
+
+        <Typography variant="h3" sx={titleSx}>
+          {t("formTitle")}
+        </Typography>
+      </Box>
+
       <Box component="form" onSubmit={onSubmit}>
-        <Stack spacing={2.5}>
-          <AuthSectionHeader
-            title={t("submitButton")}
-            icon={<BadgeOutlinedIcon />}
-            iconBackground="var(--color-accent-tint)"
-          />
+        <Box aria-live="polite">
+          {errorMessage ? (
+            <Alert severity="error" sx={alertSx}>
+              {errorMessage}
+            </Alert>
+          ) : null}
+        </Box>
 
-          {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-
-          <TextField
+        <Box sx={fieldsSx}>
+          <RegisterField
+            id="register-first-name"
             label={t("firstNameLabel")}
             placeholder={t("firstNamePlaceholder")}
             value={firstName}
-            onChange={(event) => onFirstNameChange(event.target.value)}
             autoComplete="given-name"
-            required
-            fullWidth
+            onChange={onFirstNameChange}
           />
-          <TextField
+
+          <RegisterField
+            id="register-last-name"
             label={t("lastNameLabel")}
             placeholder={t("lastNamePlaceholder")}
             value={lastName}
-            onChange={(event) => onLastNameChange(event.target.value)}
             autoComplete="family-name"
-            required
-            fullWidth
+            onChange={onLastNameChange}
           />
-          <TextField
+
+          <RegisterField
+            id="register-email"
+            type="email"
             label={t("emailLabel")}
             placeholder={t("emailPlaceholder")}
-            type="email"
             value={email}
-            onChange={(event) => onEmailChange(event.target.value)}
             autoComplete="email"
-            required
-            fullWidth
+            onChange={onEmailChange}
           />
-          <TextField
+
+          <RegisterField
+            id="register-phone"
+            type="tel"
             label={t("phoneLabel")}
             placeholder={t("phonePlaceholder")}
             value={phone}
-            onChange={(event) => onPhoneChange(event.target.value)}
             autoComplete="tel"
-            required
-            fullWidth
+            onChange={onPhoneChange}
           />
-          <TextField
+
+          <RegisterField
+            id="register-password"
+            type="password"
             label={t("passwordLabel")}
             placeholder={t("passwordPlaceholder")}
-            type="password"
             value={password}
-            onChange={(event) => onPasswordChange(event.target.value)}
             autoComplete="new-password"
-            required
-            fullWidth
+            onChange={onPasswordChange}
           />
-          <TextField
+
+          <RegisterField
+            id="register-confirm-password"
+            type="password"
             label={t("confirmPasswordLabel")}
             placeholder={t("confirmPasswordPlaceholder")}
-            type="password"
             value={confirmPassword}
-            onChange={(event) => onConfirmPasswordChange(event.target.value)}
             autoComplete="new-password"
-            required
-            fullWidth
+            onChange={onConfirmPasswordChange}
           />
+        </Box>
 
-          <Button
-            type="submit"
-            variant="contained"
-            size="large"
-            loading={isSubmitting}
-            sx={{ alignSelf: "flex-start" }}
-          >
-            {t("submitButton")}
-          </Button>
-
-          <AuthLinkPrompt
-            href={loginHref}
-            label={t("loginLinkLabel")}
-            prefix={t("loginPrompt")}
-          />
-        </Stack>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={submitSx}
+          loading={isSubmitting}
+          fullWidth
+        >
+          {t("submitButton")}
+        </Button>
       </Box>
-    </AuthSectionCard>
+    </Plate>
   );
 };
 

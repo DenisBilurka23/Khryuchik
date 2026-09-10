@@ -801,7 +801,7 @@ export type RegisterPageDictionary = {
   eyebrow: string;
   title: string;
   lead: string;
-  chips: string[];
+  formTitle: string;
   firstNameLabel: string;
   firstNamePlaceholder: string;
   lastNameLabel: string;
@@ -814,9 +814,12 @@ export type RegisterPageDictionary = {
   passwordPlaceholder: string;
   confirmPasswordLabel: string;
   confirmPasswordPlaceholder: string;
+  showPassword: string;
+  hidePassword: string;
   submitButton: string;
   loginPrompt: string;
   loginLinkLabel: string;
+  illustrationAlt: string;
   passwordMismatch: string;
   emailTaken: string;
   passwordTooShort: string;

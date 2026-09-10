@@ -9,7 +9,6 @@ export type RegisterFormProps = {
   confirmPassword: string;
   errorMessage: string | null;
   isSubmitting: boolean;
-  loginHref: string;
   onFirstNameChange: (value: string) => void;
   onLastNameChange: (value: string) => void;
   onEmailChange: (value: string) => void;

@@ -1,5 +1,3 @@
-import { Container } from "@mui/material";
-
 import { RegisterPageView } from "@/components/register-page-view";
 import { defaultLocale } from "@/i18n/config";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
@@ -10,13 +8,11 @@ const RegisterPage = async ({ searchParams }: RegisterPageProps) => {
   await getGuestAuthPageContext(defaultLocale);
 
   return (
-    <Container maxWidth="lg">
-      <RegisterPageView
-        callbackUrl={callbackUrl ?? "/account"}
-        loginHref="/login"
-        locale={defaultLocale}
-      />
-    </Container>
+    <RegisterPageView
+      callbackUrl={callbackUrl ?? "/account"}
+      loginHref="/login"
+      locale={defaultLocale}
+    />
   );
 };
 

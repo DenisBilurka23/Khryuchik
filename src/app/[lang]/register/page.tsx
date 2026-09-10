@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import { Container } from "@mui/material";
 
 import { RegisterPageView } from "@/components/register-page-view";
 import { getLocalizedPath } from "@/utils";
@@ -21,13 +20,11 @@ const LocalizedRegisterPage = async ({
   await getGuestAuthPageContext(lang);
 
   return (
-    <Container maxWidth="lg">
-      <RegisterPageView
-        callbackUrl={callbackUrl ?? `/${lang}/account`}
-        loginHref={getLocalizedPath(lang, "/login")}
-        locale={lang}
-      />
-    </Container>
+    <RegisterPageView
+      callbackUrl={callbackUrl ?? `/${lang}/account`}
+      loginHref={getLocalizedPath(lang, "/login")}
+      locale={lang}
+    />
   );
 };
 
