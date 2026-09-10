@@ -1,26 +1,44 @@
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import {
   Box,
   Button,
+  ButtonBase,
   Chip,
-  Grid,
-  Paper,
+  CircularProgress,
   Stack,
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
 
+import { DownloadRow } from "@/components/download-row";
+import { Plate } from "@/components/primitives";
 import { customerOrderStatusColors } from "@/constants/order";
-import { formatFileSize } from "@/utils";
 import {
   getUserShippingAddressLines,
   getUserShippingAddressTitle,
 } from "@/utils/account-page";
 
-import { PersonalDetailsSection, SectionCard } from "../../shared";
+import {
+  accountBadgeSx,
+  accountOrderTotalSx,
+  PersonalDetailsSection,
+  SectionCard,
+} from "../../shared";
 
 import type { OverviewSectionProps } from "./types";
+
+const addressButtonSx = {
+  display: "block",
+  width: "100%",
+  borderRadius: "var(--radius-field)",
+  textAlign: "left",
+} as const;
+
+const addressPlateSx = {
+  borderRadius: "var(--radius-field)",
+  width: "100%",
+  transition: "opacity 0.2s ease, border-color 0.2s ease",
+} as const;
 
 export const OverviewSection = ({
   locale,
@@ -29,7 +47,9 @@ export const OverviewSection = ({
   addresses,
   selectedShippingAddressId,
   profileEditor,
+  selectingAddressId,
   onAddAddress,
+  onSelectAddress,
 }: OverviewSectionProps) => {
   const t = useTranslations("accountPage");
   const tStatus = useTranslations("accountPage.orderStatuses");
@@ -44,29 +64,12 @@ export const OverviewSection = ({
       >
         <Stack spacing={2}>
           {orders.length === 0 ? (
-            <Paper
-              elevation={0}
-              sx={{
-                p: 2.25,
-                borderRadius: "22px",
-                border: "1px solid var(--color-border)",
-                bgcolor: "var(--color-white)",
-              }}
-            >
+            <Plate pad="sm">
               <Typography color="text.secondary">{t("noOrders")}</Typography>
-            </Paper>
+            </Plate>
           ) : (
             orders.map((order) => (
-              <Paper
-                key={order.id}
-                elevation={0}
-                sx={{
-                  p: 2.25,
-                  borderRadius: "22px",
-                  border: "1px solid var(--color-border)",
-                  bgcolor: "var(--color-white)",
-                }}
-              >
+              <Plate key={order.id} pad="sm">
                 <Stack
                   direction={{ xs: "column", md: "row" }}
                   justifyContent="space-between"
@@ -98,173 +101,118 @@ export const OverviewSection = ({
                         fontWeight: 700,
                       }}
                     />
-                    <Typography sx={{ fontWeight: 800 }}>
+                    <Typography sx={accountOrderTotalSx}>
                       {order.total}
                     </Typography>
                   </Stack>
                 </Stack>
-              </Paper>
+              </Plate>
             ))
           )}
         </Stack>
       </SectionCard>
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, lg: 6 }}>
-          <SectionCard title={t("downloadedBooks")}>
-            <Stack spacing={2}>
-              {downloads.length === 0 ? (
-                <Typography color="text.secondary">{t("noBooks")}</Typography>
-              ) : (
-                downloads.map((item) => (
-                  <Paper
-                    key={item.assetId}
-                    elevation={0}
-                    sx={{
-                      p: 2.25,
-                      borderRadius: "22px",
-                      border: "1px solid var(--color-border)",
-                      bgcolor: "var(--color-white)",
-                    }}
-                  >
-                    <Stack
-                      direction="row"
-                      alignItems="center"
-                      spacing={2}
-                      sx={{ width: "100%" }}
-                    >
-                      <Box sx={{ minWidth: 0, flex: 1 }}>
-                        <Typography
-                          sx={{
-                            fontWeight: 700,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {item.productTitle}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ mt: 0.5 }}
-                        >
-                          {item.format}
-                          {item.sizeBytes
-                            ? ` • ${formatFileSize(item.sizeBytes)}`
-                            : ""}
-                          {` • ${new Intl.DisplayNames([item.locale], { type: "language" }).of(item.locale) ?? item.locale.toUpperCase()}`}
-                        </Typography>
-                      </Box>
-                      <Button
-                        variant="outlined"
-                        color="inherit"
-                        startIcon={<DownloadOutlinedIcon />}
-                        component="a"
-                        href={item.downloadUrl}
-                        sx={{
-                          borderColor: "var(--color-border-rose)",
-                          bgcolor: "var(--color-white)",
-                          flexShrink: 0,
-                        }}
-                      >
-                        {t("download")}
-                      </Button>
-                    </Stack>
-                  </Paper>
-                ))
-              )}
-            </Stack>
-          </SectionCard>
-        </Grid>
+      <SectionCard title={t("downloadedBooks")}>
+        <Stack spacing={2}>
+          {downloads.length === 0 ? (
+            <Typography color="text.secondary">{t("noBooks")}</Typography>
+          ) : (
+            downloads.map((item) => (
+              <DownloadRow
+                key={item.assetId}
+                download={item}
+                actionLabel={t("download")}
+              />
+            ))
+          )}
+        </Stack>
+      </SectionCard>
 
-        <Grid size={{ xs: 12, lg: 6 }}>
-          <SectionCard
-            title={t("shippingAddresses")}
-            action={
-              <Button variant="contained" size="small" onClick={onAddAddress}>
-                {t("addAddress")}
-              </Button>
-            }
-          >
-            <Stack spacing={2}>
-              {addresses.length === 0 ? (
-                <Paper
-                  elevation={0}
+      <SectionCard
+        title={t("shippingAddresses")}
+        action={
+          <Button variant="text" onClick={onAddAddress}>
+            {t("addAddress")}
+          </Button>
+        }
+      >
+        <Stack spacing={2}>
+          {addresses.length === 0 ? (
+            <Plate pad="sm">
+              <Typography color="text.secondary">
+                {t("noAddressesYet")}
+              </Typography>
+            </Plate>
+          ) : null}
+
+          {addresses.map((address) => {
+            const isCurrent = address.id === selectedShippingAddressId;
+            const isSelecting = selectingAddressId === address.id;
+            const lines = getUserShippingAddressLines(address, locale);
+
+            return (
+              <ButtonBase
+                key={address.id}
+                onClick={() => {
+                  if (!isCurrent) {
+                    onSelectAddress(address.id);
+                  }
+                }}
+                disabled={isCurrent || Boolean(selectingAddressId)}
+                sx={addressButtonSx}
+              >
+                <Plate
+                  pad="sm"
                   sx={{
-                    p: 2.25,
-                    borderRadius: "22px",
-                    border: "1px solid var(--color-border)",
-                    bgcolor: "var(--color-white)",
+                    ...addressPlateSx,
+                    ...(isCurrent
+                      ? { borderColor: "var(--color-action)" }
+                      : null),
+                    opacity: isSelecting ? 0.72 : 1,
                   }}
                 >
-                  <Typography color="text.secondary">
-                    {t("noAddressesYet")}
-                  </Typography>
-                </Paper>
-              ) : null}
-
-              {addresses.map((address) => {
-                const isCurrent = address.id === selectedShippingAddressId;
-                const lines = getUserShippingAddressLines(address, locale);
-
-                return (
-                  <Paper
-                    key={address.id}
-                    elevation={0}
-                    sx={{
-                      p: 2.25,
-                      borderRadius: "22px",
-                      border: isCurrent
-                        ? "1px solid var(--color-action)"
-                        : "1px solid var(--color-border)",
-                      bgcolor: "var(--color-white)",
-                    }}
-                  >
-                    <Stack
-                      direction="row"
-                      spacing={1.5}
-                      alignItems="flex-start"
-                    >
-                      <LocationOnOutlinedIcon />
-                      <Box sx={{ flex: 1 }}>
-                        <Stack
-                          direction="row"
-                          justifyContent="space-between"
-                          alignItems="flex-start"
-                          spacing={1}
-                        >
-                          <Typography sx={{ fontWeight: 700 }}>
-                            {getUserShippingAddressTitle(address)}
-                          </Typography>
-                          {isCurrent ? (
-                            <Chip
-                              label={t("currentAddress")}
-                              color="primary"
-                              size="small"
-                            />
-                          ) : null}
-                        </Stack>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ mt: 0.5, lineHeight: 1.8 }}
-                        >
-                          {lines.map((line) => (
-                            <Box key={line} component="span" display="block">
-                              {line}
-                            </Box>
-                          ))}
+                  <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                    <LocationOnOutlinedIcon />
+                    <Box sx={{ flex: 1 }}>
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="flex-start"
+                        spacing={1}
+                      >
+                        <Typography sx={{ fontWeight: 700 }}>
+                          {getUserShippingAddressTitle(address)}
                         </Typography>
-                      </Box>
-                    </Stack>
-                  </Paper>
-                );
-              })}
-            </Stack>
-          </SectionCard>
-        </Grid>
-      </Grid>
+                        {isCurrent ? (
+                          <Chip
+                            label={t("currentAddress")}
+                            color="primary"
+                            size="small"
+                            sx={accountBadgeSx}
+                          />
+                        ) : isSelecting ? (
+                          <CircularProgress size={20} color="inherit" />
+                        ) : null}
+                      </Stack>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 0.5, lineHeight: 1.8 }}
+                      >
+                        {lines.map((line) => (
+                          <Box key={line} component="span" display="block">
+                            {line}
+                          </Box>
+                        ))}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Plate>
+              </ButtonBase>
+            );
+          })}
+        </Stack>
+      </SectionCard>
     </Stack>
   );
 };

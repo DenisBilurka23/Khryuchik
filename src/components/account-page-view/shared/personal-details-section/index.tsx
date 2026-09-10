@@ -12,6 +12,7 @@ import {
 import { useTranslations } from "next-intl";
 
 import { SectionCard } from "../section-card";
+import { secondaryButtonSx } from "@/theme/sx";
 
 import type { PersonalDetailsSectionProps } from "./types";
 
@@ -40,10 +41,7 @@ export const PersonalDetailsSection = ({
         <Button
           variant="outlined"
           color="inherit"
-          sx={{
-            borderColor: "var(--color-border-rose)",
-            bgcolor: "var(--color-white)",
-          }}
+          sx={secondaryButtonSx}
           onClick={onCancel}
         >
           {t("cancel")}
@@ -63,10 +61,7 @@ export const PersonalDetailsSection = ({
       variant="outlined"
       color="inherit"
       startIcon={<EditOutlinedIcon />}
-      sx={{
-        borderColor: "var(--color-border-rose)",
-        bgcolor: "var(--color-white)",
-      }}
+      sx={secondaryButtonSx}
       onClick={onBeginEdit}
     >
       {t("editProfile")}

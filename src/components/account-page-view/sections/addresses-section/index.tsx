@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useSession } from "next-auth/react";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import {
   Alert,
@@ -9,22 +8,15 @@ import {
   Chip,
   CircularProgress,
   Grid,
-  Paper,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import type { ClientApiResponse } from "@/client-api";
-import {
-  addAccountAddressClient,
-  selectAccountAddressClient,
-  type UpdateAccountAddressesResponse,
-} from "@/client-api/account";
+import { addAccountAddressClient } from "@/client-api/account";
 import {
   UserOperationErrorReason,
-  type UserShippingAddress,
   type UserShippingAddressInput,
 } from "@/types/users";
 import {
@@ -37,12 +29,27 @@ import {
   isPostalCodeValid,
 } from "@/utils";
 import { CountrySelect } from "@/components/country-select";
+import { Plate } from "@/components/primitives";
 import { getRegionOptions, RegionSelect } from "@/components/region-select";
+import { useShippingAddressSelection } from "@/hooks/useShippingAddressSelection";
 import { regionFieldKey } from "@/utils";
 
-import { SectionCard } from "../../shared";
+import { accountBadgeSx, SectionCard } from "../../shared";
 
 import type { AddressesSectionProps } from "./types";
+
+const addressButtonSx = {
+  display: "block",
+  width: "100%",
+  borderRadius: "var(--radius-field)",
+  textAlign: "left",
+} as const;
+
+const addressPlateSx = {
+  borderRadius: "var(--radius-field)",
+  height: "100%",
+  transition: "opacity 0.2s ease, border-color 0.2s ease",
+} as const;
 
 const emptyAddressForm = (): UserShippingAddressInput => ({
   title: "",
@@ -65,16 +72,11 @@ export const AddressesSection = ({
   const tCheckout = useTranslations("storefront.checkoutPage");
   const tCheckoutFields = useTranslations("storefront.checkoutPage.fields");
 
-  const { update } = useSession();
-
   const [addresses, setAddresses] = useState(initialAddresses);
   const [selectedShippingAddressId, setSelectedShippingAddressId] =
     useState(initialSelectedId);
   const [isAddingAddress, setIsAddingAddress] = useState(autoOpenAddForm);
   const [isSavingAddress, setIsSavingAddress] = useState(false);
-  const [isSelectingAddressId, setIsSelectingAddressId] = useState<
-    string | null
-  >(null);
   const [addressError, setAddressError] = useState<string | null>(null);
   const [addressForm, setAddressForm] =
     useState<UserShippingAddressInput>(emptyAddressForm);
@@ -106,40 +108,16 @@ export const AddressesSection = ({
     }
   };
 
-  const applyAddressesState = (
-    nextAddresses: UserShippingAddress[],
-    nextSelectedId: string | null,
-  ) => {
-    setAddresses(nextAddresses);
-    setSelectedShippingAddressId(nextSelectedId);
-    onAddressesChange?.(nextAddresses, nextSelectedId);
-    void update({
-      user: {
-        shippingAddresses: nextAddresses,
-        selectedShippingAddressId: nextSelectedId,
+  const { selectingAddressId, selectAddress, applyAddressResponse } =
+    useShippingAddressSelection({
+      onAddressesChange: (nextAddresses, nextSelectedId) => {
+        setAddresses(nextAddresses);
+        setSelectedShippingAddressId(nextSelectedId);
+        onAddressesChange?.(nextAddresses, nextSelectedId);
       },
+      onError: (reason) =>
+        setAddressError(reason ? getAddressErrorMessage(reason) : null),
     });
-  };
-
-  const applyAddressResponse = (
-    response: ClientApiResponse<UpdateAccountAddressesResponse>,
-  ) => {
-    if (!response.ok || !response.data?.user) {
-      setAddressError(getAddressErrorMessage(response.data?.error));
-
-      return false;
-    }
-
-    const nextUser = response.data.user;
-    const nextAddresses = nextUser.shippingAddresses ?? [];
-
-    applyAddressesState(
-      nextAddresses,
-      nextUser.selectedShippingAddressId ?? nextAddresses[0]?.id ?? null,
-    );
-
-    return true;
-  };
 
   const handleBeginAddAddress = () => {
     setIsAddingAddress(true);
@@ -162,8 +140,6 @@ export const AddressesSection = ({
     setAddressError(null);
   };
 
-  // A region code only means something inside its own country, so it cannot
-  // survive a country change — see the same reset on the checkout form.
   const handleAddressCountryChange = (country: string) => {
     setAddressForm((prev) => ({ ...prev, country, region: undefined }));
     setAddressError(null);
@@ -210,23 +186,6 @@ export const AddressesSection = ({
     setAddressForm(emptyAddressForm());
   };
 
-  const handleSelectAddress = async (addressId: string) => {
-    if (
-      addressId === selectedShippingAddressId ||
-      isSelectingAddressId !== null
-    )
-      return;
-
-    setIsSelectingAddressId(addressId);
-    setAddressError(null);
-
-    const response = await selectAccountAddressClient(addressId);
-
-    setIsSelectingAddressId(null);
-
-    applyAddressResponse(response);
-  };
-
   return (
     <SectionCard
       title={tCheckout("shippingTitle")}
@@ -242,15 +201,7 @@ export const AddressesSection = ({
         {addressError ? <Alert severity="error">{addressError}</Alert> : null}
 
         {isAddingAddress ? (
-          <Paper
-            elevation={0}
-            sx={{
-              p: 2.5,
-              borderRadius: "22px",
-              border: "1px solid var(--color-border)",
-              bgcolor: "var(--color-white)",
-            }}
-          >
+          <Plate pad="sm">
             <Grid container spacing={2}>
               <Grid size={{ xs: 12 }}>
                 <TextField
@@ -353,57 +304,42 @@ export const AddressesSection = ({
                 {t("cancel")}
               </Button>
             </Stack>
-          </Paper>
+          </Plate>
         ) : null}
 
         {sortedAddresses.length === 0 ? (
-          <Paper
-            elevation={0}
-            sx={{
-              p: 2.5,
-              borderRadius: "22px",
-              border: "1px solid var(--color-border)",
-              bgcolor: "var(--color-white)",
-            }}
-          >
+          <Plate pad="sm">
             <Typography color="text.secondary">
               {t("noAddressesYet")}
             </Typography>
-          </Paper>
+          </Plate>
         ) : null}
 
         <Grid container spacing={2}>
           {sortedAddresses.map((address) => {
             const isCurrent = address.id === selectedShippingAddressId;
-            const isSelecting = isSelectingAddressId === address.id;
+            const isSelecting = selectingAddressId === address.id;
             const lines = getUserShippingAddressLines(address, locale);
 
             return (
               <Grid key={address.id} size={{ xs: 12, md: 6 }}>
                 <ButtonBase
                   onClick={() => {
-                    if (!isCurrent) void handleSelectAddress(address.id);
+                    if (!isCurrent) {
+                      void selectAddress(address.id, selectedShippingAddressId);
+                    }
                   }}
-                  disabled={isCurrent || Boolean(isSelectingAddressId)}
-                  sx={{
-                    display: "block",
-                    width: "100%",
-                    borderRadius: "22px",
-                    textAlign: "left",
-                  }}
+                  disabled={isCurrent || Boolean(selectingAddressId)}
+                  sx={addressButtonSx}
                 >
-                  <Paper
-                    elevation={0}
+                  <Plate
+                    pad="sm"
                     sx={{
-                      p: 2.5,
-                      borderRadius: "22px",
-                      border: isCurrent
-                        ? "1px solid var(--color-action)"
-                        : "1px solid var(--color-border)",
-                      bgcolor: "var(--color-white)",
-                      height: "100%",
+                      ...addressPlateSx,
+                      ...(isCurrent
+                        ? { borderColor: "var(--color-action)" }
+                        : null),
                       opacity: isSelecting ? 0.72 : 1,
-                      transition: "opacity 0.2s ease, border-color 0.2s ease",
                     }}
                   >
                     <Stack
@@ -427,6 +363,7 @@ export const AddressesSection = ({
                               label={t("currentAddress")}
                               color="primary"
                               size="small"
+                              sx={accountBadgeSx}
                             />
                           ) : isSelecting ? (
                             <CircularProgress size={20} color="inherit" />
@@ -445,7 +382,7 @@ export const AddressesSection = ({
                         </Typography>
                       </Box>
                     </Stack>
-                  </Paper>
+                  </Plate>
                 </ButtonBase>
               </Grid>
             );

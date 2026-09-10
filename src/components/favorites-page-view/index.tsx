@@ -10,8 +10,10 @@ import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
 import { PageShell } from "../storefront/page-shell";
 import { useCart } from "../cart/store";
+import { FavoritesCompactEmptyState } from "./compact-empty-state";
 import { FavoritesEmptyState } from "./empty-state";
 import { FavoritesHero } from "./hero";
+import { FavoritesSummaryCard } from "./summary-card";
 import type { FavoritesPageViewProps } from "./types";
 import { FavoritesWishlistGrid } from "./wishlist-grid";
 import type { ResolvedWishlistItem } from "./wishlist-grid";
@@ -25,6 +27,7 @@ export const FavoritesPageView = ({
   embedded = false,
 }: FavoritesPageViewProps) => {
   const t = useTranslations("storefront.favoritesPage");
+  const tAccount = useTranslations("accountPage");
   const { addItem } = useCart();
   const { items, isLoading, isAuthenticated } = useWishlist();
   const authState = isAuthenticated || initialIsAuthenticated;
@@ -43,17 +46,40 @@ export const FavoritesPageView = ({
     });
   };
 
+  const header = embedded ? (
+    <FavoritesSummaryCard
+      title={tAccount("favorites")}
+      lead={tAccount("favoritesCardLead")}
+      actionLabel={tAccount("favoritesAddAllToCart")}
+      onAddAllToCart={addAllToCart}
+      isAddAllDisabled={purchasableItems.length === 0}
+    />
+  ) : (
+    <FavoritesHero
+      locale={locale}
+      authState={authState}
+      shopHref={shopHref}
+      loginHref={loginHref}
+      registerHref={registerHref}
+      onAddAllToCart={addAllToCart}
+      isAddAllDisabled={purchasableItems.length === 0}
+    />
+  );
+
+  const emptyState = embedded ? (
+    <FavoritesCompactEmptyState
+      title={tAccount("favoritesEmptyTitle")}
+      text={tAccount("favoritesEmptyText")}
+      actionLabel={tAccount("favoritesEmptyAction")}
+      shopHref={shopHref}
+    />
+  ) : (
+    <FavoritesEmptyState authState={authState} shopHref={shopHref} />
+  );
+
   const content = (
     <>
-      <FavoritesHero
-        locale={locale}
-        authState={authState}
-        shopHref={shopHref}
-        loginHref={loginHref}
-        registerHref={registerHref}
-        onAddAllToCart={addAllToCart}
-        isAddAllDisabled={purchasableItems.length === 0}
-      />
+      {header}
 
       <Box sx={{ mt: 3 }}>
         {isLoading ? (
@@ -67,7 +93,7 @@ export const FavoritesPageView = ({
             {locale === "ru" ? "Загружаем избранное..." : "Loading wishlist..."}
           </Plate>
         ) : resolvedItems.length === 0 ? (
-          <FavoritesEmptyState authState={authState} shopHref={shopHref} />
+          emptyState
         ) : (
           <FavoritesWishlistGrid
             locale={locale}

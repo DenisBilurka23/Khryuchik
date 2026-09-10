@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Container } from "@mui/material";
 import { AccountPageView } from "@/components/account-page-view";
+import { PageShell } from "@/components/storefront/page-shell";
 import { getShopCategories } from "@/server/catalog/services/categories.service";
 import {
   getActiveLocaleCodes,
@@ -43,21 +44,23 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
   const orders = rawOrders.map((order) => toAccountOrder(order, lang));
 
   return (
-    <Container maxWidth="lg">
-      <AccountPageView
-        locale={lang}
-        country={country}
-        availableLocales={availableLocales}
-        availableCountries={availableCountries}
-        homeHref={lang === "en" ? "/" : `/${lang}`}
-        favoriteCategoryLabels={Object.fromEntries(
-          categories.map((category) => [category.key, category.label]),
-        )}
-        user={user}
-        orders={orders}
-        downloads={downloads}
-      />
-    </Container>
+    <PageShell>
+      <Container maxWidth="lg">
+        <AccountPageView
+          locale={lang}
+          country={country}
+          availableLocales={availableLocales}
+          availableCountries={availableCountries}
+          homeHref={lang === "en" ? "/" : `/${lang}`}
+          favoriteCategoryLabels={Object.fromEntries(
+            categories.map((category) => [category.key, category.label]),
+          )}
+          user={user}
+          orders={orders}
+          downloads={downloads}
+        />
+      </Container>
+    </PageShell>
   );
 };
 

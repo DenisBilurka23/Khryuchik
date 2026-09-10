@@ -1,10 +1,11 @@
-import { Chip, Link, Paper, Stack, Typography } from "@mui/material";
+import { Chip, Link, Stack, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
+import { Plate } from "@/components/primitives";
 import { customerOrderStatusColors } from "@/constants/order";
 import { formatOrderTracking } from "@/utils";
 
-import { SectionCard } from "../../shared";
+import { accountOrderTotalSx, SectionCard } from "../../shared";
 import { ConfirmDeliveryButton } from "./confirm-delivery-button";
 import type { OrdersSectionProps } from "./types";
 
@@ -25,16 +26,7 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
     <SectionCard title={t("allOrders")}>
       <Stack spacing={2}>
         {orders.map((order) => (
-          <Paper
-            key={order.id}
-            elevation={0}
-            sx={{
-              p: 2.5,
-              borderRadius: "22px",
-              border: "1px solid var(--color-border)",
-              bgcolor: "var(--color-white)",
-            }}
-          >
+          <Plate key={order.id} pad="sm">
             <Stack
               direction={{ xs: "column", md: "row" }}
               justifyContent="space-between"
@@ -111,7 +103,7 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
                     fontWeight: 700,
                   }}
                 />
-                <Typography sx={{ fontWeight: 800 }}>{order.total}</Typography>
+                <Typography sx={accountOrderTotalSx}>{order.total}</Typography>
                 {order.canConfirmDelivery && (
                   <ConfirmDeliveryButton orderId={order.id} />
                 )}
@@ -154,7 +146,7 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
                 )}
               </Stack>
             </Stack>
-          </Paper>
+          </Plate>
         ))}
       </Stack>
     </SectionCard>

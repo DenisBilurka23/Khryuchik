@@ -1,13 +1,13 @@
 import type { CustomerOrderStatus, OrderStatus } from "@/types/order";
 
 export const customerOrderStatusColors: Record<CustomerOrderStatus, string> = {
-  pending: "#FFF3D6",
-  confirmed: "#FFF3D6",
-  shipped: "#FFF3D6",
-  delivered: "#E6F6EC",
-  cancelled: "#F8D7DA",
-  completed: "#E6F6EC",
-  refunded: "#E9E9EF",
+  pending: "var(--color-butter)",
+  confirmed: "var(--color-butter)",
+  shipped: "var(--color-butter)",
+  delivered: "var(--color-green-light)",
+  cancelled: "var(--color-accent-tint)",
+  completed: "var(--color-green-light)",
+  refunded: "var(--color-products)",
 };
 
 export const orderStatusRank: Record<OrderStatus, number> = {

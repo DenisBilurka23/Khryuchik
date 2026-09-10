@@ -10,7 +10,6 @@ import {
   CardContent,
   Grid,
   List,
-  Paper,
   Stack,
   Typography,
 } from "@mui/material";
@@ -19,6 +18,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
 import type { UserShippingAddress } from "@/types/users";
 
+import { AccountHero } from "./hero";
 import {
   AddressesSection,
   BooksSection,
@@ -30,8 +30,36 @@ import {
 } from "./sections";
 import { AccountAvatarUploadField, SidebarItem } from "./shared";
 import { useProfileEditor } from "@/hooks/useProfileEditor";
+import { useShippingAddressSelection } from "@/hooks/useShippingAddressSelection";
 import { accountSectionKeys, accountSidebarConfig } from "@/constants/account";
+import { secondaryButtonSx } from "@/theme/sx";
 import type { AccountPageViewProps, SectionKey } from "./types";
+
+const asideCardSx = {
+  width: "100%",
+  border: "1px solid var(--color-border)",
+  borderRadius: "var(--radius-panel)",
+  boxShadow: "var(--shadow-panel)",
+} as const;
+
+const profileCardSx = {
+  ...asideCardSx,
+  height: "100%",
+} as const;
+
+const sidebarCardSx = asideCardSx;
+
+const userNameSx = {
+  mt: 2,
+  fontSize: 24,
+  fontWeight: 700,
+  lineHeight: 1.2,
+} as const;
+
+const editProfileSx = {
+  ...secondaryButtonSx,
+  mt: 2.5,
+} as const;
 
 const getActiveSection = (searchParams: {
   get: (name: string) => string | null;
@@ -162,6 +190,10 @@ export const AccountPageView = ({
     setSelectedShippingAddressId(selectedId);
   };
 
+  const { selectingAddressId, selectAddress } = useShippingAddressSelection({
+    onAddressesChange: handleAddressesChange,
+  });
+
   const renderSection = () => {
     switch (activeSection) {
       case "orders":
@@ -172,12 +204,8 @@ export const AccountPageView = ({
         return (
           <AddressesSection
             locale={locale}
-            initialAddresses={user.shippingAddresses ?? []}
-            initialSelectedId={
-              user.selectedShippingAddressId ??
-              user.shippingAddresses?.[0]?.id ??
-              null
-            }
+            initialAddresses={shippingAddresses}
+            initialSelectedId={selectedShippingAddressId}
             onAddressesChange={handleAddressesChange}
             autoOpenAddForm={shouldAutoOpenAddAddress}
           />
@@ -216,7 +244,11 @@ export const AccountPageView = ({
             addresses={overviewAddresses}
             selectedShippingAddressId={selectedShippingAddressId}
             profileEditor={profileEditorState}
+            selectingAddressId={selectingAddressId}
             onAddAddress={handleAddAddressFromOverview}
+            onSelectAddress={(addressId) =>
+              void selectAddress(addressId, selectedShippingAddressId)
+            }
           />
         );
     }
@@ -230,14 +262,8 @@ export const AccountPageView = ({
           order={{ xs: 1, md: 1 }}
           sx={{ display: "flex" }}
         >
-          <Card
-            sx={{
-              border: "1px solid var(--color-border)",
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            <CardContent sx={{ p: 3 }}>
+          <Card sx={profileCardSx}>
+            <CardContent sx={{ p: { xs: 3, md: 3.5 } }}>
               <Stack alignItems="center" textAlign="center">
                 <AccountAvatarUploadField
                   imageSrc={avatarPreviewSrc}
@@ -249,9 +275,7 @@ export const AccountPageView = ({
                   onRequestEditAction={openProfileSettings}
                   onFileSelectAction={handleAvatarSelect}
                 />
-                <Typography sx={{ mt: 2, fontSize: 24, fontWeight: 800 }}>
-                  {userName}
-                </Typography>
+                <Typography sx={userNameSx}>{userName}</Typography>
                 <Typography color="text.secondary">{userEmail}</Typography>
                 <Button
                   variant={isEditingProfile ? "contained" : "outlined"}
@@ -263,15 +287,7 @@ export const AccountPageView = ({
                       <EditOutlinedIcon />
                     )
                   }
-                  sx={
-                    isEditingProfile
-                      ? { mt: 2.5 }
-                      : {
-                          mt: 2.5,
-                          borderColor: "var(--color-border-rose)",
-                          bgcolor: "var(--color-white)",
-                        }
-                  }
+                  sx={isEditingProfile ? { mt: 2.5 } : editProfileSx}
                   onClick={
                     isEditingProfile
                       ? () => void handleProfileSave()
@@ -291,47 +307,16 @@ export const AccountPageView = ({
           order={{ xs: 3, md: 2 }}
           sx={{ display: "flex" }}
         >
-          <Paper
-            elevation={0}
-            sx={{
-              p: { xs: 3, md: 4 },
-              borderRadius: "32px",
-              background:
-                "radial-gradient(circle at top left, rgba(247,201,209,0.45), transparent 30%), radial-gradient(circle at right, rgba(255,224,167,0.45), transparent 28%), var(--color-white)",
-              border: "1px solid var(--color-border)",
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            <Typography
-              sx={{
-                textTransform: "uppercase",
-                letterSpacing: "0.2em",
-                fontSize: 13,
-                fontWeight: 700,
-                color: "primary.main",
-              }}
-            >
-              {t("account")}
-            </Typography>
-            <Typography
-              variant="h1"
-              sx={{ mt: 1.5, fontSize: { xs: 34, md: 48 } }}
-            >
-              {t("welcome")}
-            </Typography>
-            <Typography
-              color="text.secondary"
-              sx={{ mt: 2, maxWidth: 680, lineHeight: 1.8 }}
-            >
-              {t("lead")}
-            </Typography>
-          </Paper>
+          <AccountHero
+            eyebrow={t("account")}
+            title={t("welcome")}
+            lead={t("lead")}
+          />
         </Grid>
 
         <Grid size={{ xs: 12, md: 4, lg: 3.5 }} order={{ xs: 2, md: 3 }}>
-          <Card sx={{ border: "1px solid var(--color-border)" }}>
-            <CardContent sx={{ p: 2 }}>
+          <Card sx={sidebarCardSx}>
+            <CardContent sx={{ p: 1.5 }}>
               <List sx={{ p: 0 }}>
                 {sidebarItems.map((item) => (
                   <SidebarItem

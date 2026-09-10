@@ -1,5 +1,6 @@
 import { Container } from "@mui/material";
 import { AccountPageView } from "@/components/account-page-view";
+import { PageShell } from "@/components/storefront/page-shell";
 import { defaultLocale } from "@/i18n/config";
 import { getShopCategories } from "@/server/catalog/services/categories.service";
 import { requireAccountPageContext } from "@/server/auth/page-context";
@@ -35,21 +36,23 @@ const AccountPage = async () => {
   const orders = rawOrders.map((order) => toAccountOrder(order, defaultLocale));
 
   return (
-    <Container maxWidth="lg">
-      <AccountPageView
-        locale={defaultLocale}
-        country={country}
-        availableLocales={availableLocales}
-        availableCountries={availableCountries}
-        homeHref="/"
-        favoriteCategoryLabels={Object.fromEntries(
-          categories.map((category) => [category.key, category.label]),
-        )}
-        user={user}
-        orders={orders}
-        downloads={downloads}
-      />
-    </Container>
+    <PageShell>
+      <Container maxWidth="lg">
+        <AccountPageView
+          locale={defaultLocale}
+          country={country}
+          availableLocales={availableLocales}
+          availableCountries={availableCountries}
+          homeHref="/"
+          favoriteCategoryLabels={Object.fromEntries(
+            categories.map((category) => [category.key, category.label]),
+          )}
+          user={user}
+          orders={orders}
+          downloads={downloads}
+        />
+      </Container>
+    </PageShell>
   );
 };
 

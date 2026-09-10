@@ -7,6 +7,29 @@ import {
 
 import type { SidebarItemProps } from "./types";
 
+const buttonSx = {
+  borderRadius: "var(--radius-card)",
+  mb: 1,
+  py: 1.25,
+  transition: "background-color 0.2s ease, border-color 0.2s ease",
+} as const;
+
+const activeSx = {
+  ...buttonSx,
+  bgcolor: "var(--color-accent-pale)",
+  border: "1px solid var(--color-border-rose)",
+  color: "var(--color-action)",
+  "&:hover": { bgcolor: "var(--color-accent-pale)" },
+} as const;
+
+const inactiveSx = {
+  ...buttonSx,
+  bgcolor: "var(--color-card)",
+  border: "1px solid var(--color-border)",
+  color: "var(--color-text)",
+  "&:hover": { bgcolor: "var(--color-accent-pale)" },
+} as const;
+
 export const SidebarItem = ({
   icon,
   label,
@@ -15,24 +38,15 @@ export const SidebarItem = ({
 }: SidebarItemProps) => {
   return (
     <ListItem disablePadding>
-      <ListItemButton
-        onClick={onClick}
-        sx={{
-          borderRadius: "var(--radius-plate)",
-          mb: 1,
-          bgcolor: active ? "var(--color-accent-tint)" : "var(--color-white)",
-          border: `1px solid ${active ? "var(--color-border-rose)" : "var(--color-border)"}`,
-          py: 1.25,
-        }}
-      >
-        <ListItemIcon sx={{ minWidth: 40, color: "text.primary" }}>
+      <ListItemButton onClick={onClick} sx={active ? activeSx : inactiveSx}>
+        <ListItemIcon sx={{ minWidth: 40, color: "inherit" }}>
           {icon}
         </ListItemIcon>
         <ListItemText
           primary={label}
           slotProps={{
             primary: {
-              sx: { fontWeight: active ? 800 : 600 },
+              sx: { fontWeight: active ? 700 : 600, color: "inherit" },
             },
           }}
         />

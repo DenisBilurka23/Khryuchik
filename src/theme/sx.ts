@@ -49,6 +49,12 @@ export const inputFieldSx = {
   "& .MuiFormHelperText-root": { margin: "6px 0 0", fontSize: 12 },
 } as const satisfies SxProps<Theme>;
 
+export const secondaryButtonSx = {
+  borderColor: "var(--color-border-rose)",
+  color: "var(--color-action)",
+  bgcolor: "var(--color-card)",
+} as const satisfies SxProps<Theme>;
+
 export const accentSx = {
   fontStyle: "italic",
   color: "var(--color-accent)",

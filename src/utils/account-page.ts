@@ -1,5 +1,8 @@
 import type { Locale } from "@/i18n/config";
-import type { UserShippingAddress, UserShippingAddressInput } from "@/types/users";
+import type {
+  UserShippingAddress,
+  UserShippingAddressInput,
+} from "@/types/users";
 
 import { getCountryDisplayName } from "./country";
 

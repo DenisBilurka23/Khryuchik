@@ -9,7 +9,6 @@ import {
   Box,
   Button,
   Grid,
-  Paper,
   Stack,
   Switch,
   TextField,
@@ -24,8 +23,10 @@ import {
 } from "@/client-api/account";
 import { requestPasswordResetClient } from "@/client-api/auth";
 import { ModalButton } from "@/components/modal-button";
+import { Plate } from "@/components/primitives";
 import { AuthInputErrorCode } from "@/types/auth";
 import { UserOperationErrorReason } from "@/types/users";
+import { secondaryButtonSx } from "@/theme/sx";
 
 import { PersonalDetailsSection, SectionCard } from "../../shared";
 import { CountrySwitcher } from "../../../storefront-header/country-switcher";
@@ -209,24 +210,13 @@ export const SettingsSection = ({
             variant="outlined"
             color="inherit"
             startIcon={<NotificationsOutlinedIcon />}
-            sx={{
-              borderColor: "var(--color-border-rose)",
-              bgcolor: "var(--color-white)",
-            }}
+            sx={secondaryButtonSx}
           >
             {t("notifications")}
           </Button>
         }
       >
-        <Paper
-          elevation={0}
-          sx={{
-            p: 2,
-            borderRadius: "var(--radius-plate)",
-            border: "1px solid var(--color-border)",
-            bgcolor: "var(--color-white)",
-          }}
-        >
+        <Plate pad="sm">
           <Box
             sx={{
               display: "flex",
@@ -263,7 +253,7 @@ export const SettingsSection = ({
               {subscriptionError}
             </Alert>
           ) : null}
-        </Paper>
+        </Plate>
       </SectionCard>
 
       <SectionCard

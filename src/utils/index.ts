@@ -19,6 +19,7 @@ export type { CountryCode, CurrencyCode, PaymentMethod } from "./country";
 export { getCurrencyForCountry } from "./country-currency";
 export { getCountLabel } from "./count-label";
 export { delay } from "./delay";
+export { getDownloadMeta } from "./download";
 export { formatCurrency, getAllCurrenciesSorted } from "./format-currency";
 export type { CurrencyOption } from "./format-currency";
 export { formatFileSize } from "./format-file-size";
