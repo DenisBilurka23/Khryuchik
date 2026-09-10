@@ -1,6 +1,5 @@
 import {
   CHITCHATS_CONTENTS_DESCRIPTION,
-  CHITCHATS_DDP_COUNTRIES,
   CHITCHATS_PACKAGE_CONTENTS,
   CHITCHATS_PACKAGE_TYPE,
   CHITCHATS_QUOTE_ORDER_ID,
@@ -214,9 +213,6 @@ const buildShipmentPayload = ({
     size_z: parcel.heightMm / 10,
     postage_type: postageType,
     ship_date: "today",
-    ...(CHITCHATS_DDP_COUNTRIES.includes(country)
-      ? { duties_paid_requested: "yes" }
-      : {}),
     order_id: orderId,
   };
 };

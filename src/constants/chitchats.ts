@@ -1,5 +1,3 @@
-import type { CountryCode } from "@/utils";
-
 export const CHITCHATS_QUOTE_ORDER_ID = "khryuchik-quote";
 export const CHITCHATS_QUOTE_RECIPIENT_NAME = "Customer";
 export const CHITCHATS_UNSET_POSTAGE_TYPE = "unknown";
@@ -20,4 +18,3 @@ export const CHITCHATS_IN_TRANSIT_STATUSES = [
 export const CHITCHATS_PACKAGE_CONTENTS = "merchandise";
 export const CHITCHATS_PACKAGE_TYPE = "parcel";
 export const CHITCHATS_CONTENTS_DESCRIPTION = "Printed books";
-export const CHITCHATS_DDP_COUNTRIES: readonly CountryCode[] = ["US"];
