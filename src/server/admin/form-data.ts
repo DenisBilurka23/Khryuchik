@@ -3,6 +3,8 @@ import "server-only";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryUpsertInput,
+  AdminEntertainmentUploadedFile,
+  AdminEntertainmentUpsertInput,
   AdminLocaleUpsertInput,
   AdminProductPayload,
   AdminRegionUpsertInput,
@@ -20,9 +22,14 @@ import type {
   ProductOption,
   ProductReview,
 } from "@/types/product-details";
+import {
+  DEFAULT_ENTERTAINMENT_CATEGORY,
+  DEFAULT_ENTERTAINMENT_SORT_ORDER,
+} from "@/constants/entertainment";
 import { SHIPPING_HUB_CODES } from "@/constants/shipping";
+import type { EntertainmentTranslation } from "@/types/entertainment";
 import type { ShippingManufacturer } from "@/types/shipping";
-import type { CurrencyCode } from "@/utils";
+import { isEntertainmentCategory, type CurrencyCode } from "@/utils";
 
 const parseString = (formData: FormData, key: string) => {
   const value = formData.get(key);
@@ -136,6 +143,59 @@ export const parseAdminCategoryFormData = (
     },
   },
 });
+
+export const parseAdminEntertainmentFormData = (
+  formData: FormData,
+): AdminEntertainmentUpsertInput => {
+  const localeCodes = parseCsvList(formData, "localeCodes");
+  const category = parseString(formData, "category").trim();
+  const uploadedFile = parseJsonField<AdminEntertainmentUploadedFile | null>(
+    formData,
+    "mediaFileJson",
+    null,
+  );
+
+  return {
+    currentSlug: parseOptionalString(formData, "currentSlug"),
+    slug: parseString(formData, "slug").trim(),
+    category: isEntertainmentCategory(category)
+      ? category
+      : DEFAULT_ENTERTAINMENT_CATEGORY,
+    sortOrder: parseNumber(
+      formData,
+      "sortOrder",
+      DEFAULT_ENTERTAINMENT_SORT_ORDER,
+    ),
+    status: {
+      isActive: parseBoolean(formData, "isActive"),
+      visibleOnHome: parseBoolean(formData, "visibleOnHome"),
+    },
+    media: {
+      type:
+        parseString(formData, "mediaType").trim() === "download"
+          ? "download"
+          : "video",
+      uploadedFile: uploadedFile ?? undefined,
+      durationSeconds: parseOptionalNumber(formData, "durationSeconds"),
+    },
+    translations: localeCodes.reduce<
+      Partial<Record<Locale, EntertainmentTranslation>>
+    >((accumulator, code) => {
+      accumulator[code as Locale] = {
+        title: parseString(formData, `${code}.title`).trim(),
+        description: parseOptionalString(formData, `${code}.description`),
+        poster:
+          parseJsonField<EntertainmentTranslation["poster"] | null>(
+            formData,
+            `${code}.posterJson`,
+            null,
+          ) ?? undefined,
+      };
+
+      return accumulator;
+    }, {}),
+  };
+};
 
 export const parseAdminLocaleFormData = (
   formData: FormData,

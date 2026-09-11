@@ -1246,6 +1246,7 @@
       "dashboard": "Дашборд",
       "products": "Товары",
       "categories": "Категории",
+      "entertainment": "Развлечения",
       "localization": "Локализация",
       "customers": "Аккаунты",
       "orders": "Заказы",
@@ -1409,6 +1410,113 @@
         "isActive": "Активна",
         "visibleInShop": "Видна в магазине",
         "visibleInHomeTabs": "Видна в home tabs"
+      }
+    },
+    "entertainment": {
+      "eyebrow": "Развлечения",
+      "title": "Мультики и материалы",
+      "description": "Всё, что показывает раздел «Развлечения»: мультики, раскраски, игры и бесплатные материалы.",
+      "newItem": "Новый материал",
+      "backToList": "Все материалы",
+      "deletedMessage": "Материал удалён.",
+      "deleteFailedMessage": "Не удалось удалить материал. Попробуйте ещё раз.",
+      "sectionTitle": "Библиотека",
+      "sectionDescription": "Материалов в разделе",
+      "emptyTitle": "Пока пусто",
+      "emptyText": "Добавьте первый мультик или раскраску: перетащите файл в форму, и он загрузится сам.",
+      "onHomeLabel": "На главной",
+      "columns": {
+        "item": "Материал",
+        "category": "Раздел",
+        "type": "Тип",
+        "status": "Статус",
+        "sortOrder": "Порядок",
+        "updated": "Обновлён",
+        "action": "Действие"
+      },
+      "mediaTypes": {
+        "video": "Видео",
+        "download": "Файл"
+      }
+    },
+    "entertainmentForm": {
+      "newEyebrow": "Новый материал",
+      "newTitle": "Новый материал",
+      "newDescription": "Выберите раздел, перетащите файл и заполните названия. Загрузка начнётся сама.",
+      "editEyebrow": "Редактирование",
+      "editTitlePrefix": "Материал",
+      "editDescription": "Измените тексты, замените файл или скройте материал с сайта.",
+      "savedMessage": "Материал сохранён.",
+      "baseSectionTitle": "Основное",
+      "baseSectionDescription": "К какому разделу относится материал и видят ли его посетители.",
+      "videoSectionTitle": "Файл мультика",
+      "videoSectionDescription": "Перетащите видео сюда. Оно уйдёт прямо в хранилище, а потом будет подготовлено к просмотру.",
+      "fileSectionTitle": "Файл",
+      "fileSectionDescription": "Перетащите файл, который будут скачивать посетители.",
+      "videoDropLabel": "Перетащите видео сюда",
+      "videoDropHint": "MP4, MOV, MKV или WebM, до",
+      "fileDropLabel": "Перетащите файл сюда",
+      "fileDropHint": "PDF, ZIP, PNG или JPEG, до",
+      "posterDropLabel": "Перетащите обложку сюда",
+      "posterDropHint": "JPEG, PNG, WebP или AVIF. Показывается на карточке и в плеере.",
+      "videoProcessingNote": "Видео загружено. Оно появится на сайте, когда будет подготовлено к просмотру.",
+      "uploadInProgressNote": "Дождитесь окончания загрузки, потом сохраняйте.",
+      "localeSectionTitle": "тексты и обложка",
+      "localeSectionDescription": "Необязательно. Без названия на этом языке материал покажет текст языка по умолчанию.",
+      "localeSectionDefaultDescription": "Обязательно. Этот текст увидят все, для чьего языка перевода нет.",
+      "createButton": "Создать материал",
+      "creatingButton": "Создаём...",
+      "saveChangesButton": "Сохранить изменения",
+      "savingChangesButton": "Сохраняем...",
+      "deleteButton": "Удалить",
+      "deleteDialogTitle": "Удалить материал?",
+      "deleteDialogDescription": "Материал исчезнет с сайта, а его файлы удалятся из хранилища.",
+      "confirmDeleteButton": "Удалить",
+      "cancelDeleteButton": "Отмена",
+      "fields": {
+        "category": "Раздел",
+        "sortOrder": "Порядок",
+        "slug": "Адрес (slug)",
+        "isActive": "Виден на сайте",
+        "visibleOnHome": "Показывать на главной",
+        "title": "Название",
+        "description": "Описание"
+      },
+      "helpers": {
+        "category": "Мультики играются в плеере, остальные разделы отдают файл.",
+        "sortOrder": "Чем меньше число, тем выше материал в списке.",
+        "slug": "Часть адреса страницы. Если изменить, старая ссылка перестанет работать.",
+        "newSlug": "Можно оставить пустым: адрес соберётся из английского названия.",
+        "title": "Если оставить пустым, покажется название на языке по умолчанию.",
+        "defaultTitle": "Обязательное поле. Из него собирается адрес страницы."
+      },
+      "videoStatus": {
+        "uploading": "Загружается",
+        "processing": "Готовится",
+        "ready": "Готов",
+        "failed": "Ошибка"
+      },
+      "uploadStatus": {
+        "uploading": "Загрузка"
+      },
+      "uploadErrors": {
+        "invalidType": "Такой тип файла не поддерживается.",
+        "tooLarge": "Файл слишком большой.",
+        "presignFailed": "Не удалось начать загрузку. Попробуйте ещё раз.",
+        "uploadFailed": "Загрузка прервалась. Попробуйте ещё раз."
+      },
+      "buttons": {
+        "removeFile": "Удалить файл",
+        "replaceFile": "Перетащите другой файл, чтобы заменить"
+      },
+      "errorMessages": {
+        "titleRequired": "Заполните название на английском: оно запасное для всех языков.",
+        "videoRequired": "Добавьте видео.",
+        "fileRequired": "Добавьте файл.",
+        "storageUnavailable": "Хранилище недоступно. Проверьте настройки R2.",
+        "saveFailed": "Не удалось сохранить материал.",
+        "deleteFailed": "Не удалось удалить материал.",
+        "unexpected": "Что-то пошло не так. Попробуйте ещё раз."
       }
     },
     "localization": {

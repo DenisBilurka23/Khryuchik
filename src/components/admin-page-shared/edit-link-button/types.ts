@@ -1,4 +1,4 @@
-export type EditProductButtonProps = {
+export type AdminEditLinkButtonProps = {
   href: string;
   size?: "small" | "medium" | "large";
 };

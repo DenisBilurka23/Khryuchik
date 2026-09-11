@@ -61,6 +61,8 @@ export {
   convertShippingAmount,
   roundToCents,
 } from "./price-conversion";
+export { uploadDirectToR2 } from "./r2-direct-upload";
+export type { R2DirectUploadOptions } from "./r2-direct-upload";
 export { groupRegionsByCurrency, toCurrencyCodes } from "./region-currency";
 export type { CurrencyRegionGroup } from "./region-currency";
 export {

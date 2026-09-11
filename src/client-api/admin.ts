@@ -94,3 +94,30 @@ export const requestAdminProductAssetUploadUrls = (params: {
       files: params.files,
     },
   );
+export type AdminEntertainmentUploadKind = "video" | "poster" | "download";
+
+export type AdminEntertainmentUploadPlan = {
+  id: string;
+  objectKey: string;
+  uploadUrl: string;
+  contentType: string;
+  expiresInSeconds: number;
+  fileName: string;
+  url?: string;
+};
+
+type AdminEntertainmentUploadResponse = {
+  item?: AdminEntertainmentUploadPlan;
+  error?: string;
+};
+
+export const requestAdminEntertainmentUploadUrl = (params: {
+  kind: AdminEntertainmentUploadKind;
+  slug?: string;
+  locale?: Locale;
+  file: { fileName: string; contentType: string; sizeBytes: number };
+}) =>
+  POST<AdminEntertainmentUploadResponse>(
+    "/api/admin/entertainment/uploads",
+    params,
+  );

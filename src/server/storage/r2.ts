@@ -72,10 +72,12 @@ export const createPresignedPutUrl = async ({
   bucket,
   objectKey,
   contentType,
+  expiresInSeconds = PRESIGNED_PUT_EXPIRES_IN_SECONDS,
 }: {
   bucket: R2BucketKind;
   objectKey: string;
   contentType?: string;
+  expiresInSeconds?: number;
 }) => {
   const client = getR2Client();
   const command = new PutObjectCommand({
@@ -85,13 +87,13 @@ export const createPresignedPutUrl = async ({
   });
 
   const uploadUrl = await getSignedUrl(client, command, {
-    expiresIn: PRESIGNED_PUT_EXPIRES_IN_SECONDS,
+    expiresIn: expiresInSeconds,
   });
 
   return {
     objectKey,
     uploadUrl,
-    expiresInSeconds: PRESIGNED_PUT_EXPIRES_IN_SECONDS,
+    expiresInSeconds,
   };
 };
 

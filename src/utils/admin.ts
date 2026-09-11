@@ -1,6 +1,7 @@
 import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import type { Locale } from "@/i18n/config";
 import type { AdminNavItem, AdminProductPayload } from "@/types/admin";
+import type { EntertainmentVideoStatus } from "@/types/entertainment";
 import type {
   ProductDetailTranslation,
   ProductTranslation,
@@ -10,6 +11,7 @@ type AdminNavLabels = Record<
   | "dashboard"
   | "products"
   | "categories"
+  | "entertainment"
   | "localization"
   | "shipping"
   | "customers"
@@ -31,6 +33,11 @@ export const createAdminNavItems = (labels: AdminNavLabels): AdminNavItem[] => [
   { key: "dashboard", label: labels.dashboard, href: "/admin" },
   { key: "products", label: labels.products, href: "/admin/products" },
   { key: "categories", label: labels.categories, href: "/admin/categories" },
+  {
+    key: "entertainment",
+    label: labels.entertainment,
+    href: "/admin/entertainment",
+  },
   {
     key: "localization",
     label: labels.localization,
@@ -58,6 +65,20 @@ export const getAdminProductTypeLabel = (
   type: keyof AdminProductTypeLabels,
   labels: AdminProductTypeLabels,
 ) => labels[type];
+
+export const getAdminEntertainmentStatusTone = (
+  status: EntertainmentVideoStatus,
+) => {
+  if (status === "ready") {
+    return "success" as const;
+  }
+
+  if (status === "processing") {
+    return "info" as const;
+  }
+
+  return "warning" as const;
+};
 
 export const getAdminAuthProviderLabel = (
   provider: keyof AdminAuthProviderLabels | string,

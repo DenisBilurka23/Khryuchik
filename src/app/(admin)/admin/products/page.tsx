@@ -15,9 +15,8 @@ import {
 import { getTranslations } from "next-intl/server";
 
 import { DeleteProductButton } from "@/components/admin-products-page-view/delete-product-button";
-import { EditProductButton } from "@/components/admin-products-page-view/edit-product-button";
-
 import {
+  AdminEditLinkButton,
   AdminPageHero,
   AdminSectionCard,
   AdminStatusChip,
@@ -162,7 +161,7 @@ const AdminProductsPage = async ({ searchParams }: AdminProductsPageProps) => {
                   <TableCell>{product.sortOrder}</TableCell>
                   <TableCell align="right">
                     <Stack direction="row" gap={0.5} justifyContent="flex-end">
-                      <EditProductButton
+                      <AdminEditLinkButton
                         href={`/admin/products/${product.productId}/edit`}
                         size="small"
                       />

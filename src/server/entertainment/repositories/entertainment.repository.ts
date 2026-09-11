@@ -58,3 +58,37 @@ export const findEntertainmentItemBySlug = async (slug: string) => {
     { projection: { _id: 0 } },
   );
 };
+
+export const findAllEntertainmentItems = async () => {
+  const collection = await getEntertainmentCollection();
+
+  return collection
+    .find({}, { projection: { _id: 0 } })
+    .sort({ sortOrder: 1 })
+    .toArray();
+};
+
+export const findEntertainmentItemBySlugForAdmin = async (slug: string) => {
+  const collection = await getEntertainmentCollection();
+
+  return collection.findOne({ slug }, { projection: { _id: 0 } });
+};
+
+export const upsertEntertainmentItem = async (
+  item: EntertainmentItemDocument,
+  currentSlug?: string,
+) => {
+  const collection = await getEntertainmentCollection();
+
+  await collection.replaceOne({ slug: currentSlug ?? item.slug }, item, {
+    upsert: true,
+  });
+
+  return item;
+};
+
+export const deleteEntertainmentItemBySlug = async (slug: string) => {
+  const collection = await getEntertainmentCollection();
+
+  return collection.deleteOne({ slug });
+};

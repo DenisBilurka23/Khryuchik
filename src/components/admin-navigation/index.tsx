@@ -5,6 +5,7 @@ import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
+import MovieFilterOutlinedIcon from "@mui/icons-material/MovieFilterOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
@@ -24,6 +25,7 @@ const iconByKey: Record<AdminViewKey, ReactNode> = {
   dashboard: <DashboardOutlinedIcon />,
   products: <Inventory2OutlinedIcon />,
   categories: <CategoryOutlinedIcon />,
+  entertainment: <MovieFilterOutlinedIcon />,
   localization: <LanguageOutlinedIcon />,
   orders: <ShoppingBagOutlinedIcon />,
   reviews: <RateReviewOutlinedIcon />,

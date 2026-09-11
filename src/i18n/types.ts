@@ -1012,6 +1012,7 @@ export type AdminPageDictionary = {
     dashboard: string;
     products: string;
     categories: string;
+    entertainment: string;
     localization: string;
     shipping: string;
     customers: string;
@@ -1155,6 +1156,113 @@ export type AdminPageDictionary = {
       isActive: string;
       visibleInShop: string;
       visibleInHomeTabs: string;
+    };
+  };
+  entertainment: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    newItem: string;
+    backToList: string;
+    deletedMessage: string;
+    deleteFailedMessage: string;
+    sectionTitle: string;
+    sectionDescription: string;
+    emptyTitle: string;
+    emptyText: string;
+    onHomeLabel: string;
+    columns: {
+      item: string;
+      category: string;
+      type: string;
+      status: string;
+      sortOrder: string;
+      updated: string;
+      action: string;
+    };
+    mediaTypes: {
+      video: string;
+      download: string;
+    };
+  };
+  entertainmentForm: {
+    newEyebrow: string;
+    newTitle: string;
+    newDescription: string;
+    editEyebrow: string;
+    editTitlePrefix: string;
+    editDescription: string;
+    savedMessage: string;
+    baseSectionTitle: string;
+    baseSectionDescription: string;
+    videoSectionTitle: string;
+    videoSectionDescription: string;
+    fileSectionTitle: string;
+    fileSectionDescription: string;
+    videoDropLabel: string;
+    videoDropHint: string;
+    fileDropLabel: string;
+    fileDropHint: string;
+    posterDropLabel: string;
+    posterDropHint: string;
+    videoProcessingNote: string;
+    uploadInProgressNote: string;
+    localeSectionTitle: string;
+    localeSectionDescription: string;
+    localeSectionDefaultDescription: string;
+    createButton: string;
+    creatingButton: string;
+    saveChangesButton: string;
+    savingChangesButton: string;
+    deleteButton: string;
+    deleteDialogTitle: string;
+    deleteDialogDescription: string;
+    confirmDeleteButton: string;
+    cancelDeleteButton: string;
+    fields: {
+      category: string;
+      sortOrder: string;
+      slug: string;
+      isActive: string;
+      visibleOnHome: string;
+      title: string;
+      description: string;
+    };
+    helpers: {
+      category: string;
+      sortOrder: string;
+      slug: string;
+      newSlug: string;
+      title: string;
+      defaultTitle: string;
+    };
+    videoStatus: {
+      uploading: string;
+      processing: string;
+      ready: string;
+      failed: string;
+    };
+    uploadStatus: {
+      uploading: string;
+    };
+    uploadErrors: {
+      invalidType: string;
+      tooLarge: string;
+      presignFailed: string;
+      uploadFailed: string;
+    };
+    buttons: {
+      removeFile: string;
+      replaceFile: string;
+    };
+    errorMessages: {
+      titleRequired: string;
+      videoRequired: string;
+      fileRequired: string;
+      storageUnavailable: string;
+      saveFailed: string;
+      deleteFailed: string;
+      unexpected: string;
     };
   };
   localization: {

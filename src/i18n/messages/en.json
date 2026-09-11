@@ -1246,6 +1246,7 @@
       "dashboard": "Dashboard",
       "products": "Products",
       "categories": "Categories",
+      "entertainment": "Entertainment",
       "localization": "Localization",
       "customers": "Accounts",
       "orders": "Orders",
@@ -1389,6 +1390,113 @@
         "isActive": "Active",
         "visibleInShop": "Visible in shop",
         "visibleInHomeTabs": "Visible in home tabs"
+      }
+    },
+    "entertainment": {
+      "eyebrow": "Entertainment",
+      "title": "Cartoons and materials",
+      "description": "Everything the entertainment section shows: cartoons, coloring pages, games and free materials.",
+      "newItem": "New item",
+      "backToList": "All items",
+      "deletedMessage": "Item deleted.",
+      "deleteFailedMessage": "Could not delete the item. Please try again.",
+      "sectionTitle": "Library",
+      "sectionDescription": "Items in the entertainment section",
+      "emptyTitle": "Nothing here yet",
+      "emptyText": "Add the first cartoon or coloring page: drag the file into the form and it uploads itself.",
+      "onHomeLabel": "On home",
+      "columns": {
+        "item": "Item",
+        "category": "Section",
+        "type": "Type",
+        "status": "Status",
+        "sortOrder": "Sort order",
+        "updated": "Updated",
+        "action": "Action"
+      },
+      "mediaTypes": {
+        "video": "Video",
+        "download": "File"
+      }
+    },
+    "entertainmentForm": {
+      "newEyebrow": "New item",
+      "newTitle": "New entertainment item",
+      "newDescription": "Pick a section, drag the file in and fill in the titles. The upload starts on its own.",
+      "editEyebrow": "Editing",
+      "editTitlePrefix": "Item",
+      "editDescription": "Change the texts, replace the file or hide the item from the site.",
+      "savedMessage": "Item saved.",
+      "baseSectionTitle": "Basics",
+      "baseSectionDescription": "Which section the item belongs to and whether visitors can see it.",
+      "videoSectionTitle": "Cartoon file",
+      "videoSectionDescription": "Drag a video here. It goes straight to storage and is prepared for playback afterwards.",
+      "fileSectionTitle": "File",
+      "fileSectionDescription": "Drag in the file visitors will download.",
+      "videoDropLabel": "Drag the video here",
+      "videoDropHint": "MP4, MOV, MKV or WebM, up to",
+      "fileDropLabel": "Drag the file here",
+      "fileDropHint": "PDF, ZIP, PNG or JPEG, up to",
+      "posterDropLabel": "Drag a cover here",
+      "posterDropHint": "JPEG, PNG, WebP or AVIF. Shown on the card and in the player.",
+      "videoProcessingNote": "The video is uploaded. It appears on the site once it has been prepared for playback.",
+      "uploadInProgressNote": "Wait for the upload to finish, then save.",
+      "localeSectionTitle": "text and cover",
+      "localeSectionDescription": "Optional. Without a title in this language the item falls back to the default language.",
+      "localeSectionDefaultDescription": "Required. This text is shown to everyone whose language has no translation.",
+      "createButton": "Create item",
+      "creatingButton": "Creating...",
+      "saveChangesButton": "Save changes",
+      "savingChangesButton": "Saving...",
+      "deleteButton": "Delete",
+      "deleteDialogTitle": "Delete item?",
+      "deleteDialogDescription": "The item disappears from the site and its files are removed from storage.",
+      "confirmDeleteButton": "Delete",
+      "cancelDeleteButton": "Cancel",
+      "fields": {
+        "category": "Section",
+        "sortOrder": "Sort order",
+        "slug": "Address (slug)",
+        "isActive": "Visible on the site",
+        "visibleOnHome": "Show on the home page",
+        "title": "Title",
+        "description": "Description"
+      },
+      "helpers": {
+        "category": "Cartoons play in the player; the other sections hand over a file.",
+        "sortOrder": "The lower the number, the higher the item sits.",
+        "slug": "Part of the page address. Change it and the old link stops working.",
+        "newSlug": "Leave it empty and the address is built from the English title.",
+        "title": "If left empty, the default-language title is shown.",
+        "defaultTitle": "Required. The page address is built from it."
+      },
+      "videoStatus": {
+        "uploading": "Uploading",
+        "processing": "Preparing",
+        "ready": "Ready",
+        "failed": "Failed"
+      },
+      "uploadStatus": {
+        "uploading": "Uploading"
+      },
+      "uploadErrors": {
+        "invalidType": "This file type is not supported.",
+        "tooLarge": "The file is too large.",
+        "presignFailed": "Could not start the upload. Please try again.",
+        "uploadFailed": "The upload broke off. Please try again."
+      },
+      "buttons": {
+        "removeFile": "Remove file",
+        "replaceFile": "Drag another file here to replace it"
+      },
+      "errorMessages": {
+        "titleRequired": "Fill in the English title: it is the fallback for every language.",
+        "videoRequired": "Add a video.",
+        "fileRequired": "Add a file.",
+        "storageUnavailable": "Storage is unavailable. Check the R2 settings.",
+        "saveFailed": "Could not save the item.",
+        "deleteFailed": "Could not delete the item.",
+        "unexpected": "Something went wrong. Please try again."
       }
     },
     "localization": {

@@ -7,6 +7,10 @@ export {
   saveAdminCustomerAction,
 } from "./customers";
 export {
+  deleteAdminEntertainmentItemAction,
+  saveAdminEntertainmentItemAction,
+} from "./entertainment";
+export {
   deleteAdminLocaleAction,
   deleteAdminRegionAction,
   saveAdminLocaleAction,

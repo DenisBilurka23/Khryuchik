@@ -5,6 +5,14 @@ import type {
   ProductDocument,
   ProductType,
 } from "@/types/catalog";
+import type {
+  EntertainmentCategoryKey,
+  EntertainmentItemDocument,
+  EntertainmentMedia,
+  EntertainmentStatus,
+  EntertainmentTranslation,
+  EntertainmentVideoStatus,
+} from "@/types/entertainment";
 import type { LocaleDocument, RegionDocument } from "@/types/localization";
 import type { AuthProvider } from "@/types/users";
 
@@ -12,6 +20,7 @@ export type AdminViewKey =
   | "dashboard"
   | "products"
   | "categories"
+  | "entertainment"
   | "localization"
   | "orders"
   | "reviews"
@@ -158,4 +167,45 @@ export type AdminRegionUpsertInput = {
 export type AdminLocalizationData = {
   locales: AdminLocaleListItem[];
   regions: AdminRegionListItem[];
+};
+
+export type AdminEntertainmentListItem = {
+  slug: string;
+  title: string;
+  category: EntertainmentCategoryKey;
+  mediaType: EntertainmentMedia["type"];
+  mediaStatus?: EntertainmentVideoStatus;
+  isActive: boolean;
+  visibleOnHome: boolean;
+  sortOrder: number;
+  updatedAt: string;
+};
+
+export type AdminEntertainmentEditorData = {
+  item: EntertainmentItemDocument;
+  activeLocales: LocaleDocument[];
+};
+
+export type AdminEntertainmentUploadedFile = {
+  objectKey: string;
+  fileName: string;
+  contentType: string;
+  sizeBytes: number;
+  url?: string;
+};
+
+export type AdminEntertainmentMediaInput = {
+  type: EntertainmentMedia["type"];
+  uploadedFile?: AdminEntertainmentUploadedFile;
+  durationSeconds?: number;
+};
+
+export type AdminEntertainmentUpsertInput = {
+  currentSlug?: string;
+  slug: string;
+  category: EntertainmentCategoryKey;
+  sortOrder: number;
+  status: EntertainmentStatus;
+  media: AdminEntertainmentMediaInput;
+  translations: Partial<Record<Locale, EntertainmentTranslation>>;
 };

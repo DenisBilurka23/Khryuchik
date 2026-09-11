@@ -253,3 +253,117 @@ export const createBookFileUploadUrls = async ({
     }),
   );
 };
+
+export type EntertainmentUploadKind = "video" | "poster" | "download";
+
+export type EntertainmentUploadFileInput = {
+  fileName: string;
+  contentType: string;
+};
+
+export type EntertainmentUploadPlan = {
+  id: string;
+  objectKey: string;
+  uploadUrl: string;
+  contentType: string;
+  expiresInSeconds: number;
+  fileName: string;
+  url?: string;
+};
+
+const ENTERTAINMENT_VIDEO_EXPIRES_IN_SECONDS = 60 * 60;
+
+const resolveEntertainmentScope = (slug: string | undefined) => {
+  const normalizedSlug = slug?.trim() ? sanitizeFileName(slug.trim()) : "";
+
+  return normalizedSlug || `_drafts/${randomUUID()}`;
+};
+
+const buildEntertainmentObjectKey = ({
+  kind,
+  scope,
+  locale,
+  fileName,
+}: {
+  kind: EntertainmentUploadKind;
+  scope: string;
+  locale?: Locale;
+  fileName: string;
+}) => {
+  const uniqueName = `${randomUUID()}-${sanitizeFileName(fileName)}`;
+
+  if (kind === "video") {
+    return `entertainment/${scope}/source/${uniqueName}`;
+  }
+
+  if (kind === "poster") {
+    return `entertainment/${scope}/poster/${locale ?? "shared"}/${uniqueName}`;
+  }
+
+  return `entertainment/${scope}/files/${uniqueName}`;
+};
+
+export const buildEntertainmentPlaylistUrl = (slug: string) =>
+  buildPublicObjectUrl(
+    `entertainment/${sanitizeFileName(slug)}/hls/master.m3u8`,
+  );
+
+export const createEntertainmentUploadUrl = async ({
+  kind,
+  slug,
+  locale,
+  file,
+}: {
+  kind: EntertainmentUploadKind;
+  slug?: string;
+  locale?: Locale;
+  file: EntertainmentUploadFileInput;
+}): Promise<EntertainmentUploadPlan> => {
+  const fallbackName =
+    kind === "video" ? "source" : kind === "poster" ? "poster" : "file";
+  const fileName = file.fileName?.trim() || fallbackName;
+  const objectKey = buildEntertainmentObjectKey({
+    kind,
+    scope: resolveEntertainmentScope(slug),
+    locale,
+    fileName,
+  });
+  const bucket = kind === "video" ? "private" : "public";
+  const { uploadUrl, expiresInSeconds } = await createPresignedPutUrl({
+    bucket,
+    objectKey,
+    contentType: file.contentType,
+    expiresInSeconds:
+      kind === "video" ? ENTERTAINMENT_VIDEO_EXPIRES_IN_SECONDS : undefined,
+  });
+
+  return {
+    id: randomUUID(),
+    objectKey,
+    uploadUrl,
+    contentType: file.contentType,
+    expiresInSeconds,
+    fileName,
+    url: bucket === "public" ? buildPublicObjectUrl(objectKey) : undefined,
+  };
+};
+
+export const deleteEntertainmentPublicObjects = async (
+  objectKeys: string[],
+) => {
+  await Promise.all(
+    objectKeys.filter(Boolean).map(async (objectKey) => {
+      await deletePublicObject(objectKey);
+    }),
+  );
+};
+
+export const deleteEntertainmentSourceObjects = async (
+  objectKeys: string[],
+) => {
+  await Promise.all(
+    objectKeys.filter(Boolean).map(async (objectKey) => {
+      await deletePrivateObject(objectKey);
+    }),
+  );
+};

@@ -4,12 +4,12 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { IconButton, Tooltip } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import type { EditProductButtonProps } from "./types";
+import type { AdminEditLinkButtonProps } from "./types";
 
-export const EditProductButton = ({
+export const AdminEditLinkButton = ({
   href,
   size = "small",
-}: EditProductButtonProps) => {
+}: AdminEditLinkButtonProps) => {
   const tShared = useTranslations("adminPage.shared");
   const label = tShared("actions.edit");
 
@@ -24,4 +24,4 @@ export const EditProductButton = ({
   );
 };
 
-export type { EditProductButtonProps } from "./types";
+export type { AdminEditLinkButtonProps } from "./types";

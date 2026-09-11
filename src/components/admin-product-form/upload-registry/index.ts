@@ -5,5 +5,5 @@ export {
   useAdminProductUploadRegistry,
 } from "./registry";
 export type { AdminProductUploadRunner } from "./types";
-export { uploadDirectToR2 } from "./r2-direct-upload";
-export type { R2DirectUploadOptions } from "./r2-direct-upload";
+export { uploadDirectToR2 } from "@/utils/r2-direct-upload";
+export type { R2DirectUploadOptions } from "@/utils/r2-direct-upload";
