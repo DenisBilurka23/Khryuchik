@@ -1,3 +1,4 @@
+import type { EntertainmentCategoryKey } from "@/types/entertainment";
 import type { OrderFulfillmentSource } from "@/types/order";
 import type { CountryCode } from "@/utils/country";
 
@@ -117,6 +118,29 @@ export type ShopPageLabels = {
     home: string;
     current: string;
   };
+};
+
+export type EntertainmentPageLabels = {
+  hero: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+  };
+  breadcrumbs: {
+    home: string;
+    entertainment: string;
+  };
+  emptyTitle: string;
+  emptyText: string;
+};
+
+export type EntertainmentPlayerLabels = {
+  playAction: string;
+  qualityLabel: string;
+  processingTitle: string;
+  processingText: string;
+  errorTitle: string;
+  errorText: string;
 };
 
 export type FavoritesPageLabels = {
@@ -585,6 +609,7 @@ export type StorefrontDictionary = {
     story: string;
     faq: string;
     contacts: string;
+    entertainment: string;
   };
   hero: {
     badge: string;
@@ -623,6 +648,14 @@ export type StorefrontDictionary = {
     outOfStock: string;
     viewProduct: string;
   };
+  entertainmentSection: {
+    eyebrow: string;
+    title: string;
+    actionLabel: string;
+    watchAction: string;
+    downloadAction: string;
+  };
+  entertainmentCategories: Record<EntertainmentCategoryKey, string>;
   favoritesLabel: string;
   favoritesPage: FavoritesPageLabels;
   orderSection: {
@@ -677,6 +710,8 @@ export type StorefrontDictionary = {
   };
   productPage: ProductPageLabels;
   shopPage: ShopPageLabels;
+  entertainmentPage: EntertainmentPageLabels;
+  entertainmentPlayer: EntertainmentPlayerLabels;
   storyPage: StoryPageLabels;
   bookSeries: {
     small: string;

@@ -39,6 +39,11 @@ export const StorefrontHeader = async ({
       href: navigationPaths?.story ?? "#story",
     },
     {
+      key: "entertainment",
+      label: t("nav.entertainment"),
+      href: navigationPaths?.entertainment ?? "#entertainment",
+    },
+    {
       key: "faq",
       label: t("nav.faq"),
       href: navigationPaths?.faq ?? "#faq",

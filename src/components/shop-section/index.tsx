@@ -1,6 +1,7 @@
 import { Box, Container, Grid } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
+import { ENTERTAINMENT_QUERY_PARAM } from "@/constants/entertainment";
 import { getLocalizedPath, getLocalizedProductPath } from "@/utils";
 import { createCategoryTabOptions } from "@/utils/category-tabs";
 
@@ -46,6 +47,7 @@ export const ShopSection = async ({
             selectedValue={selectedFilter}
             options={filterOptions}
             defaultValueWithoutQuery={defaultFilterValue}
+            preserveQueryParams={[ENTERTAINMENT_QUERY_PARAM]}
             sx={{ mb: 4, display: { xs: "none", md: "flex" } }}
           />
 

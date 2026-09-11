@@ -1,4 +1,4 @@
-export type PanelTone = "cream" | "rose" | "blush" | "sand" | "card";
+export type PanelTone = "cream" | "rose" | "blush" | "sand" | "card" | "mauve";
 
 export type HeroPanelTone = "rose" | "pale";
 

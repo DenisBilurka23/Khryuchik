@@ -20,12 +20,22 @@ export { getCurrencyForCountry } from "./country-currency";
 export { getCountLabel } from "./count-label";
 export { delay } from "./delay";
 export { getDownloadMeta } from "./download";
+export {
+  isEntertainmentCategory,
+  isLocalizedEntertainmentItem,
+  localizeEntertainmentItem,
+} from "./entertainment";
 export { formatCurrency, getAllCurrenciesSorted } from "./format-currency";
 export type { CurrencyOption } from "./format-currency";
+export { formatVideoDuration, toIsoDuration } from "./format-duration";
 export { formatFileSize } from "./format-file-size";
 export { formatOrderNumber } from "./format-order-number";
 export { getLocaleDisplayName, getLocaleShortLabel } from "./locale";
-export { getLocalizedPath, getLocalizedProductPath } from "./localized-path";
+export {
+  getLocalizedEntertainmentPath,
+  getLocalizedPath,
+  getLocalizedProductPath,
+} from "./localized-path";
 export {
   canConfirmOrderDelivery,
   formatCustomerName,

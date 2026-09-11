@@ -25,7 +25,8 @@
       "shop": "Shop",
       "story": "Story",
       "faq": "Shipping",
-      "contacts": "Contacts"
+      "contacts": "Contacts",
+      "entertainment": "Entertainment"
     },
     "hero": {
       "badge": "Shop and entertainment",
@@ -70,6 +71,19 @@
       "wishlistAriaLabel": "Add to favorites",
       "outOfStock": "Out of stock",
       "viewProduct": "View product"
+    },
+    "entertainmentSection": {
+      "eyebrow": "Entertainment",
+      "title": "Never a dull moment with Khryuchik",
+      "actionLabel": "All entertainment",
+      "watchAction": "Watch",
+      "downloadAction": "Download"
+    },
+    "entertainmentCategories": {
+      "cartoons": "Cartoons",
+      "coloring": "Coloring pages",
+      "games": "Games and activities",
+      "materials": "Free materials"
     },
     "favoritesLabel": "Favorites",
     "favoritesPage": {
@@ -258,6 +272,27 @@
         "home": "Home",
         "current": "Shop"
       }
+    },
+    "entertainmentPage": {
+      "hero": {
+        "eyebrow": "Entertainment",
+        "title": "Cartoons, coloring pages and activities with Khryuchik",
+        "lead": "Watch cartoons, print coloring pages and play along with Khryuchik — all of it free."
+      },
+      "breadcrumbs": {
+        "home": "Home",
+        "entertainment": "Entertainment"
+      },
+      "emptyTitle": "Nothing here yet",
+      "emptyText": "New materials are on the way — check back soon."
+    },
+    "entertainmentPlayer": {
+      "playAction": "Play",
+      "qualityLabel": "Quality",
+      "processingTitle": "This cartoon is still being prepared",
+      "processingText": "The video is processing and will appear here in a few minutes.",
+      "errorTitle": "Could not load the video",
+      "errorText": "Try refreshing the page or coming back a little later."
     },
     "storyPage": {
       "lead": "Khryuchik's story — the journey of a hero who grows up alongside the reader, from the first fairy tales to the big roads.",

@@ -1,6 +1,7 @@
 "use client";
 
 import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
+import SmartDisplayOutlinedIcon from "@mui/icons-material/SmartDisplayOutlined";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -52,6 +53,7 @@ const iconByKey: Record<MobileMenuItem["key"], React.ReactNode> = {
   home: <HomeOutlinedIcon fontSize="small" />,
   shop: <StorefrontOutlinedIcon fontSize="small" />,
   story: <AutoStoriesOutlinedIcon fontSize="small" />,
+  entertainment: <SmartDisplayOutlinedIcon fontSize="small" />,
   faq: <LocalShippingOutlinedIcon fontSize="small" />,
   contacts: <ChatBubbleOutlineOutlinedIcon fontSize="small" />,
   account: <PersonOutlineIcon fontSize="small" />,

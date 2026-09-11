@@ -7,10 +7,13 @@ import {
   getShopProducts,
 } from "@/server/catalog/services/catalog.service";
 import { getHomeTabCategories } from "@/server/catalog/services/categories.service";
+import { getHomeEntertainmentItems } from "@/server/entertainment/services/entertainment.service";
 import { getRequestCountry } from "@/server/country/request-country";
+import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
+import { isEntertainmentCategory } from "@/utils";
 
 type HomePageProps = {
-  searchParams: Promise<{ category?: string }>;
+  searchParams: Promise<{ category?: string; entertainment?: string }>;
 };
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -40,11 +43,15 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const HomePage = async ({ searchParams }: HomePageProps) => {
-  const { category } = await searchParams;
+  const { category, entertainment } = await searchParams;
   const country = await getRequestCountry();
-  const [books, shopCategories] = await Promise.all([
+  const selectedEntertainmentCategory = isEntertainmentCategory(entertainment)
+    ? entertainment
+    : DEFAULT_ENTERTAINMENT_CATEGORY;
+  const [books, shopCategories, entertainmentItems] = await Promise.all([
     getProductsForPlacement(defaultLocale, country, "home-books"),
     getHomeTabCategories(defaultLocale, country),
+    getHomeEntertainmentItems(defaultLocale, selectedEntertainmentCategory),
   ]);
 
   const defaultShopCategory = shopCategories[0]?.key ?? "all";
@@ -65,6 +72,8 @@ const HomePage = async ({ searchParams }: HomePageProps) => {
       books={books}
       shopProducts={shopProducts}
       selectedShopCategory={selectedShopCategory}
+      entertainmentItems={entertainmentItems}
+      selectedEntertainmentCategory={selectedEntertainmentCategory}
     />
   );
 };

@@ -36,6 +36,10 @@ export const colors = {
   lilac: "#d9aec2",
   butter: "#fff2d6",
 
+  playerScrim: "rgba(26, 19, 23, 0.85)",
+  playerControlHover: "rgba(255, 253, 252, 0.18)",
+  playerTrack: "rgba(255, 253, 252, 0.28)",
+
   selection: "rgba(169, 99, 117, 0.2)",
   headerVeil: "rgba(255, 252, 248, 0.94)",
   washRose: "rgba(247, 201, 209, 0.45)",

@@ -11,6 +11,7 @@ const toneBackground: Record<PanelTone, string> = {
   blush: "var(--color-newsletter)",
   sand: "var(--color-products)",
   card: "var(--color-card)",
+  mauve: "var(--color-entertainment)",
 };
 
 export const Panel = styled(Box, {

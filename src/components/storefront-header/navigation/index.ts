@@ -21,10 +21,14 @@ export const createStorefrontHeaderViewModel = (
       story: getLocalizedPath(locale, "/story"),
       faq: getLocalizedPath(locale, "/delivery"),
       contacts: getLocalizedPath(locale, "/contacts"),
+      entertainment: getLocalizedPath(locale, "/entertainment"),
       favorites: getLocalizedPath(locale, "/favorites"),
       cart: getLocalizedPath(locale, "/cart"),
     },
   };
 };
 
-export type { StorefrontHeaderViewModel, StorefrontNavigationPaths } from "./types";
+export type {
+  StorefrontHeaderViewModel,
+  StorefrontNavigationPaths,
+} from "./types";
