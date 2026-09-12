@@ -4,9 +4,6 @@ import type {
   EntertainmentMedia,
 } from "@/types/entertainment";
 
-import type { Locale } from "@/i18n/config";
-import { getLocaleDisplayName } from "@/utils";
-
 import type { AdminEntertainmentVideoMetadata } from "./types";
 
 export const getEntertainmentMediaType = (
@@ -59,23 +56,6 @@ export const getEntertainmentMediaFileName = (media: EntertainmentMedia) => {
   }
 
   return source.videoId;
-};
-
-export const getAudioTrackLanguageLabel = (
-  code: string,
-  displayLocale: Locale,
-) => {
-  const normalized = code.trim();
-
-  if (!normalized) {
-    return undefined;
-  }
-
-  try {
-    return getLocaleDisplayName(normalized, displayLocale);
-  } catch {
-    return undefined;
-  }
 };
 
 export const captureVideoFrame = (

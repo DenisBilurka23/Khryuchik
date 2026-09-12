@@ -46,6 +46,38 @@ export const AdminEntertainmentForm = ({
     {},
   );
   const [videoFile, setVideoFile] = useState<File | null>(null);
+  const hasStoredTranslations = Object.values(item.translations).some(
+    (translation) => translation?.title,
+  );
+  const [activeLocaleCodes, setActiveLocaleCodes] = useState<
+    Record<string, boolean>
+  >(() =>
+    activeLocales.reduce<Record<string, boolean>>(
+      (accumulator, activeLocale) => {
+        const hasTitle = Boolean(
+          item.translations[activeLocale.code as Locale]?.title,
+        );
+
+        accumulator[activeLocale.code] = hasStoredTranslations
+          ? hasTitle
+          : activeLocale.code === defaultLocale;
+
+        return accumulator;
+      },
+      {},
+    ),
+  );
+  const activeLocaleCount =
+    Object.values(activeLocaleCodes).filter(Boolean).length;
+  const handleToggleLocale = useCallback(
+    (localeCode: Locale, isActiveLocale: boolean) => {
+      setActiveLocaleCodes((current) => ({
+        ...current,
+        [localeCode]: isActiveLocale,
+      }));
+    },
+    [],
+  );
   const handlePendingChange = useCallback((key: string, isPending: boolean) => {
     setPendingUploads((current) => ({ ...current, [key]: isPending }));
   }, []);
@@ -138,6 +170,11 @@ export const AdminEntertainmentForm = ({
               locale={localeCode}
               label={getLocaleDisplayName(localeCode, locale)}
               isDefaultLocale={localeCode === defaultLocale}
+              isActive={activeLocaleCodes[localeCode] ?? false}
+              canToggle={
+                !activeLocaleCodes[localeCode] || activeLocaleCount > 1
+              }
+              onToggleActiveAction={handleToggleLocale}
               slug={item.slug || undefined}
               videoFile={videoFile}
               translation={item.translations[localeCode]}

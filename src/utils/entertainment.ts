@@ -6,12 +6,18 @@ import type {
   LocalizedEntertainmentItem,
 } from "@/types/entertainment";
 
+export const getEntertainmentFallbackTranslation = (
+  translations: EntertainmentItemDocument["translations"],
+) => Object.values(translations).find((translation) => translation?.title);
+
 export const localizeEntertainmentItem = (
   item: EntertainmentItemDocument,
   locale: Locale,
 ): LocalizedEntertainmentItem | null => {
   const translation =
-    item.translations[locale] ?? item.translations[defaultLocale];
+    item.translations[locale] ??
+    item.translations[defaultLocale] ??
+    getEntertainmentFallbackTranslation(item.translations);
 
   if (!translation) {
     return null;

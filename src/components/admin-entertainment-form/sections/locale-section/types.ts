@@ -7,6 +7,9 @@ export type AdminEntertainmentLocaleSectionProps = {
   locale: Locale;
   label: string;
   isDefaultLocale: boolean;
+  isActive: boolean;
+  canToggle: boolean;
+  onToggleActiveAction: (locale: Locale, isActive: boolean) => void;
   slug?: string;
   videoFile?: File | null;
   translation?: EntertainmentTranslation;

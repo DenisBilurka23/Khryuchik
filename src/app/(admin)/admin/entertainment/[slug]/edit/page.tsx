@@ -10,6 +10,7 @@ import { defaultLocale } from "@/i18n/config";
 import { getAdminEntertainmentEditorData } from "@/server/admin/entertainment.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
+import { getEntertainmentFallbackTranslation } from "@/utils";
 
 import {
   deleteAdminEntertainmentItemAction,
@@ -60,6 +61,7 @@ const EditAdminEntertainmentPage = async ({
   const title =
     editorData.item.translations[locale]?.title ??
     editorData.item.translations[defaultLocale]?.title ??
+    getEntertainmentFallbackTranslation(editorData.item.translations)?.title ??
     editorData.item.slug;
 
   return (

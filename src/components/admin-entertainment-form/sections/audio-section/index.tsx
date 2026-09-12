@@ -41,6 +41,11 @@ export const AdminEntertainmentAudioSection = ({
             row={row}
             locale={locale}
             slug={slug}
+            takenLanguages={rows
+              .filter(
+                (other) => other.key !== row.key && Boolean(other.language),
+              )
+              .map((other) => other.language)}
             onLanguageChangeAction={setLanguage}
             onUploadedAction={setUploadedFile}
             onRemoveAction={removeTrack}

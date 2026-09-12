@@ -1,7 +1,7 @@
 "use client";
 
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { IconButton, Stack, TextField, Tooltip } from "@mui/material";
+import { IconButton, Stack, Tooltip } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import {
@@ -11,9 +11,11 @@ import {
 import { formatFileSize } from "@/utils";
 import { getAdminEntertainmentStatusTone } from "@/utils/admin";
 
-import { AdminStatusChip } from "../../../../admin-page-shared";
+import {
+  AdminLanguageSelectField,
+  AdminStatusChip,
+} from "../../../../admin-page-shared";
 import { AdminEntertainmentUploadField } from "../../../upload-field";
-import { getAudioTrackLanguageLabel } from "../../../utils";
 import type { AdminEntertainmentAudioTrackRowProps } from "./types";
 
 const rowSx = {
@@ -26,13 +28,13 @@ export const AdminEntertainmentAudioTrackRow = ({
   row,
   locale,
   slug,
+  takenLanguages,
   onLanguageChangeAction,
   onUploadedAction,
   onRemoveAction,
   onPendingChangeAction,
 }: AdminEntertainmentAudioTrackRowProps) => {
   const tForm = useTranslations("adminPage.entertainmentForm");
-  const languageLabel = getAudioTrackLanguageLabel(row.language, locale);
   const storedLabel = row.hasStoredSource
     ? tForm("audio.storedSource")
     : undefined;
@@ -40,19 +42,25 @@ export const AdminEntertainmentAudioTrackRow = ({
   return (
     <Stack gap={1.5} sx={rowSx}>
       <Stack direction="row" gap={1.5} alignItems="flex-start">
-        <TextField
-          label={
-            row.isDefault
-              ? tForm("audio.masterLanguage")
-              : tForm("audio.dubLanguage")
-          }
-          value={row.language}
-          onChange={(event) =>
-            onLanguageChangeAction(row.key, event.target.value)
-          }
-          helperText={languageLabel ?? tForm("audio.languageHelper")}
-          sx={{ flex: 1 }}
-        />
+        <Stack sx={{ flex: 1 }}>
+          <AdminLanguageSelectField
+            name={`audioLanguage.${row.key}`}
+            label={
+              row.isDefault
+                ? tForm("audio.masterLanguage")
+                : tForm("audio.dubLanguage")
+            }
+            locale={locale}
+            defaultValue={row.language || undefined}
+            excludeCodes={takenLanguages}
+            required
+            placeholder={tForm("audio.languagePlaceholder")}
+            noOptionsText={tForm("audio.languageNoOptions")}
+            onValueChangeAction={(code) =>
+              onLanguageChangeAction(row.key, code ?? "")
+            }
+          />
+        </Stack>
 
         {row.storedStatus ? (
           <AdminStatusChip

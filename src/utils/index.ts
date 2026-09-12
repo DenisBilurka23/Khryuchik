@@ -22,6 +22,7 @@ export { delay } from "./delay";
 export { getDownloadMeta } from "./download";
 export {
   getEntertainmentAspectRatio,
+  getEntertainmentFallbackTranslation,
   getEntertainmentHlsPrefix,
   isEntertainmentCategory,
   isLocalizedEntertainmentItem,
@@ -33,7 +34,11 @@ export type { CurrencyOption } from "./format-currency";
 export { formatVideoDuration, toIsoDuration } from "./format-duration";
 export { formatFileSize } from "./format-file-size";
 export { formatOrderNumber } from "./format-order-number";
-export { getLocaleDisplayName, getLocaleShortLabel } from "./locale";
+export {
+  getAllLanguagesSorted,
+  getLocaleDisplayName,
+  getLocaleShortLabel,
+} from "./locale";
 export {
   getLocalizedEntertainmentPath,
   getLocalizedPath,

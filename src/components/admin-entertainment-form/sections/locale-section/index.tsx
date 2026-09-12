@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Stack, TextField } from "@mui/material";
+import {
+  Collapse,
+  FormControlLabel,
+  Stack,
+  Switch,
+  TextField,
+} from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import {
@@ -20,6 +26,9 @@ export const AdminEntertainmentLocaleSection = ({
   locale,
   label,
   isDefaultLocale,
+  isActive,
+  canToggle,
+  onToggleActiveAction,
   slug,
   videoFile,
   translation,
@@ -47,61 +56,78 @@ export const AdminEntertainmentLocaleSection = ({
           ? tForm("localeSectionDefaultDescription")
           : tForm("localeSectionDescription")
       }
-    >
-      <Stack gap={2.5}>
-        <TextField
-          label={tForm("fields.title")}
-          name={`${locale}.title`}
-          defaultValue={translation?.title ?? ""}
-          required={isDefaultLocale}
-          helperText={
-            isDefaultLocale
-              ? tForm("helpers.defaultTitle")
-              : tForm("helpers.title")
+      action={
+        <FormControlLabel
+          sx={{ mr: 0 }}
+          control={
+            <Switch
+              checked={isActive}
+              onChange={(_event, checked) =>
+                onToggleActiveAction(locale, checked)
+              }
+              disabled={!canToggle}
+            />
           }
+          label={tForm("localeActiveToggle")}
         />
+      }
+    >
+      <Collapse in={isActive} unmountOnExit>
+        <Stack gap={2.5}>
+          <TextField
+            label={tForm("fields.title")}
+            name={`${locale}.title`}
+            defaultValue={translation?.title ?? ""}
+            required
+            helperText={
+              isDefaultLocale
+                ? tForm("helpers.defaultTitle")
+                : tForm("helpers.title")
+            }
+          />
 
-        <TextField
-          label={tForm("fields.description")}
-          name={`${locale}.description`}
-          defaultValue={translation?.description ?? ""}
-          multiline
-          minRows={3}
-        />
+          <TextField
+            label={tForm("fields.description")}
+            name={`${locale}.description`}
+            defaultValue={translation?.description ?? ""}
+            multiline
+            minRows={3}
+          />
 
-        <input
-          type="hidden"
-          name={`${locale}.posterJson`}
-          value={poster ? JSON.stringify(poster) : ""}
-        />
+          <input
+            type="hidden"
+            name={`${locale}.posterJson`}
+            value={poster ? JSON.stringify(poster) : ""}
+          />
 
-        <AdminEntertainmentUploadField
-          pendingKey={`poster:${locale}`}
-          kind="poster"
-          accept={ENTERTAINMENT_POSTER_CONTENT_TYPES.join(",")}
-          contentTypes={ENTERTAINMENT_POSTER_CONTENT_TYPES}
-          maxBytes={ENTERTAINMENT_POSTER_MAX_BYTES}
-          dropLabel={tForm("posterDropLabel")}
-          dropHint={tForm("posterDropHint")}
-          slug={slug}
-          locale={locale}
-          currentLabel={poster?.alt}
-          previewUrl={poster?.src}
-          onUploadedAction={handleUploaded}
-          onRemoveAction={() => setPoster(undefined)}
-          onPendingChangeAction={onPendingChangeAction}
-        />
-
-        {videoFile ? (
-          <AdminEntertainmentPosterFramePicker
-            videoFile={videoFile}
-            locale={locale}
+          <AdminEntertainmentUploadField
+            pendingKey={`poster:${locale}`}
+            kind="poster"
+            accept={ENTERTAINMENT_POSTER_CONTENT_TYPES.join(",")}
+            contentTypes={ENTERTAINMENT_POSTER_CONTENT_TYPES}
+            maxBytes={ENTERTAINMENT_POSTER_MAX_BYTES}
+            dropLabel={tForm("posterDropLabel")}
+            dropHint={tForm("posterDropHint")}
             slug={slug}
+            locale={locale}
+            currentLabel={poster?.alt}
+            previewUrl={poster?.src}
             onUploadedAction={handleUploaded}
+            onRemoveAction={() => setPoster(undefined)}
             onPendingChangeAction={onPendingChangeAction}
           />
-        ) : null}
-      </Stack>
+
+          {videoFile ? (
+            <AdminEntertainmentPosterFramePicker
+              videoFile={videoFile}
+              locale={locale}
+              slug={slug}
+              onUploadedAction={handleUploaded}
+              onPendingChangeAction={onPendingChangeAction}
+            />
+          ) : null}
+        </Stack>
+      </Collapse>
     </AdminSectionCard>
   );
 };

@@ -30,7 +30,10 @@ import type {
   EntertainmentTranslation,
   EntertainmentVideoMedia,
 } from "@/types/entertainment";
-import { getEntertainmentHlsPrefix } from "@/utils";
+import {
+  getEntertainmentFallbackTranslation,
+  getEntertainmentHlsPrefix,
+} from "@/utils";
 import { buildUniqueValue, normalizeIdentifierPart } from "@/utils/admin";
 
 import {
@@ -97,6 +100,9 @@ const resolveEntertainmentSlug = ({
   const baseSlug =
     normalizeIdentifierPart(requestedSlug) ||
     normalizeIdentifierPart(translations[defaultLocale]?.title ?? "") ||
+    normalizeIdentifierPart(
+      getEntertainmentFallbackTranslation(translations)?.title ?? "",
+    ) ||
     SLUG_FALLBACK;
 
   return buildUniqueValue(
@@ -385,6 +391,7 @@ export const getAdminEntertainmentItems = async (
     title:
       item.translations[locale]?.title ||
       item.translations[defaultLocale]?.title ||
+      getEntertainmentFallbackTranslation(item.translations)?.title ||
       item.slug,
     category: item.category,
     mediaType: item.media.type,
@@ -422,7 +429,7 @@ export const saveAdminEntertainmentItem = async (
 ) => {
   const translations = normalizeTranslations(input.translations);
 
-  if (!translations[defaultLocale]?.title) {
+  if (!getEntertainmentFallbackTranslation(translations)) {
     throw new AdminEntertainmentFormValidationError(
       AdminEntertainmentFormErrorCode.TitleRequired,
     );

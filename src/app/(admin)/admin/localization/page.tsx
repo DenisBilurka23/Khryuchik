@@ -8,6 +8,7 @@ import { AdminRegionCard } from "@/components/admin-localization-page-view/regio
 import {
   AdminCheckboxField,
   AdminConfirmSubmitButton,
+  AdminLanguageSelectField,
   AdminPageHero,
   AdminSectionCard,
 } from "@/components/admin-page-shared";
@@ -69,6 +70,8 @@ const AdminLocalizationPage = async ({
     savingButton: tLocalization("savingButton"),
     fields: {
       code: tLocalization("fields.code"),
+      codePlaceholder: tLocalization("fields.codePlaceholder"),
+      codeNoOptions: tLocalization("fields.codeNoOptions"),
       regionCode: tLocalization("fields.regionCode"),
       currency: tLocalization("fields.currency"),
       sortOrder: tLocalization("fields.sortOrder"),
@@ -112,7 +115,15 @@ const AdminLocalizationPage = async ({
         <form action={saveAdminLocaleAction}>
           <Stack gap={2}>
             <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" }, gap: 2 }}>
-              <TextField label={labels.fields.code} name="code" required />
+              <AdminLanguageSelectField
+                name="code"
+                label={labels.fields.code}
+                locale={locale}
+                excludeCodes={data.locales.map((item) => item.code)}
+                placeholder={labels.fields.codePlaceholder}
+                noOptionsText={labels.fields.codeNoOptions}
+                required
+              />
               <TextField label={labels.fields.sortOrder} name="sortOrder" type="number" defaultValue={100} />
             </Box>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>

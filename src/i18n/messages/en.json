@@ -1451,7 +1451,8 @@
         "sectionDescription": "The uploaded video carries the main voice-over. Say which language it is, and add other dubs as separate files.",
         "masterLanguage": "Language of the video's own voice-over",
         "dubLanguage": "Dub language",
-        "languageHelper": "Language code, for example ru, en or pl.",
+        "languagePlaceholder": "Start typing a language",
+        "languageNoOptions": "No such language in the list",
         "storedSource": "Audio already uploaded",
         "dropLabel": "Drag the dub here",
         "dropHint": "An audio file or a whole video — the soundtrack is taken from it",
@@ -1467,9 +1468,10 @@
       },
       "videoProcessingNote": "The video is uploaded. It appears on the site once it has been prepared for playback.",
       "uploadInProgressNote": "Wait for the upload to finish, then save.",
+      "localeActiveToggle": "Translate into this language",
       "localeSectionTitle": "text and cover",
       "localeSectionDescription": "Optional. Without a title in this language the item falls back to the default language.",
-      "localeSectionDefaultDescription": "Required. This text is shown to everyone whose language has no translation.",
+      "localeSectionDefaultDescription": "This text is shown to everyone whose language has no translation.",
       "createButton": "Create item",
       "creatingButton": "Creating...",
       "saveChangesButton": "Save changes",
@@ -1495,7 +1497,7 @@
         "slug": "Part of the page address. Change it and the old link stops working.",
         "newSlug": "Leave it empty and the address is built from the English title.",
         "title": "If left empty, the default-language title is shown.",
-        "defaultTitle": "Required. The page address is built from it."
+        "defaultTitle": "The page address is built from it."
       },
       "videoStatus": {
         "uploading": "Uploading",
@@ -1517,7 +1519,7 @@
         "replaceFile": "Drag another file here to replace it"
       },
       "errorMessages": {
-        "titleRequired": "Fill in the English title: it is the fallback for every language.",
+        "titleRequired": "Fill in the title in at least one language.",
         "videoRequired": "Add a video.",
         "fileRequired": "Add a file.",
         "storageUnavailable": "Storage is unavailable. Check the R2 settings.",
@@ -1564,6 +1566,8 @@
       "defaultBadge": "Default",
       "fields": {
         "code": "Language code",
+        "codePlaceholder": "Start typing a language",
+        "codeNoOptions": "No such language in the list",
         "regionCode": "Country code",
         "currency": "Currency",
         "sortOrder": "Sort order"

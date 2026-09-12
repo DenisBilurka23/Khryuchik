@@ -8,6 +8,7 @@ export type AdminEntertainmentAudioTrackRowProps = {
   row: AdminEntertainmentAudioTrackRow;
   locale: Locale;
   slug?: string;
+  takenLanguages: string[];
   onLanguageChangeAction: (key: string, language: string) => void;
   onUploadedAction: (
     key: string,

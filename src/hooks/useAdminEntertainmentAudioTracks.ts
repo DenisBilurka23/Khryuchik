@@ -20,8 +20,8 @@ const createKey = () =>
 const toRows = (
   storedTracks: EntertainmentAudioTrack[],
 ): AdminEntertainmentAudioTrackRow[] => {
-  const rows = storedTracks.map((track) => ({
-    key: track.id || createKey(),
+  const rows = storedTracks.map((track, index) => ({
+    key: track.id || `track-${index}`,
     language: track.language,
     isDefault: track.isDefault,
     storedStatus: track.status,
@@ -34,7 +34,7 @@ const toRows = (
 
   return [
     {
-      key: createKey(),
+      key: "master",
       language: "",
       isDefault: true,
       hasStoredSource: false,
