@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 
 import { displayFont, leadSx } from "@/theme/sx";
-import { formatFileSize } from "@/utils";
+import { formatFileSize, getEntertainmentAspectRatio } from "@/utils";
 
 import { ArrowLink } from "../../arrow-link";
 import { EntertainmentPlayer } from "../../entertainment-player";
@@ -33,6 +33,10 @@ export const EntertainmentMediaBlock = ({
   labels,
 }: EntertainmentMediaBlockProps) => {
   const { media } = item;
+  const aspectRatio =
+    media.type === "video"
+      ? getEntertainmentAspectRatio(media.width, media.height)
+      : undefined;
 
   if (media.type === "download") {
     return (
@@ -57,6 +61,7 @@ export const EntertainmentMediaBlock = ({
       return (
         <EntertainmentPlayer
           playlistUrl={media.source.playlistUrl}
+          aspectRatio={aspectRatio}
           poster={item.poster?.src}
           title={item.title}
           locale={locale}

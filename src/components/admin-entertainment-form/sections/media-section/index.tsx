@@ -11,6 +11,7 @@ import {
   ENTERTAINMENT_VIDEO_MAX_BYTES,
 } from "@/constants/entertainment";
 import type { AdminEntertainmentUploadedFile } from "@/types/admin";
+import type { AdminEntertainmentVideoMetadata } from "../../types";
 import { formatFileSize } from "@/utils";
 import { getAdminEntertainmentStatusTone } from "@/utils/admin";
 
@@ -18,7 +19,7 @@ import { AdminSectionCard, AdminStatusChip } from "../../../admin-page-shared";
 import { AdminEntertainmentUploadField } from "../../upload-field";
 import {
   getEntertainmentMediaFileName,
-  readVideoDurationSeconds,
+  readVideoMetadata,
 } from "../../utils";
 import type { AdminEntertainmentMediaSectionProps } from "./types";
 
@@ -30,7 +31,8 @@ export const AdminEntertainmentMediaSection = ({
   const tForm = useTranslations("adminPage.entertainmentForm");
   const [uploadedFile, setUploadedFile] =
     useState<AdminEntertainmentUploadedFile | null>(null);
-  const [durationSeconds, setDurationSeconds] = useState<number | null>(null);
+  const [videoMetadata, setVideoMetadata] =
+    useState<AdminEntertainmentVideoMetadata | null>(null);
   const isVideo = mediaType === "video";
   const storedFileName =
     item.media.type === mediaType
@@ -40,7 +42,8 @@ export const AdminEntertainmentMediaSection = ({
     item.media.type === "download" && mediaType === "download"
       ? formatFileSize(item.media.sizeBytes)
       : undefined;
-  const videoStatus = item.media.type === "video" ? item.media.status : null;
+  const videoStatus =
+    item.media.type === "video" && item.media.source ? item.media.status : null;
   const maxBytes = isVideo
     ? ENTERTAINMENT_VIDEO_MAX_BYTES
     : ENTERTAINMENT_DOWNLOAD_MAX_BYTES;
@@ -52,13 +55,13 @@ export const AdminEntertainmentMediaSection = ({
     setUploadedFile(file);
 
     if (isVideo) {
-      setDurationSeconds(await readVideoDurationSeconds(sourceFile));
+      setVideoMetadata(await readVideoMetadata(sourceFile));
     }
   };
 
   const handleRemoveUploaded = () => {
     setUploadedFile(null);
-    setDurationSeconds(null);
+    setVideoMetadata(null);
   };
 
   return (
@@ -85,12 +88,26 @@ export const AdminEntertainmentMediaSection = ({
           name="mediaFileJson"
           value={uploadedFile ? JSON.stringify(uploadedFile) : ""}
         />
-        {durationSeconds === null ? null : (
+        {videoMetadata?.durationSeconds == null ? null : (
           <input
             type="hidden"
             name="durationSeconds"
-            value={String(durationSeconds)}
+            value={String(videoMetadata.durationSeconds)}
           />
+        )}
+        {videoMetadata?.width == null || videoMetadata.height == null ? null : (
+          <>
+            <input
+              type="hidden"
+              name="videoWidth"
+              value={String(videoMetadata.width)}
+            />
+            <input
+              type="hidden"
+              name="videoHeight"
+              value={String(videoMetadata.height)}
+            />
+          </>
         )}
 
         <AdminEntertainmentUploadField

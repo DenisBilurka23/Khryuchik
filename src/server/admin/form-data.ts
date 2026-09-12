@@ -177,6 +177,8 @@ export const parseAdminEntertainmentFormData = (
           : "video",
       uploadedFile: uploadedFile ?? undefined,
       durationSeconds: parseOptionalNumber(formData, "durationSeconds"),
+      width: parseOptionalNumber(formData, "videoWidth"),
+      height: parseOptionalNumber(formData, "videoHeight"),
     },
     translations: localeCodes.reduce<
       Partial<Record<Locale, EntertainmentTranslation>>

@@ -24,6 +24,8 @@ export type EntertainmentVideoMedia = {
   source: EntertainmentVideoSource | null;
   status: EntertainmentVideoStatus;
   durationSeconds: number | null;
+  width?: number;
+  height?: number;
   failureReason?: string;
 };
 
@@ -75,7 +77,7 @@ export type LocalizedEntertainmentItem = {
 
 export type EntertainmentTranscodeVariant = {
   name: string;
-  height: number;
+  shortSide: number;
   crf: number;
   maxBitrateKbps: number;
   profile: string;

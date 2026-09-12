@@ -15,3 +15,9 @@ export type AdminEntertainmentPendingChangeHandler = (
   key: string,
   isPending: boolean,
 ) => void;
+
+export type AdminEntertainmentVideoMetadata = {
+  durationSeconds: number | null;
+  width: number | null;
+  height: number | null;
+};

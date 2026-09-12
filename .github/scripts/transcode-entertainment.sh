@@ -115,31 +115,43 @@ fi
 echo "--- downloading the master"
 curl -sS --fail --max-time 3600 -o "$WORK_DIR/source" "$SOURCE_URL"
 
-SOURCE_HEIGHT="$(ffprobe -v error -select_streams v:0 \
-  -show_entries stream=height -of csv=p=0 "$WORK_DIR/source" | head -1)"
+SOURCE_DIMENSIONS="$(ffprobe -v error -select_streams v:0 \
+  -show_entries stream=width,height -of csv=s=x:p=0 "$WORK_DIR/source" | head -1)"
+SOURCE_WIDTH="${SOURCE_DIMENSIONS%x*}"
+SOURCE_HEIGHT="${SOURCE_DIMENSIONS#*x}"
 
-if [ -z "$SOURCE_HEIGHT" ]; then
+if [ -z "$SOURCE_WIDTH" ] || [ -z "$SOURCE_HEIGHT" ]; then
   echo "::error::The master has no video stream"
   exit 1
 fi
 
-echo "--- master is ${SOURCE_HEIGHT}p"
+# Rungs are measured on the short side, so a portrait cartoon gets the same
+# pixel budget as a landscape one instead of a sliver.
+if [ "$SOURCE_WIDTH" -gt "$SOURCE_HEIGHT" ]; then
+  SOURCE_SHORT="$SOURCE_HEIGHT"
+  ORIENTATION="landscape"
+else
+  SOURCE_SHORT="$SOURCE_WIDTH"
+  ORIENTATION="portrait"
+fi
+
+echo "--- master is ${SOURCE_WIDTH}x${SOURCE_HEIGHT} ($ORIENTATION, short side $SOURCE_SHORT)"
 mkdir -p "$OUT_DIR"
 
-# Upscaling only wastes bytes, so a rendition taller than the master is skipped —
-# unless every rendition would be skipped, in which case the smallest is kept.
+# Upscaling only wastes bytes, so a rung above the master is skipped — unless
+# every rung would be skipped, in which case the smallest is kept.
 variant_count="$(jq '.job.variants | length' "$JOB")"
 built_variants=()
 
 for index in $(seq 0 $((variant_count - 1))); do
   name="$(jq -r ".job.variants[$index].name" "$JOB")"
-  height="$(jq -r ".job.variants[$index].height" "$JOB")"
+  short_side="$(jq -r ".job.variants[$index].shortSide" "$JOB")"
   crf="$(jq -r ".job.variants[$index].crf" "$JOB")"
   max_kbps="$(jq -r ".job.variants[$index].maxBitrateKbps" "$JOB")"
   profile="$(jq -r ".job.variants[$index].profile" "$JOB")"
   level="$(jq -r ".job.variants[$index].level" "$JOB")"
 
-  if [ "$height" -gt "$SOURCE_HEIGHT" ] && [ "${#built_variants[@]}" -gt 0 ]; then
+  if [ "$short_side" -gt "$SOURCE_SHORT" ] && [ "${#built_variants[@]}" -gt 0 ]; then
     echo "--- skipping $name, the master is smaller"
     continue
   fi
@@ -151,7 +163,7 @@ for index in $(seq 0 $((variant_count - 1))); do
   # every rendition. Without that, switching quality mid-playback glitches.
   ffmpeg -nostdin -y -loglevel error -i "$WORK_DIR/source" \
     -an \
-    -vf "scale=-2:$height" \
+    -vf "scale='if(gt(iw,ih),-2,$short_side)':'if(gt(iw,ih),$short_side,-2)'" \
     -r "$FRAME_RATE" \
     -c:v libx264 -preset veryfast -crf "$crf" \
     -maxrate "${max_kbps}k" -bufsize "$((max_kbps * 2))k" \

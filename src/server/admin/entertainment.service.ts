@@ -143,6 +143,8 @@ const buildEntertainmentMedia = ({
     previous?.media.type === "video" ? previous.media : null;
   const durationSeconds =
     input.media.durationSeconds ?? previousVideo?.durationSeconds ?? null;
+  const width = input.media.width ?? previousVideo?.width;
+  const height = input.media.height ?? previousVideo?.height;
 
   if (!uploadedFile) {
     if (!previousVideo?.source) {
@@ -151,7 +153,7 @@ const buildEntertainmentMedia = ({
       );
     }
 
-    return { ...previousVideo, durationSeconds };
+    return { ...previousVideo, durationSeconds, width, height };
   }
 
   const playlistUrl = buildEntertainmentPlaylistUrl(slug);
@@ -171,6 +173,8 @@ const buildEntertainmentMedia = ({
     },
     status: "processing",
     durationSeconds,
+    width,
+    height,
   };
 };
 

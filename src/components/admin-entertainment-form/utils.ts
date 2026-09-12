@@ -4,28 +4,35 @@ import type {
   EntertainmentMedia,
 } from "@/types/entertainment";
 
+import type { AdminEntertainmentVideoMetadata } from "./types";
+
 export const getEntertainmentMediaType = (
   category: EntertainmentCategoryKey,
 ): EntertainmentMedia["type"] =>
   ENTERTAINMENT_VIDEO_CATEGORIES.includes(category) ? "video" : "download";
 
-export const readVideoDurationSeconds = (file: File) =>
-  new Promise<number | null>((resolve) => {
+export const readVideoMetadata = (file: File) =>
+  new Promise<AdminEntertainmentVideoMetadata>((resolve) => {
     const objectUrl = URL.createObjectURL(file);
     const video = document.createElement("video");
 
-    const finish = (duration: number | null) => {
+    const finish = (metadata: AdminEntertainmentVideoMetadata) => {
       URL.revokeObjectURL(objectUrl);
-      resolve(duration);
+      resolve(metadata);
     };
 
     video.preload = "metadata";
     video.onloadedmetadata = () => {
-      finish(
-        Number.isFinite(video.duration) ? Math.round(video.duration) : null,
-      );
+      finish({
+        durationSeconds: Number.isFinite(video.duration)
+          ? Math.round(video.duration)
+          : null,
+        width: video.videoWidth || null,
+        height: video.videoHeight || null,
+      });
     };
-    video.onerror = () => finish(null);
+    video.onerror = () =>
+      finish({ durationSeconds: null, width: null, height: null });
     video.src = objectUrl;
   });
 

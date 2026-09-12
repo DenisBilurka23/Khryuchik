@@ -29,6 +29,9 @@ export const localizeEntertainmentItem = (
   };
 };
 
+export const getEntertainmentAspectRatio = (width?: number, height?: number) =>
+  width && height ? `${width} / ${height}` : undefined;
+
 export const isLocalizedEntertainmentItem = (
   item: LocalizedEntertainmentItem | null,
 ): item is LocalizedEntertainmentItem => item !== null;

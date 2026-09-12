@@ -3,7 +3,7 @@
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import { Box } from "@mui/material";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { type CSSProperties, useState } from "react";
 
 import type { EntertainmentPlayerProps } from "./types";
 
@@ -12,7 +12,7 @@ const frameSx = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  aspectRatio: "16 / 9",
+  aspectRatio: "var(--player-aspect, 16 / 9)",
   borderRadius: "var(--radius-panel)",
   background: "var(--color-text)",
   overflow: "hidden",
@@ -60,6 +60,7 @@ const playBadgeSx = {
 
 export const EntertainmentPlayer = ({
   playlistUrl,
+  aspectRatio,
   poster,
   title,
   locale,
@@ -69,11 +70,13 @@ export const EntertainmentPlayer = ({
   errorText,
 }: EntertainmentPlayerProps) => {
   const [isActive, setIsActive] = useState(false);
+  const aspectStyle = { "--player-aspect": aspectRatio } as CSSProperties;
 
   if (isActive) {
     return (
       <PlayerSurface
         playlistUrl={playlistUrl}
+        aspectRatio={aspectRatio}
         poster={poster}
         title={title}
         locale={locale}
@@ -85,7 +88,7 @@ export const EntertainmentPlayer = ({
   }
 
   return (
-    <Box sx={frameSx}>
+    <Box sx={frameSx} style={aspectStyle}>
       {poster ? (
         <Box component="img" src={poster} alt={title} sx={posterSx} />
       ) : null}

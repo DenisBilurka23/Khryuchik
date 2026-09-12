@@ -198,6 +198,8 @@ export type AdminEntertainmentMediaInput = {
   type: EntertainmentMedia["type"];
   uploadedFile?: AdminEntertainmentUploadedFile;
   durationSeconds?: number;
+  width?: number;
+  height?: number;
 };
 
 export type AdminEntertainmentUpsertInput = {

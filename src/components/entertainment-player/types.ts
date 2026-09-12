@@ -2,6 +2,7 @@ import type { Locale } from "@/i18n/config";
 
 export type EntertainmentPlayerProps = {
   playlistUrl: string;
+  aspectRatio?: string;
   poster?: string;
   title: string;
   locale: Locale;

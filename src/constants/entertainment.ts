@@ -68,7 +68,7 @@ export const ENTERTAINMENT_TRANSCODE_VARIANTS: EntertainmentTranscodeVariant[] =
   [
     {
       name: "480p",
-      height: 480,
+      shortSide: 480,
       crf: 23,
       maxBitrateKbps: 1200,
       profile: "main",
@@ -77,7 +77,7 @@ export const ENTERTAINMENT_TRANSCODE_VARIANTS: EntertainmentTranscodeVariant[] =
     },
     {
       name: "720p",
-      height: 720,
+      shortSide: 720,
       crf: 22,
       maxBitrateKbps: 2600,
       profile: "main",
@@ -86,7 +86,7 @@ export const ENTERTAINMENT_TRANSCODE_VARIANTS: EntertainmentTranscodeVariant[] =
     },
     {
       name: "1080p",
-      height: 1080,
+      shortSide: 1080,
       crf: 21,
       maxBitrateKbps: 4500,
       profile: "high",

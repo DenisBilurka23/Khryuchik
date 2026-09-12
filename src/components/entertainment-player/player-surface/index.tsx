@@ -19,7 +19,7 @@ import {
   MediaRenditionMenuButton,
 } from "media-chrome/react/menu";
 import { addTranslation, setLanguage } from "media-chrome/utils/i18n";
-import { useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 import { mediaChromeLabelsByLocale } from "@/i18n/media-chrome-labels";
 import { displayFont, leadSx } from "@/theme/sx";
@@ -63,7 +63,7 @@ const playerSx = {
   "& media-controller": {
     display: "block",
     width: "100%",
-    aspectRatio: "16 / 9",
+    aspectRatio: "var(--player-aspect, 16 / 9)",
     borderRadius: "var(--radius-panel)",
     background: "var(--color-text)",
     overflow: "hidden",
@@ -157,7 +157,7 @@ const errorFrameSx = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  aspectRatio: "16 / 9",
+  aspectRatio: "var(--player-aspect, 16 / 9)",
   px: 3,
   borderRadius: "var(--radius-panel)",
   background: "var(--color-text)",
@@ -167,6 +167,7 @@ const errorFrameSx = {
 
 export const PlayerSurface = ({
   playlistUrl,
+  aspectRatio,
   poster,
   title,
   locale,
@@ -176,6 +177,7 @@ export const PlayerSurface = ({
 }: PlayerSurfaceProps) => {
   const videoRef = useRef<HlsVideoElement | null>(null);
   const [hasFailed, setHasFailed] = useState(false);
+  const aspectStyle = { "--player-aspect": aspectRatio } as CSSProperties;
 
   setLanguage(locale);
 
@@ -214,7 +216,7 @@ export const PlayerSurface = ({
 
   if (hasFailed) {
     return (
-      <Box sx={errorFrameSx}>
+      <Box sx={errorFrameSx} style={aspectStyle}>
         <Box>
           <Typography
             component="p"
@@ -235,7 +237,7 @@ export const PlayerSurface = ({
   }
 
   return (
-    <Box sx={playerSx}>
+    <Box sx={playerSx} style={aspectStyle}>
       <MediaController>
         <HlsVideo
           ref={videoRef}
