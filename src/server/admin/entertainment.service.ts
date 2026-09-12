@@ -3,6 +3,8 @@ import "server-only";
 import {
   DEFAULT_ENTERTAINMENT_CATEGORY,
   DEFAULT_ENTERTAINMENT_SORT_ORDER,
+  ENTERTAINMENT_LANGUAGE_CODE_PATTERN,
+  ENTERTAINMENT_MAX_AUDIO_TRACKS,
 } from "@/constants/entertainment";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import {
@@ -22,9 +24,11 @@ import type {
   AdminEntertainmentUpsertInput,
 } from "@/types/admin";
 import type {
+  EntertainmentAudioTrack,
   EntertainmentItemDocument,
   EntertainmentMedia,
   EntertainmentTranslation,
+  EntertainmentVideoMedia,
 } from "@/types/entertainment";
 import { getEntertainmentHlsPrefix } from "@/utils";
 import { buildUniqueValue, normalizeIdentifierPart } from "@/utils/admin";
@@ -101,6 +105,107 @@ const resolveEntertainmentSlug = ({
   );
 };
 
+const normalizeLanguageCode = (value: string) => value.trim().toLowerCase();
+
+const previousTracks = (
+  video: EntertainmentVideoMedia | null,
+): EntertainmentAudioTrack[] =>
+  video?.source?.kind === "hls" ? (video.source.audioTracks ?? []) : [];
+
+const buildEntertainmentAudioTracks = ({
+  input,
+  previousTracks,
+  isMasterReplaced,
+}: {
+  input: AdminEntertainmentUpsertInput;
+  previousTracks: EntertainmentAudioTrack[];
+  isMasterReplaced: boolean;
+}): EntertainmentAudioTrack[] => {
+  const rows = input.media.audioTracks ?? [];
+
+  if (rows.length === 0) {
+    return [];
+  }
+
+  if (rows.length > ENTERTAINMENT_MAX_AUDIO_TRACKS) {
+    throw new AdminEntertainmentFormValidationError(
+      AdminEntertainmentFormErrorCode.AudioLanguageDuplicate,
+    );
+  }
+
+  const previousByLanguage = new Map(
+    previousTracks.map((track) => [track.language, track]),
+  );
+  const seen = new Set<string>();
+
+  const tracks = rows.map((row) => {
+    const language = normalizeLanguageCode(row.language ?? "");
+
+    if (!language) {
+      throw new AdminEntertainmentFormValidationError(
+        AdminEntertainmentFormErrorCode.AudioLanguageRequired,
+      );
+    }
+
+    if (!ENTERTAINMENT_LANGUAGE_CODE_PATTERN.test(language)) {
+      throw new AdminEntertainmentFormValidationError(
+        AdminEntertainmentFormErrorCode.AudioLanguageInvalid,
+      );
+    }
+
+    if (seen.has(language)) {
+      throw new AdminEntertainmentFormValidationError(
+        AdminEntertainmentFormErrorCode.AudioLanguageDuplicate,
+      );
+    }
+
+    seen.add(language);
+
+    const previous = previousByLanguage.get(language);
+    const uploadedFile = row.uploadedFile;
+
+    if (row.isDefault) {
+      return {
+        id: language,
+        language,
+        isDefault: true,
+        status:
+          isMasterReplaced || !previous || previous.status !== "ready"
+            ? ("processing" as const)
+            : previous.status,
+      };
+    }
+
+    const sourceObjectKey =
+      uploadedFile?.objectKey ?? previous?.sourceObjectKey;
+
+    if (!sourceObjectKey) {
+      throw new AdminEntertainmentFormValidationError(
+        AdminEntertainmentFormErrorCode.AudioFileRequired,
+      );
+    }
+
+    const isUnchanged =
+      !uploadedFile && !isMasterReplaced && previous?.status === "ready";
+
+    return {
+      id: language,
+      language,
+      isDefault: false,
+      sourceObjectKey,
+      status: isUnchanged ? ("ready" as const) : ("processing" as const),
+    };
+  });
+
+  if (tracks.filter((track) => track.isDefault).length !== 1) {
+    throw new AdminEntertainmentFormValidationError(
+      AdminEntertainmentFormErrorCode.AudioLanguageRequired,
+    );
+  }
+
+  return tracks;
+};
+
 const buildEntertainmentMedia = ({
   input,
   slug,
@@ -153,7 +258,22 @@ const buildEntertainmentMedia = ({
       );
     }
 
-    return { ...previousVideo, durationSeconds, width, height };
+    const audioTracks = buildEntertainmentAudioTracks({
+      input,
+      previousTracks: previousTracks(previousVideo),
+      isMasterReplaced: false,
+    });
+
+    return {
+      ...previousVideo,
+      durationSeconds,
+      width,
+      height,
+      source:
+        previousVideo.source.kind === "hls"
+          ? { ...previousVideo.source, audioTracks }
+          : previousVideo.source,
+    };
   }
 
   const playlistUrl = buildEntertainmentPlaylistUrl(slug);
@@ -170,6 +290,11 @@ const buildEntertainmentMedia = ({
       kind: "hls",
       playlistUrl,
       sourceObjectKey: uploadedFile.objectKey,
+      audioTracks: buildEntertainmentAudioTracks({
+        input,
+        previousTracks: previousTracks(previousVideo),
+        isMasterReplaced: true,
+      }),
     },
     status: "processing",
     durationSeconds,
@@ -202,7 +327,14 @@ const collectEntertainmentObjectKeys = (
       item.media.type === "download"
         ? [...posterKeys, item.media.objectKey]
         : posterKeys,
-    sourceKeys: hlsSource ? [hlsSource.sourceObjectKey] : [],
+    sourceKeys: hlsSource
+      ? [
+          hlsSource.sourceObjectKey,
+          ...(hlsSource.audioTracks ?? [])
+            .map((track) => track.sourceObjectKey)
+            .filter((objectKey): objectKey is string => Boolean(objectKey)),
+        ]
+      : [],
     hlsPrefix: hlsSource
       ? getEntertainmentHlsPrefix(hlsSource.playlistUrl)
       : null,

@@ -14,8 +14,24 @@ export type EntertainmentVideoStatus =
   | "ready"
   | "failed";
 
+export type EntertainmentAudioTrackStatus = "processing" | "ready" | "failed";
+
+export type EntertainmentAudioTrack = {
+  id: string;
+  language: string;
+  isDefault: boolean;
+  status: EntertainmentAudioTrackStatus;
+  sourceObjectKey?: string;
+  failureReason?: string;
+};
+
 export type EntertainmentVideoSource =
-  | { kind: "hls"; playlistUrl: string; sourceObjectKey: string }
+  | {
+      kind: "hls";
+      playlistUrl: string;
+      sourceObjectKey: string;
+      audioTracks?: EntertainmentAudioTrack[];
+    }
   | { kind: "file"; url: string; objectKey: string }
   | { kind: "youtube"; videoId: string };
 
@@ -90,7 +106,15 @@ export type EntertainmentTranscodeAudioTrack = {
   name: string;
   language?: string;
   isDefault: boolean;
+  needed: boolean;
   sourceUrl?: string;
+  extractedUploadUrl?: string;
+};
+
+export type EntertainmentTranscodeTrackResult = {
+  id: string;
+  status: EntertainmentAudioTrackStatus;
+  failureReason?: string;
 };
 
 export type EntertainmentTranscodeStorageTarget = {
@@ -126,4 +150,5 @@ export type EntertainmentTranscodeResult = {
   sourceObjectKey: string;
   status: EntertainmentTranscodeOutcome;
   failureReason?: string;
+  tracks?: EntertainmentTranscodeTrackResult[];
 };

@@ -2,6 +2,8 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import {
+  ENTERTAINMENT_AUDIO_CONTENT_TYPES,
+  ENTERTAINMENT_AUDIO_MAX_BYTES,
   ENTERTAINMENT_DOWNLOAD_CONTENT_TYPES,
   ENTERTAINMENT_DOWNLOAD_MAX_BYTES,
   ENTERTAINMENT_POSTER_CONTENT_TYPES,
@@ -25,6 +27,10 @@ const UPLOAD_RULES: Record<
     contentTypes: ENTERTAINMENT_VIDEO_CONTENT_TYPES,
     maxBytes: ENTERTAINMENT_VIDEO_MAX_BYTES,
   },
+  audio: {
+    contentTypes: ENTERTAINMENT_AUDIO_CONTENT_TYPES,
+    maxBytes: ENTERTAINMENT_AUDIO_MAX_BYTES,
+  },
   poster: {
     contentTypes: ENTERTAINMENT_POSTER_CONTENT_TYPES,
     maxBytes: ENTERTAINMENT_POSTER_MAX_BYTES,
@@ -43,7 +49,10 @@ type RequestBody = {
 };
 
 const parseUploadKind = (value: unknown): EntertainmentUploadKind | null =>
-  value === "video" || value === "poster" || value === "download"
+  value === "video" ||
+  value === "audio" ||
+  value === "poster" ||
+  value === "download"
     ? value
     : null;
 

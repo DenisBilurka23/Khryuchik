@@ -8,6 +8,7 @@ export type AdminEntertainmentLocaleSectionProps = {
   label: string;
   isDefaultLocale: boolean;
   slug?: string;
+  videoFile?: File | null;
   translation?: EntertainmentTranslation;
   onPendingChangeAction: AdminEntertainmentPendingChangeHandler;
 };

@@ -8,7 +8,11 @@ import {
   getEntertainmentTranscodeQueue,
 } from "@/server/entertainment/services/entertainment-transcode.service";
 import { isR2Configured } from "@/server/storage/r2";
-import type { EntertainmentTranscodeOutcome } from "@/types/entertainment";
+import type {
+  EntertainmentAudioTrackStatus,
+  EntertainmentTranscodeOutcome,
+  EntertainmentTranscodeTrackResult,
+} from "@/types/entertainment";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -20,10 +24,57 @@ type ResultBody = {
   sourceObjectKey?: unknown;
   status?: unknown;
   failureReason?: unknown;
+  tracks?: unknown;
 };
 
 const parseOutcome = (value: unknown): EntertainmentTranscodeOutcome | null =>
   value === "ready" || value === "failed" ? value : null;
+
+const parseTrackStatus = (
+  value: unknown,
+): EntertainmentAudioTrackStatus | null =>
+  value === "ready" || value === "failed" || value === "processing"
+    ? value
+    : null;
+
+const parseTrackResults = (
+  value: unknown,
+): EntertainmentTranscodeTrackResult[] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.reduce<EntertainmentTranscodeTrackResult[]>(
+    (accumulator, entry) => {
+      const record = entry as {
+        id?: unknown;
+        status?: unknown;
+        failureReason?: unknown;
+      };
+      const id = typeof record?.id === "string" ? record.id.trim() : "";
+      const status = parseTrackStatus(record?.status);
+
+      if (!id || !status) {
+        return accumulator;
+      }
+
+      const reason =
+        typeof record.failureReason === "string"
+          ? record.failureReason.trim().slice(0, FAILURE_REASON_MAX_LENGTH) ||
+            undefined
+          : undefined;
+
+      accumulator.push({
+        id,
+        status,
+        ...(status === "failed" && reason ? { failureReason: reason } : {}),
+      });
+
+      return accumulator;
+    },
+    [],
+  );
+};
 
 export const GET = async (request: NextRequest) => {
   if (!isCronAuthorized(request)) {
@@ -91,6 +142,7 @@ export const POST = async (request: NextRequest) => {
       sourceObjectKey,
       status,
       failureReason,
+      tracks: parseTrackResults(body.tracks),
     });
 
     return NextResponse.json({ slug, status, applied });

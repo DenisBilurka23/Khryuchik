@@ -52,7 +52,28 @@ export const ENTERTAINMENT_DOWNLOAD_CONTENT_TYPES = [
   "image/png",
 ];
 
+export const ENTERTAINMENT_AUDIO_CONTENT_TYPES = [
+  "audio/mpeg",
+  "audio/mp4",
+  "audio/aac",
+  "audio/wav",
+  "audio/x-wav",
+  "audio/flac",
+  "audio/ogg",
+  "video/mp4",
+  "video/quicktime",
+  "video/x-matroska",
+  "video/webm",
+];
+
 export const ENTERTAINMENT_VIDEO_MAX_BYTES = 2 * 1024 * 1024 * 1024;
+
+export const ENTERTAINMENT_AUDIO_MAX_BYTES = 2 * 1024 * 1024 * 1024;
+
+export const ENTERTAINMENT_LANGUAGE_CODE_PATTERN =
+  /^[a-z]{2,3}(-[a-z0-9]{2,8})*$/i;
+
+export const ENTERTAINMENT_MAX_AUDIO_TRACKS = 8;
 
 export const ENTERTAINMENT_POSTER_MAX_BYTES = 8 * 1024 * 1024;
 

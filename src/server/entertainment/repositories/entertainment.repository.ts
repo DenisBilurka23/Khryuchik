@@ -4,6 +4,7 @@ import type { Filter } from "mongodb";
 
 import { getMongoDb } from "@/server/db/mongodb";
 import type {
+  EntertainmentAudioTrack,
   EntertainmentCategoryKey,
   EntertainmentItemDocument,
   EntertainmentVideoStatus,
@@ -99,35 +100,55 @@ export const findEntertainmentItemsAwaitingProcessing = async () => {
 
   return collection
     .find(
-      { "media.type": "video", "media.status": "processing" },
+      {
+        "media.type": "video",
+        $or: [
+          { "media.status": "processing" },
+          { "media.source.audioTracks.status": { $ne: "ready" } },
+        ],
+      },
       { projection: { _id: 0 } },
     )
     .sort({ updatedAt: 1 })
     .toArray();
 };
 
-export const updateEntertainmentVideoStatus = async ({
+export const updateEntertainmentTranscodeState = async ({
   slug,
   sourceObjectKey,
   status,
   failureReason,
+  audioTracks,
 }: {
   slug: string;
   sourceObjectKey: string;
-  status: EntertainmentVideoStatus;
+  status?: EntertainmentVideoStatus;
   failureReason?: string;
+  audioTracks?: EntertainmentAudioTrack[];
 }) => {
   const collection = await getEntertainmentCollection();
+  const set: Record<string, unknown> = { updatedAt: new Date().toISOString() };
+  const unset: Record<string, ""> = {};
+
+  if (status) {
+    set["media.status"] = status;
+
+    if (failureReason) {
+      set["media.failureReason"] = failureReason;
+    } else {
+      unset["media.failureReason"] = "";
+    }
+  }
+
+  if (audioTracks) {
+    set["media.source.audioTracks"] = audioTracks;
+  }
 
   const result = await collection.updateOne(
     { slug, "media.source.sourceObjectKey": sourceObjectKey },
     {
-      $set: {
-        "media.status": status,
-        updatedAt: new Date().toISOString(),
-        ...(failureReason ? { "media.failureReason": failureReason } : {}),
-      },
-      ...(failureReason ? {} : { $unset: { "media.failureReason": "" } }),
+      $set: set,
+      ...(Object.keys(unset).length > 0 ? { $unset: unset } : {}),
     },
   );
 

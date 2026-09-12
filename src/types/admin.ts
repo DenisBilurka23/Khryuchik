@@ -194,12 +194,19 @@ export type AdminEntertainmentUploadedFile = {
   url?: string;
 };
 
+export type AdminEntertainmentAudioTrackInput = {
+  language: string;
+  isDefault: boolean;
+  uploadedFile?: AdminEntertainmentUploadedFile;
+};
+
 export type AdminEntertainmentMediaInput = {
   type: EntertainmentMedia["type"];
   uploadedFile?: AdminEntertainmentUploadedFile;
   durationSeconds?: number;
   width?: number;
   height?: number;
+  audioTracks?: AdminEntertainmentAudioTrackInput[];
 };
 
 export type AdminEntertainmentUpsertInput = {

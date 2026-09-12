@@ -14,7 +14,10 @@ import {
   saveAdminEntertainmentItem,
 } from "@/server/admin/entertainment.service";
 import { parseAdminEntertainmentFormData } from "@/server/admin/form-data";
-import { requeueEntertainmentTranscode } from "@/server/entertainment/services/entertainment-transcode.service";
+import {
+  isEntertainmentItemPending,
+  requeueEntertainmentTranscode,
+} from "@/server/entertainment/services/entertainment-transcode.service";
 import { dispatchEntertainmentTranscode } from "@/server/entertainment/transcode-dispatch.client";
 
 import { requireAdmin } from "./shared";
@@ -81,7 +84,7 @@ export const saveAdminEntertainmentItemAction = async (formData: FormData) => {
         : []),
     ];
 
-    if (saved.media.type === "video" && saved.media.status === "processing") {
+    if (saved.media.type === "video" && isEntertainmentItemPending(saved)) {
       await dispatchEntertainmentTranscode(saved.slug);
     }
 

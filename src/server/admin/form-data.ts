@@ -3,6 +3,7 @@ import "server-only";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryUpsertInput,
+  AdminEntertainmentAudioTrackInput,
   AdminEntertainmentUploadedFile,
   AdminEntertainmentUpsertInput,
   AdminLocaleUpsertInput,
@@ -179,6 +180,11 @@ export const parseAdminEntertainmentFormData = (
       durationSeconds: parseOptionalNumber(formData, "durationSeconds"),
       width: parseOptionalNumber(formData, "videoWidth"),
       height: parseOptionalNumber(formData, "videoHeight"),
+      audioTracks: parseJsonField<AdminEntertainmentAudioTrackInput[]>(
+        formData,
+        "audioTracksJson",
+        [],
+      ),
     },
     translations: localeCodes.reduce<
       Partial<Record<Locale, EntertainmentTranslation>>

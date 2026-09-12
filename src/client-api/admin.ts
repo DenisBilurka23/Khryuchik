@@ -94,7 +94,11 @@ export const requestAdminProductAssetUploadUrls = (params: {
       files: params.files,
     },
   );
-export type AdminEntertainmentUploadKind = "video" | "poster" | "download";
+export type AdminEntertainmentUploadKind =
+  | "video"
+  | "audio"
+  | "poster"
+  | "download";
 
 export type AdminEntertainmentUploadPlan = {
   id: string;

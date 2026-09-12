@@ -15,6 +15,7 @@ import { getLocaleDisplayName } from "@/utils";
 
 import { AdminConfirmSubmitButton } from "../../admin-page-shared";
 import {
+  AdminEntertainmentAudioSection,
   AdminEntertainmentBaseSection,
   AdminEntertainmentLocaleSection,
   AdminEntertainmentMediaSection,
@@ -44,11 +45,16 @@ export const AdminEntertainmentForm = ({
   const [pendingUploads, setPendingUploads] = useState<Record<string, boolean>>(
     {},
   );
+  const [videoFile, setVideoFile] = useState<File | null>(null);
   const handlePendingChange = useCallback((key: string, isPending: boolean) => {
     setPendingUploads((current) => ({ ...current, [key]: isPending }));
   }, []);
   const hasPendingUploads = Object.values(pendingUploads).some(Boolean);
   const mediaType = getEntertainmentMediaType(selectedCategory);
+  const storedAudioTracks =
+    item.media.type === "video" && item.media.source?.kind === "hls"
+      ? (item.media.source.audioTracks ?? [])
+      : [];
   const errorMessage = (() => {
     switch (errorCode) {
       case AdminEntertainmentFormErrorCode.TitleRequired:
@@ -59,6 +65,14 @@ export const AdminEntertainmentForm = ({
         return tForm("errorMessages.fileRequired");
       case AdminEntertainmentFormErrorCode.StorageUnavailable:
         return tForm("errorMessages.storageUnavailable");
+      case AdminEntertainmentFormErrorCode.AudioLanguageRequired:
+        return tForm("errorMessages.audioLanguageRequired");
+      case AdminEntertainmentFormErrorCode.AudioLanguageInvalid:
+        return tForm("errorMessages.audioLanguageInvalid");
+      case AdminEntertainmentFormErrorCode.AudioLanguageDuplicate:
+        return tForm("errorMessages.audioLanguageDuplicate");
+      case AdminEntertainmentFormErrorCode.AudioFileRequired:
+        return tForm("errorMessages.audioFileRequired");
       case AdminEntertainmentFormErrorCode.SaveFailed:
         return tForm("errorMessages.saveFailed");
       case AdminEntertainmentFormErrorCode.DeleteFailed:
@@ -102,8 +116,18 @@ export const AdminEntertainmentForm = ({
           key={mediaType}
           item={item}
           mediaType={mediaType}
+          onVideoFileChangeAction={setVideoFile}
           onPendingChangeAction={handlePendingChange}
         />
+
+        {mediaType === "video" ? (
+          <AdminEntertainmentAudioSection
+            locale={locale}
+            slug={item.slug || undefined}
+            storedTracks={storedAudioTracks}
+            onPendingChangeAction={handlePendingChange}
+          />
+        ) : null}
 
         {activeLocales.map((activeLocale) => {
           const localeCode = activeLocale.code as Locale;
@@ -115,6 +139,7 @@ export const AdminEntertainmentForm = ({
               label={getLocaleDisplayName(localeCode, locale)}
               isDefaultLocale={localeCode === defaultLocale}
               slug={item.slug || undefined}
+              videoFile={videoFile}
               translation={item.translations[localeCode]}
               onPendingChangeAction={handlePendingChange}
             />

@@ -17,15 +17,13 @@ import { getAdminEntertainmentStatusTone } from "@/utils/admin";
 
 import { AdminSectionCard, AdminStatusChip } from "../../../admin-page-shared";
 import { AdminEntertainmentUploadField } from "../../upload-field";
-import {
-  getEntertainmentMediaFileName,
-  readVideoMetadata,
-} from "../../utils";
+import { getEntertainmentMediaFileName, readVideoMetadata } from "../../utils";
 import type { AdminEntertainmentMediaSectionProps } from "./types";
 
 export const AdminEntertainmentMediaSection = ({
   item,
   mediaType,
+  onVideoFileChangeAction,
   onPendingChangeAction,
 }: AdminEntertainmentMediaSectionProps) => {
   const tForm = useTranslations("adminPage.entertainmentForm");
@@ -55,6 +53,7 @@ export const AdminEntertainmentMediaSection = ({
     setUploadedFile(file);
 
     if (isVideo) {
+      onVideoFileChangeAction(sourceFile);
       setVideoMetadata(await readVideoMetadata(sourceFile));
     }
   };
@@ -62,6 +61,7 @@ export const AdminEntertainmentMediaSection = ({
   const handleRemoveUploaded = () => {
     setUploadedFile(null);
     setVideoMetadata(null);
+    onVideoFileChangeAction(null);
   };
 
   return (

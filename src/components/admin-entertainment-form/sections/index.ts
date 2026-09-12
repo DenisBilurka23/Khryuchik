@@ -1,6 +1,8 @@
+export { AdminEntertainmentAudioSection } from "./audio-section";
 export { AdminEntertainmentBaseSection } from "./base-section";
 export { AdminEntertainmentLocaleSection } from "./locale-section";
 export { AdminEntertainmentMediaSection } from "./media-section";
+export type { AdminEntertainmentAudioSectionProps } from "./audio-section";
 export type { AdminEntertainmentBaseSectionProps } from "./base-section";
 export type { AdminEntertainmentLocaleSectionProps } from "./locale-section";
 export type { AdminEntertainmentMediaSectionProps } from "./media-section";

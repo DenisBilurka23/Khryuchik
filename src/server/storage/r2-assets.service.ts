@@ -256,7 +256,7 @@ export const createBookFileUploadUrls = async ({
   );
 };
 
-export type EntertainmentUploadKind = "video" | "poster" | "download";
+export type EntertainmentUploadKind = "video" | "audio" | "poster" | "download";
 
 export type EntertainmentUploadFileInput = {
   fileName: string;
@@ -298,6 +298,10 @@ const buildEntertainmentObjectKey = ({
     return `entertainment/${scope}/source/${uniqueName}`;
   }
 
+  if (kind === "audio") {
+    return `entertainment/${scope}/source/audio/${uniqueName}`;
+  }
+
   if (kind === "poster") {
     return `entertainment/${scope}/poster/${locale ?? "shared"}/${uniqueName}`;
   }
@@ -322,7 +326,13 @@ export const createEntertainmentUploadUrl = async ({
   file: EntertainmentUploadFileInput;
 }): Promise<EntertainmentUploadPlan> => {
   const fallbackName =
-    kind === "video" ? "source" : kind === "poster" ? "poster" : "file";
+    kind === "video"
+      ? "source"
+      : kind === "audio"
+        ? "audio"
+        : kind === "poster"
+          ? "poster"
+          : "file";
   const fileName = file.fileName?.trim() || fallbackName;
   const objectKey = buildEntertainmentObjectKey({
     kind,
@@ -330,13 +340,15 @@ export const createEntertainmentUploadUrl = async ({
     locale,
     fileName,
   });
-  const bucket = kind === "video" ? "private" : "public";
+  const isSource = kind === "video" || kind === "audio";
+  const bucket = isSource ? "private" : "public";
   const { uploadUrl, expiresInSeconds } = await createPresignedPutUrl({
     bucket,
     objectKey,
     contentType: file.contentType,
-    expiresInSeconds:
-      kind === "video" ? ENTERTAINMENT_VIDEO_EXPIRES_IN_SECONDS : undefined,
+    expiresInSeconds: isSource
+      ? ENTERTAINMENT_VIDEO_EXPIRES_IN_SECONDS
+      : undefined,
   });
 
   return {
@@ -386,3 +398,22 @@ export const deleteEntertainmentHlsPrefix = async (prefix: string) => {
 
   return deleteObjectsByPrefix({ bucket: "public", prefix });
 };
+
+export const buildEntertainmentExtractedAudioKey = ({
+  hlsPrefix,
+  trackId,
+}: {
+  hlsPrefix: string;
+  trackId: string;
+}) =>
+  `${hlsPrefix.replace(/hls\/$/, "source/")}audio/${sanitizeFileName(trackId)}.m4a`;
+
+export const createEntertainmentExtractedAudioUploadUrl = async (
+  objectKey: string,
+) =>
+  createPresignedPutUrl({
+    bucket: "private",
+    objectKey,
+    contentType: "audio/mp4",
+    expiresInSeconds: ENTERTAINMENT_VIDEO_EXPIRES_IN_SECONDS,
+  });

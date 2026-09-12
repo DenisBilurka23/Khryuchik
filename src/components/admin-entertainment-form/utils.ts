@@ -4,6 +4,9 @@ import type {
   EntertainmentMedia,
 } from "@/types/entertainment";
 
+import type { Locale } from "@/i18n/config";
+import { getLocaleDisplayName } from "@/utils";
+
 import type { AdminEntertainmentVideoMetadata } from "./types";
 
 export const getEntertainmentMediaType = (
@@ -57,3 +60,49 @@ export const getEntertainmentMediaFileName = (media: EntertainmentMedia) => {
 
   return source.videoId;
 };
+
+export const getAudioTrackLanguageLabel = (
+  code: string,
+  displayLocale: Locale,
+) => {
+  const normalized = code.trim();
+
+  if (!normalized) {
+    return undefined;
+  }
+
+  try {
+    return getLocaleDisplayName(normalized, displayLocale);
+  } catch {
+    return undefined;
+  }
+};
+
+export const captureVideoFrame = (
+  video: HTMLVideoElement,
+  fileName: string,
+): Promise<File | null> =>
+  new Promise((resolve) => {
+    const canvas = document.createElement("canvas");
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const context = canvas.getContext("2d");
+
+    if (!context || !canvas.width || !canvas.height) {
+      resolve(null);
+
+      return;
+    }
+
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    canvas.toBlob(
+      (blob) =>
+        resolve(
+          blob ? new File([blob], fileName, { type: "image/webp" }) : null,
+        ),
+      "image/webp",
+      0.92,
+    );
+  });

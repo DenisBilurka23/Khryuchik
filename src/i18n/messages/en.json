@@ -1441,6 +1441,25 @@
       "fileDropHint": "PDF, ZIP, PNG or JPEG, up to",
       "posterDropLabel": "Drag a cover here",
       "posterDropHint": "JPEG, PNG, WebP or AVIF. Shown on the card and in the player.",
+      "audio": {
+        "sectionTitle": "Soundtracks",
+        "sectionDescription": "The uploaded video carries the main voice-over. Say which language it is, and add other dubs as separate files.",
+        "masterLanguage": "Language of the video's own voice-over",
+        "dubLanguage": "Dub language",
+        "languageHelper": "Language code, for example ru, en or pl.",
+        "storedSource": "Audio already uploaded",
+        "dropLabel": "Drag the dub here",
+        "dropHint": "An audio file or a whole video — the soundtrack is taken from it",
+        "addTrack": "Add a dub",
+        "removeTrack": "Remove the dub"
+      },
+      "posterFrame": {
+        "openButton": "Take a frame from the video",
+        "dialogTitle": "Pick a frame for the cover",
+        "dialogDescription": "Scrub to the moment you want and take the frame. It is uploaded as the cover for this language.",
+        "captureButton": "Take this frame",
+        "capturingButton": "Taking..."
+      },
       "videoProcessingNote": "The video is uploaded. It appears on the site once it has been prepared for playback.",
       "uploadInProgressNote": "Wait for the upload to finish, then save.",
       "localeSectionTitle": "text and cover",
@@ -1499,6 +1518,10 @@
         "storageUnavailable": "Storage is unavailable. Check the R2 settings.",
         "saveFailed": "Could not save the item.",
         "deleteFailed": "Could not delete the item.",
+        "audioLanguageRequired": "Say which language the video's own voice-over is in.",
+        "audioLanguageInvalid": "That is not a language code. Expected something like ru, en or pt-BR.",
+        "audioLanguageDuplicate": "Two soundtracks share a language. Each language may appear once.",
+        "audioFileRequired": "Add a file for the dub, or remove the row.",
         "requeueFailed": "Could not restart processing.",
         "unexpected": "Something went wrong. Please try again."
       }

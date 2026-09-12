@@ -11,6 +11,10 @@ export enum AdminEntertainmentFormErrorCode {
   SaveFailed = "save-failed",
   DeleteFailed = "delete-failed",
   RequeueFailed = "requeue-failed",
+  AudioLanguageRequired = "audio-language-required",
+  AudioLanguageInvalid = "audio-language-invalid",
+  AudioLanguageDuplicate = "audio-language-duplicate",
+  AudioFileRequired = "audio-file-required",
   Unexpected = "unexpected",
 }
 
