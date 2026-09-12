@@ -10,6 +10,7 @@ export enum AdminEntertainmentFormErrorCode {
   StorageUnavailable = "storage-unavailable",
   SaveFailed = "save-failed",
   DeleteFailed = "delete-failed",
+  RequeueFailed = "requeue-failed",
   Unexpected = "unexpected",
 }
 

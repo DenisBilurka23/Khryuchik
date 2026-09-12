@@ -6,6 +6,7 @@ import { getMongoDb } from "@/server/db/mongodb";
 import type {
   EntertainmentCategoryKey,
   EntertainmentItemDocument,
+  EntertainmentVideoStatus,
 } from "@/types/entertainment";
 
 const COLLECTION_NAME = "entertainment";
@@ -91,4 +92,44 @@ export const deleteEntertainmentItemBySlug = async (slug: string) => {
   const collection = await getEntertainmentCollection();
 
   return collection.deleteOne({ slug });
+};
+
+export const findEntertainmentItemsAwaitingProcessing = async () => {
+  const collection = await getEntertainmentCollection();
+
+  return collection
+    .find(
+      { "media.type": "video", "media.status": "processing" },
+      { projection: { _id: 0 } },
+    )
+    .sort({ updatedAt: 1 })
+    .toArray();
+};
+
+export const updateEntertainmentVideoStatus = async ({
+  slug,
+  sourceObjectKey,
+  status,
+  failureReason,
+}: {
+  slug: string;
+  sourceObjectKey: string;
+  status: EntertainmentVideoStatus;
+  failureReason?: string;
+}) => {
+  const collection = await getEntertainmentCollection();
+
+  const result = await collection.updateOne(
+    { slug, "media.source.sourceObjectKey": sourceObjectKey },
+    {
+      $set: {
+        "media.status": status,
+        updatedAt: new Date().toISOString(),
+        ...(failureReason ? { "media.failureReason": failureReason } : {}),
+      },
+      ...(failureReason ? {} : { $unset: { "media.failureReason": "" } }),
+    },
+  );
+
+  return result.matchedCount > 0;
 };

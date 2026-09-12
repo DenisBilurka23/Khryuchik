@@ -12,6 +12,7 @@ import {
 import { getActiveLocales } from "@/server/localization/localization.service";
 import {
   buildEntertainmentPlaylistUrl,
+  deleteEntertainmentHlsPrefix,
   deleteEntertainmentPublicObjects,
   deleteEntertainmentSourceObjects,
 } from "@/server/storage/r2-assets.service";
@@ -25,6 +26,7 @@ import type {
   EntertainmentMedia,
   EntertainmentTranslation,
 } from "@/types/entertainment";
+import { getEntertainmentHlsPrefix } from "@/utils";
 import { buildUniqueValue, normalizeIdentifierPart } from "@/utils/admin";
 
 import {
@@ -176,22 +178,30 @@ const collectEntertainmentObjectKeys = (
   item: EntertainmentItemDocument | null,
 ) => {
   if (!item) {
-    return { publicKeys: [] as string[], sourceKeys: [] as string[] };
+    return {
+      publicKeys: [] as string[],
+      sourceKeys: [] as string[],
+      hlsPrefix: null as string | null,
+    };
   }
 
   const posterKeys = Object.values(item.translations)
     .map((translation) => translation?.poster?.objectKey)
     .filter((objectKey): objectKey is string => Boolean(objectKey));
+  const hlsSource =
+    item.media.type === "video" && item.media.source?.kind === "hls"
+      ? item.media.source
+      : null;
 
   return {
     publicKeys:
       item.media.type === "download"
         ? [...posterKeys, item.media.objectKey]
         : posterKeys,
-    sourceKeys:
-      item.media.type === "video" && item.media.source?.kind === "hls"
-        ? [item.media.source.sourceObjectKey]
-        : [],
+    sourceKeys: hlsSource ? [hlsSource.sourceObjectKey] : [],
+    hlsPrefix: hlsSource
+      ? getEntertainmentHlsPrefix(hlsSource.playlistUrl)
+      : null,
   };
 };
 
@@ -203,6 +213,10 @@ const removeOrphanedObjects = async (
   const nextKeys = collectEntertainmentObjectKeys(next);
   const keptPublicKeys = new Set(nextKeys.publicKeys);
   const keptSourceKeys = new Set(nextKeys.sourceKeys);
+  const orphanedHlsPrefix =
+    previousKeys.hlsPrefix && previousKeys.hlsPrefix !== nextKeys.hlsPrefix
+      ? previousKeys.hlsPrefix
+      : null;
 
   try {
     await Promise.all([
@@ -216,6 +230,9 @@ const removeOrphanedObjects = async (
           (objectKey) => !keptSourceKeys.has(objectKey),
         ),
       ),
+      orphanedHlsPrefix
+        ? deleteEntertainmentHlsPrefix(orphanedHlsPrefix)
+        : Promise.resolve(),
     ]);
   } catch (error) {
     console.error("Admin entertainment object cleanup failed", error);
@@ -328,12 +345,14 @@ export const deleteAdminEntertainmentItem = async (slug: string) => {
 
   await deleteEntertainmentItemBySlug(normalizedSlug);
 
-  const { publicKeys, sourceKeys } = collectEntertainmentObjectKeys(item);
+  const { publicKeys, sourceKeys, hlsPrefix } =
+    collectEntertainmentObjectKeys(item);
 
   try {
     await Promise.all([
       deleteEntertainmentPublicObjects(publicKeys),
       deleteEntertainmentSourceObjects(sourceKeys),
+      hlsPrefix ? deleteEntertainmentHlsPrefix(hlsPrefix) : Promise.resolve(),
     ]);
   } catch (error) {
     console.error("Admin entertainment object cleanup failed", error);

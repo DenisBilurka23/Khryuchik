@@ -7,7 +7,9 @@ import type { ProductFileAsset, ProductImage } from "@/types/product-details";
 
 import {
   buildPublicObjectUrl,
+  createPresignedGetUrl,
   createPresignedPutUrl,
+  deleteObjectsByPrefix,
   deletePrivateObject,
   deletePublicObject,
   uploadPrivateObject,
@@ -366,4 +368,21 @@ export const deleteEntertainmentSourceObjects = async (
       await deletePrivateObject(objectKey);
     }),
   );
+};
+
+export const createEntertainmentSourceDownloadUrl = async (
+  sourceObjectKey: string,
+) =>
+  createPresignedGetUrl({
+    bucket: "private",
+    objectKey: sourceObjectKey,
+    expiresInSeconds: ENTERTAINMENT_VIDEO_EXPIRES_IN_SECONDS,
+  });
+
+export const deleteEntertainmentHlsPrefix = async (prefix: string) => {
+  if (!prefix) {
+    return 0;
+  }
+
+  return deleteObjectsByPrefix({ bucket: "public", prefix });
 };

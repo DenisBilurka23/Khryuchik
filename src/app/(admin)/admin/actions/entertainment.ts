@@ -14,6 +14,8 @@ import {
   saveAdminEntertainmentItem,
 } from "@/server/admin/entertainment.service";
 import { parseAdminEntertainmentFormData } from "@/server/admin/form-data";
+import { requeueEntertainmentTranscode } from "@/server/entertainment/services/entertainment-transcode.service";
+import { dispatchEntertainmentTranscode } from "@/server/entertainment/transcode-dispatch.client";
 
 import { requireAdmin } from "./shared";
 
@@ -78,6 +80,11 @@ export const saveAdminEntertainmentItemAction = async (formData: FormData) => {
         ? [input.currentSlug]
         : []),
     ];
+
+    if (saved.media.type === "video" && saved.media.status === "processing") {
+      await dispatchEntertainmentTranscode(saved.slug);
+    }
+
     redirectPath = `/admin/entertainment/${saved.slug}/edit?saved=1`;
   } catch (error) {
     if (error instanceof AdminEntertainmentFormValidationError) {
@@ -120,4 +127,29 @@ export const deleteAdminEntertainmentItemAction = async (
 
   revalidateEntertainmentDependentPaths([slug]);
   redirect("/admin/entertainment?deleted=1");
+};
+
+export const requeueAdminEntertainmentItemAction = async (
+  formData: FormData,
+) => {
+  await requireAdmin();
+
+  const rawSlug = formData.get("slug");
+  const slug = typeof rawSlug === "string" ? rawSlug.trim() : "";
+  let requeued = false;
+
+  try {
+    requeued = await requeueEntertainmentTranscode(slug);
+  } catch (error) {
+    console.error("Admin entertainment requeue failed", error);
+  }
+
+  if (!requeued) {
+    redirect(
+      `/admin/entertainment?error=${AdminEntertainmentFormErrorCode.RequeueFailed}`,
+    );
+  }
+
+  revalidateEntertainmentDependentPaths([slug]);
+  redirect("/admin/entertainment?requeued=1");
 };

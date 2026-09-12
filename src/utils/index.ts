@@ -21,6 +21,7 @@ export { getCountLabel } from "./count-label";
 export { delay } from "./delay";
 export { getDownloadMeta } from "./download";
 export {
+  getEntertainmentHlsPrefix,
   isEntertainmentCategory,
   isLocalizedEntertainmentItem,
   localizeEntertainmentItem,

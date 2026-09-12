@@ -1420,6 +1420,8 @@
       "backToList": "Все материалы",
       "deletedMessage": "Материал удалён.",
       "deleteFailedMessage": "Не удалось удалить материал. Попробуйте ещё раз.",
+      "requeuedMessage": "Обработка перезапущена.",
+      "requeueFailedMessage": "Не удалось перезапустить обработку. Проверьте, что видео ещё лежит в хранилище.",
       "sectionTitle": "Библиотека",
       "sectionDescription": "Материалов в разделе",
       "emptyTitle": "Пока пусто",
@@ -1469,6 +1471,7 @@
       "saveChangesButton": "Сохранить изменения",
       "savingChangesButton": "Сохраняем...",
       "deleteButton": "Удалить",
+      "requeueButton": "Перезапустить обработку",
       "deleteDialogTitle": "Удалить материал?",
       "deleteDialogDescription": "Материал исчезнет с сайта, а его файлы удалятся из хранилища.",
       "confirmDeleteButton": "Удалить",
@@ -1516,6 +1519,7 @@
         "storageUnavailable": "Хранилище недоступно. Проверьте настройки R2.",
         "saveFailed": "Не удалось сохранить материал.",
         "deleteFailed": "Не удалось удалить материал.",
+        "requeueFailed": "Не удалось перезапустить обработку.",
         "unexpected": "Что-то пошло не так. Попробуйте ещё раз."
       }
     },

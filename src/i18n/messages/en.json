@@ -1400,6 +1400,8 @@
       "backToList": "All items",
       "deletedMessage": "Item deleted.",
       "deleteFailedMessage": "Could not delete the item. Please try again.",
+      "requeuedMessage": "Processing restarted.",
+      "requeueFailedMessage": "Could not restart processing. Check that the video is still in storage.",
       "sectionTitle": "Library",
       "sectionDescription": "Items in the entertainment section",
       "emptyTitle": "Nothing here yet",
@@ -1449,6 +1451,7 @@
       "saveChangesButton": "Save changes",
       "savingChangesButton": "Saving...",
       "deleteButton": "Delete",
+      "requeueButton": "Restart processing",
       "deleteDialogTitle": "Delete item?",
       "deleteDialogDescription": "The item disappears from the site and its files are removed from storage.",
       "confirmDeleteButton": "Delete",
@@ -1496,6 +1499,7 @@
         "storageUnavailable": "Storage is unavailable. Check the R2 settings.",
         "saveFailed": "Could not save the item.",
         "deleteFailed": "Could not delete the item.",
+        "requeueFailed": "Could not restart processing.",
         "unexpected": "Something went wrong. Please try again."
       }
     },

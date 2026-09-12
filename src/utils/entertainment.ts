@@ -37,3 +37,18 @@ export const isEntertainmentCategory = (
   value: string | undefined,
 ): value is EntertainmentCategoryKey =>
   ENTERTAINMENT_CATEGORIES.some((category) => category === value);
+
+export const getEntertainmentHlsPrefix = (playlistUrl: string) => {
+  let pathname: string;
+
+  try {
+    ({ pathname } = new URL(playlistUrl));
+  } catch {
+    return null;
+  }
+
+  const objectKey = decodeURIComponent(pathname).replace(/^\//, "");
+  const lastSeparator = objectKey.lastIndexOf("/");
+
+  return lastSeparator === -1 ? null : objectKey.slice(0, lastSeparator + 1);
+};

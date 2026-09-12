@@ -8,6 +8,7 @@ export {
 } from "./customers";
 export {
   deleteAdminEntertainmentItemAction,
+  requeueAdminEntertainmentItemAction,
   saveAdminEntertainmentItemAction,
 } from "./entertainment";
 export {

@@ -14,8 +14,14 @@ import {
 } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
-import { deleteAdminEntertainmentItemAction } from "@/app/(admin)/admin/actions";
-import { DeleteEntertainmentItemButton } from "@/components/admin-entertainment-page-view/delete-item-button";
+import {
+  deleteAdminEntertainmentItemAction,
+  requeueAdminEntertainmentItemAction,
+} from "@/app/(admin)/admin/actions";
+import {
+  DeleteEntertainmentItemButton,
+  RequeueEntertainmentItemButton,
+} from "@/components/admin-entertainment-page-view";
 import {
   AdminEditLinkButton,
   AdminEmptyState,
@@ -23,6 +29,7 @@ import {
   AdminSectionCard,
   AdminStatusChip,
 } from "@/components/admin-page-shared";
+import { AdminEntertainmentFormErrorCode } from "@/server/admin/entertainment-form-state";
 import { getAdminEntertainmentItems } from "@/server/admin/entertainment.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
@@ -46,13 +53,17 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 type AdminEntertainmentPageProps = {
-  searchParams: Promise<{ deleted?: string; error?: string }>;
+  searchParams: Promise<{
+    deleted?: string;
+    requeued?: string;
+    error?: string;
+  }>;
 };
 
 const AdminEntertainmentPage = async ({
   searchParams,
 }: AdminEntertainmentPageProps) => {
-  const { deleted, error } = await searchParams;
+  const { deleted, requeued, error } = await searchParams;
   const locale = await resolveLocale("admin");
   const [items, tEntertainment, tForm, tCategories, tShared] =
     await Promise.all([
@@ -82,8 +93,15 @@ const AdminEntertainmentPage = async ({
       {deleted === "1" ? (
         <Alert severity="success">{tEntertainment("deletedMessage")}</Alert>
       ) : null}
+      {requeued === "1" ? (
+        <Alert severity="success">{tEntertainment("requeuedMessage")}</Alert>
+      ) : null}
       {error ? (
-        <Alert severity="error">{tEntertainment("deleteFailedMessage")}</Alert>
+        <Alert severity="error">
+          {error === AdminEntertainmentFormErrorCode.RequeueFailed
+            ? tEntertainment("requeueFailedMessage")
+            : tEntertainment("deleteFailedMessage")}
+        </Alert>
       ) : null}
 
       <AdminSectionCard
@@ -171,6 +189,14 @@ const AdminEntertainmentPage = async ({
                           href={`/admin/entertainment/${item.slug}/edit`}
                           size="small"
                         />
+                        {item.mediaStatus === "processing" ||
+                        item.mediaStatus === "failed" ? (
+                          <RequeueEntertainmentItemButton
+                            slug={item.slug}
+                            action={requeueAdminEntertainmentItemAction}
+                            size="small"
+                          />
+                        ) : null}
                         <DeleteEntertainmentItemButton
                           slug={item.slug}
                           action={deleteAdminEntertainmentItemAction}

@@ -1,0 +1,99 @@
+name: Entertainment transcode
+
+# Triggered by the admin saving a cartoon (repository_dispatch from the app), or
+# by hand when a dispatch never landed. There is deliberately no pull_request
+# trigger: this repository is public, and a fork must never reach these secrets.
+on:
+  repository_dispatch:
+    types: [entertainment-transcode]
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Item to rebuild. Leave empty to sweep everything still processing."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+# A replaced master should win over the run it replaced; the callback is guarded
+# by the source key, so cancelling the older run loses nothing.
+concurrency:
+  group: entertainment-transcode-${{ github.event.client_payload.slug || inputs.slug || 'sweep' }}
+  cancel-in-progress: true
+
+jobs:
+  transcode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Check out the transcode script
+        uses: actions/checkout@v7
+        with:
+          # Nothing here pushes, and a token left in .git/config is one more
+          # thing that could leak out of a public repository's logs.
+          persist-credentials: false
+
+      - name: Install ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Resolve the queue
+        id: queue
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          SLUG: ${{ github.event.client_payload.slug || inputs.slug }}
+        run: |
+          if [ -n "$SLUG" ]; then
+            echo "slugs=$SLUG" >> "$GITHUB_OUTPUT"
+            echo "Building a single item"
+            exit 0
+          fi
+
+          endpoint="${SITE_URL%/}/api/cron/entertainment-transcode"
+          status=$(curl -sS --max-time 60 --get \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            -o queue.json -w "%{http_code}" \
+            "$endpoint") || status="000"
+
+          if [ "$status" != "200" ]; then
+            echo "::error::Could not read the queue (HTTP $status)"
+            exit 1
+          fi
+
+          slugs=$(jq -r '.queue[].slug' queue.json | tr '\n' ' ')
+          echo "slugs=$slugs" >> "$GITHUB_OUTPUT"
+          echo "Queued: ${slugs:-nothing}"
+
+      - name: Build the ladders
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          R2_TRANSCODE_ACCESS_KEY_ID: ${{ secrets.R2_TRANSCODE_ACCESS_KEY_ID }}
+          R2_TRANSCODE_SECRET_ACCESS_KEY: ${{ secrets.R2_TRANSCODE_SECRET_ACCESS_KEY }}
+          SLUGS: ${{ steps.queue.outputs.slugs }}
+        run: |
+          if [ -z "${SLUGS// /}" ]; then
+            echo "Nothing to build"
+            exit 0
+          fi
+
+          failed=0
+
+          # One bad item must not strand the rest of the queue behind it; the
+          # script reports each failure to the app on its own.
+          for slug in $SLUGS; do
+            echo "=== $slug"
+
+            if ! SLUG="$slug" bash .github/scripts/transcode-entertainment.sh; then
+              echo "::warning::Transcoding failed for $slug"
+              failed=$((failed + 1))
+            fi
+          done
+
+          if [ "$failed" -gt 0 ]; then
+            echo "::error::$failed item(s) failed to transcode"
+            exit 1
+          fi

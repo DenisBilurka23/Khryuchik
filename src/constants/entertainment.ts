@@ -1,4 +1,7 @@
-import type { EntertainmentCategoryKey } from "@/types/entertainment";
+import type {
+  EntertainmentCategoryKey,
+  EntertainmentTranscodeVariant,
+} from "@/types/entertainment";
 
 export const ENTERTAINMENT_CATEGORIES: EntertainmentCategoryKey[] = [
   "cartoons",
@@ -56,3 +59,48 @@ export const ENTERTAINMENT_POSTER_MAX_BYTES = 8 * 1024 * 1024;
 export const ENTERTAINMENT_DOWNLOAD_MAX_BYTES = 200 * 1024 * 1024;
 
 export const DEFAULT_ENTERTAINMENT_SORT_ORDER = 100;
+
+export const ENTERTAINMENT_SEGMENT_SECONDS = 6;
+
+export const ENTERTAINMENT_FRAME_RATE = 25;
+
+export const ENTERTAINMENT_TRANSCODE_VARIANTS: EntertainmentTranscodeVariant[] =
+  [
+    {
+      name: "480p",
+      height: 480,
+      crf: 23,
+      maxBitrateKbps: 1200,
+      profile: "main",
+      level: "3.1",
+      codec: "avc1.4d401f",
+    },
+    {
+      name: "720p",
+      height: 720,
+      crf: 22,
+      maxBitrateKbps: 2600,
+      profile: "main",
+      level: "3.2",
+      codec: "avc1.4d4020",
+    },
+    {
+      name: "1080p",
+      height: 1080,
+      crf: 21,
+      maxBitrateKbps: 4500,
+      profile: "high",
+      level: "4.0",
+      codec: "avc1.640028",
+    },
+  ];
+
+export const ENTERTAINMENT_AUDIO_BITRATE_KBPS = 128;
+
+export const ENTERTAINMENT_AUDIO_CODEC = "mp4a.40.2";
+
+export const ENTERTAINMENT_AUDIO_GROUP_ID = "aud";
+
+export const ENTERTAINMENT_DEFAULT_AUDIO_NAME = "Original";
+
+export const ENTERTAINMENT_DEFAULT_AUDIO_TRACK_ID = "default";

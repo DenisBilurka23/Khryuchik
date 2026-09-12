@@ -72,3 +72,56 @@ export type LocalizedEntertainmentItem = {
   sortOrder: number;
   uploadedAt: string;
 };
+
+export type EntertainmentTranscodeVariant = {
+  name: string;
+  height: number;
+  crf: number;
+  maxBitrateKbps: number;
+  profile: string;
+  level: string;
+  codec: string;
+};
+
+export type EntertainmentTranscodeAudioTrack = {
+  id: string;
+  name: string;
+  language?: string;
+  isDefault: boolean;
+  sourceUrl?: string;
+};
+
+export type EntertainmentTranscodeStorageTarget = {
+  endpoint: string;
+  bucket: string;
+};
+
+export type EntertainmentTranscodeJob = {
+  slug: string;
+  sourceObjectKey: string;
+  sourceUrl: string;
+  hlsPrefix: string;
+  storage: EntertainmentTranscodeStorageTarget;
+  segmentSeconds: number;
+  frameRate: number;
+  audioBitrateKbps: number;
+  audioCodec: string;
+  audioGroupId: string;
+  variants: EntertainmentTranscodeVariant[];
+  audioTracks: EntertainmentTranscodeAudioTrack[];
+  rebuildVideo: boolean;
+};
+
+export type EntertainmentTranscodeQueueItem = {
+  slug: string;
+  updatedAt: string;
+};
+
+export type EntertainmentTranscodeOutcome = "ready" | "failed";
+
+export type EntertainmentTranscodeResult = {
+  slug: string;
+  sourceObjectKey: string;
+  status: EntertainmentTranscodeOutcome;
+  failureReason?: string;
+};

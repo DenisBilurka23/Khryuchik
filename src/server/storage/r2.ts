@@ -2,7 +2,9 @@ import "server-only";
 
 import {
   DeleteObjectCommand,
+  DeleteObjectsCommand,
   GetObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -21,6 +23,10 @@ const {
 export type R2BucketKind = "public" | "private";
 
 const PRESIGNED_PUT_EXPIRES_IN_SECONDS = 60 * 10;
+
+const PRESIGNED_GET_EXPIRES_IN_SECONDS = 60 * 10;
+
+const DELETE_BATCH_SIZE = 1000;
 
 export const isR2Configured = Boolean(
   R2_ACCOUNT_ID &&
@@ -68,6 +74,11 @@ const getBucketName = (bucket: R2BucketKind) =>
 export const buildPublicObjectUrl = (objectKey: string) =>
   buildPublicUrl(objectKey);
 
+export const getPublicUploadTarget = () => ({
+  endpoint: R2_S3_API_URL ?? "",
+  bucket: R2_BUCKET_PUBLIC ?? "",
+});
+
 export const createPresignedPutUrl = async ({
   bucket,
   objectKey,
@@ -95,6 +106,95 @@ export const createPresignedPutUrl = async ({
     uploadUrl,
     expiresInSeconds,
   };
+};
+
+export const createPresignedGetUrl = async ({
+  bucket,
+  objectKey,
+  expiresInSeconds = PRESIGNED_GET_EXPIRES_IN_SECONDS,
+}: {
+  bucket: R2BucketKind;
+  objectKey: string;
+  expiresInSeconds?: number;
+}) => {
+  const client = getR2Client();
+  const command = new GetObjectCommand({
+    Bucket: getBucketName(bucket),
+    Key: objectKey,
+  });
+
+  const downloadUrl = await getSignedUrl(client, command, {
+    expiresIn: expiresInSeconds,
+  });
+
+  return {
+    objectKey,
+    downloadUrl,
+    expiresInSeconds,
+  };
+};
+
+export const listObjectKeys = async ({
+  bucket,
+  prefix,
+}: {
+  bucket: R2BucketKind;
+  prefix: string;
+}) => {
+  const client = getR2Client();
+  const objectKeys: string[] = [];
+  let continuationToken: string | undefined;
+
+  do {
+    const response = await client.send(
+      new ListObjectsV2Command({
+        Bucket: getBucketName(bucket),
+        Prefix: prefix,
+        ContinuationToken: continuationToken,
+      }),
+    );
+
+    for (const object of response.Contents ?? []) {
+      if (object.Key) {
+        objectKeys.push(object.Key);
+      }
+    }
+
+    continuationToken = response.IsTruncated
+      ? response.NextContinuationToken
+      : undefined;
+  } while (continuationToken);
+
+  return objectKeys;
+};
+
+export const deleteObjectsByPrefix = async ({
+  bucket,
+  prefix,
+}: {
+  bucket: R2BucketKind;
+  prefix: string;
+}) => {
+  const objectKeys = await listObjectKeys({ bucket, prefix });
+
+  if (objectKeys.length === 0) {
+    return 0;
+  }
+
+  const client = getR2Client();
+
+  for (let index = 0; index < objectKeys.length; index += DELETE_BATCH_SIZE) {
+    const batch = objectKeys.slice(index, index + DELETE_BATCH_SIZE);
+
+    await client.send(
+      new DeleteObjectsCommand({
+        Bucket: getBucketName(bucket),
+        Delete: { Objects: batch.map((objectKey) => ({ Key: objectKey })) },
+      }),
+    );
+  }
+
+  return objectKeys.length;
 };
 
 export const uploadPublicObject = async ({
