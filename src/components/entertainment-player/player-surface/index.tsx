@@ -22,14 +22,23 @@ import {
   MediaRenditionMenu,
   MediaRenditionMenuButton,
 } from "media-chrome/react/menu";
-import { addTranslation, setLanguage } from "media-chrome/utils/i18n";
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { setLanguage } from "media-chrome/utils/i18n";
+import { type CSSProperties, useRef } from "react";
 
-import { mediaChromeLabelsByLocale } from "@/i18n/media-chrome-labels";
+import { ENTERTAINMENT_PLAYER_ABR_INITIAL_ESTIMATE } from "@/constants/entertainment";
+import { useHlsPlayback } from "@/hooks/useHlsPlayback";
+import { useMediaFailure } from "@/hooks/useMediaFailure";
+import { useMediaFullscreenGesture } from "@/hooks/useMediaFullscreenGesture";
+import { usePreferredAudioTrack } from "@/hooks/usePreferredAudioTrack";
 import { displayFont, leadSx } from "@/theme/sx";
-import { isDocumentFullscreen, pickPreferredAudioTrack } from "@/utils";
 
-import type { PlayerAudioTrackHost, PlayerSurfaceProps } from "../types";
+import type { PlayerSurfaceProps } from "../types";
+
+import { rememberQualityLevel } from "./utils";
+
+const HLS_CONFIG = {
+  abrEwmaDefaultEstimate: ENTERTAINMENT_PLAYER_ABR_INITIAL_ESTIMATE,
+};
 
 const RENDITION_MENU_ID = "entertainment-rendition-menu";
 
@@ -37,17 +46,7 @@ const AUDIO_MENU_ID = "entertainment-audio-menu";
 
 const CAPTIONS_MENU_ID = "entertainment-captions-menu";
 
-const ENTER_FULLSCREEN_EVENT = "mediaenterfullscreenrequest";
-
-const EXIT_FULLSCREEN_EVENT = "mediaexitfullscreenrequest";
-
 const STALL_TIMEOUT_MS = 12_000;
-
-for (const [locale, labels] of Object.entries(mediaChromeLabelsByLocale)) {
-  if (labels) {
-    addTranslation(locale, labels);
-  }
-}
 
 const playerSx = {
   "--media-font-family": "inherit",
@@ -77,6 +76,8 @@ const playerSx = {
     display: "block",
     width: "100%",
     aspectRatio: "var(--player-aspect, 16 / 9)",
+    maxHeight: "62vh",
+    marginInline: "auto",
     borderRadius: "var(--radius-panel)",
     background: "var(--color-text)",
     overflow: "hidden",
@@ -141,6 +142,16 @@ const playerSx = {
 
   "& .player-spacer": { flex: 1 },
 
+  "& media-chrome-menu-item": {
+    "--media-menu-item-outline": "none",
+    "--media-menu-item-focus-shadow": "none",
+    "--media-menu-item-hover-background": "var(--color-player-control-hover)",
+  },
+
+  "& media-chrome-menu-item:focus-visible": {
+    background: "var(--color-player-control-hover)",
+  },
+
   "& media-play-button, & media-mute-button, & media-pip-button, & media-fullscreen-button, & media-rendition-menu-button, & media-audio-track-menu-button, & media-captions-menu-button":
     {
       width: "40px",
@@ -149,12 +160,15 @@ const playerSx = {
       "--media-button-padding": "0px",
     },
 
+  "& media-rendition-menu, & media-audio-track-menu, & media-captions-menu": {
+    position: "absolute",
+    right: "18px",
+    bottom: "58px",
+    margin: 0,
+  },
+
   "& media-rendition-menu[hidden], & media-audio-track-menu[hidden], & media-captions-menu[hidden]":
     {
-      position: "absolute",
-      right: 0,
-      bottom: 0,
-      margin: 0,
       "--media-menu-hidden-max-height": "0px",
     },
 
@@ -193,102 +207,26 @@ export const PlayerSurface = ({
   errorText,
 }: PlayerSurfaceProps) => {
   const videoRef = useRef<HlsVideoElement | null>(null);
-  const [hasFailed, setHasFailed] = useState(false);
   const aspectStyle = { "--player-aspect": aspectRatio } as CSSProperties;
   const hasSubtitles = Boolean(subtitles?.length);
 
   setLanguage(locale);
 
-  useEffect(() => {
-    const video = videoRef.current;
+  useHlsPlayback({
+    videoRef,
+    playlistUrl,
+    config: HLS_CONFIG,
+    onLevelChange: rememberQualityLevel,
+  });
 
-    if (!video) {
-      return;
-    }
+  const hasFailed = useMediaFailure({
+    videoRef,
+    timeoutMs: STALL_TIMEOUT_MS,
+  });
 
-    const handleFailure = () => setHasFailed(true);
+  useMediaFullscreenGesture({ videoRef });
 
-    video.addEventListener("error", handleFailure);
-
-    let timer = window.setTimeout(() => {
-      if (video.readyState === 0) {
-        handleFailure();
-      }
-    }, STALL_TIMEOUT_MS);
-
-    const cancelTimer = () => {
-      window.clearTimeout(timer);
-      timer = 0;
-    };
-
-    video.addEventListener("loadedmetadata", cancelTimer);
-    video.addEventListener("progress", cancelTimer);
-
-    return () => {
-      window.clearTimeout(timer);
-      video.removeEventListener("error", handleFailure);
-      video.removeEventListener("loadedmetadata", cancelTimer);
-      video.removeEventListener("progress", cancelTimer);
-    };
-  }, []);
-
-  useEffect(() => {
-    const video = videoRef.current;
-
-    if (!video) {
-      return;
-    }
-
-    const handleDoubleClick = () => {
-      video.dispatchEvent(
-        new CustomEvent(
-          isDocumentFullscreen()
-            ? EXIT_FULLSCREEN_EVENT
-            : ENTER_FULLSCREEN_EVENT,
-          { bubbles: true, composed: true },
-        ),
-      );
-    };
-
-    video.addEventListener("dblclick", handleDoubleClick);
-
-    return () => video.removeEventListener("dblclick", handleDoubleClick);
-  }, []);
-
-  useEffect(() => {
-    const audioTracks = (videoRef.current as PlayerAudioTrackHost | null)
-      ?.audioTracks;
-
-    if (!audioTracks) {
-      return;
-    }
-
-    let isApplied = false;
-
-    const applyPreferredTrack = () => {
-      if (isApplied) {
-        return;
-      }
-
-      const preferred = pickPreferredAudioTrack([...audioTracks], locale);
-
-      if (!preferred) {
-        return;
-      }
-
-      isApplied = true;
-
-      if (!preferred.enabled) {
-        preferred.enabled = true;
-      }
-    };
-
-    applyPreferredTrack();
-    audioTracks.addEventListener("addtrack", applyPreferredTrack);
-
-    return () =>
-      audioTracks.removeEventListener("addtrack", applyPreferredTrack);
-  }, [locale]);
+  usePreferredAudioTrack({ videoRef, locale });
 
   if (hasFailed) {
     return (
@@ -318,7 +256,6 @@ export const PlayerSurface = ({
         <HlsVideo
           ref={videoRef}
           slot="media"
-          src={playlistUrl}
           poster={poster}
           aria-label={title}
           autoplay

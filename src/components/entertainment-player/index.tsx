@@ -13,6 +13,8 @@ const frameSx = {
   alignItems: "center",
   justifyContent: "center",
   aspectRatio: "var(--player-aspect, 16 / 9)",
+  maxHeight: "62vh",
+  marginInline: "auto",
   borderRadius: "var(--radius-panel)",
   background: "var(--color-text)",
   overflow: "hidden",

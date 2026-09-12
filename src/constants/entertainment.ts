@@ -94,6 +94,24 @@ export const ENTERTAINMENT_FRAME_RATE = 25;
 export const ENTERTAINMENT_TRANSCODE_VARIANTS: EntertainmentTranscodeVariant[] =
   [
     {
+      name: "240p",
+      shortSide: 240,
+      crf: 25,
+      maxBitrateKbps: 400,
+      profile: "baseline",
+      level: "2.0",
+      codec: "avc1.42c014",
+    },
+    {
+      name: "360p",
+      shortSide: 360,
+      crf: 24,
+      maxBitrateKbps: 700,
+      profile: "baseline",
+      level: "3.0",
+      codec: "avc1.42c01e",
+    },
+    {
       name: "480p",
       shortSide: 480,
       crf: 23,
@@ -121,6 +139,8 @@ export const ENTERTAINMENT_TRANSCODE_VARIANTS: EntertainmentTranscodeVariant[] =
       codec: "avc1.640028",
     },
   ];
+
+export const ENTERTAINMENT_PLAYER_ABR_INITIAL_ESTIMATE = 6_000_000;
 
 export const ENTERTAINMENT_AUDIO_BITRATE_KBPS = 128;
 

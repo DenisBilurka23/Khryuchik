@@ -23,14 +23,3 @@ export type EntertainmentPlayerProps = {
 };
 
 export type PlayerSurfaceProps = Omit<EntertainmentPlayerProps, "playLabel">;
-
-export type PlayerAudioTrack = {
-  language: string;
-  enabled: boolean;
-};
-
-export type PlayerAudioTrackList = EventTarget & Iterable<PlayerAudioTrack>;
-
-export type PlayerAudioTrackHost = {
-  audioTracks?: PlayerAudioTrackList;
-};
