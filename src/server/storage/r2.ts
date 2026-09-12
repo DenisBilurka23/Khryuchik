@@ -30,11 +30,11 @@ const DELETE_BATCH_SIZE = 1000;
 
 export const isR2Configured = Boolean(
   R2_ACCOUNT_ID &&
-    R2_S3_API_URL &&
-    R2_ACCESS_KEY_ID &&
-    R2_SECRET_ACCESS_KEY &&
-    R2_BUCKET_PUBLIC &&
-    R2_BUCKET_PRIVATE,
+  R2_S3_API_URL &&
+  R2_ACCESS_KEY_ID &&
+  R2_SECRET_ACCESS_KEY &&
+  R2_BUCKET_PUBLIC &&
+  R2_BUCKET_PRIVATE,
 );
 
 let r2Client: S3Client | null = null;
@@ -134,7 +134,13 @@ export const createPresignedGetUrl = async ({
   };
 };
 
-export const listObjectKeys = async ({
+export type R2ObjectSummary = {
+  objectKey: string;
+  lastModified: Date | null;
+  sizeBytes: number;
+};
+
+export const listObjects = async ({
   bucket,
   prefix,
 }: {
@@ -142,7 +148,7 @@ export const listObjectKeys = async ({
   prefix: string;
 }) => {
   const client = getR2Client();
-  const objectKeys: string[] = [];
+  const objects: R2ObjectSummary[] = [];
   let continuationToken: string | undefined;
 
   do {
@@ -156,7 +162,11 @@ export const listObjectKeys = async ({
 
     for (const object of response.Contents ?? []) {
       if (object.Key) {
-        objectKeys.push(object.Key);
+        objects.push({
+          objectKey: object.Key,
+          lastModified: object.LastModified ?? null,
+          sizeBytes: object.Size ?? 0,
+        });
       }
     }
 
@@ -165,8 +175,13 @@ export const listObjectKeys = async ({
       : undefined;
   } while (continuationToken);
 
-  return objectKeys;
+  return objects;
 };
+
+export const listObjectKeys = async (params: {
+  bucket: R2BucketKind;
+  prefix: string;
+}) => (await listObjects(params)).map((object) => object.objectKey);
 
 export const deleteObjectsByPrefix = async ({
   bucket,

@@ -1,0 +1,81 @@
+name: Orphaned storage cleanup
+
+on:
+  schedule:
+    # Once a day, UTC, offset from the other jobs. Abandoned uploads do not
+    # grow fast; the point is that they stop growing forever.
+    - cron: "0 3 * * *"
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: "Report candidates without deleting anything"
+        type: boolean
+        default: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Sweep objects no document points at
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          SITE_URL: ${{ vars.SITE_URL }}
+          DRY_RUN: ${{ inputs.dryRun }}
+          MAX_ATTEMPTS: 3
+          RETRY_BACKOFF_SECONDS: 10
+        run: |
+          endpoint="${SITE_URL%/}/api/cron/storage-cleanup"
+
+          if [ "$DRY_RUN" = "true" ]; then
+            endpoint="$endpoint?dryRun=1"
+          fi
+
+          attempt=0
+
+          while true; do
+            attempt=$((attempt + 1))
+            rm -f response.json
+
+            status=$(curl -sS --max-time 300 --get \
+              -H "Authorization: Bearer $CRON_SECRET" \
+              -o response.json -w "%{http_code}" \
+              "$endpoint") || status="000"
+
+            echo "--- attempt $attempt: HTTP $status"
+            cat response.json 2>/dev/null || true
+            echo
+
+            if [ "$status" = "200" ]; then
+              break
+            fi
+
+            # 000 means the request never completed: connection error or the
+            # host cutting the function off mid-run. Those are worth retrying,
+            # 401 and 404 are not — they need a human.
+            case "$status" in
+              000 | 429 | 5*) ;;
+              *)
+                echo "::error::Storage cleanup endpoint returned HTTP $status"
+                exit 1
+                ;;
+            esac
+
+            if [ "$attempt" -ge "$MAX_ATTEMPTS" ]; then
+              echo "::error::Storage cleanup endpoint still failing after $MAX_ATTEMPTS attempts (HTTP $status)"
+              exit 1
+            fi
+
+            sleep $((attempt * RETRY_BACKOFF_SECONDS))
+          done
+
+          skipped=$(jq -r '.skipped // empty' response.json)
+
+          # The sweep refuses to run when it cannot see any documents, because
+          # an empty database would make every object look unreferenced.
+          if [ -n "$skipped" ]; then
+            echo "::warning::Sweep skipped: $skipped"
+            exit 0
+          fi
+
+          echo "Scanned $(jq '.scanned' response.json) object(s), $(jq '.candidates' response.json) orphaned, $(jq '.deleted' response.json) deleted, $(jq '.bytes' response.json) byte(s) reclaimed"
