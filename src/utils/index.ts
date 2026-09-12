@@ -33,6 +33,7 @@ export { formatCurrency, getAllCurrenciesSorted } from "./format-currency";
 export type { CurrencyOption } from "./format-currency";
 export { formatVideoDuration, toIsoDuration } from "./format-duration";
 export { formatFileSize } from "./format-file-size";
+export { isDocumentFullscreen } from "./fullscreen";
 export { formatOrderNumber } from "./format-order-number";
 export {
   getAllLanguagesSorted,

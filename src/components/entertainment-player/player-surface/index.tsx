@@ -25,13 +25,17 @@ import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 import { mediaChromeLabelsByLocale } from "@/i18n/media-chrome-labels";
 import { displayFont, leadSx } from "@/theme/sx";
-import { pickPreferredAudioTrack } from "@/utils";
+import { isDocumentFullscreen, pickPreferredAudioTrack } from "@/utils";
 
 import type { PlayerAudioTrackHost, PlayerSurfaceProps } from "../types";
 
 const RENDITION_MENU_ID = "entertainment-rendition-menu";
 
 const AUDIO_MENU_ID = "entertainment-audio-menu";
+
+const ENTER_FULLSCREEN_EVENT = "mediaenterfullscreenrequest";
+
+const EXIT_FULLSCREEN_EVENT = "mediaexitfullscreenrequest";
 
 const STALL_TIMEOUT_MS = 12_000;
 
@@ -218,6 +222,29 @@ export const PlayerSurface = ({
       video.removeEventListener("loadedmetadata", cancelTimer);
       video.removeEventListener("progress", cancelTimer);
     };
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video) {
+      return;
+    }
+
+    const handleDoubleClick = () => {
+      video.dispatchEvent(
+        new CustomEvent(
+          isDocumentFullscreen()
+            ? EXIT_FULLSCREEN_EVENT
+            : ENTER_FULLSCREEN_EVENT,
+          { bubbles: true, composed: true },
+        ),
+      );
+    };
+
+    video.addEventListener("dblclick", handleDoubleClick);
+
+    return () => video.removeEventListener("dblclick", handleDoubleClick);
   }, []);
 
   useEffect(() => {
