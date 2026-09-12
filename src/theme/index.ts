@@ -88,6 +88,9 @@ export const storefrontTheme = createTheme({
         maxWidthLg: {
           maxWidth: "1280px !important",
         },
+        maxWidthXl: {
+          maxWidth: "1600px !important",
+        },
       },
     },
     MuiButton: {
