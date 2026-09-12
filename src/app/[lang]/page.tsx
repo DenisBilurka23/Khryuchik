@@ -8,7 +8,7 @@ import {
   getShopProducts,
 } from "@/server/catalog/services/catalog.service";
 import { getHomeTabCategories } from "@/server/catalog/services/categories.service";
-import { getHomeEntertainmentItems } from "@/server/entertainment/services/entertainment.service";
+import { getHomeEntertainmentView } from "@/server/entertainment/services/entertainment.service";
 import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
@@ -67,10 +67,10 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
   const selectedEntertainmentCategory = isEntertainmentCategory(entertainment)
     ? entertainment
     : DEFAULT_ENTERTAINMENT_CATEGORY;
-  const [books, shopCategories, entertainmentItems] = await Promise.all([
+  const [books, shopCategories, entertainmentView] = await Promise.all([
     getProductsForPlacement(lang, country, "home-books"),
     getHomeTabCategories(lang, country),
-    getHomeEntertainmentItems(lang, selectedEntertainmentCategory),
+    getHomeEntertainmentView(lang, selectedEntertainmentCategory),
   ]);
 
   const defaultShopCategory = shopCategories[0]?.key ?? "all";
@@ -91,8 +91,7 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
       books={books}
       shopProducts={shopProducts}
       selectedShopCategory={selectedShopCategory}
-      entertainmentItems={entertainmentItems}
-      selectedEntertainmentCategory={selectedEntertainmentCategory}
+      entertainment={entertainmentView}
     />
   );
 };

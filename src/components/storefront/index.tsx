@@ -16,8 +16,7 @@ export const Storefront = async ({
   books,
   shopProducts,
   selectedShopCategory,
-  entertainmentItems,
-  selectedEntertainmentCategory,
+  entertainment,
 }: StorefrontProps) => {
   const { navigationPaths } = createStorefrontHeaderViewModel(locale);
   const { shop: shopHref, cart: cartHref } = navigationPaths;
@@ -34,12 +33,8 @@ export const Storefront = async ({
           selectedFilter={selectedShopCategory}
         />
       ) : null}
-      {entertainmentItems.length > 0 ? (
-        <EntertainmentSection
-          locale={locale}
-          items={entertainmentItems}
-          selectedCategory={selectedEntertainmentCategory}
-        />
+      {entertainment.availableCategories.length > 0 ? (
+        <EntertainmentSection locale={locale} entertainment={entertainment} />
       ) : null}
       <OrderSection locale={locale} shopHref={shopHref} cartHref={cartHref} />
       <NewsletterSection locale={locale} />

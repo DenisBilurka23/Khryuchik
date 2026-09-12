@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { EntertainmentPageView } from "@/components/entertainment-page-view";
 import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
 import { defaultLocale, locales } from "@/i18n/config";
-import { getEntertainmentItems } from "@/server/entertainment/services/entertainment.service";
+import { getEntertainmentView } from "@/server/entertainment/services/entertainment.service";
 import { isEntertainmentCategory } from "@/utils";
 
 type DefaultEntertainmentPageProps = {
@@ -50,13 +50,15 @@ const DefaultEntertainmentPage = async ({
   const selectedCategory = isEntertainmentCategory(entertainment)
     ? entertainment
     : DEFAULT_ENTERTAINMENT_CATEGORY;
-  const items = await getEntertainmentItems(defaultLocale, selectedCategory);
+  const entertainmentView = await getEntertainmentView(
+    defaultLocale,
+    selectedCategory,
+  );
 
   return (
     <EntertainmentPageView
       locale={defaultLocale}
-      items={items}
-      selectedCategory={selectedCategory}
+      entertainment={entertainmentView}
     />
   );
 };

@@ -2,11 +2,16 @@ import "server-only";
 
 import { cache } from "react";
 
-import { HOME_ENTERTAINMENT_LIMIT } from "@/constants/entertainment";
+import {
+  ENTERTAINMENT_CATEGORIES,
+  HOME_ENTERTAINMENT_LIMIT,
+} from "@/constants/entertainment";
 import type { Locale } from "@/i18n/config";
 import type {
   EntertainmentCategoryKey,
+  EntertainmentCategoryView,
   EntertainmentItemDocument,
+  LocalizedEntertainmentItem,
 } from "@/types/entertainment";
 import {
   isLocalizedEntertainmentItem,
@@ -27,19 +32,45 @@ const localizeEntertainmentItems = (
     .map((item) => localizeEntertainmentItem(item, locale))
     .filter(isLocalizedEntertainmentItem);
 
-export const getHomeEntertainmentItems = cache(
-  async (locale: Locale, category?: EntertainmentCategoryKey) =>
-    localizeEntertainmentItems(
-      await findHomeEntertainmentItems(HOME_ENTERTAINMENT_LIMIT, category),
-      locale,
+const buildEntertainmentCategoryView = (
+  items: LocalizedEntertainmentItem[],
+  requestedCategory: EntertainmentCategoryKey,
+  limit?: number,
+): EntertainmentCategoryView => {
+  const availableCategories = ENTERTAINMENT_CATEGORIES.filter((category) =>
+    items.some((item) => item.category === category),
+  );
+  const selectedCategory = availableCategories.includes(requestedCategory)
+    ? requestedCategory
+    : (availableCategories[0] ?? null);
+  const selectedItems = selectedCategory
+    ? items.filter((item) => item.category === selectedCategory)
+    : [];
+
+  return {
+    availableCategories,
+    selectedCategory,
+    items: limit ? selectedItems.slice(0, limit) : selectedItems,
+  };
+};
+
+export const getHomeEntertainmentView = cache(
+  async (locale: Locale, requestedCategory: EntertainmentCategoryKey) =>
+    buildEntertainmentCategoryView(
+      localizeEntertainmentItems(await findHomeEntertainmentItems(), locale),
+      requestedCategory,
+      HOME_ENTERTAINMENT_LIMIT,
     ),
 );
 
-export const getEntertainmentItems = cache(
-  async (locale: Locale, category?: EntertainmentCategoryKey) =>
-    localizeEntertainmentItems(
-      await findPublishedEntertainmentItems(category),
-      locale,
+export const getEntertainmentView = cache(
+  async (locale: Locale, requestedCategory: EntertainmentCategoryKey) =>
+    buildEntertainmentCategoryView(
+      localizeEntertainmentItems(
+        await findPublishedEntertainmentItems(),
+        locale,
+      ),
+      requestedCategory,
     ),
 );
 

@@ -80,6 +80,12 @@ export type EntertainmentItemDocument = {
   translations: Partial<Record<Locale, EntertainmentTranslation>>;
 };
 
+export type EntertainmentCategoryView = {
+  availableCategories: EntertainmentCategoryKey[];
+  selectedCategory: EntertainmentCategoryKey | null;
+  items: LocalizedEntertainmentItem[];
+};
+
 export type LocalizedEntertainmentItem = {
   slug: string;
   category: EntertainmentCategoryKey;

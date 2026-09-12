@@ -1,11 +1,7 @@
 import { Box, Container, Grid } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
-import {
-  DEFAULT_ENTERTAINMENT_CATEGORY,
-  ENTERTAINMENT_CATEGORIES,
-  ENTERTAINMENT_QUERY_PARAM,
-} from "@/constants/entertainment";
+import { ENTERTAINMENT_QUERY_PARAM } from "@/constants/entertainment";
 import { getLocalizedEntertainmentPath, getLocalizedPath } from "@/utils";
 
 import { CategoryTabs } from "../category-tabs";
@@ -20,9 +16,9 @@ import type { EntertainmentSectionProps } from "./types";
 
 export const EntertainmentSection = async ({
   locale,
-  items,
-  selectedCategory,
+  entertainment,
 }: EntertainmentSectionProps) => {
+  const { availableCategories, selectedCategory, items } = entertainment;
   const [tSection, tCategories] = await Promise.all([
     getTranslations({ locale, namespace: "storefront.entertainmentSection" }),
     getTranslations({
@@ -42,17 +38,19 @@ export const EntertainmentSection = async ({
             actionHref={getLocalizedPath(locale, "/entertainment")}
           />
 
-          <CategoryTabs
-            selectedValue={selectedCategory}
-            options={ENTERTAINMENT_CATEGORIES.map((category) => ({
-              value: category,
-              label: tCategories(category),
-            }))}
-            queryParamName={ENTERTAINMENT_QUERY_PARAM}
-            defaultValueWithoutQuery={DEFAULT_ENTERTAINMENT_CATEGORY}
-            preserveQueryParams={["category"]}
-            sx={{ mb: 4 }}
-          />
+          {availableCategories.length > 1 ? (
+            <CategoryTabs
+              selectedValue={selectedCategory ?? availableCategories[0]}
+              options={availableCategories.map((category) => ({
+                value: category,
+                label: tCategories(category),
+              }))}
+              queryParamName={ENTERTAINMENT_QUERY_PARAM}
+              defaultValueWithoutQuery={availableCategories[0]}
+              preserveQueryParams={["category"]}
+              sx={{ mb: 4 }}
+            />
+          ) : null}
 
           <Grid container spacing={3}>
             {items.map((item) => (

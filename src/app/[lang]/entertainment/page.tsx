@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { EntertainmentPageView } from "@/components/entertainment-page-view";
 import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
 import { defaultLocale, locales } from "@/i18n/config";
-import { getEntertainmentItems } from "@/server/entertainment/services/entertainment.service";
+import { getEntertainmentView } from "@/server/entertainment/services/entertainment.service";
 import { isActiveLocale } from "@/server/localization/localization.service";
 import { isEntertainmentCategory } from "@/utils";
 
@@ -71,14 +71,10 @@ const LocalizedEntertainmentPage = async ({
   const selectedCategory = isEntertainmentCategory(entertainment)
     ? entertainment
     : DEFAULT_ENTERTAINMENT_CATEGORY;
-  const items = await getEntertainmentItems(lang, selectedCategory);
+  const entertainmentView = await getEntertainmentView(lang, selectedCategory);
 
   return (
-    <EntertainmentPageView
-      locale={lang}
-      items={items}
-      selectedCategory={selectedCategory}
-    />
+    <EntertainmentPageView locale={lang} entertainment={entertainmentView} />
   );
 };
 

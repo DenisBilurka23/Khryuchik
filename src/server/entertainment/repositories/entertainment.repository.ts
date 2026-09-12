@@ -5,7 +5,6 @@ import type { Filter } from "mongodb";
 import { getMongoDb } from "@/server/db/mongodb";
 import type {
   EntertainmentAudioTrack,
-  EntertainmentCategoryKey,
   EntertainmentItemDocument,
   EntertainmentVideoStatus,
 } from "@/types/entertainment";
@@ -23,31 +22,23 @@ const publishedFilter: Filter<EntertainmentItemDocument> = {
   $or: [{ "media.type": "download" }, { "media.status": "ready" }],
 };
 
-export const findHomeEntertainmentItems = async (
-  limit: number,
-  category?: EntertainmentCategoryKey,
-) => {
+export const findHomeEntertainmentItems = async () => {
   const collection = await getEntertainmentCollection();
-  const homeFilter = { ...publishedFilter, "status.visibleOnHome": true };
 
   return collection
-    .find(category ? { ...homeFilter, category } : homeFilter, {
-      projection: { _id: 0 },
-    })
+    .find(
+      { ...publishedFilter, "status.visibleOnHome": true },
+      { projection: { _id: 0 } },
+    )
     .sort({ sortOrder: 1 })
-    .limit(limit)
     .toArray();
 };
 
-export const findPublishedEntertainmentItems = async (
-  category?: EntertainmentCategoryKey,
-) => {
+export const findPublishedEntertainmentItems = async () => {
   const collection = await getEntertainmentCollection();
 
   return collection
-    .find(category ? { ...publishedFilter, category } : publishedFilter, {
-      projection: { _id: 0 },
-    })
+    .find(publishedFilter, { projection: { _id: 0 } })
     .sort({ sortOrder: 1 })
     .toArray();
 };

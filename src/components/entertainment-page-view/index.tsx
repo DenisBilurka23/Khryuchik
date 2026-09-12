@@ -3,11 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CategoryTabs } from "@/components/category-tabs";
-import {
-  DEFAULT_ENTERTAINMENT_CATEGORY,
-  ENTERTAINMENT_CATEGORIES,
-  ENTERTAINMENT_QUERY_PARAM,
-} from "@/constants/entertainment";
+import { ENTERTAINMENT_QUERY_PARAM } from "@/constants/entertainment";
 import { displayFont, leadSx } from "@/theme/sx";
 import { getLocalizedEntertainmentPath, getLocalizedPath } from "@/utils";
 
@@ -44,9 +40,9 @@ const emptyStateSx = {
 
 export const EntertainmentPageView = async ({
   locale,
-  items,
-  selectedCategory,
+  entertainment,
 }: EntertainmentPageViewProps) => {
+  const { availableCategories, selectedCategory, items } = entertainment;
   const [tPage, tSection, tCategories] = await Promise.all([
     getTranslations({ locale, namespace: "storefront.entertainmentPage" }),
     getTranslations({ locale, namespace: "storefront.entertainmentSection" }),
@@ -77,15 +73,17 @@ export const EntertainmentPageView = async ({
           />
 
           <Box sx={{ mt: { xs: 5, md: 7 } }}>
-            <CategoryTabs
-              selectedValue={selectedCategory}
-              options={ENTERTAINMENT_CATEGORIES.map((category) => ({
-                value: category,
-                label: tCategories(category),
-              }))}
-              queryParamName={ENTERTAINMENT_QUERY_PARAM}
-              defaultValueWithoutQuery={DEFAULT_ENTERTAINMENT_CATEGORY}
-            />
+            {availableCategories.length > 1 ? (
+              <CategoryTabs
+                selectedValue={selectedCategory ?? availableCategories[0]}
+                options={availableCategories.map((category) => ({
+                  value: category,
+                  label: tCategories(category),
+                }))}
+                queryParamName={ENTERTAINMENT_QUERY_PARAM}
+                defaultValueWithoutQuery={availableCategories[0]}
+              />
+            ) : null}
 
             {items.length > 0 ? (
               <Box sx={gridSx}>
