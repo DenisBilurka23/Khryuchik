@@ -15,6 +15,8 @@ import {
   MediaVolumeRange,
 } from "media-chrome/react";
 import {
+  MediaAudioTrackMenu,
+  MediaAudioTrackMenuButton,
   MediaRenditionMenu,
   MediaRenditionMenuButton,
 } from "media-chrome/react/menu";
@@ -23,10 +25,13 @@ import { type CSSProperties, useEffect, useRef, useState } from "react";
 
 import { mediaChromeLabelsByLocale } from "@/i18n/media-chrome-labels";
 import { displayFont, leadSx } from "@/theme/sx";
+import { pickPreferredAudioTrack } from "@/utils";
 
-import type { PlayerSurfaceProps } from "../types";
+import type { PlayerAudioTrackHost, PlayerSurfaceProps } from "../types";
 
 const RENDITION_MENU_ID = "entertainment-rendition-menu";
+
+const AUDIO_MENU_ID = "entertainment-audio-menu";
 
 const STALL_TIMEOUT_MS = 12_000;
 
@@ -128,7 +133,7 @@ const playerSx = {
 
   "& .player-spacer": { flex: 1 },
 
-  "& media-play-button, & media-mute-button, & media-pip-button, & media-fullscreen-button, & media-rendition-menu-button":
+  "& media-play-button, & media-mute-button, & media-pip-button, & media-fullscreen-button, & media-rendition-menu-button, & media-audio-track-menu-button":
     {
       width: "40px",
       height: "40px",
@@ -136,7 +141,7 @@ const playerSx = {
       "--media-button-padding": "0px",
     },
 
-  "& media-rendition-menu[hidden]": {
+  "& media-rendition-menu[hidden], & media-audio-track-menu[hidden]": {
     position: "absolute",
     right: 0,
     bottom: 0,
@@ -172,6 +177,7 @@ export const PlayerSurface = ({
   title,
   locale,
   qualityLabel,
+  audioLabel,
   errorTitle,
   errorText,
 }: PlayerSurfaceProps) => {
@@ -213,6 +219,41 @@ export const PlayerSurface = ({
       video.removeEventListener("progress", cancelTimer);
     };
   }, []);
+
+  useEffect(() => {
+    const audioTracks = (videoRef.current as PlayerAudioTrackHost | null)
+      ?.audioTracks;
+
+    if (!audioTracks) {
+      return;
+    }
+
+    let isApplied = false;
+
+    const applyPreferredTrack = () => {
+      if (isApplied) {
+        return;
+      }
+
+      const preferred = pickPreferredAudioTrack([...audioTracks], locale);
+
+      if (!preferred) {
+        return;
+      }
+
+      isApplied = true;
+
+      if (!preferred.enabled) {
+        preferred.enabled = true;
+      }
+    };
+
+    applyPreferredTrack();
+    audioTracks.addEventListener("addtrack", applyPreferredTrack);
+
+    return () =>
+      audioTracks.removeEventListener("addtrack", applyPreferredTrack);
+  }, [locale]);
 
   if (hasFailed) {
     return (
@@ -265,6 +306,10 @@ export const PlayerSurface = ({
 
           <Box className="player-spacer" />
 
+          <MediaAudioTrackMenuButton
+            invokeTarget={AUDIO_MENU_ID}
+            aria-label={audioLabel}
+          />
           <MediaRenditionMenuButton
             invokeTarget={RENDITION_MENU_ID}
             aria-label={qualityLabel}
@@ -273,6 +318,7 @@ export const PlayerSurface = ({
           <MediaFullscreenButton />
         </MediaControlBar>
 
+        <MediaAudioTrackMenu id={AUDIO_MENU_ID} anchor="auto" hidden />
         <MediaRenditionMenu id={RENDITION_MENU_ID} anchor="auto" hidden />
       </MediaController>
     </Box>

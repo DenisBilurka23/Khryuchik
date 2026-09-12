@@ -29,6 +29,24 @@ export const localizeEntertainmentItem = (
   };
 };
 
+export const pickPreferredAudioTrack = <T extends { language: string }>(
+  tracks: T[],
+  locale: string,
+): T | undefined => {
+  if (tracks.length < 2) {
+    return undefined;
+  }
+
+  const baseLanguage = (value: string) =>
+    value.split("-")[0]?.toLowerCase() ?? "";
+  const wanted = baseLanguage(locale);
+
+  return (
+    tracks.find((track) => baseLanguage(track.language) === wanted) ??
+    tracks.find((track) => baseLanguage(track.language) === "en")
+  );
+};
+
 export const getEntertainmentAspectRatio = (width?: number, height?: number) =>
   width && height ? `${width} / ${height}` : undefined;
 

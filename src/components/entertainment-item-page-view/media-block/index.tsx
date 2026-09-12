@@ -67,6 +67,7 @@ export const EntertainmentMediaBlock = ({
           locale={locale}
           playLabel={labels.play}
           qualityLabel={labels.quality}
+          audioLabel={labels.audio}
           errorTitle={labels.errorTitle}
           errorText={labels.errorText}
         />

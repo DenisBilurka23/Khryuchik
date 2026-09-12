@@ -26,6 +26,7 @@ export {
   isEntertainmentCategory,
   isLocalizedEntertainmentItem,
   localizeEntertainmentItem,
+  pickPreferredAudioTrack,
 } from "./entertainment";
 export { formatCurrency, getAllCurrenciesSorted } from "./format-currency";
 export type { CurrencyOption } from "./format-currency";

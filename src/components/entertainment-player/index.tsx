@@ -66,6 +66,7 @@ export const EntertainmentPlayer = ({
   locale,
   playLabel,
   qualityLabel,
+  audioLabel,
   errorTitle,
   errorText,
 }: EntertainmentPlayerProps) => {
@@ -81,6 +82,7 @@ export const EntertainmentPlayer = ({
         title={title}
         locale={locale}
         qualityLabel={qualityLabel}
+        audioLabel={audioLabel}
         errorTitle={errorTitle}
         errorText={errorText}
       />

@@ -4,6 +4,7 @@ import type { LocalizedEntertainmentItem } from "@/types/entertainment";
 export type EntertainmentMediaLabels = {
   play: string;
   quality: string;
+  audio: string;
   errorTitle: string;
   errorText: string;
   processingTitle: string;
