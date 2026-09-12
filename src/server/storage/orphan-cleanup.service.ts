@@ -68,6 +68,10 @@ const collectReferencedKeys = async (): Promise<ReferencedKeys> => {
       continue;
     }
 
+    for (const track of item.media.subtitleTracks ?? []) {
+      publicKeys.add(track.objectKey);
+    }
+
     if (item.media.source?.kind !== "hls") {
       continue;
     }

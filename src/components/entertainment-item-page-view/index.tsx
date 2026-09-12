@@ -68,6 +68,7 @@ export const EntertainmentItemPageView = async ({
               play: tPlayer("playAction"),
               quality: tPlayer("qualityLabel"),
               audio: tPlayer("audioLabel"),
+              captions: tPlayer("captionsLabel"),
               errorTitle: tPlayer("errorTitle"),
               errorText: tPlayer("errorText"),
               processingTitle: tPlayer("processingTitle"),

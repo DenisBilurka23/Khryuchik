@@ -98,6 +98,7 @@ export type AdminEntertainmentUploadKind =
   | "video"
   | "audio"
   | "poster"
+  | "subtitle"
   | "download";
 
 export type AdminEntertainmentUploadPlan = {

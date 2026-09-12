@@ -256,7 +256,12 @@ export const createBookFileUploadUrls = async ({
   );
 };
 
-export type EntertainmentUploadKind = "video" | "audio" | "poster" | "download";
+export type EntertainmentUploadKind =
+  | "video"
+  | "audio"
+  | "poster"
+  | "subtitle"
+  | "download";
 
 export type EntertainmentUploadFileInput = {
   fileName: string;
@@ -306,6 +311,10 @@ const buildEntertainmentObjectKey = ({
     return `entertainment/${scope}/poster/${locale ?? "shared"}/${uniqueName}`;
   }
 
+  if (kind === "subtitle") {
+    return `entertainment/${scope}/subtitles/${uniqueName}`;
+  }
+
   return `entertainment/${scope}/files/${uniqueName}`;
 };
 
@@ -332,7 +341,9 @@ export const createEntertainmentUploadUrl = async ({
         ? "audio"
         : kind === "poster"
           ? "poster"
-          : "file";
+          : kind === "subtitle"
+            ? "subtitles.vtt"
+            : "file";
   const fileName = file.fileName?.trim() || fallbackName;
   const objectKey = buildEntertainmentObjectKey({
     kind,

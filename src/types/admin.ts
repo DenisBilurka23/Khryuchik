@@ -215,6 +215,12 @@ export type AdminEntertainmentAudioTrackInput = {
   uploadedFile?: AdminEntertainmentUploadedFile;
 };
 
+export type AdminEntertainmentSubtitleTrackInput = {
+  language: string;
+  isPublished: boolean;
+  uploadedFile?: AdminEntertainmentUploadedFile;
+};
+
 export type AdminEntertainmentMediaInput = {
   type: EntertainmentMedia["type"];
   uploadedFile?: AdminEntertainmentUploadedFile;
@@ -222,6 +228,7 @@ export type AdminEntertainmentMediaInput = {
   width?: number;
   height?: number;
   audioTracks?: AdminEntertainmentAudioTrackInput[];
+  subtitleTracks?: AdminEntertainmentSubtitleTrackInput[];
 };
 
 export type AdminEntertainmentUpsertInput = {

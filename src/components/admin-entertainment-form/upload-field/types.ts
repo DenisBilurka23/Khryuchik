@@ -9,6 +9,7 @@ export type AdminEntertainmentUploadFieldProps = {
   kind: AdminEntertainmentUploadKind;
   accept: string;
   contentTypes: string[];
+  fallbackContentType?: string;
   maxBytes: number;
   dropLabel: string;
   dropHint: string;

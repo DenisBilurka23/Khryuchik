@@ -6,6 +6,7 @@ import { formatFileSize, getEntertainmentAspectRatio } from "@/utils";
 import { ArrowLink } from "../../arrow-link";
 import { EntertainmentPlayer } from "../../entertainment-player";
 import type { EntertainmentMediaBlockProps } from "../types";
+import { toPlayerSubtitleTracks } from "../utils";
 
 const frameSx = {
   display: "flex",
@@ -65,9 +66,11 @@ export const EntertainmentMediaBlock = ({
           poster={item.poster?.src}
           title={item.title}
           locale={locale}
+          subtitles={toPlayerSubtitleTracks(media.subtitleTracks, locale)}
           playLabel={labels.play}
           qualityLabel={labels.quality}
           audioLabel={labels.audio}
+          captionsLabel={labels.captions}
           errorTitle={labels.errorTitle}
           errorText={labels.errorText}
         />

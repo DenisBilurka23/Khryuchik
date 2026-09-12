@@ -29,7 +29,15 @@ export const localizeEntertainmentItem = (
     title: translation.title,
     description: translation.description,
     poster: translation.poster,
-    media: item.media,
+    media:
+      item.media.type === "video" && item.media.subtitleTracks
+        ? {
+            ...item.media,
+            subtitleTracks: item.media.subtitleTracks.filter(
+              (track) => track.isPublished,
+            ),
+          }
+        : item.media,
     sortOrder: item.sortOrder,
     uploadedAt: item.createdAt,
   };

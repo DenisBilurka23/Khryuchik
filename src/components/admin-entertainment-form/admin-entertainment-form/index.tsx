@@ -19,6 +19,7 @@ import {
   AdminEntertainmentBaseSection,
   AdminEntertainmentLocaleSection,
   AdminEntertainmentMediaSection,
+  AdminEntertainmentSubtitleSection,
 } from "../sections";
 import { getEntertainmentMediaType } from "../utils";
 import type { AdminEntertainmentFormProps } from "../types";
@@ -87,6 +88,8 @@ export const AdminEntertainmentForm = ({
     item.media.type === "video" && item.media.source?.kind === "hls"
       ? (item.media.source.audioTracks ?? [])
       : [];
+  const storedSubtitleTracks =
+    item.media.type === "video" ? (item.media.subtitleTracks ?? []) : [];
   const errorMessage = (() => {
     switch (errorCode) {
       case AdminEntertainmentFormErrorCode.TitleRequired:
@@ -105,6 +108,14 @@ export const AdminEntertainmentForm = ({
         return tForm("errorMessages.audioLanguageDuplicate");
       case AdminEntertainmentFormErrorCode.AudioFileRequired:
         return tForm("errorMessages.audioFileRequired");
+      case AdminEntertainmentFormErrorCode.SubtitleLanguageRequired:
+        return tForm("errorMessages.subtitleLanguageRequired");
+      case AdminEntertainmentFormErrorCode.SubtitleLanguageInvalid:
+        return tForm("errorMessages.subtitleLanguageInvalid");
+      case AdminEntertainmentFormErrorCode.SubtitleLanguageDuplicate:
+        return tForm("errorMessages.subtitleLanguageDuplicate");
+      case AdminEntertainmentFormErrorCode.SubtitleFileRequired:
+        return tForm("errorMessages.subtitleFileRequired");
       case AdminEntertainmentFormErrorCode.SaveFailed:
         return tForm("errorMessages.saveFailed");
       case AdminEntertainmentFormErrorCode.DeleteFailed:
@@ -157,6 +168,15 @@ export const AdminEntertainmentForm = ({
             locale={locale}
             slug={item.slug || undefined}
             storedTracks={storedAudioTracks}
+            onPendingChangeAction={handlePendingChange}
+          />
+        ) : null}
+
+        {mediaType === "video" ? (
+          <AdminEntertainmentSubtitleSection
+            locale={locale}
+            slug={item.slug || undefined}
+            storedTracks={storedSubtitleTracks}
             onPendingChangeAction={handlePendingChange}
           />
         ) : null}

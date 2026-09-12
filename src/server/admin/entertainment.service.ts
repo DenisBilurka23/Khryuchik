@@ -5,6 +5,7 @@ import {
   DEFAULT_ENTERTAINMENT_SORT_ORDER,
   ENTERTAINMENT_LANGUAGE_CODE_PATTERN,
   ENTERTAINMENT_MAX_AUDIO_TRACKS,
+  ENTERTAINMENT_MAX_SUBTITLE_TRACKS,
 } from "@/constants/entertainment";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import {
@@ -27,6 +28,7 @@ import type {
   EntertainmentAudioTrack,
   EntertainmentItemDocument,
   EntertainmentMedia,
+  EntertainmentSubtitleTrack,
   EntertainmentTranslation,
   EntertainmentVideoMedia,
 } from "@/types/entertainment";
@@ -212,6 +214,82 @@ const buildEntertainmentAudioTracks = ({
   return tracks;
 };
 
+const buildEntertainmentSubtitleTracks = ({
+  input,
+  previousTracks,
+}: {
+  input: AdminEntertainmentUpsertInput;
+  previousTracks: EntertainmentSubtitleTrack[];
+}): EntertainmentSubtitleTrack[] => {
+  const rows = input.media.subtitleTracks ?? [];
+
+  if (rows.length === 0) {
+    return [];
+  }
+
+  if (rows.length > ENTERTAINMENT_MAX_SUBTITLE_TRACKS) {
+    throw new AdminEntertainmentFormValidationError(
+      AdminEntertainmentFormErrorCode.SubtitleLanguageDuplicate,
+    );
+  }
+
+  const previousByLanguage = new Map(
+    previousTracks.map((track) => [track.language, track]),
+  );
+  const seen = new Set<string>();
+
+  return rows.map((row) => {
+    const language = normalizeLanguageCode(row.language ?? "");
+
+    if (!language) {
+      throw new AdminEntertainmentFormValidationError(
+        AdminEntertainmentFormErrorCode.SubtitleLanguageRequired,
+      );
+    }
+
+    if (!ENTERTAINMENT_LANGUAGE_CODE_PATTERN.test(language)) {
+      throw new AdminEntertainmentFormValidationError(
+        AdminEntertainmentFormErrorCode.SubtitleLanguageInvalid,
+      );
+    }
+
+    if (seen.has(language)) {
+      throw new AdminEntertainmentFormValidationError(
+        AdminEntertainmentFormErrorCode.SubtitleLanguageDuplicate,
+      );
+    }
+
+    seen.add(language);
+
+    const previous = previousByLanguage.get(language);
+    const uploadedFile = row.uploadedFile;
+
+    if (uploadedFile && !uploadedFile.url) {
+      throw new AdminEntertainmentFormValidationError(
+        AdminEntertainmentFormErrorCode.StorageUnavailable,
+      );
+    }
+
+    const objectKey = uploadedFile?.objectKey ?? previous?.objectKey;
+    const url = uploadedFile?.url ?? previous?.url;
+
+    if (!objectKey || !url) {
+      throw new AdminEntertainmentFormValidationError(
+        AdminEntertainmentFormErrorCode.SubtitleFileRequired,
+      );
+    }
+
+    return {
+      id: language,
+      language,
+      objectKey,
+      url,
+      source: uploadedFile ? "manual" : (previous?.source ?? "manual"),
+      isPublished: row.isPublished,
+    };
+  });
+};
+
 const buildEntertainmentMedia = ({
   input,
   slug,
@@ -275,6 +353,10 @@ const buildEntertainmentMedia = ({
       durationSeconds,
       width,
       height,
+      subtitleTracks: buildEntertainmentSubtitleTracks({
+        input,
+        previousTracks: previousVideo.subtitleTracks ?? [],
+      }),
       source:
         previousVideo.source.kind === "hls"
           ? { ...previousVideo.source, audioTracks }
@@ -302,6 +384,10 @@ const buildEntertainmentMedia = ({
         isMasterReplaced: true,
       }),
     },
+    subtitleTracks: buildEntertainmentSubtitleTracks({
+      input,
+      previousTracks: previousVideo?.subtitleTracks ?? [],
+    }),
     status: "processing",
     durationSeconds,
     width,
@@ -328,11 +414,16 @@ const collectEntertainmentObjectKeys = (
       ? item.media.source
       : null;
 
+  const subtitleKeys =
+    item.media.type === "video"
+      ? (item.media.subtitleTracks ?? []).map((track) => track.objectKey)
+      : [];
+
   return {
     publicKeys:
       item.media.type === "download"
         ? [...posterKeys, item.media.objectKey]
-        : posterKeys,
+        : [...posterKeys, ...subtitleKeys],
     sourceKeys: hlsSource
       ? [
           hlsSource.sourceObjectKey,

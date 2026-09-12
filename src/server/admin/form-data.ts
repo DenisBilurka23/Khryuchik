@@ -4,6 +4,7 @@ import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   AdminCategoryUpsertInput,
   AdminEntertainmentAudioTrackInput,
+  AdminEntertainmentSubtitleTrackInput,
   AdminEntertainmentUploadedFile,
   AdminEntertainmentUpsertInput,
   AdminLocaleUpsertInput,
@@ -183,6 +184,11 @@ export const parseAdminEntertainmentFormData = (
       audioTracks: parseJsonField<AdminEntertainmentAudioTrackInput[]>(
         formData,
         "audioTracksJson",
+        [],
+      ),
+      subtitleTracks: parseJsonField<AdminEntertainmentSubtitleTrackInput[]>(
+        formData,
+        "subtitleTracksJson",
         [],
       ),
     },

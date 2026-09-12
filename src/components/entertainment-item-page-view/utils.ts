@@ -1,5 +1,23 @@
-import type { LocalizedEntertainmentItem } from "@/types/entertainment";
-import { toIsoDuration } from "@/utils";
+import type { PlayerSubtitleTrack } from "@/components/entertainment-player";
+import type { Locale } from "@/i18n/config";
+import type {
+  EntertainmentSubtitleTrack,
+  LocalizedEntertainmentItem,
+} from "@/types/entertainment";
+import { getLocaleDisplayName, toIsoDuration } from "@/utils";
+
+export const toPlayerSubtitleTracks = (
+  tracks: EntertainmentSubtitleTrack[] | undefined,
+  displayLocale: Locale,
+): PlayerSubtitleTrack[] | undefined =>
+  tracks?.length
+    ? tracks.map((track) => ({
+        id: track.id,
+        language: track.language,
+        label: getLocaleDisplayName(track.language as Locale, displayLocale),
+        url: track.url,
+      }))
+    : undefined;
 
 export const buildYoutubeEmbedUrl = (videoId: string) =>
   `https://www.youtube-nocookie.com/embed/${videoId}`;

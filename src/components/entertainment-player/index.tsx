@@ -64,9 +64,11 @@ export const EntertainmentPlayer = ({
   poster,
   title,
   locale,
+  subtitles,
   playLabel,
   qualityLabel,
   audioLabel,
+  captionsLabel,
   errorTitle,
   errorText,
 }: EntertainmentPlayerProps) => {
@@ -81,8 +83,10 @@ export const EntertainmentPlayer = ({
         poster={poster}
         title={title}
         locale={locale}
+        subtitles={subtitles}
         qualityLabel={qualityLabel}
         audioLabel={audioLabel}
+        captionsLabel={captionsLabel}
         errorTitle={errorTitle}
         errorText={errorText}
       />
@@ -111,4 +115,8 @@ export const EntertainmentPlayer = ({
   );
 };
 
-export type { EntertainmentPlayerProps, PlayerSurfaceProps } from "./types";
+export type {
+  EntertainmentPlayerProps,
+  PlayerSubtitleTrack,
+  PlayerSurfaceProps,
+} from "./types";

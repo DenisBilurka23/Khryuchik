@@ -66,6 +66,8 @@ export const ENTERTAINMENT_AUDIO_CONTENT_TYPES = [
   "video/webm",
 ];
 
+export const ENTERTAINMENT_SUBTITLE_CONTENT_TYPES = ["text/vtt"];
+
 export const ENTERTAINMENT_VIDEO_MAX_BYTES = 2 * 1024 * 1024 * 1024;
 
 export const ENTERTAINMENT_AUDIO_MAX_BYTES = 2 * 1024 * 1024 * 1024;
@@ -74,6 +76,10 @@ export const ENTERTAINMENT_LANGUAGE_CODE_PATTERN =
   /^[a-z]{2,3}(-[a-z0-9]{2,8})*$/i;
 
 export const ENTERTAINMENT_MAX_AUDIO_TRACKS = 8;
+
+export const ENTERTAINMENT_MAX_SUBTITLE_TRACKS = 8;
+
+export const ENTERTAINMENT_SUBTITLE_MAX_BYTES = 1024 * 1024;
 
 export const ENTERTAINMENT_POSTER_MAX_BYTES = 8 * 1024 * 1024;
 

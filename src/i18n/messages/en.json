@@ -290,6 +290,7 @@
       "playAction": "Play",
       "qualityLabel": "Quality",
       "audioLabel": "Soundtrack",
+      "captionsLabel": "Subtitles",
       "processingTitle": "This cartoon is still being prepared",
       "processingText": "The video is processing and will appear here in a few minutes.",
       "errorTitle": "Could not load the video",
@@ -1459,6 +1460,20 @@
         "addTrack": "Add a dub",
         "removeTrack": "Remove the dub"
       },
+      "subtitles": {
+        "sectionTitle": "Subtitles",
+        "sectionDescription": "Upload a WebVTT file for each language. Viewers turn subtitles on themselves in the player.",
+        "language": "Subtitle language",
+        "languagePlaceholder": "Start typing a language",
+        "languageNoOptions": "No such language in the list",
+        "storedFile": "Subtitle file already uploaded",
+        "generated": "Generated",
+        "isPublished": "Show on the site",
+        "dropLabel": "Drag the .vtt file here",
+        "dropHint": "WebVTT only, up to",
+        "addTrack": "Add subtitles",
+        "removeTrack": "Remove the subtitles"
+      },
       "posterFrame": {
         "openButton": "Take a frame from the video",
         "dialogTitle": "Pick a frame for the cover",
@@ -1529,6 +1544,10 @@
         "audioLanguageInvalid": "That is not a language code. Expected something like ru, en or pt-BR.",
         "audioLanguageDuplicate": "Two soundtracks share a language. Each language may appear once.",
         "audioFileRequired": "Add a file for the dub, or remove the row.",
+        "subtitleLanguageRequired": "Pick a language for every subtitle track.",
+        "subtitleLanguageInvalid": "That subtitle language code is not valid.",
+        "subtitleLanguageDuplicate": "There is already a subtitle track in that language.",
+        "subtitleFileRequired": "Upload a .vtt file for every subtitle track.",
         "requeueFailed": "Could not restart processing.",
         "unexpected": "Something went wrong. Please try again."
       }

@@ -17,6 +17,8 @@ import {
 import {
   MediaAudioTrackMenu,
   MediaAudioTrackMenuButton,
+  MediaCaptionsMenu,
+  MediaCaptionsMenuButton,
   MediaRenditionMenu,
   MediaRenditionMenuButton,
 } from "media-chrome/react/menu";
@@ -32,6 +34,8 @@ import type { PlayerAudioTrackHost, PlayerSurfaceProps } from "../types";
 const RENDITION_MENU_ID = "entertainment-rendition-menu";
 
 const AUDIO_MENU_ID = "entertainment-audio-menu";
+
+const CAPTIONS_MENU_ID = "entertainment-captions-menu";
 
 const ENTER_FULLSCREEN_EVENT = "mediaenterfullscreenrequest";
 
@@ -137,7 +141,7 @@ const playerSx = {
 
   "& .player-spacer": { flex: 1 },
 
-  "& media-play-button, & media-mute-button, & media-pip-button, & media-fullscreen-button, & media-rendition-menu-button, & media-audio-track-menu-button":
+  "& media-play-button, & media-mute-button, & media-pip-button, & media-fullscreen-button, & media-rendition-menu-button, & media-audio-track-menu-button, & media-captions-menu-button":
     {
       width: "40px",
       height: "40px",
@@ -145,13 +149,14 @@ const playerSx = {
       "--media-button-padding": "0px",
     },
 
-  "& media-rendition-menu[hidden], & media-audio-track-menu[hidden]": {
-    position: "absolute",
-    right: 0,
-    bottom: 0,
-    margin: 0,
-    "--media-menu-hidden-max-height": "0px",
-  },
+  "& media-rendition-menu[hidden], & media-audio-track-menu[hidden], & media-captions-menu[hidden]":
+    {
+      position: "absolute",
+      right: 0,
+      bottom: 0,
+      margin: 0,
+      "--media-menu-hidden-max-height": "0px",
+    },
 
   "& media-time-display": {
     padding: "0 2px",
@@ -180,14 +185,17 @@ export const PlayerSurface = ({
   poster,
   title,
   locale,
+  subtitles,
   qualityLabel,
   audioLabel,
+  captionsLabel,
   errorTitle,
   errorText,
 }: PlayerSurfaceProps) => {
   const videoRef = useRef<HlsVideoElement | null>(null);
   const [hasFailed, setHasFailed] = useState(false);
   const aspectStyle = { "--player-aspect": aspectRatio } as CSSProperties;
+  const hasSubtitles = Boolean(subtitles?.length);
 
   setLanguage(locale);
 
@@ -315,7 +323,18 @@ export const PlayerSurface = ({
           aria-label={title}
           autoplay
           playsInline
-        />
+          crossOrigin={hasSubtitles ? "anonymous" : undefined}
+        >
+          {subtitles?.map((subtitle) => (
+            <track
+              key={subtitle.id}
+              kind="subtitles"
+              src={subtitle.url}
+              srcLang={subtitle.language}
+              label={subtitle.label}
+            />
+          ))}
+        </HlsVideo>
 
         <MediaControlBar>
           <MediaTimeRange />
@@ -333,6 +352,12 @@ export const PlayerSurface = ({
 
           <Box className="player-spacer" />
 
+          {hasSubtitles ? (
+            <MediaCaptionsMenuButton
+              invokeTarget={CAPTIONS_MENU_ID}
+              aria-label={captionsLabel}
+            />
+          ) : null}
           <MediaAudioTrackMenuButton
             invokeTarget={AUDIO_MENU_ID}
             aria-label={audioLabel}
@@ -345,6 +370,9 @@ export const PlayerSurface = ({
           <MediaFullscreenButton />
         </MediaControlBar>
 
+        {hasSubtitles ? (
+          <MediaCaptionsMenu id={CAPTIONS_MENU_ID} anchor="auto" hidden />
+        ) : null}
         <MediaAudioTrackMenu id={AUDIO_MENU_ID} anchor="auto" hidden />
         <MediaRenditionMenu id={RENDITION_MENU_ID} anchor="auto" hidden />
       </MediaController>

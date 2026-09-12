@@ -26,6 +26,7 @@ export type UseAdminEntertainmentUploadOptions = {
   kind: AdminEntertainmentUploadKind;
   contentTypes: string[];
   maxBytes: number;
+  fallbackContentType?: string;
   slug?: string;
   locale?: Locale;
 };

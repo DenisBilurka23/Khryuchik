@@ -8,6 +8,8 @@ import {
   ENTERTAINMENT_DOWNLOAD_MAX_BYTES,
   ENTERTAINMENT_POSTER_CONTENT_TYPES,
   ENTERTAINMENT_POSTER_MAX_BYTES,
+  ENTERTAINMENT_SUBTITLE_CONTENT_TYPES,
+  ENTERTAINMENT_SUBTITLE_MAX_BYTES,
   ENTERTAINMENT_VIDEO_CONTENT_TYPES,
   ENTERTAINMENT_VIDEO_MAX_BYTES,
 } from "@/constants/entertainment";
@@ -35,6 +37,10 @@ const UPLOAD_RULES: Record<
     contentTypes: ENTERTAINMENT_POSTER_CONTENT_TYPES,
     maxBytes: ENTERTAINMENT_POSTER_MAX_BYTES,
   },
+  subtitle: {
+    contentTypes: ENTERTAINMENT_SUBTITLE_CONTENT_TYPES,
+    maxBytes: ENTERTAINMENT_SUBTITLE_MAX_BYTES,
+  },
   download: {
     contentTypes: ENTERTAINMENT_DOWNLOAD_CONTENT_TYPES,
     maxBytes: ENTERTAINMENT_DOWNLOAD_MAX_BYTES,
@@ -52,6 +58,7 @@ const parseUploadKind = (value: unknown): EntertainmentUploadKind | null =>
   value === "video" ||
   value === "audio" ||
   value === "poster" ||
+  value === "subtitle" ||
   value === "download"
     ? value
     : null;

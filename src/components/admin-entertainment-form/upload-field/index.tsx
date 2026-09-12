@@ -38,6 +38,7 @@ export const AdminEntertainmentUploadField = ({
   kind,
   accept,
   contentTypes,
+  fallbackContentType,
   maxBytes,
   dropLabel,
   dropHint,
@@ -54,6 +55,7 @@ export const AdminEntertainmentUploadField = ({
   const { state, upload, reset } = useAdminEntertainmentUpload({
     kind,
     contentTypes,
+    fallbackContentType,
     maxBytes,
     slug,
     locale,

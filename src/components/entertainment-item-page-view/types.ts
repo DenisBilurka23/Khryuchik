@@ -5,6 +5,7 @@ export type EntertainmentMediaLabels = {
   play: string;
   quality: string;
   audio: string;
+  captions: string;
   errorTitle: string;
   errorText: string;
   processingTitle: string;

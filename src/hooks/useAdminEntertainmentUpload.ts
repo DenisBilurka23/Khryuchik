@@ -22,6 +22,7 @@ export const useAdminEntertainmentUpload = ({
   kind,
   contentTypes,
   maxBytes,
+  fallbackContentType,
   slug,
   locale,
 }: UseAdminEntertainmentUploadOptions): UseAdminEntertainmentUploadResult => {
@@ -47,7 +48,9 @@ export const useAdminEntertainmentUpload = ({
         return null;
       };
 
-      if (!contentTypes.includes(file.type)) {
+      const contentType = file.type || (fallbackContentType ?? "");
+
+      if (!contentTypes.includes(contentType)) {
         return fail("invalidType");
       }
 
@@ -68,7 +71,7 @@ export const useAdminEntertainmentUpload = ({
         locale,
         file: {
           fileName: file.name,
-          contentType: file.type,
+          contentType,
           sizeBytes: file.size,
         },
       });
@@ -121,7 +124,7 @@ export const useAdminEntertainmentUpload = ({
 
       return uploadedFile;
     },
-    [contentTypes, kind, locale, maxBytes, slug],
+    [contentTypes, fallbackContentType, kind, locale, maxBytes, slug],
   );
 
   return { state, upload, reset };

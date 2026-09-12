@@ -290,6 +290,7 @@
       "playAction": "Смотреть",
       "qualityLabel": "Качество",
       "audioLabel": "Звуковая дорожка",
+      "captionsLabel": "Субтитры",
       "processingTitle": "Мультик ещё готовится",
       "processingText": "Видео обрабатывается и появится здесь через несколько минут.",
       "errorTitle": "Не удалось загрузить видео",
@@ -1479,6 +1480,20 @@
         "addTrack": "Добавить дубляж",
         "removeTrack": "Удалить дубляж"
       },
+      "subtitles": {
+        "sectionTitle": "Субтитры",
+        "sectionDescription": "Загрузите файл WebVTT для каждого языка. Зритель включает субтитры в плеере сам.",
+        "language": "Язык субтитров",
+        "languagePlaceholder": "Начните вводить язык",
+        "languageNoOptions": "Такого языка нет в списке",
+        "storedFile": "Файл субтитров уже загружен",
+        "generated": "Сгенерированы",
+        "isPublished": "Показывать на сайте",
+        "dropLabel": "Перетащите файл .vtt сюда",
+        "dropHint": "Только WebVTT, до",
+        "addTrack": "Добавить субтитры",
+        "removeTrack": "Удалить субтитры"
+      },
       "posterFrame": {
         "openButton": "Взять кадр из видео",
         "dialogTitle": "Выберите кадр для обложки",
@@ -1549,6 +1564,10 @@
         "audioLanguageInvalid": "Это не похоже на код языка. Ожидается что-то вроде ru, en или pt-BR.",
         "audioLanguageDuplicate": "Две дорожки с одним языком. Каждый язык может быть только один раз.",
         "audioFileRequired": "Добавьте файл для дубляжа или удалите строку.",
+        "subtitleLanguageRequired": "Выберите язык для каждой дорожки субтитров.",
+        "subtitleLanguageInvalid": "Такой код языка субтитров не подходит.",
+        "subtitleLanguageDuplicate": "Дорожка субтитров на этом языке уже есть.",
+        "subtitleFileRequired": "Загрузите файл .vtt для каждой дорожки субтитров.",
         "requeueFailed": "Не удалось перезапустить обработку.",
         "unexpected": "Что-то пошло не так. Попробуйте ещё раз."
       }

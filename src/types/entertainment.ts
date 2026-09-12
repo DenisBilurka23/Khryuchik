@@ -25,6 +25,17 @@ export type EntertainmentAudioTrack = {
   failureReason?: string;
 };
 
+export type EntertainmentSubtitleSource = "manual" | "generated";
+
+export type EntertainmentSubtitleTrack = {
+  id: string;
+  language: string;
+  objectKey: string;
+  url: string;
+  source: EntertainmentSubtitleSource;
+  isPublished: boolean;
+};
+
 export type EntertainmentVideoSource =
   | {
       kind: "hls";
@@ -38,6 +49,7 @@ export type EntertainmentVideoSource =
 export type EntertainmentVideoMedia = {
   type: "video";
   source: EntertainmentVideoSource | null;
+  subtitleTracks?: EntertainmentSubtitleTrack[];
   status: EntertainmentVideoStatus;
   durationSeconds: number | null;
   width?: number;

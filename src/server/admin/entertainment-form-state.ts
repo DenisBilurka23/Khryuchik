@@ -15,6 +15,10 @@ export enum AdminEntertainmentFormErrorCode {
   AudioLanguageInvalid = "audio-language-invalid",
   AudioLanguageDuplicate = "audio-language-duplicate",
   AudioFileRequired = "audio-file-required",
+  SubtitleLanguageRequired = "subtitle-language-required",
+  SubtitleLanguageInvalid = "subtitle-language-invalid",
+  SubtitleLanguageDuplicate = "subtitle-language-duplicate",
+  SubtitleFileRequired = "subtitle-file-required",
   Unexpected = "unexpected",
 }
 
