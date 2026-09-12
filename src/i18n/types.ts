@@ -1042,8 +1042,6 @@ export type AdminPageDictionary = {
       user: string;
       homeTabs: string;
       shopOnly: string;
-      ordersWired: string;
-      ordersPending: string;
       availability: {
         in_stock: string;
         out_of_stock: string;
@@ -1064,8 +1062,11 @@ export type AdminPageDictionary = {
     eyebrow: string;
     title: string;
     description: string;
-    systemStateTitle: string;
-    systemStateDescription: string;
+    pendingOrders: {
+      title: string;
+      note: string;
+      emptyNote: string;
+    };
     stats: {
       productsTitle: string;
       productsNote: string;
@@ -1073,6 +1074,8 @@ export type AdminPageDictionary = {
       accountsNote: string;
       categoriesTitle: string;
       categoriesNote: string;
+      ordersTitle: string;
+      ordersNote: string;
     };
     recentProducts: {
       title: string;
@@ -1101,6 +1104,7 @@ export type AdminPageDictionary = {
     orders: {
       title: string;
       description: string;
+      action: string;
       emptyTitle: string;
       emptyDescription: string;
     };

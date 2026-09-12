@@ -14,6 +14,7 @@ import type {
   EntertainmentVideoStatus,
 } from "@/types/entertainment";
 import type { LocaleDocument, RegionDocument } from "@/types/localization";
+import type { OrderPaymentStatus, OrderStatus } from "@/types/order";
 import type { AuthProvider } from "@/types/users";
 
 export type AdminViewKey =
@@ -111,6 +112,20 @@ export type AdminDashboardStats = {
   categoriesCount: number;
   totalUsers: number;
   adminUsers: number;
+  totalOrders: number;
+  newOrders: number;
+  paidOrders: number;
+};
+
+export type AdminRecentOrderListItem = {
+  id: string;
+  number: string;
+  createdAt: string;
+  customerName: string;
+  customerContact: string;
+  totalLabel: string;
+  status: OrderStatus;
+  paymentStatus: OrderPaymentStatus;
 };
 
 export type AdminProductEditorData = {

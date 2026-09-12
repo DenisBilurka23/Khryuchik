@@ -1,5 +1,7 @@
 import "server-only";
 
+import type { Filter } from "mongodb";
+
 import { getMongoDb } from "@/server/db/mongodb";
 import type {
   OrderDocument,
@@ -123,6 +125,14 @@ export const findOrders = async (
   }
 
   return cursor.toArray();
+};
+
+export const countOrders = async (
+  filter: Filter<OrderDocument> = {},
+): Promise<number> => {
+  const collection = await getOrdersCollection();
+
+  return collection.countDocuments(filter);
 };
 
 export const findOrdersWithOpenParcels = async (): Promise<OrderDocument[]> => {

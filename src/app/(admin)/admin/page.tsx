@@ -21,7 +21,10 @@ import {
   formatAdminDate,
   getAdminAuthProviderLabel,
   getAdminCategoryLabel,
+  getAdminOrderPaymentTone,
+  getAdminOrderStatusTone,
 } from "@/utils/admin";
+import type { AdminPageDictionary } from "@/i18n/types";
 
 import {
   AdminEmptyState,
@@ -45,17 +48,24 @@ export const generateMetadata = async (): Promise<Metadata> => {
   );
 };
 
+type OrderStatusLabels = AdminPageDictionary["orders"]["statusLabels"];
+type OrderPaymentStatusLabels =
+  AdminPageDictionary["orders"]["paymentStatusLabels"];
+
 const AdminDashboardPage = async () => {
   const locale = await resolveLocale("admin");
-  const [summary, tDashboard, tShared, tLayout] = await Promise.all([
-    getAdminSummaryData(),
+  const [summary, tDashboard, tShared, tLayout, tOrders] = await Promise.all([
+    getAdminSummaryData(locale),
     getTranslations({ locale, namespace: "adminPage.dashboard" }),
     getTranslations({ locale, namespace: "adminPage.shared" }),
     getTranslations({ locale, namespace: "adminPage.layout" }),
+    getTranslations({ locale, namespace: "adminPage.orders" }),
   ]);
+  const orderStatusLabels = tOrders.raw("statusLabels") as OrderStatusLabels;
+  const orderPaymentStatusLabels = tOrders.raw(
+    "paymentStatusLabels",
+  ) as OrderPaymentStatusLabels;
   const sharedStatus = {
-    ordersWired: tShared("status.ordersWired"),
-    ordersPending: tShared("status.ordersPending"),
     active: tShared("status.active"),
     hidden: tShared("status.hidden"),
     admin: tShared("status.admin"),
@@ -84,6 +94,11 @@ const AdminDashboardPage = async () => {
       value: summary.stats.categoriesCount,
       note: `${summary.stats.booksCount} ${tDashboard("stats.categoriesNote")}`,
     },
+    {
+      title: tDashboard("stats.ordersTitle"),
+      value: summary.stats.totalOrders,
+      note: `${summary.stats.paidOrders} ${tDashboard("stats.ordersNote")}`,
+    },
   ];
 
   return (
@@ -109,15 +124,15 @@ const AdminDashboardPage = async () => {
             }}
           >
             <Typography color="text.secondary" variant="body2">
-              {tDashboard("systemStateTitle")}
+              {tDashboard("pendingOrders.title")}
             </Typography>
             <Typography sx={{ mt: 0.75, fontWeight: 800, fontSize: 28 }}>
-              {summary.hasOrdersData
-                ? sharedStatus.ordersWired
-                : sharedStatus.ordersPending}
+              {summary.stats.newOrders}
             </Typography>
             <Typography color="text.secondary" sx={{ mt: 0.75 }}>
-              {tDashboard("systemStateDescription")}
+              {summary.stats.newOrders > 0
+                ? tDashboard("pendingOrders.note")
+                : tDashboard("pendingOrders.emptyNote")}
             </Typography>
           </Paper>
         }
@@ -374,11 +389,80 @@ const AdminDashboardPage = async () => {
         <AdminSectionCard
           title={tDashboard("orders.title")}
           description={tDashboard("orders.description")}
+          action={
+            <Button href="/admin/orders" variant="text">
+              {tDashboard("orders.action")}
+            </Button>
+          }
         >
-          <AdminEmptyState
-            title={tDashboard("orders.emptyTitle")}
-            description={tDashboard("orders.emptyDescription")}
-          />
+          {summary.recentOrders.length === 0 ? (
+            <AdminEmptyState
+              title={tDashboard("orders.emptyTitle")}
+              description={tDashboard("orders.emptyDescription")}
+            />
+          ) : (
+            <Stack gap={2}>
+              {summary.recentOrders.map((order) => (
+                <Paper
+                  key={order.id}
+                  elevation={0}
+                  sx={{
+                    p: 2.25,
+                    borderRadius: "22px",
+                    border: "1px solid #F0DFC8",
+                    bgcolor: "#fff",
+                  }}
+                >
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    justifyContent="space-between"
+                    gap={2}
+                  >
+                    <Box>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        {order.number}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 0.5 }}
+                      >
+                        {order.customerName || tShared("placeholders.noName")}
+                        {order.customerContact
+                          ? ` • ${order.customerContact}`
+                          : ""}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 0.25 }}
+                      >
+                        {formatAdminDate(order.createdAt, locale)}
+                      </Typography>
+                    </Box>
+                    <Stack
+                      gap={1}
+                      alignItems={{ xs: "flex-start", sm: "flex-end" }}
+                    >
+                      <Typography sx={{ fontWeight: 700 }}>
+                        {order.totalLabel}
+                      </Typography>
+                      <Stack direction="row" gap={1} flexWrap="wrap">
+                        <AdminStatusChip
+                          label={orderStatusLabels[order.status]}
+                          tone={getAdminOrderStatusTone(order.status)}
+                        />
+                        <AdminStatusChip
+                          label={orderPaymentStatusLabels[order.paymentStatus]}
+                          tone={getAdminOrderPaymentTone(order.paymentStatus)}
+                        />
+                      </Stack>
+                    </Stack>
+                  </Stack>
+                </Paper>
+              ))}
+            </Stack>
+          )}
         </AdminSectionCard>
       </Box>
     </Stack>

@@ -17,6 +17,7 @@ import type {
   AdminProductListItem,
   AdminProductOption,
   AdminProductPayload,
+  AdminRecentOrderListItem,
 } from "@/types/admin";
 import type {
   CategoryDocument,
@@ -26,6 +27,11 @@ import type {
   ProductTranslation,
 } from "@/types/catalog";
 
+import {
+  formatCurrency,
+  formatCustomerName,
+  formatOrderNumber,
+} from "@/utils";
 import {
   buildUniqueValue,
   createEmptyAdminProductPayload,
@@ -67,6 +73,10 @@ import {
   findProductsByIds,
   upsertProduct,
 } from "../catalog/repositories/products.repository";
+import {
+  countOrders,
+  findOrders,
+} from "../orders/repositories/orders.repository";
 import {
   deleteBookAssetObjects,
   deleteProductGalleryObjects,
@@ -168,10 +178,20 @@ const getCategoryItemsCountMap = async () => {
 
 export const getAdminDashboardStats =
   async (): Promise<AdminDashboardStats> => {
-    const [products, categoriesCount, usersStats] = await Promise.all([
+    const [
+      products,
+      categoriesCount,
+      usersStats,
+      totalOrders,
+      newOrders,
+      paidOrders,
+    ] = await Promise.all([
       findAllProducts(),
       countCategories(),
       getAdminUsersStats(),
+      countOrders(),
+      countOrders({ status: "new" }),
+      countOrders({ "payment.status": "paid" }),
     ]);
 
     return {
@@ -184,8 +204,29 @@ export const getAdminDashboardStats =
       categoriesCount,
       totalUsers: usersStats.totalUsers,
       adminUsers: usersStats.adminUsers,
+      totalOrders,
+      newOrders,
+      paidOrders,
     };
   };
+
+export const getAdminRecentOrders = async (
+  limit = 5,
+  locale: Locale = defaultLocale,
+): Promise<AdminRecentOrderListItem[]> => {
+  const orders = await findOrders({ limit });
+
+  return orders.map((order) => ({
+    id: order.id,
+    number: formatOrderNumber(order.id) ?? order.id,
+    createdAt: order.createdAt,
+    customerName: formatCustomerName(order.customer),
+    customerContact: order.customer.email ?? order.customer.phone ?? "",
+    totalLabel: formatCurrency(order.total, locale, order.currency),
+    status: order.status,
+    paymentStatus: order.payment.status,
+  }));
+};
 
 export const getAdminCustomers = async (
   limit?: number,
@@ -716,18 +757,20 @@ export const saveAdminProduct = async (payload: AdminProductPayload) => {
 };
 
 export const getAdminSummaryData = async (locale: Locale = defaultLocale) => {
-  const [stats, products, categories, customers] = await Promise.all([
-    getAdminDashboardStats(),
-    getAdminProducts(locale),
-    getAdminCategories(),
-    getAdminCustomers(5),
-  ]);
+  const [stats, products, categories, customers, recentOrders] =
+    await Promise.all([
+      getAdminDashboardStats(),
+      getAdminProducts(locale),
+      getAdminCategories(),
+      getAdminCustomers(5),
+      getAdminRecentOrders(5, locale),
+    ]);
 
   return {
     stats,
     recentProducts: products.slice(0, 5),
     categories: categories.slice(0, 5),
     recentCustomers: customers,
-    hasOrdersData: false,
+    recentOrders,
   };
 };

@@ -1276,8 +1276,6 @@
         "user": "User",
         "homeTabs": "Home tabs",
         "shopOnly": "Shop only",
-        "ordersWired": "Orders wired",
-        "ordersPending": "Orders pending",
         "availability": {
           "in_stock": "In stock",
           "out_of_stock": "Out of stock",
@@ -1297,16 +1295,21 @@
     "dashboard": {
       "eyebrow": "Dashboard",
       "title": "Khryuchik store operations",
-      "description": "This admin is built around real catalog and account data. It shows what already lives in MongoDB and what is still waiting for a business-process integration.",
-      "systemStateTitle": "System state",
-      "systemStateDescription": "Accounts and catalog data are already live. The order source is not connected to the admin yet.",
+      "description": "This admin is built around real catalog, account and order data straight from MongoDB.",
+      "pendingOrders": {
+        "title": "Orders in the queue",
+        "note": "new orders waiting to be processed",
+        "emptyNote": "every order has been processed"
+      },
       "stats": {
         "productsTitle": "Products",
         "productsNote": "active and visible in the working catalog",
         "accountsTitle": "Accounts",
         "accountsNote": "with administrator access",
         "categoriesTitle": "Categories",
-        "categoriesNote": "book SKU currently in the catalog"
+        "categoriesNote": "book SKU currently in the catalog",
+        "ordersTitle": "Orders",
+        "ordersNote": "of them already paid"
       },
       "recentProducts": {
         "title": "Latest products",
@@ -1334,9 +1337,10 @@
       },
       "orders": {
         "title": "Orders",
-        "description": "A live order feed will appear here once the project gets a persisted order model.",
-        "emptyTitle": "There is no order source yet",
-        "emptyDescription": "In the current codebase, checkout and cart do not persist orders into a separate collection, so the admin has nothing honest to display. Once an order repository appears, this block can be connected without rebuilding the shell or UI."
+        "description": "The five most recent orders placed in the store.",
+        "action": "All orders",
+        "emptyTitle": "No orders yet",
+        "emptyDescription": "As soon as the first order goes through checkout, it shows up here."
       }
     },
     "products": {

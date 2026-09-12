@@ -2,6 +2,7 @@ import { BOOKS_CATEGORY_KEY } from "@/constants/catalog";
 import type { Locale } from "@/i18n/config";
 import type { AdminNavItem, AdminProductPayload } from "@/types/admin";
 import type { EntertainmentVideoStatus } from "@/types/entertainment";
+import type { OrderPaymentStatus, OrderStatus } from "@/types/order";
 import type {
   ProductDetailTranslation,
   ProductTranslation,
@@ -78,6 +79,42 @@ export const getAdminEntertainmentStatusTone = (
   }
 
   return "warning" as const;
+};
+
+export const getAdminOrderStatusTone = (status: OrderStatus) => {
+  if (status === "delivered") {
+    return "success" as const;
+  }
+
+  if (status === "new") {
+    return "warning" as const;
+  }
+
+  if (status === "cancelled") {
+    return "neutral" as const;
+  }
+
+  return "info" as const;
+};
+
+export const getAdminOrderPaymentTone = (status: OrderPaymentStatus) => {
+  if (status === "paid") {
+    return "success" as const;
+  }
+
+  if (status === "pending") {
+    return "warning" as const;
+  }
+
+  if (status === "failed") {
+    return "accent" as const;
+  }
+
+  if (status === "cod_pending") {
+    return "info" as const;
+  }
+
+  return "neutral" as const;
 };
 
 export const getAdminAuthProviderLabel = (
