@@ -152,6 +152,11 @@ export const ENTERTAINMENT_DEFAULT_AUDIO_NAME = "Original";
 
 export const ENTERTAINMENT_DEFAULT_AUDIO_TRACK_ID = "default";
 
+export const ENTERTAINMENT_CAPTION_SCALES = [0.5, 0.75, 1, 1.25, 1.5, 2];
+
+export const ENTERTAINMENT_CAPTION_SCALE_STORAGE_KEY =
+  "khryuchik:caption-scale";
+
 export const ENTERTAINMENT_TRANSCRIBE_MODEL = "whisper-1";
 
 export const ENTERTAINMENT_TRANSCRIBE_SAMPLE_RATE = 16_000;

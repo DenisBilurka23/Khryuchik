@@ -35,7 +35,15 @@ export type MediaSourceHost = {
   src: string;
 };
 
+export type MediaTextTrack = {
+  kind: string;
+  mode: "disabled" | "hidden" | "showing";
+};
+
+export type MediaTextTrackList = EventTarget & Iterable<MediaTextTrack>;
+
 export type MediaEngineHost = {
+  textTracks?: MediaTextTrackList;
   audioTracks?: MediaAudioTrackList;
   videoRenditions?: MediaRenditionList;
   api?: HlsEngine | null;

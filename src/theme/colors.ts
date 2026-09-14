@@ -37,6 +37,8 @@ export const colors = {
   butter: "#fff2d6",
 
   playerScrim: "rgba(26, 19, 23, 0.85)",
+  playerCueShadow: "rgba(26, 19, 23, 0.9)",
+  playerCueVeil: "rgba(26, 19, 23, 0.45)",
   playerControlHover: "rgba(255, 253, 252, 0.18)",
   playerTrack: "rgba(255, 253, 252, 0.28)",
 

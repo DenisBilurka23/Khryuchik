@@ -27,6 +27,8 @@ import { type CSSProperties, useRef } from "react";
 
 import { ENTERTAINMENT_PLAYER_ABR_INITIAL_ESTIMATE } from "@/constants/entertainment";
 import { useHlsPlayback } from "@/hooks/useHlsPlayback";
+import { useMediaKeyboardShortcuts } from "@/hooks/useMediaKeyboardShortcuts";
+import { useMediaCueStyles } from "@/hooks/useMediaCueStyles";
 import { useMediaFailure } from "@/hooks/useMediaFailure";
 import { useMediaFullscreenGesture } from "@/hooks/useMediaFullscreenGesture";
 import { usePreferredAudioTrack } from "@/hooks/usePreferredAudioTrack";
@@ -75,7 +77,7 @@ const playerSx = {
   "& media-controller": {
     display: "block",
     width: "100%",
-    aspectRatio: "var(--player-aspect, 16 / 9)",
+    aspectRatio: "16 / 9",
     maxHeight: "62vh",
     marginInline: "auto",
     borderRadius: "var(--radius-panel)",
@@ -83,9 +85,12 @@ const playerSx = {
     overflow: "hidden",
   },
 
-  "& media-controller::part(bottom)": {
+  "& .player-chrome": {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
     background:
-      "linear-gradient(to top, var(--color-player-scrim) 16%, transparent)",
+      "linear-gradient(to top, var(--color-player-scrim) 34%, transparent)",
   },
 
   "& media-control-bar": {
@@ -98,8 +103,16 @@ const playerSx = {
   "& media-control-bar:last-of-type": { paddingBottom: "8px" },
 
   "@media (max-width: 599.95px)": {
+    "& media-controller": {
+      aspectRatio: "var(--player-aspect, 16 / 9)",
+      maxHeight: "72vh",
+    },
     "& media-control-bar": { paddingInline: "10px" },
     "& media-control-bar:last-of-type": { paddingBottom: "6px" },
+    "& media-controller:not([userinactive]) hls-video, & media-controller[mediapaused] hls-video":
+      {
+        "--media-webkit-text-track-transform": "translateY(-64px)",
+      },
   },
 
   "& media-control-bar:first-of-type": { marginBottom: "2px" },
@@ -174,6 +187,16 @@ const playerSx = {
       "--media-menu-hidden-max-height": "0px",
     },
 
+  "& hls-video": {
+    "--media-webkit-text-track-transform": "translateY(-24px)",
+    "--media-webkit-text-track-transition": "transform 0.2s ease",
+  },
+
+  "& media-controller:not([userinactive]) hls-video, & media-controller[mediapaused] hls-video":
+    {
+      "--media-webkit-text-track-transform": "translateY(-76px)",
+    },
+
   "& media-time-display": {
     padding: "0 2px",
     "--media-control-hover-background": "transparent",
@@ -230,6 +253,13 @@ export const PlayerSurface = ({
 
   usePreferredAudioTrack({ videoRef, locale });
 
+  const { fontScale } = useMediaKeyboardShortcuts({
+    videoRef,
+    hasSubtitles,
+  });
+
+  useMediaCueStyles({ videoRef, isEnabled: hasSubtitles, fontScale });
+
   if (hasFailed) {
     return (
       <Box sx={errorFrameSx} style={aspectStyle}>
@@ -254,7 +284,7 @@ export const PlayerSurface = ({
 
   return (
     <Box sx={playerSx} style={aspectStyle}>
-      <MediaController>
+      <MediaController hotkeys="noc nof">
         <HlsVideo
           ref={videoRef}
           slot="media"
@@ -275,39 +305,41 @@ export const PlayerSurface = ({
           ))}
         </HlsVideo>
 
-        <MediaControlBar>
-          <MediaTimeRange />
-        </MediaControlBar>
+        <Box className="player-chrome">
+          <MediaControlBar>
+            <MediaTimeRange />
+          </MediaControlBar>
 
-        <MediaControlBar>
-          <MediaPlayButton />
+          <MediaControlBar>
+            <MediaPlayButton />
 
-          <Box className="player-volume">
-            <MediaMuteButton />
-            <MediaVolumeRange />
-          </Box>
+            <Box className="player-volume">
+              <MediaMuteButton />
+              <MediaVolumeRange />
+            </Box>
 
-          <MediaTimeDisplay showDuration />
+            <MediaTimeDisplay showDuration />
 
-          <Box className="player-spacer" />
+            <Box className="player-spacer" />
 
-          {hasSubtitles ? (
-            <MediaCaptionsMenuButton
-              invokeTarget={CAPTIONS_MENU_ID}
-              aria-label={captionsLabel}
+            {hasSubtitles ? (
+              <MediaCaptionsMenuButton
+                invokeTarget={CAPTIONS_MENU_ID}
+                aria-label={captionsLabel}
+              />
+            ) : null}
+            <MediaAudioTrackMenuButton
+              invokeTarget={AUDIO_MENU_ID}
+              aria-label={audioLabel}
             />
-          ) : null}
-          <MediaAudioTrackMenuButton
-            invokeTarget={AUDIO_MENU_ID}
-            aria-label={audioLabel}
-          />
-          <MediaRenditionMenuButton
-            invokeTarget={RENDITION_MENU_ID}
-            aria-label={qualityLabel}
-          />
-          <MediaPipButton />
-          <MediaFullscreenButton />
-        </MediaControlBar>
+            <MediaRenditionMenuButton
+              invokeTarget={RENDITION_MENU_ID}
+              aria-label={qualityLabel}
+            />
+            <MediaPipButton />
+            <MediaFullscreenButton />
+          </MediaControlBar>
+        </Box>
 
         {hasSubtitles ? (
           <MediaCaptionsMenu id={CAPTIONS_MENU_ID} anchor="auto" hidden />

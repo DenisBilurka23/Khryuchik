@@ -40,6 +40,12 @@ export { formatFileSize } from "./format-file-size";
 export { isDocumentFullscreen } from "./fullscreen";
 export { formatOrderNumber } from "./format-order-number";
 export {
+  isTypingTarget,
+  readStoredCaptionScale,
+  requestFullscreenToggle,
+  storeCaptionScale,
+} from "./media-player";
+export {
   getAllLanguagesSorted,
   getLocaleDisplayName,
   getLocaleShortLabel,

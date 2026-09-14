@@ -12,12 +12,17 @@ const frameSx = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  aspectRatio: "var(--player-aspect, 16 / 9)",
+  width: "100%",
+  aspectRatio: "16 / 9",
   maxHeight: "62vh",
   marginInline: "auto",
   borderRadius: "var(--radius-panel)",
   background: "var(--color-text)",
   overflow: "hidden",
+  "@media (max-width: 599.95px)": {
+    aspectRatio: "var(--player-aspect, 16 / 9)",
+    maxHeight: "72vh",
+  },
 } as const;
 
 const loadPlayerSurface = () => import("./player-surface");
