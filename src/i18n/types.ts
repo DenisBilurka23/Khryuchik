@@ -60,6 +60,14 @@ export type ProductPageLabels = {
     shipping: string;
     languageSupportLabel: string;
   };
+  gallery: {
+    title: string;
+    open: string;
+    close: string;
+    previous: string;
+    next: string;
+    counter: string;
+  };
   tabs: {
     description: string;
     specs: string;

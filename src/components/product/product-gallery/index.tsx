@@ -1,9 +1,29 @@
 "use client";
 
-import { useState } from "react";
 import { Box, Grid, Paper } from "@mui/material";
+import { useTranslations } from "next-intl";
+
+import { useProductGallery } from "@/hooks/useProductGallery";
 
 import type { ProductGalleryProps } from "../types";
+import { ProductGalleryLightbox } from "./lightbox";
+
+const stageSx = {
+  aspectRatio: "5 / 3",
+  width: "100%",
+  p: 0,
+  borderRadius: "32px",
+  border: "1px solid var(--color-border)",
+  background: "var(--color-cream)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  fontSize: { xs: 96, md: 140 },
+  overflow: "hidden",
+  cursor: "zoom-in",
+  transition: "border-color .2s ease",
+  "&:hover": { borderColor: "var(--color-border-rose)" },
+} as const;
 
 const thumbSx = {
   height: 96,
@@ -18,24 +38,31 @@ const thumbSx = {
 } as const;
 
 export const ProductGallery = ({ images }: ProductGalleryProps) => {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const t = useTranslations("storefront.productPage.gallery");
+  const {
+    activeIndex,
+    isOpen,
+    selectIndex,
+    open,
+    close,
+    goToNext,
+    goToPrevious,
+    swipeHandlers,
+  } = useProductGallery(images.length);
   const activeImage = images[activeIndex] ?? images[0];
 
   return (
     <Box>
       <Paper
+        component="button"
+        type="button"
         elevation={0}
-        sx={{
-          aspectRatio: "5 / 3",
-          borderRadius: "32px",
-          border: "1px solid var(--color-border)",
-          bgcolor: activeImage?.bgColor || "var(--color-cream)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: { xs: 96, md: 140 },
-          overflow: "hidden",
-        }}
+        onClick={open}
+        aria-label={t("open")}
+        sx={stageSx}
+        style={
+          activeImage?.bgColor ? { background: activeImage.bgColor } : undefined
+        }
       >
         {activeImage?.src ? (
           <Box
@@ -54,7 +81,7 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
           <Grid key={image.id} size={{ xs: 3 }}>
             <Paper
               elevation={0}
-              onClick={() => setActiveIndex(index)}
+              onClick={() => selectIndex(index)}
               sx={{
                 ...thumbSx,
                 border:
@@ -78,6 +105,16 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
           </Grid>
         ))}
       </Grid>
+
+      <ProductGalleryLightbox
+        images={images}
+        activeIndex={activeIndex}
+        isOpen={isOpen}
+        onClose={close}
+        onNext={goToNext}
+        onPrevious={goToPrevious}
+        swipeHandlers={swipeHandlers}
+      />
     </Box>
   );
 };

@@ -215,6 +215,14 @@
         "shipping": "Shipping across the US, Canada and Europe",
         "languageSupportLabel": "{langs} version available"
       },
+      "gallery": {
+        "title": "Product images",
+        "open": "Open the image at full size",
+        "close": "Close",
+        "previous": "Previous image",
+        "next": "Next image",
+        "counter": "{current} / {total}"
+      },
       "tabs": {
         "description": "Description",
         "specs": "Specifications",

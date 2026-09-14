@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import type { ProductGallerySwipeHandlers } from "@/hooks/useProductGallery.types";
 import type { Locale } from "@/i18n/config";
 import type { ProductPageLabels } from "@/i18n/types";
 import type { LocalizedProductSummary } from "@/types/catalog";
@@ -28,6 +29,16 @@ export type RelatedProductCardViewModel = {
 
 export type ProductGalleryProps = {
   images: ProductImage[];
+};
+
+export type ProductGalleryLightboxProps = {
+  images: ProductImage[];
+  activeIndex: number;
+  isOpen: boolean;
+  onClose: () => void;
+  onNext: () => void;
+  onPrevious: () => void;
+  swipeHandlers: ProductGallerySwipeHandlers;
 };
 
 export type ProductPricingUnavailableProps = {
