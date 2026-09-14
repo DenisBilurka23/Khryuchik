@@ -38,6 +38,8 @@ const artSx = {
   minWidth: 0,
   width: { xs: "min(90%, 500px)", md: "auto" },
   marginInline: { xs: "auto", md: 0 },
+  mt: { xs: 0, md: "-1.5rem" },
+  mb: "-1.5rem",
 } as const;
 
 const artImageStyle = {

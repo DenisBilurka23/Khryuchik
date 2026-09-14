@@ -1,15 +1,11 @@
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 
-import entertainmentHeroImage from "@/assets/KhryuchikAdventures.png";
+import entertainmentHeroImage from "@/assets/HeroEntertainment.png";
 import { HeroPanel } from "@/components/primitives";
 import { SectionEyebrow } from "@/components/section-eyebrow";
 
 import type { EntertainmentHeroProps } from "./types";
-
-const edgeFade =
-  "linear-gradient(to right, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%), " +
-  "linear-gradient(to bottom, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%)";
 
 const heroSx = {
   display: "grid",
@@ -38,11 +34,21 @@ const heroLeadSx = {
 } as const;
 
 const artSx = {
-  position: "relative",
-  alignSelf: { xs: "auto", md: "stretch" },
-  minHeight: { xs: 0, md: 260 },
-  aspectRatio: { xs: "16 / 10", md: "auto" },
-  margin: { xs: "0 -20px -24px", md: "-40px -40px -40px 0" },
+  display: "flex",
+  alignItems: "center",
+  justifyContent: { xs: "center", md: "flex-end" },
+  minWidth: 0,
+  width: { xs: "min(90%, 380px)", md: "auto" },
+  marginInline: { xs: "auto", md: 0 },
+  mt: { xs: 0, md: "-1.5rem" },
+  mb: "-1.5rem",
+} as const;
+
+const artImageStyle = {
+  width: "100%",
+  maxWidth: 520,
+  height: "auto",
+  objectFit: "contain",
 } as const;
 
 export const EntertainmentHero = ({
@@ -66,17 +72,9 @@ export const EntertainmentHero = ({
         <Image
           src={entertainmentHeroImage}
           alt={title}
-          fill
-          sizes="(max-width: 767px) 100vw, (max-width: 1023px) 52vw, 700px"
+          sizes="(max-width: 900px) 90vw, 520px"
           priority
-          style={{
-            objectFit: "contain",
-            objectPosition: "center",
-            WebkitMaskImage: edgeFade,
-            maskImage: edgeFade,
-            WebkitMaskComposite: "source-in",
-            maskComposite: "intersect",
-          }}
+          style={artImageStyle}
         />
       </Box>
     </HeroPanel>
