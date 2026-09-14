@@ -140,6 +140,8 @@ const playerSx = {
       "--media-range-thumb-opacity": "1",
     },
 
+  "& media-volume-range[mediavolumeunavailable]": { display: "none" },
+
   "& .player-spacer": { flex: 1 },
 
   "& media-chrome-menu-item": {
