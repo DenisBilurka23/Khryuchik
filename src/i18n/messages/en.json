@@ -733,6 +733,9 @@
       "removeButton": "Remove",
       "appliedLabel": "{code} — {percentOff}% off",
       "notFound": "We don't know this code.",
+      "alreadyUsed": "You have already used this code.",
+      "loginRequired": "Promo codes are available once you are signed in.",
+      "loginLink": "Sign in",
       "inactive": "This code is no longer active.",
       "error": "Could not check the code right now. Please try again."
     },
@@ -1853,7 +1856,7 @@
     "promocodes": {
       "eyebrow": "Promo codes",
       "title": "Promo codes",
-      "description": "A promo code takes a percentage off the items in an order. Shipping is charged in full.",
+      "description": "A promo code takes a percentage off the items in an order. Shipping is charged in full. Codes work only for signed-in customers, once each.",
       "savedMessage": "Promo code saved.",
       "deletedMessage": "Promo code deleted.",
       "invalidCodeMessage": "Enter a code without spaces, up to 32 characters.",

@@ -6,10 +6,13 @@ export type PromoCodeStatus =
   | "applied"
   | "not-found"
   | "inactive"
+  | "unauthorized"
+  | "already-used"
   | "error";
 
 export type UsePromoCodeParams = {
   subtotal: number;
+  isPersistent?: boolean;
 };
 
 export type UsePromoCodeResult = {
@@ -17,6 +20,7 @@ export type UsePromoCodeResult = {
   appliedPromo: OrderPromoCode | null;
   discount: number;
   status: PromoCodeStatus;
+  isGuest: boolean;
   setCode: (value: string) => void;
   applyCode: () => void;
   removeCode: () => void;

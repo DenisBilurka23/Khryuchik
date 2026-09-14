@@ -5,6 +5,7 @@ import {
   MAX_PROMO_PERCENT,
   MIN_PROMO_PERCENT,
 } from "@/constants/promo";
+import { countUserOrdersWithPromoCode } from "@/server/orders/repositories/orders.repository";
 import type { AdminPromoCodeUpsertInput } from "@/types/admin";
 import type { PromoCodeDocument, PromoValidation } from "@/types/promo";
 import { normalizePromoCode } from "@/utils";
@@ -36,11 +37,16 @@ export class PromoCodeError extends Error {
 
 export const validatePromoCode = async (
   code: string,
+  userId: string | undefined,
 ): Promise<PromoValidation> => {
   const normalizedCode = normalizePromoCode(code);
 
   if (normalizedCode.length === 0) {
     return { status: "not-found" };
+  }
+
+  if (!userId) {
+    return { status: "unauthorized" };
   }
 
   const promoCode = await findPromoCodeByCode(normalizedCode);
@@ -51,6 +57,15 @@ export const validatePromoCode = async (
 
   if (!promoCode.isActive) {
     return { status: "inactive" };
+  }
+
+  const usedCount = await countUserOrdersWithPromoCode(
+    userId,
+    promoCode.code,
+  );
+
+  if (usedCount > 0) {
+    return { status: "already-used" };
   }
 
   return {

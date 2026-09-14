@@ -15,10 +15,22 @@ import type { ShippingPickupPoint } from "@/types/shipping";
 
 const collectionName = "orders";
 
+let ordersIndexesPromise: Promise<unknown> | null = null;
+
 const getOrdersCollection = async () => {
   const db = await getMongoDb();
+  const collection = db.collection<OrderDocument>(collectionName);
 
-  return db.collection<OrderDocument>(collectionName);
+  if (!ordersIndexesPromise) {
+    ordersIndexesPromise = collection
+      .createIndex({ userId: 1, "promoCode.code": 1 })
+      .catch((error) => {
+        ordersIndexesPromise = null;
+        throw error;
+      });
+  }
+
+  return collection;
 };
 
 export const insertOrder = async (
@@ -29,6 +41,20 @@ export const insertOrder = async (
   await collection.insertOne(order);
 
   return order;
+};
+
+export const countUserOrdersWithPromoCode = async (
+  userId: string,
+  code: string,
+): Promise<number> => {
+  const collection = await getOrdersCollection();
+
+  return collection.countDocuments({
+    userId,
+    "promoCode.code": code,
+    status: { $ne: "cancelled" },
+    "payment.status": { $in: ["paid", "cod_pending"] },
+  });
 };
 
 export const findOrderById = async (

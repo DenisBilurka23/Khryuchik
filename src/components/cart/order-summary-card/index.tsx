@@ -9,7 +9,7 @@ import { PromoCodeField } from "@/components/cart/promo-code-field";
 import { Note, Plate } from "@/components/primitives";
 import type { CartPageLabels } from "@/i18n/types";
 import { displayFont } from "@/theme/sx";
-import { formatCurrency } from "@/utils";
+import { formatCurrency, formatCurrencyExact } from "@/utils";
 
 import type { OrderSummaryCardProps } from "../types";
 
@@ -92,7 +92,7 @@ export const OrderSummaryCard = ({
               {labels.discountLabel}
             </Typography>
             <Typography component="span" sx={rowValueSx}>
-              {`-${formatCurrency(discount, locale, currency)}`}
+              {`-${formatCurrencyExact(discount, locale, currency)}`}
             </Typography>
           </Box>
         ) : null}
@@ -117,7 +117,7 @@ export const OrderSummaryCard = ({
             color: "var(--color-accent)",
           }}
         >
-          {formatCurrency(total, locale, currency)}
+          {formatCurrencyExact(total, locale, currency)}
         </Typography>
       </Box>
 

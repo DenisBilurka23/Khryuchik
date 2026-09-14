@@ -104,12 +104,13 @@ type OrderPromoResult = {
 const resolveOrderPromo = async (
   code: string | undefined,
   subtotal: number,
+  userId: string | undefined,
 ): Promise<OrderPromoResult> => {
   if (!code) {
     return { discount: 0 };
   }
 
-  const validation = await validatePromoCode(code);
+  const validation = await validatePromoCode(code, userId);
 
   if (validation.status !== "ok") {
     throw new OrderValidationError(
@@ -232,7 +233,11 @@ export const createOrder = async (
     orderItems.reduce((sum, item) => sum + item.lineTotal, 0),
   );
 
-  const promo = await resolveOrderPromo(input.promoCode, subtotal);
+  const promo = await resolveOrderPromo(
+    input.promoCode,
+    subtotal,
+    input.userId,
+  );
 
   const shippingResult = await calculateOrderShipping({
     country,

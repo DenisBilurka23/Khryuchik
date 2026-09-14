@@ -8,6 +8,6 @@ export type PromoCodeDocument = {
 export type PromoValidation =
   | { status: "ok"; code: string; percentOff: number }
   | { status: "not-found" }
-  | { status: "inactive" };
-
-export type PromoValidationStatus = PromoValidation["status"];
+  | { status: "inactive" }
+  | { status: "unauthorized" }
+  | { status: "already-used" };

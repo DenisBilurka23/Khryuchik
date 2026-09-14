@@ -30,6 +30,8 @@ export type PromoCodeFieldProps = {
   code: string;
   appliedPromo: OrderPromoCode | null;
   status: PromoCodeStatus;
+  isGuest: boolean;
+  loginHref: string;
   onCodeChange: (value: string) => void;
   onApply: () => void;
   onRemove: () => void;

@@ -136,6 +136,7 @@ export const CheckoutPageView = ({
 
   const homeHref = getLocalizedPath(locale, "/");
   const cartHref = getLocalizedPath(locale, "/cart");
+  const loginHref = getLocalizedPath(locale, "/login");
   const shopHref = getLocalizedPath(locale, "/shop");
   const confirmationHref = getLocalizedPath(locale, "/checkout/confirmation");
   const isDigitalOnly =
@@ -173,10 +174,11 @@ export const CheckoutPageView = ({
     appliedPromo,
     discount,
     status: promoStatus,
+    isGuest: isPromoGuest,
     setCode: setPromoCode,
     applyCode: applyPromoCode,
     removeCode: removePromoCode,
-  } = usePromoCode({ subtotal });
+  } = usePromoCode({ subtotal, isPersistent: buyNowItems === null });
 
   const shipping =
     shippingQuote.groups.length > 0
@@ -570,6 +572,8 @@ export const CheckoutPageView = ({
                       code: promoCodeValue,
                       appliedPromo,
                       status: promoStatus,
+                      isGuest: isPromoGuest,
+                      loginHref,
                       onCodeChange: setPromoCode,
                       onApply: applyPromoCode,
                       onRemove: removePromoCode,

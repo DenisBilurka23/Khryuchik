@@ -2,6 +2,8 @@ import type { Locale } from "@/i18n/config";
 
 import type { CurrencyCode } from "./country";
 
+const MAX_CURRENCY_FRACTION_DIGITS = 2;
+
 export const formatCurrency = (
   value: number,
   locale: Locale,
@@ -14,6 +16,18 @@ export const formatCurrency = (
     minimumFractionDigits: fractionDigits,
     maximumFractionDigits: fractionDigits,
   }).format(value);
+
+export const formatCurrencyExact = (
+  value: number,
+  locale: Locale,
+  currency: CurrencyCode = "BYN",
+) =>
+  formatCurrency(
+    value,
+    locale,
+    currency,
+    Number.isInteger(value) ? 0 : MAX_CURRENCY_FRACTION_DIGITS,
+  );
 
 export type CurrencyOption = {
   code: string;

@@ -45,6 +45,7 @@ export const CartPageView = ({
     appliedPromo,
     discount,
     status: promoStatus,
+    isGuest: isPromoGuest,
     setCode: setPromoCode,
     applyCode: applyPromoCode,
     removeCode: removePromoCode,
@@ -59,6 +60,7 @@ export const CartPageView = ({
   const homeHref = getLocalizedPath(locale, "/");
   const shopHref = getLocalizedPath(locale, "/shop");
   const checkoutHref = getLocalizedPath(locale, "/checkout");
+  const loginHref = getLocalizedPath(locale, "/login");
 
   const handleIncrease = (id: string) => {
     const item = items.find((entry) => entry.id === id);
@@ -177,6 +179,8 @@ export const CartPageView = ({
                     code: promoCodeValue,
                     appliedPromo,
                     status: promoStatus,
+                    isGuest: isPromoGuest,
+                    loginHref,
                     onCodeChange: setPromoCode,
                     onApply: applyPromoCode,
                     onRemove: removePromoCode,

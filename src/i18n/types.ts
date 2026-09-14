@@ -218,6 +218,9 @@ export type PromoCodeLabels = {
   appliedLabel: string;
   notFound: string;
   inactive: string;
+  alreadyUsed: string;
+  loginRequired: string;
+  loginLink: string;
   error: string;
 };
 

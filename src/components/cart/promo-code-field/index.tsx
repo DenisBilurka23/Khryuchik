@@ -1,9 +1,18 @@
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import {
+  Box,
+  Button,
+  Link as MuiLink,
+  TextField,
+  Typography,
+} from "@mui/material";
+import Link from "next/link";
 import type { KeyboardEvent } from "react";
 import { useTranslations } from "next-intl";
 
 import { Note } from "@/components/primitives";
+import type { PromoCodeStatus } from "@/hooks/usePromoCode.types";
 
 import type { PromoCodeFieldProps } from "../types";
 
@@ -13,6 +22,13 @@ const rowSx = {
   gap: 1.25,
 } as const;
 
+const messageKeyByStatus: Partial<Record<PromoCodeStatus, string>> = {
+  "not-found": "notFound",
+  inactive: "inactive",
+  "already-used": "alreadyUsed",
+  error: "error",
+};
+
 const messageSx = {
   mt: 1,
   fontSize: 13,
@@ -20,8 +36,14 @@ const messageSx = {
   color: "var(--color-accent)",
 } as const;
 
-const appliedNoteSx = {
+const noteSx = {
   alignItems: "center",
+  paddingBlock: 1.25,
+} as const;
+
+const loginLinkSx = {
+  fontWeight: 600,
+  color: "var(--color-action)",
 } as const;
 
 const appliedIconSx = {
@@ -34,6 +56,8 @@ export const PromoCodeField = ({
   code,
   appliedPromo,
   status,
+  isGuest,
+  loginHref,
   onCodeChange,
   onApply,
   onRemove,
@@ -50,10 +74,28 @@ export const PromoCodeField = ({
     onApply();
   };
 
+  if (isGuest) {
+    return (
+      <Box sx={sx}>
+        <Note sx={noteSx}>
+          <LockOutlinedIcon sx={appliedIconSx} />
+          <Box component="span">
+            {t("loginRequired")}{" "}
+            <Link href={loginHref}>
+              <MuiLink component="span" underline="hover" sx={loginLinkSx}>
+                {t("loginLink")}
+              </MuiLink>
+            </Link>
+          </Box>
+        </Note>
+      </Box>
+    );
+  }
+
   if (appliedPromo) {
     return (
       <Box sx={sx}>
-        <Note sx={appliedNoteSx}>
+        <Note sx={noteSx}>
           <CheckCircleOutlinedIcon sx={appliedIconSx} />
           <Box component="span" sx={{ flex: 1 }}>
             {t("appliedLabel", {
@@ -95,16 +137,8 @@ export const PromoCodeField = ({
         </Button>
       </Box>
 
-      {status === "not-found" || status === "inactive" || status === "error" ? (
-        <Typography sx={messageSx}>
-          {t(
-            status === "not-found"
-              ? "notFound"
-              : status === "inactive"
-                ? "inactive"
-                : "error",
-          )}
-        </Typography>
+      {messageKeyByStatus[status] ? (
+        <Typography sx={messageSx}>{t(messageKeyByStatus[status])}</Typography>
       ) : null}
     </Box>
   );

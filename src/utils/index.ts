@@ -29,7 +29,11 @@ export {
   localizeEntertainmentItem,
   pickPreferredAudioTrack,
 } from "./entertainment";
-export { formatCurrency, getAllCurrenciesSorted } from "./format-currency";
+export {
+  formatCurrency,
+  formatCurrencyExact,
+  getAllCurrenciesSorted,
+} from "./format-currency";
 export type { CurrencyOption } from "./format-currency";
 export { formatVideoDuration, toIsoDuration } from "./format-duration";
 export { formatFileSize } from "./format-file-size";

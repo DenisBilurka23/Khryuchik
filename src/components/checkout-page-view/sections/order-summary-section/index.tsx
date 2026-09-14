@@ -11,7 +11,7 @@ import {
 
 import { PromoCodeField } from "@/components/cart";
 import { SHIPPING_FRACTION_DIGITS } from "@/constants/shipping";
-import { formatCurrency } from "@/utils";
+import { formatCurrency, formatCurrencyExact } from "@/utils";
 
 import type { OrderSummarySectionProps } from "./types";
 
@@ -130,7 +130,7 @@ export const CheckoutOrderSummarySection = ({
               {labels.summary.discountLabel}
             </Typography>
             <Typography>
-              {`-${formatCurrency(discount, locale, currency)}`}
+              {`-${formatCurrencyExact(discount, locale, currency)}`}
             </Typography>
           </Stack>
         ) : null}
@@ -147,12 +147,7 @@ export const CheckoutOrderSummarySection = ({
         <Typography
           sx={{ fontSize: 28, fontWeight: 800, color: "primary.main" }}
         >
-          {formatCurrency(
-            total,
-            locale,
-            currency,
-            Number.isInteger(total) ? 0 : SHIPPING_FRACTION_DIGITS,
-          )}
+          {formatCurrencyExact(total, locale, currency)}
         </Typography>
       </Stack>
 
