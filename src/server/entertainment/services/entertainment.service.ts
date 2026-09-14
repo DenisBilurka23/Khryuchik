@@ -22,6 +22,7 @@ import {
   findEntertainmentItemBySlug,
   findHomeEntertainmentItems,
   findPublishedEntertainmentItems,
+  incrementEntertainmentItemViews,
 } from "../repositories/entertainment.repository";
 
 const localizeEntertainmentItems = (
@@ -81,3 +82,13 @@ export const getEntertainmentItem = cache(
     return item ? localizeEntertainmentItem(item, locale) : null;
   },
 );
+
+export const registerEntertainmentItemView = async (slug: string) => {
+  const normalizedSlug = slug.trim();
+
+  if (!normalizedSlug) {
+    return false;
+  }
+
+  return incrementEntertainmentItemViews(normalizedSlug);
+};

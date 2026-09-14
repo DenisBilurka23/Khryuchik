@@ -531,6 +531,7 @@ export const getAdminEntertainmentItems = async (
     isActive: item.status.isActive,
     visibleOnHome: item.status.visibleOnHome,
     sortOrder: item.sortOrder,
+    viewCount: item.viewCount ?? 0,
     updatedAt: item.updatedAt,
   }));
 };
@@ -590,6 +591,7 @@ export const saveAdminEntertainmentItem = async (
     sortOrder: Number.isFinite(input.sortOrder)
       ? input.sortOrder
       : DEFAULT_ENTERTAINMENT_SORT_ORDER,
+    viewCount: previous?.viewCount ?? 0,
     createdAt: previous?.createdAt ?? now,
     updatedAt: now,
     translations,

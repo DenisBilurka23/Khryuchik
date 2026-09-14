@@ -9,3 +9,8 @@ export const SHIPPING_QUOTE_RATE_LIMIT = {
   limit: 20,
   windowMs: 60_000,
 } as const;
+
+export const ENTERTAINMENT_VIEW_RATE_LIMIT = {
+  limit: 30,
+  windowMs: 60_000,
+} as const;

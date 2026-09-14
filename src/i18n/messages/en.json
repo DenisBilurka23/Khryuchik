@@ -292,7 +292,8 @@
         "entertainment": "Entertainment"
       },
       "emptyTitle": "Nothing here yet",
-      "emptyText": "New materials are on the way — check back soon."
+      "emptyText": "New materials are on the way — check back soon.",
+      "viewsBadge": "{count, plural, one {# view} other {# views}}"
     },
     "entertainmentPlayer": {
       "playAction": "Play",
@@ -1440,6 +1441,7 @@
         "type": "Type",
         "status": "Status",
         "sortOrder": "Sort order",
+        "views": "Views",
         "updated": "Updated",
         "action": "Action"
       },

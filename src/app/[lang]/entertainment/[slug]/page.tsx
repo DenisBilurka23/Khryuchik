@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { EntertainmentItemPageView } from "@/components/entertainment-item-page-view";
 import { defaultLocale, locales } from "@/i18n/config";
+import { hasAdminAccess } from "@/server/admin/auth";
 import { getEntertainmentItem } from "@/server/entertainment/services/entertainment.service";
 import { isActiveLocale } from "@/server/localization/localization.service";
 
@@ -69,13 +70,18 @@ const LocalizedEntertainmentItemPage = async ({
     notFound();
   }
 
-  const item = await getEntertainmentItem(lang, slug);
+  const [item, isAdmin] = await Promise.all([
+    getEntertainmentItem(lang, slug),
+    hasAdminAccess(),
+  ]);
 
   if (!item) {
     notFound();
   }
 
-  return <EntertainmentItemPageView locale={lang} item={item} />;
+  return (
+    <EntertainmentItemPageView locale={lang} item={item} isAdmin={isAdmin} />
+  );
 };
 
 export default LocalizedEntertainmentItemPage;

@@ -3,7 +3,13 @@ import Link from "next/link";
 
 import type { ArrowLinkProps } from "./types";
 
-export const ArrowLink = ({ href, label, size = "md", sx }: ArrowLinkProps) => {
+export const ArrowLink = ({
+  href,
+  label,
+  size = "md",
+  onClick,
+  sx,
+}: ArrowLinkProps) => {
   const isSmall = size === "sm";
 
   return (
@@ -11,7 +17,7 @@ export const ArrowLink = ({ href, label, size = "md", sx }: ArrowLinkProps) => {
       component="span"
       sx={[{ display: "inline-flex" }, ...(Array.isArray(sx) ? sx : [sx])]}
     >
-      <Link href={href}>
+      <Link href={href} onClick={onClick}>
         <Box
           component="span"
           sx={{

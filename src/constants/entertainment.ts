@@ -164,3 +164,5 @@ export const ENTERTAINMENT_TRANSCRIBE_SAMPLE_RATE = 16_000;
 export const ENTERTAINMENT_TRANSCRIBE_MAX_BYTES = 25 * 1024 * 1024;
 
 export const ENTERTAINMENT_TRANSCRIBE_VOCABULARY = ["Хрючик", "Khryuchik"];
+
+export const ENTERTAINMENT_VIEW_STORAGE_PREFIX = "entertainment-view:";

@@ -50,8 +50,7 @@ export type EntertainmentVideoSource =
       sourceObjectKey: string;
       audioTracks?: EntertainmentAudioTrack[];
     }
-  | { kind: "file"; url: string; objectKey: string }
-  | { kind: "youtube"; videoId: string };
+  | { kind: "file"; url: string; objectKey: string };
 
 export type EntertainmentVideoMedia = {
   type: "video";
@@ -94,6 +93,7 @@ export type EntertainmentItemDocument = {
   media: EntertainmentMedia;
   status: EntertainmentStatus;
   sortOrder: number;
+  viewCount?: number;
   createdAt: string;
   updatedAt: string;
   translations: Partial<Record<Locale, EntertainmentTranslation>>;
@@ -113,6 +113,7 @@ export type LocalizedEntertainmentItem = {
   poster?: ProductImage;
   media: EntertainmentMedia;
   sortOrder: number;
+  viewCount: number;
   uploadedAt: string;
 };
 

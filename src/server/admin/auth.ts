@@ -18,6 +18,19 @@ const hasDatabaseAdminAccess = async (input: {
   return Boolean(accountUser?.isAdmin);
 };
 
+export const hasAdminAccess = async () => {
+  const session = await getServerAuthSession();
+
+  if (!session?.user?.email) {
+    return false;
+  }
+
+  return hasDatabaseAdminAccess({
+    userId: session.user.id,
+    email: session.user.email,
+  });
+};
+
 export const requireAdminPageAccess = async (callbackUrl = "/admin") => {
   const session = await getServerAuthSession();
 

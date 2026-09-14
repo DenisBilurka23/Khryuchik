@@ -34,6 +34,7 @@ import { getAdminEntertainmentItems } from "@/server/admin/entertainment.service
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import {
+  formatAdminCount,
   formatAdminDate,
   getAdminEntertainmentStatusTone,
 } from "@/utils/admin";
@@ -128,6 +129,7 @@ const AdminEntertainmentPage = async ({
                   <TableCell>{tEntertainment("columns.type")}</TableCell>
                   <TableCell>{tEntertainment("columns.status")}</TableCell>
                   <TableCell>{tEntertainment("columns.sortOrder")}</TableCell>
+                  <TableCell>{tEntertainment("columns.views")}</TableCell>
                   <TableCell>{tEntertainment("columns.updated")}</TableCell>
                   <TableCell align="right">
                     {tEntertainment("columns.action")}
@@ -176,6 +178,9 @@ const AdminEntertainmentPage = async ({
                       </Stack>
                     </TableCell>
                     <TableCell>{item.sortOrder}</TableCell>
+                    <TableCell>
+                      {formatAdminCount(item.viewCount, locale)}
+                    </TableCell>
                     <TableCell>
                       {formatAdminDate(item.updatedAt, locale)}
                     </TableCell>

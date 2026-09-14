@@ -19,9 +19,6 @@ export const toPlayerSubtitleTracks = (
       }))
     : undefined;
 
-export const buildYoutubeEmbedUrl = (videoId: string) =>
-  `https://www.youtube-nocookie.com/embed/${videoId}`;
-
 export const createVideoStructuredData = (item: LocalizedEntertainmentItem) => {
   if (item.media.type !== "video" || item.media.status !== "ready") {
     return null;
@@ -43,9 +40,5 @@ export const createVideoStructuredData = (item: LocalizedEntertainmentItem) => {
         : source?.kind === "file"
           ? source.url
           : undefined,
-    embedUrl:
-      source?.kind === "youtube"
-        ? buildYoutubeEmbedUrl(source.videoId)
-        : undefined,
   };
 };

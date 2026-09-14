@@ -3,8 +3,8 @@ import { Box, Typography } from "@mui/material";
 import { displayFont, leadSx } from "@/theme/sx";
 import { formatFileSize, getEntertainmentAspectRatio } from "@/utils";
 
-import { ArrowLink } from "../../arrow-link";
 import { EntertainmentPlayer } from "../../entertainment-player";
+import { EntertainmentDownloadLink } from "../download-link";
 import type { EntertainmentMediaBlockProps } from "../types";
 import { toPlayerSubtitleTracks } from "../utils";
 
@@ -47,7 +47,8 @@ export const EntertainmentMediaBlock = ({
             {formatFileSize(media.sizeBytes)}
           </Typography>
 
-          <ArrowLink
+          <EntertainmentDownloadLink
+            slug={item.slug}
             href={media.url}
             label={labels.download}
             sx={{ mt: 1.5 }}
@@ -61,6 +62,7 @@ export const EntertainmentMediaBlock = ({
     if (media.source.kind === "hls") {
       return (
         <EntertainmentPlayer
+          slug={item.slug}
           playlistUrl={media.source.playlistUrl}
           aspectRatio={aspectRatio}
           poster={item.poster?.src}
@@ -73,19 +75,6 @@ export const EntertainmentMediaBlock = ({
           captionsLabel={labels.captions}
           errorTitle={labels.errorTitle}
           errorText={labels.errorText}
-        />
-      );
-    }
-
-    if (media.source.kind === "youtube") {
-      return (
-        <Box
-          component="iframe"
-          src={`https://www.youtube-nocookie.com/embed/${media.source.videoId}`}
-          title={item.title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
-          allowFullScreen
-          sx={embedSx}
         />
       );
     }

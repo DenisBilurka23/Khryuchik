@@ -41,6 +41,7 @@ export const localizeEntertainmentItem = (
           }
         : item.media,
     sortOrder: item.sortOrder,
+    viewCount: item.viewCount ?? 0,
     uploadedAt: item.createdAt,
   };
 };

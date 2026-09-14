@@ -199,6 +199,7 @@ export type AdminEntertainmentListItem = {
   isActive: boolean;
   visibleOnHome: boolean;
   sortOrder: number;
+  viewCount: number;
   updatedAt: string;
 };
 

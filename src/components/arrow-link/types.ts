@@ -6,5 +6,6 @@ export type ArrowLinkProps = {
   href: string;
   label: string;
   size?: ArrowLinkSize;
+  onClick?: () => void;
   sx?: SxProps<Theme>;
 };

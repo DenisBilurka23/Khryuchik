@@ -53,6 +53,16 @@ export const findEntertainmentItemBySlug = async (slug: string) => {
   );
 };
 
+export const incrementEntertainmentItemViews = async (slug: string) => {
+  const collection = await getEntertainmentCollection();
+  const result = await collection.updateOne(
+    { ...publishedFilter, slug },
+    { $inc: { viewCount: 1 } },
+  );
+
+  return result.matchedCount > 0;
+};
+
 export const findAllEntertainmentItems = async () => {
   const collection = await getEntertainmentCollection();
 

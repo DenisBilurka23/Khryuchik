@@ -1,7 +1,8 @@
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Stack, Typography } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { Pill } from "@/components/primitives";
 import { leadSx } from "@/theme/sx";
 import { formatVideoDuration, getLocalizedPath } from "@/utils";
 
@@ -22,9 +23,15 @@ const copySx = {
   maxWidth: 760,
 } as const;
 
+const metaSx = {
+  fontSize: 14,
+  color: "var(--color-text-muted)",
+} as const;
+
 export const EntertainmentItemPageView = async ({
   locale,
   item,
+  isAdmin,
 }: EntertainmentItemPageViewProps) => {
   const [tPage, tSection, tPlayer] = await Promise.all([
     getTranslations({ locale, namespace: "storefront.entertainmentPage" }),
@@ -82,13 +89,26 @@ export const EntertainmentItemPageView = async ({
               {item.title}
             </Typography>
 
-            {durationSeconds ? (
-              <Typography
-                component="p"
-                sx={{ mt: 1, fontSize: 14, color: "var(--color-text-muted)" }}
+            {durationSeconds || isAdmin ? (
+              <Stack
+                direction="row"
+                alignItems="center"
+                gap={1.5}
+                flexWrap="wrap"
+                sx={{ mt: 1 }}
               >
-                {formatVideoDuration(durationSeconds)}
-              </Typography>
+                {durationSeconds ? (
+                  <Typography component="p" sx={metaSx}>
+                    {formatVideoDuration(durationSeconds)}
+                  </Typography>
+                ) : null}
+
+                {isAdmin ? (
+                  <Pill tone="cream">
+                    {tPage("viewsBadge", { count: item.viewCount })}
+                  </Pill>
+                ) : null}
+              </Stack>
             ) : null}
 
             {item.description ? (

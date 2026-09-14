@@ -8,6 +8,7 @@ export type PlayerSubtitleTrack = {
 };
 
 export type EntertainmentPlayerProps = {
+  slug: string;
   playlistUrl: string;
   aspectRatio?: string;
   poster?: string;
@@ -22,4 +23,7 @@ export type EntertainmentPlayerProps = {
   errorText: string;
 };
 
-export type PlayerSurfaceProps = Omit<EntertainmentPlayerProps, "playLabel">;
+export type PlayerSurfaceProps = Omit<
+  EntertainmentPlayerProps,
+  "slug" | "playLabel"
+>;

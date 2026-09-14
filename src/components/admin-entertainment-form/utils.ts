@@ -51,11 +51,7 @@ export const getEntertainmentMediaFileName = (media: EntertainmentMedia) => {
     return source.sourceObjectKey.split("/").pop();
   }
 
-  if (source.kind === "file") {
-    return source.objectKey.split("/").pop();
-  }
-
-  return source.videoId;
+  return source.objectKey.split("/").pop();
 };
 
 export const captureVideoFrame = (

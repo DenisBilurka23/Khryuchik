@@ -5,6 +5,8 @@ import { Box } from "@mui/material";
 import dynamic from "next/dynamic";
 import { type CSSProperties, useState } from "react";
 
+import { useEntertainmentView } from "@/hooks/useEntertainmentView";
+
 import type { EntertainmentPlayerProps } from "./types";
 
 const frameSx = {
@@ -66,6 +68,7 @@ const playBadgeSx = {
 } as const;
 
 export const EntertainmentPlayer = ({
+  slug,
   playlistUrl,
   aspectRatio,
   poster,
@@ -80,6 +83,7 @@ export const EntertainmentPlayer = ({
   errorText,
 }: EntertainmentPlayerProps) => {
   const [isActive, setIsActive] = useState(false);
+  const registerView = useEntertainmentView(slug);
   const aspectStyle = { "--player-aspect": aspectRatio } as CSSProperties;
 
   if (isActive) {
@@ -111,7 +115,10 @@ export const EntertainmentPlayer = ({
         type="button"
         aria-label={`${playLabel}: ${title}`}
         onPointerEnter={() => void loadPlayerSurface()}
-        onClick={() => setIsActive(true)}
+        onClick={() => {
+          registerView();
+          setIsActive(true);
+        }}
         sx={facadeSx}
       >
         <Box sx={playBadgeSx} aria-hidden>

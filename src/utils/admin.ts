@@ -59,6 +59,9 @@ export const formatAdminDate = (value: string, locale: Locale) =>
     year: "numeric",
   }).format(new Date(value));
 
+export const formatAdminCount = (value: number, locale: Locale) =>
+  new Intl.NumberFormat(locale === "ru" ? "ru-RU" : "en-US").format(value);
+
 export const getAdminAvailabilityLabel = (
   availability: keyof AdminAvailabilityLabels,
   labels: AdminAvailabilityLabels,
