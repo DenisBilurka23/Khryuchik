@@ -51,6 +51,8 @@ const channelValueSx = {
 } as const;
 
 const arrowSx = {
+  width: 18,
+  height: 18,
   color: "var(--color-text-muted)",
   transition: "transform 0.2s ease, color 0.2s ease",
 } as const;
@@ -172,8 +174,6 @@ export const ContactChannelsSection = ({
               component="svg"
               className="channel-arrow"
               sx={arrowSx}
-              width="18"
-              height="18"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
