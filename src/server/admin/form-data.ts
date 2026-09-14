@@ -9,6 +9,7 @@ import type {
   AdminEntertainmentUpsertInput,
   AdminLocaleUpsertInput,
   AdminProductPayload,
+  AdminPromoCodeUpsertInput,
   AdminRegionUpsertInput,
 } from "@/types/admin";
 import type {
@@ -144,6 +145,14 @@ export const parseAdminCategoryFormData = (
       label: parseString(formData, "en.label").trim(),
     },
   },
+});
+
+export const parseAdminPromoCodeFormData = (
+  formData: FormData,
+): AdminPromoCodeUpsertInput => ({
+  code: parseString(formData, "code").trim(),
+  percentOff: parseNumber(formData, "percentOff"),
+  isActive: parseBoolean(formData, "isActive"),
 });
 
 export const parseAdminEntertainmentFormData = (

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
+import { clearStoredPromo } from "@/components/cart/promo-store";
 import { clearCart } from "@/components/cart/store";
 import { NoticePage } from "@/components/notice-page";
 import type { CheckoutResultLabels } from "@/i18n/types";
@@ -29,6 +30,7 @@ export const CheckoutResultView = ({
   useEffect(() => {
     if (kind === "success" || kind === "confirmation") {
       clearCart();
+      clearStoredPromo();
     }
   }, [kind]);
 

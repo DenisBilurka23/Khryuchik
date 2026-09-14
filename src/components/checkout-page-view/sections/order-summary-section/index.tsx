@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import { PromoCodeField } from "@/components/cart";
 import { SHIPPING_FRACTION_DIGITS } from "@/constants/shipping";
 import { formatCurrency } from "@/utils";
 
@@ -20,6 +21,8 @@ export const CheckoutOrderSummarySection = ({
   shipping,
   shippingStatus,
   isDigitalOnly,
+  promo,
+  discount,
   total,
   currency,
   locale,
@@ -120,7 +123,20 @@ export const CheckoutOrderSummarySection = ({
             </Typography>
           </Stack>
         )}
+
+        {discount > 0 ? (
+          <Stack direction="row" justifyContent="space-between">
+            <Typography color="text.secondary">
+              {labels.summary.discountLabel}
+            </Typography>
+            <Typography>
+              {`-${formatCurrency(discount, locale, currency)}`}
+            </Typography>
+          </Stack>
+        ) : null}
       </Stack>
+
+      <PromoCodeField {...promo} sx={{ mt: 2 }} />
 
       <Divider sx={{ my: 2 }} />
 

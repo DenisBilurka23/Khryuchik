@@ -35,6 +35,10 @@ export {
   syncPrintifyProductAction,
 } from "./printify";
 export { deleteAdminProductAction, saveAdminProductAction } from "./products";
+export {
+  deleteAdminPromoCodeAction,
+  saveAdminPromoCodeAction,
+} from "./promo-codes";
 export { saveAdminShippingSettingsAction } from "./shipping";
 export {
   deleteAdminReviewAction,

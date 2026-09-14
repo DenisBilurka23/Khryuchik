@@ -12,6 +12,7 @@ import { useCart } from "@/components/cart/store";
 import { PageShell } from "@/components/storefront/page-shell";
 import { useBuyNowCheckoutItems } from "@/hooks/useBuyNowCheckoutItems";
 import { usePickupPoints } from "@/hooks/usePickupPoints";
+import { usePromoCode } from "@/hooks/usePromoCode";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { useShippingQuote } from "@/hooks/useShippingQuote";
 import type { ShippingPickupPoint } from "@/types/shipping";
@@ -167,11 +168,21 @@ export const CheckoutPageView = ({
     isEnabled: pickupGroupIds.length > 0,
   });
 
+  const {
+    code: promoCodeValue,
+    appliedPromo,
+    discount,
+    status: promoStatus,
+    setCode: setPromoCode,
+    applyCode: applyPromoCode,
+    removeCode: removePromoCode,
+  } = usePromoCode({ subtotal });
+
   const shipping =
     shippingQuote.groups.length > 0
       ? resolveShippingTotal(shippingQuote.groups, selectedShippingOptionIds)
       : (shippingQuote.shipping ?? 0);
-  const total = subtotal + shipping;
+  const total = subtotal + shipping - discount;
   const blockedGroups = unshippableGroups(shippingQuote.groups);
   const blockedGroupIssue = blockedGroups[0]?.issue;
   const isBlockedByShipping =
@@ -293,6 +304,8 @@ export const CheckoutPageView = ({
         return labels.errors.unsupportedVariant;
       case "item_out_of_stock":
         return labels.errors.itemOutOfStock;
+      case "invalid_promo_code":
+        return labels.errors.invalidPromoCode;
       case "pickup_point_required":
         return labels.fieldErrors.pickupPointRequired;
       case "shop_closed":
@@ -388,6 +401,7 @@ export const CheckoutPageView = ({
                 ]),
               )
             : undefined,
+        promoCode: appliedPromo?.code,
         notes: form.notes.trim() || undefined,
       });
 
@@ -552,6 +566,15 @@ export const CheckoutPageView = ({
                     shipping={shipping}
                     shippingStatus={shippingQuote.status}
                     isDigitalOnly={isDigitalOnly}
+                    promo={{
+                      code: promoCodeValue,
+                      appliedPromo,
+                      status: promoStatus,
+                      onCodeChange: setPromoCode,
+                      onApply: applyPromoCode,
+                      onRemove: removePromoCode,
+                    }}
+                    discount={discount}
                     total={total}
                     currency={currency}
                     locale={locale}

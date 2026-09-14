@@ -29,6 +29,11 @@ export type OrderItem = {
   printify?: OrderItemPrintifyLink;
 };
 
+export type OrderPromoCode = {
+  code: string;
+  percentOff: number;
+};
+
 export type OrderCustomer = {
   firstName: string;
   lastName: string;
@@ -141,6 +146,7 @@ export type OrderDocument = {
   subtotal: number;
   shipping: number;
   discount: number;
+  promoCode?: OrderPromoCode;
   total: number;
   customer: OrderCustomer;
   shippingAddress?: OrderShippingAddress;
@@ -195,6 +201,7 @@ export type CreateOrderInput = {
   notes?: string;
   selectedShippingOptionIds?: Record<string, string>;
   pickupPointIds?: Record<string, string>;
+  promoCode?: string;
 };
 
 export type ShippingQuoteRequest = {

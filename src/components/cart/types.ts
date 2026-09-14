@@ -1,6 +1,10 @@
+import type { SxProps, Theme } from "@mui/material";
+
 import type { Locale } from "@/i18n/config";
+import type { PromoCodeStatus } from "@/hooks/usePromoCode.types";
 import type { CurrencyCode } from "@/utils";
 import type { CartItem, CartSelections, StoredCartItem } from "@/types/cart";
+import type { OrderPromoCode } from "@/types/order";
 
 export type CartState = {
   items: StoredCartItem[];
@@ -22,10 +26,21 @@ export type CartItemInput = {
   selections?: CartSelections;
 };
 
+export type PromoCodeFieldProps = {
+  code: string;
+  appliedPromo: OrderPromoCode | null;
+  status: PromoCodeStatus;
+  onCodeChange: (value: string) => void;
+  onApply: () => void;
+  onRemove: () => void;
+  sx?: SxProps<Theme>;
+};
+
 export type OrderSummaryCardProps = {
   locale: Locale;
   currency: CurrencyCode;
   subtotal: number;
+  promo: PromoCodeFieldProps;
   discount: number;
   isDigitalOnly: boolean;
   continueShoppingHref: string;

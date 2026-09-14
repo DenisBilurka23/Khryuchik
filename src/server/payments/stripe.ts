@@ -33,6 +33,27 @@ const toStripeAmount = (value: number) => Math.round(value * 100);
 const buildItemName = (title: string, variant: string | undefined) =>
   variant ? `${title} — ${variant}` : title;
 
+const createOrderDiscounts = async (
+  order: OrderDocument,
+): Promise<Stripe.Checkout.SessionCreateParams.Discount[] | undefined> => {
+  if (order.discount <= 0) {
+    return undefined;
+  }
+
+  const coupon = await stripeClient.coupons.create(
+    {
+      amount_off: toStripeAmount(order.discount),
+      currency: order.currency.toLowerCase(),
+      duration: "once",
+      max_redemptions: 1,
+      name: order.promoCode?.code,
+    },
+    { idempotencyKey: `coupon_${order.id}` },
+  );
+
+  return [{ coupon: coupon.id }];
+};
+
 export const createStripeCheckoutSession = async (
   order: OrderDocument,
   urls: StripeCheckoutUrls,
@@ -66,6 +87,7 @@ export const createStripeCheckoutSession = async (
   return stripeClient.checkout.sessions.create({
     mode: "payment",
     line_items: lineItems,
+    discounts: await createOrderDiscounts(order),
     customer_email: order.customer.email,
     success_url: urls.successUrl,
     cancel_url: urls.cancelUrl,

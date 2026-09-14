@@ -9,6 +9,7 @@ import MovieFilterOutlinedIcon from "@mui/icons-material/MovieFilterOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import type { ReactNode } from "react";
 import {
   List,
@@ -31,7 +32,7 @@ const iconByKey: Record<AdminViewKey, ReactNode> = {
   reviews: <RateReviewOutlinedIcon />,
   customers: <PeopleAltOutlinedIcon />,
   shipping: <LocalShippingOutlinedIcon />,
-  promocodes: <CategoryOutlinedIcon />,
+  promocodes: <LocalOfferOutlinedIcon />,
   settings: <DashboardOutlinedIcon />,
 };
 

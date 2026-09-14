@@ -12,6 +12,7 @@ export type CheckoutRequestPayload = {
   paymentMethod: PaymentMethod;
   selectedShippingOptionIds?: Record<string, string>;
   pickupPointIds?: Record<string, string>;
+  promoCode?: string;
   notes?: string;
 };
 

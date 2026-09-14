@@ -196,8 +196,6 @@ export type CartPageLabels = {
   pricingUnavailable: string;
   summary: {
     title: string;
-    promoPlaceholder: string;
-    promoButton: string;
     itemsLabel: string;
     shippingLabel: string;
     freeShipping: string;
@@ -211,6 +209,16 @@ export type CartPageLabels = {
     closedNote: string;
     unavailableNote: string;
   };
+};
+
+export type PromoCodeLabels = {
+  placeholder: string;
+  applyButton: string;
+  removeButton: string;
+  appliedLabel: string;
+  notFound: string;
+  inactive: string;
+  error: string;
 };
 
 export type CheckoutPaymentMethodLabel = {
@@ -277,6 +285,7 @@ export type CheckoutPageLabels = {
     freeShipping: string;
     shippingCalculating: string;
     shippingPending: string;
+    discountLabel: string;
     totalLabel: string;
   };
   submit: {
@@ -298,6 +307,7 @@ export type CheckoutPageLabels = {
     shippingUnsupportedParcel: string;
     shippingMissingData: string;
     unsupportedVariant: string;
+    invalidPromoCode: string;
     itemOutOfStock: string;
     shopClosed: string;
   };
@@ -733,6 +743,7 @@ export type StorefrontDictionary = {
   termsPage: LegalPageLabels;
   privacyPage: LegalPageLabels;
   cartPage: CartPageLabels;
+  promoCode: PromoCodeLabels;
   checkoutPage: CheckoutPageLabels;
   checkoutResult: CheckoutResultLabels;
   newsletter: {

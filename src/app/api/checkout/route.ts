@@ -193,6 +193,7 @@ export const POST = async (request: NextRequest) => {
         payload.selectedShippingOptionIds,
       ),
       pickupPointIds: parseSelectedShippingOptionIds(payload.pickupPointIds),
+      promoCode: asOptionalString(payload.promoCode),
       userId,
       notes:
         typeof payload.notes === "string" && payload.notes.length > 0

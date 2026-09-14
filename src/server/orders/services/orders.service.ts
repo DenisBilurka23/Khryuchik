@@ -23,16 +23,19 @@ import {
   notifyAdminNewOrder,
   notifyAdminOrderPaid,
 } from "@/server/payments/telegram";
+import { validatePromoCode } from "@/server/promo/services/promo-codes.service";
 import type {
   CreateOrderInput,
   OrderDocument,
   OrderFulfillmentType,
   OrderItem,
   OrderPaymentInfo,
+  OrderPromoCode,
 } from "@/types/order";
 import type { ShippingPickupPoint } from "@/types/shipping";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import {
+  calculatePromoDiscount,
   type CountryCode,
   isPaymentMethodAvailable,
   isPurchasableAvailability,
@@ -64,7 +67,8 @@ export class OrderValidationError extends Error {
       | "shipping_missing_data"
       | "unsupported_variant"
       | "item_out_of_stock"
-      | "pickup_point_required",
+      | "pickup_point_required"
+      | "invalid_promo_code",
   ) {
     super(message);
     this.name = "OrderValidationError";
@@ -90,6 +94,34 @@ const shippingErrorCode = (
     default:
       return "shipping_unavailable";
   }
+};
+
+type OrderPromoResult = {
+  discount: number;
+  promoCode?: OrderPromoCode;
+};
+
+const resolveOrderPromo = async (
+  code: string | undefined,
+  subtotal: number,
+): Promise<OrderPromoResult> => {
+  if (!code) {
+    return { discount: 0 };
+  }
+
+  const validation = await validatePromoCode(code);
+
+  if (validation.status !== "ok") {
+    throw new OrderValidationError(
+      `Promo code cannot be applied (${validation.status})`,
+      "invalid_promo_code",
+    );
+  }
+
+  return {
+    discount: calculatePromoDiscount(validation.percentOff, subtotal),
+    promoCode: { code: validation.code, percentOff: validation.percentOff },
+  };
 };
 
 export const createOrder = async (
@@ -200,6 +232,8 @@ export const createOrder = async (
     orderItems.reduce((sum, item) => sum + item.lineTotal, 0),
   );
 
+  const promo = await resolveOrderPromo(input.promoCode, subtotal);
+
   const shippingResult = await calculateOrderShipping({
     country,
     items: lineItems,
@@ -260,8 +294,7 @@ export const createOrder = async (
 
   const shipping = shippingResult.shipping;
   const fulfillments = toOrderFulfillments(shippingResult.groups, pickupPoints);
-  const discount = 0;
-  const total = roundToCents(subtotal + shipping - discount);
+  const total = roundToCents(subtotal + shipping - promo.discount);
 
   const order: OrderDocument = {
     id: randomUUID(),
@@ -273,7 +306,8 @@ export const createOrder = async (
     items: orderItems,
     subtotal,
     shipping,
-    discount,
+    discount: promo.discount,
+    promoCode: promo.promoCode,
     total,
     customer: input.customer,
     shippingAddress:

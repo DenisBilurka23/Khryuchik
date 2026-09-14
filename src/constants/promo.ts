@@ -1,0 +1,15 @@
+export const PROMO_STORAGE_KEY = "khryuchik-promo";
+
+export const MIN_PROMO_PERCENT = 1;
+
+export const MAX_PROMO_PERCENT = 100;
+
+export const DEFAULT_PROMO_PERCENT = 10;
+
+export const MAX_PROMO_CODE_LENGTH = 32;
+
+export const PROMO_CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+
+export const GENERATED_PROMO_CODE_LENGTH = 8;
+
+export const PROMO_CODE_GENERATION_ATTEMPTS = 16;

@@ -1,10 +1,11 @@
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined";
 import ScheduleOutlinedIcon from "@mui/icons-material/ScheduleOutlined";
-import { Box, Button, Divider, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, Typography } from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+import { PromoCodeField } from "@/components/cart/promo-code-field";
 import { Note, Plate } from "@/components/primitives";
 import type { CartPageLabels } from "@/i18n/types";
 import { displayFont } from "@/theme/sx";
@@ -41,6 +42,7 @@ export const OrderSummaryCard = ({
   locale,
   currency,
   subtotal,
+  promo,
   discount,
   isDigitalOnly,
   continueShoppingHref,
@@ -59,19 +61,7 @@ export const OrderSummaryCard = ({
         {labels.title}
       </Typography>
 
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          gap: 1.25,
-          mt: 2.75,
-        }}
-      >
-        <TextField fullWidth placeholder={labels.promoPlaceholder} />
-        <Button variant="outlined" sx={{ whiteSpace: "nowrap" }}>
-          {labels.promoButton}
-        </Button>
-      </Box>
+      <PromoCodeField {...promo} sx={{ mt: 2.75 }} />
 
       <Box
         sx={{ display: "flex", flexDirection: "column", gap: 1.5, mt: 2.75 }}

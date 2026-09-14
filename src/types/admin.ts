@@ -147,6 +147,12 @@ export type AdminCategoryUpsertInput = {
   translations: Partial<Record<Locale, { label: string }>>;
 };
 
+export type AdminPromoCodeUpsertInput = {
+  code: string;
+  percentOff: number;
+  isActive: boolean;
+};
+
 export type AdminLocaleListItem = {
   code: string;
   label: string;

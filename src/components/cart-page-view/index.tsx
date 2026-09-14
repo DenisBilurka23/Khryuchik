@@ -4,6 +4,7 @@ import { Alert, Box, Container, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { usePromoCode } from "@/hooks/usePromoCode";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
@@ -38,6 +39,16 @@ export const CartPageView = ({
     isPricingUnavailable,
     hasStoredItems,
   } = useResolvedCart(locale, country);
+
+  const {
+    code: promoCodeValue,
+    appliedPromo,
+    discount,
+    status: promoStatus,
+    setCode: setPromoCode,
+    applyCode: applyPromoCode,
+    removeCode: removePromoCode,
+  } = usePromoCode({ subtotal });
 
   const isDigitalOnly =
     items.length > 0 && items.every((item) => item.isDigital);
@@ -77,8 +88,6 @@ export const CartPageView = ({
   const handleRemove = (id: string) => {
     removeItem(id);
   };
-
-  const discount = 0;
 
   return (
     <PageShell>
@@ -164,6 +173,14 @@ export const CartPageView = ({
                   locale={locale}
                   currency={currency}
                   subtotal={subtotal}
+                  promo={{
+                    code: promoCodeValue,
+                    appliedPromo,
+                    status: promoStatus,
+                    onCodeChange: setPromoCode,
+                    onApply: applyPromoCode,
+                    onRemove: removePromoCode,
+                  }}
                   discount={discount}
                   isDigitalOnly={isDigitalOnly}
                   continueShoppingHref={shopHref}

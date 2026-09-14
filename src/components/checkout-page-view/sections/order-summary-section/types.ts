@@ -1,3 +1,4 @@
+import type { PromoCodeFieldProps } from "@/components/cart";
 import type { ShippingQuoteStatus } from "@/hooks/useShippingQuote.types";
 import type { Locale } from "@/i18n/config";
 import type { CartItem } from "@/types/cart";
@@ -11,6 +12,8 @@ export type OrderSummarySectionProps = {
   shipping: number;
   shippingStatus: ShippingQuoteStatus;
   isDigitalOnly: boolean;
+  promo: PromoCodeFieldProps;
+  discount: number;
   total: number;
   currency: CurrencyCode;
   locale: Locale;

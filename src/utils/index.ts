@@ -66,6 +66,11 @@ export {
 export { formatPersonName } from "./person-name";
 export { isPostalCodeValid } from "./postal-code";
 export {
+  calculatePromoDiscount,
+  generatePromoCode,
+  normalizePromoCode,
+} from "./promo";
+export {
   convertFromUsd,
   convertShippingAmount,
   roundToCents,
