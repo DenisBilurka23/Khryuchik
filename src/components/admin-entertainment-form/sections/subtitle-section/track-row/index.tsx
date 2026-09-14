@@ -1,7 +1,7 @@
 "use client";
 
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
-import { Checkbox, IconButton, Stack, Tooltip } from "@mui/material";
+import { Alert, Checkbox, IconButton, Stack, Tooltip } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import {
@@ -9,6 +9,7 @@ import {
   ENTERTAINMENT_SUBTITLE_MAX_BYTES,
 } from "@/constants/entertainment";
 import { formatFileSize } from "@/utils";
+import { getAdminEntertainmentStatusTone } from "@/utils/admin";
 
 import {
   AdminCheckboxField,
@@ -59,7 +60,14 @@ export const AdminEntertainmentSubtitleTrackRow = ({
           />
         </Stack>
 
-        {row.storedSource === "generated" ? (
+        {row.storedStatus ? (
+          <AdminStatusChip
+            label={tForm(`subtitles.status.${row.storedStatus}`)}
+            tone={getAdminEntertainmentStatusTone(row.storedStatus)}
+          />
+        ) : null}
+
+        {row.storedSource === "generated" && !row.storedStatus ? (
           <AdminStatusChip
             label={tForm("subtitles.generated")}
             tone="neutral"
@@ -76,39 +84,53 @@ export const AdminEntertainmentSubtitleTrackRow = ({
         </Tooltip>
       </Stack>
 
-      <AdminEntertainmentUploadField
-        pendingKey={`subtitle:${row.key}`}
-        kind="subtitle"
-        accept=".vtt,text/vtt"
-        contentTypes={ENTERTAINMENT_SUBTITLE_CONTENT_TYPES}
-        fallbackContentType="text/vtt"
-        maxBytes={ENTERTAINMENT_SUBTITLE_MAX_BYTES}
-        dropLabel={tForm("subtitles.dropLabel")}
-        dropHint={`${tForm("subtitles.dropHint")} · ${formatFileSize(ENTERTAINMENT_SUBTITLE_MAX_BYTES)}`}
-        slug={slug}
-        currentLabel={row.uploadedFile?.fileName ?? storedLabel}
-        currentMeta={
-          row.uploadedFile
-            ? formatFileSize(row.uploadedFile.sizeBytes)
-            : undefined
-        }
-        onUploadedAction={(uploadedFile) =>
-          onUploadedAction(row.key, uploadedFile)
-        }
-        onPendingChangeAction={onPendingChangeAction}
-      />
+      {row.storedStatus === "failed" ? (
+        <Alert severity="error" sx={{ borderRadius: "16px" }}>
+          {row.storedFailureReason ?? tForm("subtitles.status.failed")}
+        </Alert>
+      ) : null}
 
-      <AdminCheckboxField
-        control={
-          <Checkbox
-            checked={row.isPublished}
-            onChange={(event) =>
-              onPublishedChangeAction(row.key, event.target.checked)
-            }
-          />
-        }
-        label={tForm("subtitles.isPublished")}
-      />
+      {row.isGenerated ? (
+        <Alert severity="info" sx={{ borderRadius: "16px" }}>
+          {tForm("subtitles.generateNote")}
+        </Alert>
+      ) : (
+        <AdminEntertainmentUploadField
+          pendingKey={`subtitle:${row.key}`}
+          kind="subtitle"
+          accept=".vtt,text/vtt"
+          contentTypes={ENTERTAINMENT_SUBTITLE_CONTENT_TYPES}
+          fallbackContentType="text/vtt"
+          maxBytes={ENTERTAINMENT_SUBTITLE_MAX_BYTES}
+          dropLabel={tForm("subtitles.dropLabel")}
+          dropHint={`${tForm("subtitles.dropHint")} · ${formatFileSize(ENTERTAINMENT_SUBTITLE_MAX_BYTES)}`}
+          slug={slug}
+          currentLabel={row.uploadedFile?.fileName ?? storedLabel}
+          currentMeta={
+            row.uploadedFile
+              ? formatFileSize(row.uploadedFile.sizeBytes)
+              : undefined
+          }
+          onUploadedAction={(uploadedFile) =>
+            onUploadedAction(row.key, uploadedFile)
+          }
+          onPendingChangeAction={onPendingChangeAction}
+        />
+      )}
+
+      {row.isGenerated ? null : (
+        <AdminCheckboxField
+          control={
+            <Checkbox
+              checked={row.isPublished}
+              onChange={(event) =>
+                onPublishedChangeAction(row.key, event.target.checked)
+              }
+            />
+          }
+          label={tForm("subtitles.isPublished")}
+        />
+      )}
     </Stack>
   );
 };

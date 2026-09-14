@@ -38,12 +38,63 @@ cleanup() {
 }
 
 record_track() {
-  local id="$1" status="$2" reason="${3:-}"
+  local id="$1" status="$2" reason="${3:-}" subtitle="${4:-false}"
+  local subtitle_reason="${5:-}"
 
   jq --arg id "$id" --arg status "$status" --arg reason "$reason" \
-    '. + [{id: $id, status: $status} + (if $reason == "" then {} else {failureReason: $reason} end)]' \
+    --argjson subtitle "$subtitle" --arg subtitleReason "$subtitle_reason" \
+    '. + [{id: $id, status: $status}
+          + (if $reason == "" then {} else {failureReason: $reason} end)
+          + (if $subtitle then {subtitleGenerated: true} else {} end)
+          + (if $subtitleReason == "" then {}
+             else {subtitleFailureReason: $subtitleReason} end)]' \
     "$TRACK_RESULTS" > "$TRACK_RESULTS.next"
   mv "$TRACK_RESULTS.next" "$TRACK_RESULTS"
+}
+
+subtitle_failure_reason() {
+  local detail
+
+  if [ -z "${OPENAI_API_KEY:-}" ]; then
+    echo "OPENAI_API_KEY is not set for this repository"
+    return 0
+  fi
+
+  detail="$(tail -c 300 "$LOG_FILE" 2>/dev/null | tr '\n\r' '  ' || true)"
+
+  echo "${detail:-no detail in the transcode log}"
+}
+
+transcribe_track() {
+  local track_id="$1" language="$2" upload_url="$3" audio="$4"
+  local speech="$WORK_DIR/speech-$track_id.m4a"
+  local vtt="$WORK_DIR/subtitles-$track_id.vtt"
+  local size
+
+  if [ -z "${OPENAI_API_KEY:-}" ] || [ -z "$upload_url" ] \
+    || [ -z "$TRANSCRIBE_MODEL" ] || [ ! -f "$audio" ]; then
+    return 1
+  fi
+
+  ffmpeg -nostdin -y -loglevel error -i "$audio" \
+    -vn -ac 1 -ar "$TRANSCRIBE_SAMPLE_RATE" -c:a aac -b:a 32k \
+    "$speech" >> "$LOG_FILE" 2>&1 || return 1
+
+  size="$(wc -c < "$speech" | tr -d ' ')"
+
+  if [ "$TRANSCRIBE_MAX_BYTES" -gt 0 ] && [ "$size" -gt "$TRANSCRIBE_MAX_BYTES" ]; then
+    echo "::warning::Audio for $track_id is too long to transcribe in one request"
+    return 1
+  fi
+
+  node .github/scripts/transcribe-entertainment.mjs \
+    "$speech" "$language" "$TRANSCRIBE_MODEL" "$TRANSCRIBE_PROMPT" \
+    > "$vtt" 2>> "$LOG_FILE" || return 1
+
+  curl -sS --fail --max-time 600 -X PUT \
+    -H "Content-Type: text/vtt" \
+    --upload-file "$vtt" \
+    "$upload_url" > /dev/null || return 1
 }
 
 # Reports the outcome exactly once, so the trap cannot overwrite a success that
@@ -107,6 +158,10 @@ S3_ENDPOINT="$(jq -r '.job.storage.endpoint' "$JOB")"
 SEGMENT_SECONDS="$(jq -r '.job.segmentSeconds' "$JOB")"
 FRAME_RATE="$(jq -r '.job.frameRate' "$JOB")"
 AUDIO_BITRATE="$(jq -r '.job.audioBitrateKbps' "$JOB")"
+TRANSCRIBE_MODEL="$(jq -r '.job.transcribeModel // empty' "$JOB")"
+TRANSCRIBE_SAMPLE_RATE="$(jq -r '.job.transcribeSampleRate // 16000' "$JOB")"
+TRANSCRIBE_MAX_BYTES="$(jq -r '.job.transcribeMaxBytes // 0' "$JOB")"
+TRANSCRIBE_PROMPT="$(jq -r '.job.transcribePrompt // empty' "$JOB")"
 AUDIO_CODEC="$(jq -r '.job.audioCodec' "$JOB")"
 AUDIO_GROUP="$(jq -r '.job.audioGroupId' "$JOB")"
 REBUILD_VIDEO="$(jq -r '.job.rebuildVideo' "$JOB")"
@@ -234,10 +289,29 @@ for index in $(seq 0 $((audio_count - 1))); do
   track_needed="$(jq -r ".job.audioTracks[$index].needed" "$JOB")"
   track_source_url="$(jq -r ".job.audioTracks[$index].sourceUrl // empty" "$JOB")"
   track_upload_url="$(jq -r ".job.audioTracks[$index].extractedUploadUrl // empty" "$JOB")"
+  track_language="$(jq -r ".job.audioTracks[$index].language // empty" "$JOB")"
+  track_subtitle_url="$(jq -r ".job.audioTracks[$index].subtitleUploadUrl // empty" "$JOB")"
+  track_subtitle_audio_url="$(jq -r ".job.audioTracks[$index].subtitleAudioUrl // empty" "$JOB")"
 
   if [ "$track_needed" != "true" ]; then
     echo "--- audio $track_id is already published, leaving it alone"
     built_audio+=("$index")
+
+    if [ -n "$track_subtitle_url" ] && [ -n "$track_subtitle_audio_url" ]; then
+      echo "=== subtitles $track_id"
+
+      if curl -sS --fail --max-time 3600 \
+        -o "$WORK_DIR/subtitle-source-$track_id" "$track_subtitle_audio_url" \
+        && transcribe_track "$track_id" "$track_language" \
+          "$track_subtitle_url" "$WORK_DIR/subtitle-source-$track_id"; then
+        record_track "$track_id" "ready" "" "true"
+      else
+        subtitle_reason="$(subtitle_failure_reason)"
+        echo "::warning::Could not generate subtitles for $track_id: $subtitle_reason"
+        record_track "$track_id" "ready" "" "false" "$subtitle_reason"
+      fi
+    fi
+
     continue
   fi
 
@@ -286,7 +360,20 @@ for index in $(seq 0 $((audio_count - 1))); do
     continue
   fi
 
-  record_track "$track_id" "ready"
+  subtitle_generated="false"
+  subtitle_reason=""
+
+  if [ -n "$track_subtitle_url" ]; then
+    if transcribe_track "$track_id" "$track_language" "$track_subtitle_url" \
+      "$WORK_DIR/audio-$track_id.m4a"; then
+      subtitle_generated="true"
+    else
+      subtitle_reason="$(subtitle_failure_reason)"
+      echo "::warning::Could not generate subtitles for $track_id: $subtitle_reason"
+    fi
+  fi
+
+  record_track "$track_id" "ready" "" "$subtitle_generated" "$subtitle_reason"
   built_audio+=("$index")
 done
 

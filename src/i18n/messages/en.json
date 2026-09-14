@@ -1489,10 +1489,17 @@
         "languageNoOptions": "No such language in the list",
         "storedFile": "Subtitle file already uploaded",
         "generated": "Generated",
+        "generateNote": "The subtitles will be transcribed from this language's soundtrack after you save. The video is not re-processed.",
+        "status": {
+          "processing": "Generating",
+          "ready": "Ready",
+          "failed": "Generation failed"
+        },
         "isPublished": "Show on the site",
         "dropLabel": "Drag the .vtt file here",
         "dropHint": "WebVTT only, up to",
         "addTrack": "Add subtitles",
+        "generateTrack": "Generate with AI",
         "removeTrack": "Remove the subtitles"
       },
       "posterFrame": {

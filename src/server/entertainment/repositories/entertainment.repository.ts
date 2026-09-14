@@ -6,6 +6,7 @@ import { getMongoDb } from "@/server/db/mongodb";
 import type {
   EntertainmentAudioTrack,
   EntertainmentItemDocument,
+  EntertainmentSubtitleTrack,
   EntertainmentVideoStatus,
 } from "@/types/entertainment";
 
@@ -110,12 +111,14 @@ export const updateEntertainmentTranscodeState = async ({
   status,
   failureReason,
   audioTracks,
+  subtitleTracks,
 }: {
   slug: string;
   sourceObjectKey: string;
   status?: EntertainmentVideoStatus;
   failureReason?: string;
   audioTracks?: EntertainmentAudioTrack[];
+  subtitleTracks?: EntertainmentSubtitleTrack[];
 }) => {
   const collection = await getEntertainmentCollection();
   const set: Record<string, unknown> = { updatedAt: new Date().toISOString() };
@@ -133,6 +136,10 @@ export const updateEntertainmentTranscodeState = async ({
 
   if (audioTracks) {
     set["media.source.audioTracks"] = audioTracks;
+  }
+
+  if (subtitleTracks) {
+    set["media.subtitleTracks"] = subtitleTracks;
   }
 
   const result = await collection.updateOne(

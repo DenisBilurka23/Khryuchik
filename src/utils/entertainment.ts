@@ -34,7 +34,9 @@ export const localizeEntertainmentItem = (
         ? {
             ...item.media,
             subtitleTracks: item.media.subtitleTracks.filter(
-              (track) => track.isPublished,
+              (track) =>
+                track.isPublished &&
+                (!track.status || track.status === "ready"),
             ),
           }
         : item.media,

@@ -2,14 +2,18 @@ import type { AdminEntertainmentUploadedFile } from "@/types/admin";
 import type {
   EntertainmentSubtitleSource,
   EntertainmentSubtitleTrack,
+  EntertainmentSubtitleTrackStatus,
 } from "@/types/entertainment";
 
 export type AdminEntertainmentSubtitleTrackRow = {
   key: string;
   language: string;
   isPublished: boolean;
+  isGenerated: boolean;
   uploadedFile?: AdminEntertainmentUploadedFile;
   storedSource?: EntertainmentSubtitleSource;
+  storedStatus?: EntertainmentSubtitleTrackStatus;
+  storedFailureReason?: string;
   hasStoredFile: boolean;
 };
 
@@ -28,5 +32,6 @@ export type UseAdminEntertainmentSubtitleTracksResult = {
     uploadedFile: AdminEntertainmentUploadedFile,
   ) => void;
   addTrack: () => void;
+  addGeneratedTrack: () => void;
   removeTrack: (key: string) => void;
 };

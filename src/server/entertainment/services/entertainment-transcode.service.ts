@@ -9,12 +9,18 @@ import {
   ENTERTAINMENT_FRAME_RATE,
   ENTERTAINMENT_SEGMENT_SECONDS,
   ENTERTAINMENT_TRANSCODE_VARIANTS,
+  ENTERTAINMENT_TRANSCRIBE_MAX_BYTES,
+  ENTERTAINMENT_TRANSCRIBE_MODEL,
+  ENTERTAINMENT_TRANSCRIBE_SAMPLE_RATE,
+  ENTERTAINMENT_TRANSCRIBE_VOCABULARY,
 } from "@/constants/entertainment";
 import { getPublicUploadTarget } from "@/server/storage/r2";
 import {
   buildEntertainmentExtractedAudioKey,
+  buildEntertainmentGeneratedSubtitleKey,
   createEntertainmentExtractedAudioUploadUrl,
   createEntertainmentSourceDownloadUrl,
+  createEntertainmentSubtitleUploadUrl,
   deleteEntertainmentHlsPrefix,
   deleteEntertainmentSourceObjects,
 } from "@/server/storage/r2-assets.service";
@@ -54,7 +60,10 @@ export const isEntertainmentItemPending = (
 
   return (
     item.media.status === "processing" ||
-    (source.audioTracks ?? []).some((track) => track.status !== "ready")
+    (source.audioTracks ?? []).some((track) => track.status !== "ready") ||
+    (item.media.subtitleTracks ?? []).some(
+      (track) => track.status === "processing",
+    )
   );
 };
 
@@ -102,6 +111,34 @@ export const getEntertainmentTranscodeJob = async (
     source.sourceObjectKey,
   );
   const storedTracks = source.audioTracks ?? [];
+  const requestedLanguages = new Set(
+    (item.media.subtitleTracks ?? [])
+      .filter((track) => track.status === "processing")
+      .map((track) => track.language),
+  );
+
+  const createSubtitleTarget = async (track: EntertainmentAudioTrack) => {
+    if (!track.language || !requestedLanguages.has(track.language)) {
+      return {};
+    }
+
+    const [upload, audio] = await Promise.all([
+      createEntertainmentSubtitleUploadUrl(
+        buildEntertainmentGeneratedSubtitleKey({
+          hlsPrefix,
+          trackId: track.id,
+        }),
+      ),
+      track.sourceObjectKey
+        ? createEntertainmentSourceDownloadUrl(track.sourceObjectKey)
+        : Promise.resolve({ downloadUrl }),
+    ]);
+
+    return {
+      subtitleUploadUrl: upload.uploadUrl,
+      subtitleAudioUrl: audio.downloadUrl,
+    };
+  };
 
   const audioTracks: EntertainmentTranscodeAudioTrack[] =
     storedTracks.length === 0
@@ -124,8 +161,10 @@ export const getEntertainmentTranscodeJob = async (
               needed,
             };
 
+            const subtitleTarget = await createSubtitleTarget(track);
+
             if (!needed || track.isDefault || !track.sourceObjectKey) {
-              return base;
+              return { ...base, ...subtitleTarget };
             }
 
             const [sourceDownload, extractedUpload] = await Promise.all([
@@ -140,6 +179,7 @@ export const getEntertainmentTranscodeJob = async (
 
             return {
               ...base,
+              ...subtitleTarget,
               sourceUrl: sourceDownload.downloadUrl,
               extractedUploadUrl: extractedUpload.uploadUrl,
             };
@@ -157,6 +197,10 @@ export const getEntertainmentTranscodeJob = async (
     audioBitrateKbps: ENTERTAINMENT_AUDIO_BITRATE_KBPS,
     audioCodec: ENTERTAINMENT_AUDIO_CODEC,
     audioGroupId: ENTERTAINMENT_AUDIO_GROUP_ID,
+    transcribeModel: ENTERTAINMENT_TRANSCRIBE_MODEL,
+    transcribeSampleRate: ENTERTAINMENT_TRANSCRIBE_SAMPLE_RATE,
+    transcribeMaxBytes: ENTERTAINMENT_TRANSCRIBE_MAX_BYTES,
+    transcribePrompt: ENTERTAINMENT_TRANSCRIBE_VOCABULARY.join(", "),
     variants: ENTERTAINMENT_TRANSCODE_VARIANTS,
     audioTracks,
     rebuildVideo,
@@ -228,12 +272,46 @@ export const applyEntertainmentTranscodeResult = async ({
     };
   });
 
+  const storedSubtitles = item.media.subtitleTracks ?? [];
+  const generatedLanguages = new Set(
+    (source.audioTracks ?? [])
+      .filter((track) => resultById.get(track.id)?.subtitleGenerated)
+      .map((track) => track.language),
+  );
+  const subtitleFailureByLanguage = new Map(
+    (source.audioTracks ?? [])
+      .filter((track) => track.language)
+      .map((track) => [
+        track.language,
+        resultById.get(track.id)?.subtitleFailureReason,
+      ]),
+  );
+  const hasPendingSubtitles = storedSubtitles.some(
+    (track) => track.status === "processing",
+  );
+  const nextSubtitles = storedSubtitles.map((track) => {
+    if (track.status !== "processing") {
+      return track;
+    }
+
+    if (generatedLanguages.has(track.language)) {
+      return { ...track, status: "ready" as const, failureReason: undefined };
+    }
+
+    return {
+      ...track,
+      status: "failed" as const,
+      failureReason: subtitleFailureByLanguage.get(track.language),
+    };
+  });
+
   const applied = await updateEntertainmentTranscodeState({
     slug,
     sourceObjectKey,
     status: wasRebuildingVideo ? status : undefined,
     failureReason: wasRebuildingVideo ? failureReason : undefined,
     audioTracks: source.audioTracks ? nextTracks : undefined,
+    subtitleTracks: hasPendingSubtitles ? nextSubtitles : undefined,
   });
 
   if (!applied) {

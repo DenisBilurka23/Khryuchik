@@ -27,6 +27,11 @@ export type EntertainmentAudioTrack = {
 
 export type EntertainmentSubtitleSource = "manual" | "generated";
 
+export type EntertainmentSubtitleTrackStatus =
+  | "processing"
+  | "ready"
+  | "failed";
+
 export type EntertainmentSubtitleTrack = {
   id: string;
   language: string;
@@ -34,6 +39,8 @@ export type EntertainmentSubtitleTrack = {
   url: string;
   source: EntertainmentSubtitleSource;
   isPublished: boolean;
+  status?: EntertainmentSubtitleTrackStatus;
+  failureReason?: string;
 };
 
 export type EntertainmentVideoSource =
@@ -127,12 +134,16 @@ export type EntertainmentTranscodeAudioTrack = {
   needed: boolean;
   sourceUrl?: string;
   extractedUploadUrl?: string;
+  subtitleUploadUrl?: string;
+  subtitleAudioUrl?: string;
 };
 
 export type EntertainmentTranscodeTrackResult = {
   id: string;
   status: EntertainmentAudioTrackStatus;
   failureReason?: string;
+  subtitleGenerated?: boolean;
+  subtitleFailureReason?: string;
 };
 
 export type EntertainmentTranscodeStorageTarget = {
@@ -151,6 +162,10 @@ export type EntertainmentTranscodeJob = {
   audioBitrateKbps: number;
   audioCodec: string;
   audioGroupId: string;
+  transcribeModel: string;
+  transcribeSampleRate: number;
+  transcribeMaxBytes: number;
+  transcribePrompt: string;
   variants: EntertainmentTranscodeVariant[];
   audioTracks: EntertainmentTranscodeAudioTrack[];
   rebuildVideo: boolean;

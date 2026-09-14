@@ -50,6 +50,8 @@ const parseTrackResults = (
         id?: unknown;
         status?: unknown;
         failureReason?: unknown;
+        subtitleGenerated?: unknown;
+        subtitleFailureReason?: unknown;
       };
       const id = typeof record?.id === "string" ? record.id.trim() : "";
       const status = parseTrackStatus(record?.status);
@@ -63,11 +65,21 @@ const parseTrackResults = (
           ? record.failureReason.trim().slice(0, FAILURE_REASON_MAX_LENGTH) ||
             undefined
           : undefined;
+      const subtitleReason =
+        typeof record.subtitleFailureReason === "string"
+          ? record.subtitleFailureReason
+              .trim()
+              .slice(0, FAILURE_REASON_MAX_LENGTH) || undefined
+          : undefined;
 
       accumulator.push({
         id,
         status,
         ...(status === "failed" && reason ? { failureReason: reason } : {}),
+        ...(record.subtitleGenerated === true
+          ? { subtitleGenerated: true }
+          : {}),
+        ...(subtitleReason ? { subtitleFailureReason: subtitleReason } : {}),
       });
 
       return accumulator;

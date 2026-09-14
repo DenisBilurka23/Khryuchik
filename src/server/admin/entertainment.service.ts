@@ -14,7 +14,9 @@ import {
 } from "@/server/admin/entertainment-form-state";
 import { getActiveLocales } from "@/server/localization/localization.service";
 import {
+  buildEntertainmentGeneratedSubtitleKey,
   buildEntertainmentPlaylistUrl,
+  buildEntertainmentSubtitleUrl,
   deleteEntertainmentHlsPrefix,
   deleteEntertainmentPublicObjects,
   deleteEntertainmentSourceObjects,
@@ -217,9 +219,11 @@ const buildEntertainmentAudioTracks = ({
 const buildEntertainmentSubtitleTracks = ({
   input,
   previousTracks,
+  playlistUrl,
 }: {
   input: AdminEntertainmentUpsertInput;
   previousTracks: EntertainmentSubtitleTrack[];
+  playlistUrl: string;
 }): EntertainmentSubtitleTrack[] => {
   const rows = input.media.subtitleTracks ?? [];
 
@@ -270,6 +274,35 @@ const buildEntertainmentSubtitleTracks = ({
       );
     }
 
+    if (row.generate && !uploadedFile) {
+      const hlsPrefix = getEntertainmentHlsPrefix(playlistUrl);
+      const generatedKey = hlsPrefix
+        ? buildEntertainmentGeneratedSubtitleKey({
+            hlsPrefix,
+            trackId: language,
+          })
+        : undefined;
+      const generatedUrl = generatedKey
+        ? buildEntertainmentSubtitleUrl(generatedKey)
+        : undefined;
+
+      if (!generatedKey || !generatedUrl) {
+        throw new AdminEntertainmentFormValidationError(
+          AdminEntertainmentFormErrorCode.StorageUnavailable,
+        );
+      }
+
+      return {
+        id: language,
+        language,
+        objectKey: generatedKey,
+        url: generatedUrl,
+        source: "generated" as const,
+        isPublished: false,
+        status: "processing" as const,
+      };
+    }
+
     const objectKey = uploadedFile?.objectKey ?? previous?.objectKey;
     const url = uploadedFile?.url ?? previous?.url;
 
@@ -286,6 +319,9 @@ const buildEntertainmentSubtitleTracks = ({
       url,
       source: uploadedFile ? "manual" : (previous?.source ?? "manual"),
       isPublished: row.isPublished,
+      ...(uploadedFile || !previous?.status
+        ? {}
+        : { status: previous.status, failureReason: previous.failureReason }),
     };
   });
 };
@@ -356,6 +392,10 @@ const buildEntertainmentMedia = ({
       subtitleTracks: buildEntertainmentSubtitleTracks({
         input,
         previousTracks: previousVideo.subtitleTracks ?? [],
+        playlistUrl:
+          previousVideo.source.kind === "hls"
+            ? previousVideo.source.playlistUrl
+            : "",
       }),
       source:
         previousVideo.source.kind === "hls"
@@ -387,6 +427,7 @@ const buildEntertainmentMedia = ({
     subtitleTracks: buildEntertainmentSubtitleTracks({
       input,
       previousTracks: previousVideo?.subtitleTracks ?? [],
+      playlistUrl,
     }),
     status: "processing",
     durationSeconds,

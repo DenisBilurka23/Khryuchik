@@ -24,8 +24,11 @@ const toRows = (
     key: track.id || `subtitle-${index}`,
     language: track.language,
     isPublished: track.isPublished,
+    isGenerated: false,
     storedSource: track.source,
-    hasStoredFile: Boolean(track.objectKey),
+    storedStatus: track.status,
+    storedFailureReason: track.failureReason,
+    hasStoredFile: Boolean(track.objectKey) && track.status !== "processing",
   }));
 
 export const useAdminEntertainmentSubtitleTracks = ({
@@ -58,21 +61,36 @@ export const useAdminEntertainmentSubtitleTracks = ({
     [],
   );
 
-  const addTrack = useCallback(() => {
-    setRows((current) =>
-      current.length >= ENTERTAINMENT_MAX_SUBTITLE_TRACKS
-        ? current
-        : [
-            ...current,
-            {
-              key: createKey(),
-              language: "",
-              isPublished: true,
-              hasStoredFile: false,
-            },
-          ],
-    );
-  }, []);
+  const appendRow = useCallback(
+    (row: Omit<AdminEntertainmentSubtitleTrackRow, "key" | "language">) => {
+      setRows((current) =>
+        current.length >= ENTERTAINMENT_MAX_SUBTITLE_TRACKS
+          ? current
+          : [...current, { key: createKey(), language: "", ...row }],
+      );
+    },
+    [],
+  );
+
+  const addTrack = useCallback(
+    () =>
+      appendRow({
+        isPublished: true,
+        isGenerated: false,
+        hasStoredFile: false,
+      }),
+    [appendRow],
+  );
+
+  const addGeneratedTrack = useCallback(
+    () =>
+      appendRow({
+        isPublished: false,
+        isGenerated: true,
+        hasStoredFile: false,
+      }),
+    [appendRow],
+  );
 
   const removeTrack = useCallback((key: string) => {
     setRows((current) => current.filter((row) => row.key !== key));
@@ -84,6 +102,7 @@ export const useAdminEntertainmentSubtitleTracks = ({
         rows.map((row) => ({
           language: row.language.trim(),
           isPublished: row.isPublished,
+          generate: row.isGenerated,
           uploadedFile: row.uploadedFile,
         })),
       ),
@@ -98,6 +117,7 @@ export const useAdminEntertainmentSubtitleTracks = ({
     setPublished,
     setUploadedFile,
     addTrack,
+    addGeneratedTrack,
     removeTrack,
   };
 };

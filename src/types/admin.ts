@@ -224,6 +224,7 @@ export type AdminEntertainmentAudioTrackInput = {
 export type AdminEntertainmentSubtitleTrackInput = {
   language: string;
   isPublished: boolean;
+  generate?: boolean;
   uploadedFile?: AdminEntertainmentUploadedFile;
 };
 

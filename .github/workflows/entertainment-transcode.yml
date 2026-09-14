@@ -73,6 +73,7 @@ jobs:
           SITE_URL: ${{ vars.SITE_URL }}
           R2_TRANSCODE_ACCESS_KEY_ID: ${{ secrets.R2_TRANSCODE_ACCESS_KEY_ID }}
           R2_TRANSCODE_SECRET_ACCESS_KEY: ${{ secrets.R2_TRANSCODE_SECRET_ACCESS_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           SLUGS: ${{ steps.queue.outputs.slugs }}
         run: |
           if [ -z "${SLUGS// /}" ]; then

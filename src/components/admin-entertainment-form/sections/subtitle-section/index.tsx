@@ -1,6 +1,7 @@
 "use client";
 
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import AutoAwesomeRoundedIcon from "@mui/icons-material/AutoAwesomeRounded";
 import { Button, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 
@@ -25,6 +26,7 @@ export const AdminEntertainmentSubtitleSection = ({
     setPublished,
     setUploadedFile,
     addTrack,
+    addGeneratedTrack,
     removeTrack,
   } = useAdminEntertainmentSubtitleTracks({ storedTracks });
 
@@ -55,16 +57,29 @@ export const AdminEntertainmentSubtitleSection = ({
           />
         ))}
 
-        <Button
-          type="button"
-          variant="outlined"
-          startIcon={<AddRoundedIcon />}
-          onClick={addTrack}
-          disabled={!canAddTrack}
-          sx={{ alignSelf: "flex-start", borderRadius: "16px" }}
-        >
-          {tForm("subtitles.addTrack")}
-        </Button>
+        <Stack direction="row" gap={1.5} flexWrap="wrap">
+          <Button
+            type="button"
+            variant="outlined"
+            startIcon={<AddRoundedIcon />}
+            onClick={addTrack}
+            disabled={!canAddTrack}
+            sx={{ borderRadius: "16px" }}
+          >
+            {tForm("subtitles.addTrack")}
+          </Button>
+
+          <Button
+            type="button"
+            variant="outlined"
+            startIcon={<AutoAwesomeRoundedIcon />}
+            onClick={addGeneratedTrack}
+            disabled={!canAddTrack}
+            sx={{ borderRadius: "16px" }}
+          >
+            {tForm("subtitles.generateTrack")}
+          </Button>
+        </Stack>
       </Stack>
     </AdminSectionCard>
   );

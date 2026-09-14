@@ -428,3 +428,23 @@ export const createEntertainmentExtractedAudioUploadUrl = async (
     contentType: "audio/mp4",
     expiresInSeconds: ENTERTAINMENT_VIDEO_EXPIRES_IN_SECONDS,
   });
+
+export const buildEntertainmentGeneratedSubtitleKey = ({
+  hlsPrefix,
+  trackId,
+}: {
+  hlsPrefix: string;
+  trackId: string;
+}) =>
+  `${hlsPrefix.replace(/hls\/$/, "subtitles/")}${sanitizeFileName(trackId)}.vtt`;
+
+export const createEntertainmentSubtitleUploadUrl = async (objectKey: string) =>
+  createPresignedPutUrl({
+    bucket: "public",
+    objectKey,
+    contentType: "text/vtt",
+    expiresInSeconds: ENTERTAINMENT_VIDEO_EXPIRES_IN_SECONDS,
+  });
+
+export const buildEntertainmentSubtitleUrl = (objectKey: string) =>
+  buildPublicObjectUrl(objectKey);
