@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type SubmitEvent,
+} from "react";
+import { flushSync } from "react-dom";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { Alert, Paper, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
@@ -21,7 +28,11 @@ import {
   AdminEntertainmentMediaSection,
   AdminEntertainmentSubtitleSection,
 } from "../sections";
-import { getEntertainmentMediaType } from "../utils";
+import {
+  getAdminEntertainmentErrorMessageKey,
+  getAdminEntertainmentFormErrorCode,
+  getEntertainmentMediaType,
+} from "../utils";
 import type { AdminEntertainmentFormProps } from "../types";
 
 const submitCardSx = {
@@ -47,6 +58,9 @@ export const AdminEntertainmentForm = ({
     {},
   );
   const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [clientErrorCode, setClientErrorCode] =
+    useState<AdminEntertainmentFormErrorCode | null>(null);
+  const errorRef = useRef<HTMLDivElement | null>(null);
   const hasStoredTranslations = Object.values(item.translations).some(
     (translation) => translation?.title,
   );
@@ -90,45 +104,37 @@ export const AdminEntertainmentForm = ({
       : [];
   const storedSubtitleTracks =
     item.media.type === "video" ? (item.media.subtitleTracks ?? []) : [];
-  const errorMessage = (() => {
-    switch (errorCode) {
-      case AdminEntertainmentFormErrorCode.TitleRequired:
-        return tForm("errorMessages.titleRequired");
-      case AdminEntertainmentFormErrorCode.VideoRequired:
-        return tForm("errorMessages.videoRequired");
-      case AdminEntertainmentFormErrorCode.FileRequired:
-        return tForm("errorMessages.fileRequired");
-      case AdminEntertainmentFormErrorCode.StorageUnavailable:
-        return tForm("errorMessages.storageUnavailable");
-      case AdminEntertainmentFormErrorCode.AudioLanguageRequired:
-        return tForm("errorMessages.audioLanguageRequired");
-      case AdminEntertainmentFormErrorCode.AudioLanguageInvalid:
-        return tForm("errorMessages.audioLanguageInvalid");
-      case AdminEntertainmentFormErrorCode.AudioLanguageDuplicate:
-        return tForm("errorMessages.audioLanguageDuplicate");
-      case AdminEntertainmentFormErrorCode.AudioFileRequired:
-        return tForm("errorMessages.audioFileRequired");
-      case AdminEntertainmentFormErrorCode.SubtitleLanguageRequired:
-        return tForm("errorMessages.subtitleLanguageRequired");
-      case AdminEntertainmentFormErrorCode.SubtitleLanguageInvalid:
-        return tForm("errorMessages.subtitleLanguageInvalid");
-      case AdminEntertainmentFormErrorCode.SubtitleLanguageDuplicate:
-        return tForm("errorMessages.subtitleLanguageDuplicate");
-      case AdminEntertainmentFormErrorCode.SubtitleFileRequired:
-        return tForm("errorMessages.subtitleFileRequired");
-      case AdminEntertainmentFormErrorCode.SaveFailed:
-        return tForm("errorMessages.saveFailed");
-      case AdminEntertainmentFormErrorCode.DeleteFailed:
-        return tForm("errorMessages.deleteFailed");
-      case AdminEntertainmentFormErrorCode.Unexpected:
-        return tForm("errorMessages.unexpected");
-      default:
-        return undefined;
+  const errorMessageKey = getAdminEntertainmentErrorMessageKey(
+    clientErrorCode ?? errorCode,
+  );
+  const errorMessage = errorMessageKey ? tForm(errorMessageKey) : undefined;
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+    const validationErrorCode = getAdminEntertainmentFormErrorCode({
+      formData: new FormData(event.currentTarget),
+      storedMedia: item.media,
+    });
+
+    if (!validationErrorCode) {
+      setClientErrorCode(null);
+
+      return;
     }
-  })();
+
+    event.preventDefault();
+    flushSync(() => {
+      setClientErrorCode(validationErrorCode);
+    });
+    errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  useEffect(() => {
+    if (errorCode) {
+      errorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [errorCode]);
 
   return (
-    <form action={action}>
+    <form action={action} onSubmit={handleSubmit}>
       <input
         type="hidden"
         name="formMode"
@@ -146,7 +152,11 @@ export const AdminEntertainmentForm = ({
       />
 
       <Stack gap={3}>
-        {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
+        {errorMessage ? (
+          <Alert ref={errorRef} severity="error">
+            {errorMessage}
+          </Alert>
+        ) : null}
 
         <AdminEntertainmentBaseSection
           item={item}

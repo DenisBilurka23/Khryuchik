@@ -58,7 +58,6 @@ const NewAdminEntertainmentPage = async ({
       />
 
       <AdminEntertainmentForm
-        key={`new:${error ?? "ok"}`}
         locale={locale}
         item={editorData.item}
         activeLocales={editorData.activeLocales}

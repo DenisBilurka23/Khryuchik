@@ -88,7 +88,7 @@ const EditAdminEntertainmentPage = async ({
       ) : null}
 
       <AdminEntertainmentForm
-        key={`${editorData.item.slug}:${saved ?? "0"}:${error ?? "ok"}`}
+        key={`${editorData.item.slug}:${saved ?? "0"}`}
         locale={locale}
         item={editorData.item}
         activeLocales={editorData.activeLocales}

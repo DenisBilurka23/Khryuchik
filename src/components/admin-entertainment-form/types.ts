@@ -1,5 +1,8 @@
 import type { Locale } from "@/i18n/config";
-import type { EntertainmentItemDocument } from "@/types/entertainment";
+import type {
+  EntertainmentItemDocument,
+  EntertainmentMedia,
+} from "@/types/entertainment";
 import type { LocaleDocument } from "@/types/localization";
 
 export type AdminEntertainmentFormProps = {
@@ -20,4 +23,9 @@ export type AdminEntertainmentVideoMetadata = {
   durationSeconds: number | null;
   width: number | null;
   height: number | null;
+};
+
+export type AdminEntertainmentFormValidationInput = {
+  formData: FormData;
+  storedMedia: EntertainmentMedia;
 };
