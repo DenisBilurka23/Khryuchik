@@ -8,15 +8,12 @@ import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import { isShopClosed } from "@/server/shop/maintenance.service";
 import { ShopMaintenanceView } from "@/components/shop-maintenance-view";
-import { locales } from "@/i18n/config";
 import { createStorefrontAlternates } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 type LocalizedCheckoutPageProps = {
   params: Promise<{ lang: string }>;
 };
-
-export const generateStaticParams = () => locales.map((lang) => ({ lang }));
 
 export const generateMetadata = async ({
   params,

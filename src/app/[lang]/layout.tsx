@@ -15,13 +15,6 @@ import {
   getActiveRegionCodes,
 } from "@/server/localization/localization.service";
 
-export const dynamicParams = true;
-
-export const generateStaticParams = async () =>
-  (await getActiveLocaleCodes())
-    .filter((lang) => lang !== defaultLocale)
-    .map((lang) => ({ lang }));
-
 const LocaleLayout = async ({
   children,
   params,

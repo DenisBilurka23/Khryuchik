@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { FavoritesPageView } from "@/components/favorites-page-view";
-import { locales } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getShopCategories } from "@/server/catalog/services/categories.service";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
@@ -11,8 +10,6 @@ import { getLocalizedPath } from "@/utils";
 type LocalizedFavoritesPageProps = {
   params: Promise<{ lang: string }>;
 };
-
-export const generateStaticParams = () => locales.map((lang) => ({ lang }));
 
 export const generateMetadata = async ({
   params,

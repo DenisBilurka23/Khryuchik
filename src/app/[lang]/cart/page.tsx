@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { CartPageView } from "@/components/cart-page-view";
-import { locales } from "@/i18n/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import { getRegionCurrency } from "@/server/localization/localization.service";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
@@ -12,8 +11,6 @@ import { isShopClosed } from "@/server/shop/maintenance.service";
 type LocalizedCartPageProps = {
   params: Promise<{ lang: string }>;
 };
-
-export const generateStaticParams = () => locales.map((lang) => ({ lang }));
 
 export const generateMetadata = async ({
   params,

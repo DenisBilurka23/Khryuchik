@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ShopPageView } from "@/components/shop-page-view";
-import { locales } from "@/i18n/config";
 import { getShopProducts } from "@/server/catalog/services/catalog.service";
 import { getShopCategoriesForRegion } from "@/server/catalog/services/categories.service";
 import { getRequestCountry } from "@/server/country/request-country";
@@ -12,8 +11,6 @@ type LocalizedShopPageProps = {
   params: Promise<{ lang: string }>;
   searchParams: Promise<{ category?: string; series?: string; q?: string }>;
 };
-
-export const generateStaticParams = () => locales.map((lang) => ({ lang }));
 
 export const generateMetadata = async ({
   params,

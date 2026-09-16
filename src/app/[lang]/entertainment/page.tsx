@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { EntertainmentPageView } from "@/components/entertainment-page-view";
 import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
-import { locales } from "@/i18n/config";
 import { getEntertainmentView } from "@/server/entertainment/services/entertainment.service";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
@@ -12,8 +11,6 @@ type LocalizedEntertainmentPageProps = {
   params: Promise<{ lang: string }>;
   searchParams: Promise<{ entertainment?: string }>;
 };
-
-export const generateStaticParams = () => locales.map((lang) => ({ lang }));
 
 export const generateMetadata = async ({
   params,
