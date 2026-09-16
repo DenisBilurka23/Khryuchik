@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
 import { ShopPageView } from "@/components/shop-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
+import { locales } from "@/i18n/config";
 import { getShopProducts } from "@/server/catalog/services/catalog.service";
 import { getShopCategoriesForRegion } from "@/server/catalog/services/categories.service";
-import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 type LocalizedShopPageProps = {
   params: Promise<{ lang: string }>;
@@ -20,35 +20,19 @@ export const generateMetadata = async ({
 }: LocalizedShopPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const tStorefront = await getTranslations({
     locale: lang,
     namespace: "storefront",
   });
 
-  return {
+  return createStorefrontMetadata({
+    locale: lang,
+    path: "/shop",
     title: `${tStorefront("nav.shop")} | ${tStorefront("brand.title")}`,
     description: tStorefront("shopPage.hero.lead"),
-    alternates: {
-      canonical: lang === defaultLocale ? "/shop" : `/${lang}/shop`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/shop" : `/${locale}/shop`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: lang,
-      title: `${tStorefront("nav.shop")} | ${tStorefront("brand.title")}`,
-      description: tStorefront("shopPage.hero.lead"),
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const LocalizedShopPage = async ({
@@ -58,9 +42,7 @@ const LocalizedShopPage = async ({
   const { lang } = await params;
   const { category, series, q } = await searchParams;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const country = await getRequestCountry();
   const [categories, products] = await Promise.all([

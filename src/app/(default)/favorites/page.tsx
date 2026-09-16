@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { FavoritesPageView } from "@/components/favorites-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
-import { getShopCategories } from "@/server/catalog/services/categories.service";
+import { defaultLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
+import { getShopCategories } from "@/server/catalog/services/categories.service";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { getLocalizedPath } from "@/utils";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -12,26 +13,12 @@ export const generateMetadata = async (): Promise<Metadata> => {
     namespace: "storefront",
   });
 
-  return {
+  return createStorefrontMetadata({
+    locale: defaultLocale,
+    path: "/favorites",
     title: `${tStorefront("favoritesPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
     description: tStorefront("favoritesPage.lead"),
-    alternates: {
-      canonical: "/favorites",
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/favorites" : `/${locale}/favorites`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: defaultLocale,
-      title: `${tStorefront("favoritesPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
-      description: tStorefront("favoritesPage.lead"),
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const DefaultFavoritesPage = async () => {

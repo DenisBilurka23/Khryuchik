@@ -1,8 +1,7 @@
-import { notFound } from "next/navigation";
 
 import { CheckoutResultView } from "@/components/checkout-result-view";
 import { locales } from "@/i18n/config";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import { findOrderById } from "@/server/orders/repositories/orders.repository";
 
 type LocalizedCheckoutConfirmationPageProps = {
@@ -18,9 +17,7 @@ const LocalizedCheckoutConfirmationPage = async ({
 }: LocalizedCheckoutConfirmationPageProps) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const { order_id } = await searchParams;
   const order = order_id ? await findOrderById(order_id) : null;

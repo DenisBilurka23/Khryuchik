@@ -1,19 +1,18 @@
 import type { ReactNode } from "react";
-import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
 
 import { CartToast } from "@/components/cart";
 import { FooterSection } from "@/components/footer-section";
 import { IntlClientProvider } from "@/components/providers/intl-client-provider";
+import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
 import { StorefrontHeader } from "@/components/storefront-header";
 import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
-import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
 import { defaultLocale } from "@/i18n/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import {
   getActiveLocaleCodes,
   getActiveRegionCodes,
-  isActiveLocale,
 } from "@/server/localization/localization.service";
 
 export const dynamicParams = true;
@@ -32,9 +31,7 @@ const LocaleLayout = async ({
 }) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const [country, messages, availableLocales, availableCountries] =
     await Promise.all([

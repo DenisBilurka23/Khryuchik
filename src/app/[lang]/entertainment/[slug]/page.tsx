@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { EntertainmentItemPageView } from "@/components/entertainment-item-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
 import { hasAdminAccess } from "@/server/admin/auth";
 import { getEntertainmentItem } from "@/server/entertainment/services/entertainment.service";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 type LocalizedEntertainmentItemPageProps = {
   params: Promise<{ lang: string; slug: string }>;
@@ -16,9 +16,7 @@ export const generateMetadata = async ({
 }: LocalizedEntertainmentItemPageProps): Promise<Metadata> => {
   const { lang, slug } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const item = await getEntertainmentItem(lang, slug);
 
@@ -33,32 +31,16 @@ export const generateMetadata = async ({
 
   const title = `${item.title} | ${tStorefront("brand.title")}`;
 
-  return {
+  return createStorefrontMetadata({
+    locale: lang,
+    path: `/entertainment/${slug}`,
     title,
     description: item.description,
-    alternates: {
-      canonical:
-        lang === defaultLocale
-          ? `/entertainment/${slug}`
-          : `/${lang}/entertainment/${slug}`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale
-            ? `/entertainment/${slug}`
-            : `/${locale}/entertainment/${slug}`,
-        ]),
-      ),
-    },
     openGraph: {
       type: "video.other",
-      locale: lang,
-      title,
-      description: item.description,
-      siteName: tStorefront("brand.title"),
       images: item.poster?.src ? [{ url: item.poster.src }] : undefined,
     },
-  };
+  });
 };
 
 const LocalizedEntertainmentItemPage = async ({
@@ -66,9 +48,7 @@ const LocalizedEntertainmentItemPage = async ({
 }: LocalizedEntertainmentItemPageProps) => {
   const { lang, slug } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const [item, isAdmin] = await Promise.all([
     getEntertainmentItem(lang, slug),

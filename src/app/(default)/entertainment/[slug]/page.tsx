@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { EntertainmentItemPageView } from "@/components/entertainment-item-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
 import { hasAdminAccess } from "@/server/admin/auth";
 import { getEntertainmentItem } from "@/server/entertainment/services/entertainment.service";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
 
 type DefaultEntertainmentItemPageProps = {
   params: Promise<{ slug: string }>;
@@ -27,29 +28,16 @@ export const generateMetadata = async ({
 
   const title = `${item.title} | ${tStorefront("brand.title")}`;
 
-  return {
+  return createStorefrontMetadata({
+    locale: defaultLocale,
+    path: `/entertainment/${slug}`,
     title,
     description: item.description,
-    alternates: {
-      canonical: `/entertainment/${slug}`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale
-            ? `/entertainment/${slug}`
-            : `/${locale}/entertainment/${slug}`,
-        ]),
-      ),
-    },
     openGraph: {
       type: "video.other",
-      locale: defaultLocale,
-      title,
-      description: item.description,
-      siteName: tStorefront("brand.title"),
       images: item.poster?.src ? [{ url: item.poster.src }] : undefined,
     },
-  };
+  });
 };
 
 const DefaultEntertainmentItemPage = async ({

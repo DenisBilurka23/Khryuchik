@@ -1,10 +1,9 @@
-import { notFound } from "next/navigation";
 
 import { RegisterPageView } from "@/components/register-page-view";
-import { getLocalizedPath } from "@/utils";
-import { isActiveLocale } from "@/server/localization/localization.service";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import type { LocalizedRegisterPageProps } from "@/types/auth-pages";
+import { getLocalizedPath } from "@/utils";
 
 const LocalizedRegisterPage = async ({
   params,
@@ -12,9 +11,7 @@ const LocalizedRegisterPage = async ({
 }: LocalizedRegisterPageProps) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const { callbackUrl } = await searchParams;
   await getGuestAuthPageContext(lang);

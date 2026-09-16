@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
 
 import { ContactPageView } from "@/components/contact-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
 import { getRequestCountry } from "@/server/country/request-country";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 type LocalizedContactPageProps = {
   params: Promise<{ lang: string }>;
@@ -16,9 +15,7 @@ export const generateMetadata = async ({
 }: LocalizedContactPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const tStorefront = await getTranslations({
     locale: lang,
@@ -28,34 +25,18 @@ export const generateMetadata = async ({
   const title = `${tStorefront("contactPage.hero.eyebrow")} | ${tStorefront("brand.title")}`;
   const description = tStorefront("contactPage.hero.lede");
 
-  return {
+  return createStorefrontMetadata({
+    locale: lang,
+    path: "/contacts",
     title,
     description,
-    alternates: {
-      canonical: lang === defaultLocale ? "/contacts" : `/${lang}/contacts`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/contacts" : `/${locale}/contacts`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: lang,
-      title,
-      description,
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const LocalizedContactPage = async ({ params }: LocalizedContactPageProps) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const country = await getRequestCountry();
 

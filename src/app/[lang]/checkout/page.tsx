@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
 
 import { CheckoutPageView } from "@/components/checkout-page-view";
 import type { CheckoutInitialCustomer } from "@/components/checkout-page-view/types";
-import { defaultLocale, locales } from "@/i18n/config";
-import {
-  getRegionCurrency,
-  isActiveLocale,
-} from "@/server/localization/localization.service";
+import { getRegionCurrency } from "@/server/localization/localization.service";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import { isShopClosed } from "@/server/shop/maintenance.service";
 import { ShopMaintenanceView } from "@/components/shop-maintenance-view";
+import { locales } from "@/i18n/config";
+import { createStorefrontAlternates } from "@/server/i18n/metadata";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 type LocalizedCheckoutPageProps = {
   params: Promise<{ lang: string }>;
@@ -25,9 +23,7 @@ export const generateMetadata = async ({
 }: LocalizedCheckoutPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const tStorefront = await getTranslations({
     locale: lang,
@@ -37,15 +33,7 @@ export const generateMetadata = async ({
   return {
     title: `${tStorefront("checkoutPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
     description: tStorefront("checkoutPage.lead"),
-    alternates: {
-      canonical: lang === defaultLocale ? "/checkout" : `/${lang}/checkout`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/checkout" : `/${locale}/checkout`,
-        ]),
-      ),
-    },
+    alternates: createStorefrontAlternates(lang, "/checkout"),
   };
 };
 
@@ -65,9 +53,7 @@ const initialCustomerFromSession = (
 const LocalizedCheckoutPage = async ({ params }: LocalizedCheckoutPageProps) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   if (isShopClosed()) {
     return <ShopMaintenanceView />;

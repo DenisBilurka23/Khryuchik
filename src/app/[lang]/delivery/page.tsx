@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
 import { DeliveryPageView } from "@/components/delivery-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
-import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 type LocalizedDeliveryPageProps = {
   params: Promise<{ lang: string }>;
@@ -15,9 +14,7 @@ export const generateMetadata = async ({
 }: LocalizedDeliveryPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const tStorefront = await getTranslations({
     locale: lang,
@@ -27,26 +24,12 @@ export const generateMetadata = async ({
   const title = `${tStorefront("nav.faq")} | ${tStorefront("brand.title")}`;
   const description = tStorefront("deliveryPage.payment.short");
 
-  return {
+  return createStorefrontMetadata({
+    locale: lang,
+    path: "/delivery",
     title,
     description,
-    alternates: {
-      canonical: lang === defaultLocale ? "/delivery" : `/${lang}/delivery`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/delivery" : `/${locale}/delivery`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: lang,
-      title,
-      description,
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const LocalizedDeliveryPage = async ({
@@ -54,9 +37,7 @@ const LocalizedDeliveryPage = async ({
 }: LocalizedDeliveryPageProps) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const country = await getRequestCountry();
 

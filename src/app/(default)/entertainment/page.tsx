@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { EntertainmentPageView } from "@/components/entertainment-page-view";
 import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
-import { defaultLocale, locales } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { getEntertainmentView } from "@/server/entertainment/services/entertainment.service";
 import { isEntertainmentCategory } from "@/utils";
 
@@ -19,28 +20,12 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const title = `${tStorefront("nav.entertainment")} | ${tStorefront("brand.title")}`;
   const description = tStorefront("entertainmentPage.hero.lead");
 
-  return {
+  return createStorefrontMetadata({
+    locale: defaultLocale,
+    path: "/entertainment",
     title,
     description,
-    alternates: {
-      canonical: "/entertainment",
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale
-            ? "/entertainment"
-            : `/${locale}/entertainment`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: defaultLocale,
-      title,
-      description,
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const DefaultEntertainmentPage = async ({

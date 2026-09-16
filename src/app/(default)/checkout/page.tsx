@@ -3,12 +3,13 @@ import { getTranslations } from "next-intl/server";
 
 import { CheckoutPageView } from "@/components/checkout-page-view";
 import type { CheckoutInitialCustomer } from "@/components/checkout-page-view/types";
-import { defaultLocale, locales } from "@/i18n/config";
+import { ShopMaintenanceView } from "@/components/shop-maintenance-view";
+import { defaultLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
+import { createStorefrontAlternates } from "@/server/i18n/metadata";
 import { getRegionCurrency } from "@/server/localization/localization.service";
 import { isShopClosed } from "@/server/shop/maintenance.service";
-import { ShopMaintenanceView } from "@/components/shop-maintenance-view";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const tStorefront = await getTranslations({
@@ -19,15 +20,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   return {
     title: `${tStorefront("checkoutPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
     description: tStorefront("checkoutPage.lead"),
-    alternates: {
-      canonical: "/checkout",
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/checkout" : `/${locale}/checkout`,
-        ]),
-      ),
-    },
+    alternates: createStorefrontAlternates(defaultLocale, "/checkout"),
   };
 };
 

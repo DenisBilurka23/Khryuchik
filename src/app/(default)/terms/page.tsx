@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { TermsPageView } from "@/components/terms-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const [tStorefront, tTerms] = await Promise.all([
@@ -16,26 +17,12 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const title = `${tTerms("title")} | ${tStorefront("brand.title")}`;
   const description = tTerms("intro");
 
-  return {
+  return createStorefrontMetadata({
+    locale: defaultLocale,
+    path: "/terms",
     title,
     description,
-    alternates: {
-      canonical: "/terms",
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/terms" : `/${locale}/terms`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: defaultLocale,
-      title,
-      description,
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const DefaultTermsPage = () => <TermsPageView locale={defaultLocale} />;

@@ -5,14 +5,15 @@ import {
   ProductPageView,
   ProductPricingUnavailable,
 } from "@/components/product";
-import { defaultLocale, locales } from "@/i18n/config";
 import {
   getProductDetails,
   getProductSummariesByIds,
 } from "@/server/catalog/services/catalog.service";
-import { getRequestCountry } from "@/server/country/request-country";
+import { defaultLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
+import { getRequestCountry } from "@/server/country/request-country";
 import { getProductPurchaseContext } from "@/server/downloads/downloads.service";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { getUserReviewForProduct } from "@/server/reviews/services/reviews.service";
 import type { ProductPurchaseContext } from "@/types/download";
 import type { UserReviewSummary } from "@/types/reviews";
@@ -41,28 +42,13 @@ export const generateMetadata = async ({
   const description =
     result.status === "ok" ? result.product.description : undefined;
 
-  return {
+  return createStorefrontMetadata({
+    locale: defaultLocale,
+    path: `/products/${slug}`,
     title: `${title} | ${tBrand("title")}`,
     description,
-    alternates: {
-      canonical: `/products/${slug}`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale
-            ? `/products/${slug}`
-            : `/${locale}/products/${slug}`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: defaultLocale,
-      title,
-      description,
-      siteName: tBrand("title"),
-    },
-  };
+    openGraph: { title },
+  });
 };
 
 const DefaultProductPage = async ({ params }: ProductPageProps) => {

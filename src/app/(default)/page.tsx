@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Storefront } from "@/components/storefront";
-import { defaultLocale } from "@/i18n/config";
 import {
   getProductsForPlacement,
   getShopProducts,
@@ -11,35 +10,25 @@ import { getHomeEntertainmentView } from "@/server/entertainment/services/entert
 import { getRequestCountry } from "@/server/country/request-country";
 import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
 import { isEntertainmentCategory } from "@/utils";
+import { defaultLocale } from "@/i18n/config";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
 
 type HomePageProps = {
   searchParams: Promise<{ category?: string; entertainment?: string }>;
 };
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const [tMetadata, tBrand] = await Promise.all([
-    getTranslations({ locale: defaultLocale, namespace: "metadata" }),
-    getTranslations({ locale: defaultLocale, namespace: "storefront.brand" }),
-  ]);
+  const tMetadata = await getTranslations({
+    locale: defaultLocale,
+    namespace: "metadata",
+  });
 
-  return {
+  return createStorefrontMetadata({
+    locale: defaultLocale,
+    path: "/",
     title: tMetadata("title"),
     description: tMetadata("description"),
-    alternates: {
-      canonical: "/",
-      languages: {
-        en: "/",
-        ru: "/ru",
-      },
-    },
-    openGraph: {
-      type: "website",
-      locale: defaultLocale,
-      title: tMetadata("title"),
-      description: tMetadata("description"),
-      siteName: tBrand("title"),
-    },
-  };
+  });
 };
 
 const HomePage = async ({ searchParams }: HomePageProps) => {

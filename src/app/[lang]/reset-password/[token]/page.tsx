@@ -1,18 +1,15 @@
-import { notFound } from "next/navigation";
 
 import { ResetPasswordPageView } from "@/components/reset-password-page-view";
-import { getLocalizedPath } from "@/utils";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import type { LocalizedResetPasswordPageProps } from "@/types/auth-pages";
+import { getLocalizedPath } from "@/utils";
 
 const LocalizedResetPasswordPage = async ({
   params,
 }: LocalizedResetPasswordPageProps) => {
   const { lang, token } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   return (
     <ResetPasswordPageView

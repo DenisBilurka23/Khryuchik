@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { Container } from "@mui/material";
 import { AccountPageView } from "@/components/account-page-view";
 import { PageShell } from "@/components/storefront/page-shell";
@@ -6,7 +5,6 @@ import { getShopCategories } from "@/server/catalog/services/categories.service"
 import {
   getActiveLocaleCodes,
   getActiveRegionCodes,
-  isActiveLocale,
 } from "@/server/localization/localization.service";
 import { requireAccountPageContext } from "@/server/auth/page-context";
 import { getRequestCountry } from "@/server/country/request-country";
@@ -14,13 +12,12 @@ import { getUserPurchasedDownloads } from "@/server/downloads/downloads.service"
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
 import { toAccountOrder } from "@/utils";
 import type { LocalizedAccountPageProps } from "@/types/auth-pages";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const { user } = await requireAccountPageContext(
     `/${lang}/login?callbackUrl=${encodeURIComponent(`/${lang}/account`)}`,

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { PrivacyPageView } from "@/components/privacy-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const [tStorefront, tPrivacy] = await Promise.all([
@@ -16,26 +17,12 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const title = `${tPrivacy("title")} | ${tStorefront("brand.title")}`;
   const description = tPrivacy("intro");
 
-  return {
+  return createStorefrontMetadata({
+    locale: defaultLocale,
+    path: "/privacy",
     title,
     description,
-    alternates: {
-      canonical: "/privacy",
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/privacy" : `/${locale}/privacy`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: defaultLocale,
-      title,
-      description,
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const DefaultPrivacyPage = () => <PrivacyPageView locale={defaultLocale} />;

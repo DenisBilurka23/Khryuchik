@@ -5,15 +5,15 @@ import {
   ProductPageView,
   ProductPricingUnavailable,
 } from "@/components/product";
-import { defaultLocale, locales } from "@/i18n/config";
 import {
   getProductDetails,
   getProductSummariesByIds,
 } from "@/server/catalog/services/catalog.service";
-import { isActiveLocale } from "@/server/localization/localization.service";
-import { getRequestCountry } from "@/server/country/request-country";
 import { getServerAuthSession } from "@/server/auth/config";
+import { getRequestCountry } from "@/server/country/request-country";
 import { getProductPurchaseContext } from "@/server/downloads/downloads.service";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import { getUserReviewForProduct } from "@/server/reviews/services/reviews.service";
 import type { ProductPurchaseContext } from "@/types/download";
 import type { UserReviewSummary } from "@/types/reviews";
@@ -27,9 +27,7 @@ export const generateMetadata = async ({
 }: LocalizedProductPageProps): Promise<Metadata> => {
   const { lang, slug } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const country = await getRequestCountry();
   const result = await getProductDetails(lang, country, slug);
@@ -47,39 +45,19 @@ export const generateMetadata = async ({
   const description =
     result.status === "ok" ? result.product.description : undefined;
 
-  return {
+  return createStorefrontMetadata({
+    locale: lang,
+    path: `/products/${slug}`,
     title: `${title} | ${tBrand("title")}`,
     description,
-    alternates: {
-      canonical:
-        lang === defaultLocale
-          ? `/products/${slug}`
-          : `/${lang}/products/${slug}`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale
-            ? `/products/${slug}`
-            : `/${locale}/products/${slug}`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: lang,
-      title,
-      description,
-      siteName: tBrand("title"),
-    },
-  };
+    openGraph: { title },
+  });
 };
 
 const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
   const { lang, slug } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const country = await getRequestCountry();
   const result = await getProductDetails(lang, country, slug);

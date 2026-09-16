@@ -1,8 +1,7 @@
-import { notFound } from "next/navigation";
 
 import { CheckoutResultView } from "@/components/checkout-result-view";
 import { locales } from "@/i18n/config";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 type LocalizedCheckoutCancelPageProps = {
   params: Promise<{ lang: string }>;
@@ -15,9 +14,7 @@ const LocalizedCheckoutCancelPage = async ({
 }: LocalizedCheckoutCancelPageProps) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   return <CheckoutResultView locale={lang} kind="cancel" />;
 };

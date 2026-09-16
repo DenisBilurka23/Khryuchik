@@ -1,7 +1,6 @@
-import { notFound } from "next/navigation";
 
 import { VerifyEmailPageView } from "@/components/verify-email-page-view";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import type { LocalizedVerifyEmailPageProps } from "@/types/auth-pages";
 import { getLocalizedPath } from "@/utils";
 
@@ -10,9 +9,7 @@ const LocalizedVerifyEmailPage = async ({
 }: LocalizedVerifyEmailPageProps) => {
   const { lang, token } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   return (
     <VerifyEmailPageView

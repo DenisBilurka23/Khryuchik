@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
 import { EntertainmentPageView } from "@/components/entertainment-page-view";
 import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
-import { defaultLocale, locales } from "@/i18n/config";
+import { locales } from "@/i18n/config";
 import { getEntertainmentView } from "@/server/entertainment/services/entertainment.service";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import { isEntertainmentCategory } from "@/utils";
 
 type LocalizedEntertainmentPageProps = {
@@ -20,9 +20,7 @@ export const generateMetadata = async ({
 }: LocalizedEntertainmentPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const tStorefront = await getTranslations({
     locale: lang,
@@ -32,29 +30,12 @@ export const generateMetadata = async ({
   const title = `${tStorefront("nav.entertainment")} | ${tStorefront("brand.title")}`;
   const description = tStorefront("entertainmentPage.hero.lead");
 
-  return {
+  return createStorefrontMetadata({
+    locale: lang,
+    path: "/entertainment",
     title,
     description,
-    alternates: {
-      canonical:
-        lang === defaultLocale ? "/entertainment" : `/${lang}/entertainment`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale
-            ? "/entertainment"
-            : `/${locale}/entertainment`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: lang,
-      title,
-      description,
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const LocalizedEntertainmentPage = async ({
@@ -64,9 +45,7 @@ const LocalizedEntertainmentPage = async ({
   const { lang } = await params;
   const { entertainment } = await searchParams;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const selectedCategory = isEntertainmentCategory(entertainment)
     ? entertainment

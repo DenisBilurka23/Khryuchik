@@ -1,9 +1,8 @@
-import { notFound } from "next/navigation";
 
 import { CheckoutResultView } from "@/components/checkout-result-view";
 import { locales } from "@/i18n/config";
 import { buildOrderDownloadsHref } from "@/server/downloads/order-downloads.service";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import { confirmOrderFromStripeSession } from "@/server/orders/services/orders.service";
 
 type LocalizedCheckoutSuccessPageProps = {
@@ -19,9 +18,7 @@ const LocalizedCheckoutSuccessPage = async ({
 }: LocalizedCheckoutSuccessPageProps) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const { session_id } = await searchParams;
   const order = session_id

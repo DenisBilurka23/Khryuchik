@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ShopPageView } from "@/components/shop-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
 import { getShopProducts } from "@/server/catalog/services/catalog.service";
 import { getShopCategoriesForRegion } from "@/server/catalog/services/categories.service";
 import { getRequestCountry } from "@/server/country/request-country";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
 
 type DefaultShopPageProps = {
   searchParams: Promise<{ category?: string; series?: string; q?: string }>;
@@ -16,26 +17,12 @@ export const generateMetadata = async (): Promise<Metadata> => {
     namespace: "storefront",
   });
 
-  return {
+  return createStorefrontMetadata({
+    locale: defaultLocale,
+    path: "/shop",
     title: `${tStorefront("nav.shop")} | ${tStorefront("brand.title")}`,
     description: tStorefront("shopPage.hero.lead"),
-    alternates: {
-      canonical: "/shop",
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/shop" : `/${locale}/shop`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: defaultLocale,
-      title: `${tStorefront("nav.shop")} | ${tStorefront("brand.title")}`,
-      description: tStorefront("shopPage.hero.lead"),
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const DefaultShopPage = async ({ searchParams }: DefaultShopPageProps) => {

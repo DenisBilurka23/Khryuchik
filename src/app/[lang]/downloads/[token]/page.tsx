@@ -1,8 +1,7 @@
-import { notFound } from "next/navigation";
 
 import { OrderDownloadsPageView } from "@/components/order-downloads-page-view";
 import { getOrderDownloadsByToken } from "@/server/downloads/order-downloads.service";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 type LocalizedOrderDownloadsPageProps = {
   params: Promise<{ lang: string; token: string }>;
@@ -13,9 +12,7 @@ const LocalizedOrderDownloadsPage = async ({
 }: LocalizedOrderDownloadsPageProps) => {
   const { lang, token } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const bundle = await getOrderDownloadsByToken(token);
 

@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
 
 import { UnsubscribePageView } from "@/components/unsubscribe-page-view";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 type LocalizedUnsubscribePageProps = {
   params: Promise<{ lang: string; token: string }>;
@@ -14,9 +13,7 @@ export const generateMetadata = async ({
 }: LocalizedUnsubscribePageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const t = await getTranslations({
     locale: lang,
@@ -34,9 +31,7 @@ const LocalizedUnsubscribePage = async ({
 }: LocalizedUnsubscribePageProps) => {
   const { lang, token } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   return <UnsubscribePageView locale={lang} token={token} />;
 };

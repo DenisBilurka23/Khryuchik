@@ -1,18 +1,17 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
 import { Storefront } from "@/components/storefront";
-import { defaultLocale, locales } from "@/i18n/config";
 import {
   getProductsForPlacement,
   getShopProducts,
 } from "@/server/catalog/services/catalog.service";
 import { getHomeTabCategories } from "@/server/catalog/services/categories.service";
 import { getHomeEntertainmentView } from "@/server/entertainment/services/entertainment.service";
-import { isActiveLocale } from "@/server/localization/localization.service";
 import { getRequestCountry } from "@/server/country/request-country";
 import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
 import { isEntertainmentCategory } from "@/utils";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 type LocalizedPageProps = {
   params: Promise<{ lang: string }>;
@@ -24,44 +23,26 @@ export const generateMetadata = async ({
 }: LocalizedPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
-  const [tMetadata, tBrand] = await Promise.all([
-    getTranslations({ locale: lang, namespace: "metadata" }),
-    getTranslations({ locale: lang, namespace: "storefront.brand" }),
-  ]);
+  const tMetadata = await getTranslations({
+    locale: lang,
+    namespace: "metadata",
+  });
 
-  return {
+  return createStorefrontMetadata({
+    locale: lang,
+    path: "/",
     title: tMetadata("title"),
     description: tMetadata("description"),
-    alternates: {
-      canonical: lang === defaultLocale ? "/" : `/${lang}`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/" : `/${locale}`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: lang,
-      title: tMetadata("title"),
-      description: tMetadata("description"),
-      siteName: tBrand("title"),
-    },
-  };
+  });
 };
 
 const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
   const { lang } = await params;
   const { category, entertainment } = await searchParams;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const country = await getRequestCountry();
   const selectedEntertainmentCategory = isEntertainmentCategory(entertainment)

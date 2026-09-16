@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { notFound } from "next/navigation";
 import { FavoritesPageView } from "@/components/favorites-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
-import { getShopCategories } from "@/server/catalog/services/categories.service";
-import { isActiveLocale } from "@/server/localization/localization.service";
+import { locales } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
+import { getShopCategories } from "@/server/catalog/services/categories.service";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import { getLocalizedPath } from "@/utils";
 
 type LocalizedFavoritesPageProps = {
@@ -19,35 +19,19 @@ export const generateMetadata = async ({
 }: LocalizedFavoritesPageProps): Promise<Metadata> => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const tStorefront = await getTranslations({
     locale: lang,
     namespace: "storefront",
   });
 
-  return {
+  return createStorefrontMetadata({
+    locale: lang,
+    path: "/favorites",
     title: `${tStorefront("favoritesPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
     description: tStorefront("favoritesPage.lead"),
-    alternates: {
-      canonical: lang === defaultLocale ? "/favorites" : `/${lang}/favorites`,
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/favorites" : `/${locale}/favorites`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: lang,
-      title: `${tStorefront("favoritesPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
-      description: tStorefront("favoritesPage.lead"),
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const LocalizedFavoritesPage = async ({
@@ -55,9 +39,7 @@ const LocalizedFavoritesPage = async ({
 }: LocalizedFavoritesPageProps) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   const [session, categories] = await Promise.all([
     getServerAuthSession(),

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { DeliveryPageView } from "@/components/delivery-page-view";
-import { defaultLocale, locales } from "@/i18n/config";
+import { defaultLocale } from "@/i18n/config";
+import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { getRequestCountry } from "@/server/country/request-country";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -14,26 +15,12 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const title = `${tStorefront("nav.faq")} | ${tStorefront("brand.title")}`;
   const description = tStorefront("deliveryPage.payment.short");
 
-  return {
+  return createStorefrontMetadata({
+    locale: defaultLocale,
+    path: "/delivery",
     title,
     description,
-    alternates: {
-      canonical: "/delivery",
-      languages: Object.fromEntries(
-        locales.map((locale) => [
-          locale,
-          locale === defaultLocale ? "/delivery" : `/${locale}/delivery`,
-        ]),
-      ),
-    },
-    openGraph: {
-      type: "website",
-      locale: defaultLocale,
-      title,
-      description,
-      siteName: tStorefront("brand.title"),
-    },
-  };
+  });
 };
 
 const DefaultDeliveryPage = async () => {

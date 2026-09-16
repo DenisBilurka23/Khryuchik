@@ -1,19 +1,16 @@
-import { notFound } from "next/navigation";
 
 import { ForgotPasswordPageView } from "@/components/forgot-password-page-view";
-import { getLocalizedPath } from "@/utils";
-import { isActiveLocale } from "@/server/localization/localization.service";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
+import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import type { LocalizedForgotPasswordPageProps } from "@/types/auth-pages";
+import { getLocalizedPath } from "@/utils";
 
 const LocalizedForgotPasswordPage = async ({
   params,
 }: LocalizedForgotPasswordPageProps) => {
   const { lang } = await params;
 
-  if (!(await isActiveLocale(lang))) {
-    notFound();
-  }
+  await requireActiveLocale(lang);
 
   await getGuestAuthPageContext(lang);
 
