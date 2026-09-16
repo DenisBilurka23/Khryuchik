@@ -32,7 +32,7 @@ You are the project architecture specialist for the Khryuchik repository. Your j
 - Default-locale storefront routes live under `src/app/(default)`.
 - Localized storefront routes live under `src/app/[lang]`.
 - Admin stays under `src/app/(admin)/admin` and must not be moved under `[lang]`.
-- For admin locale and dictionary access, follow the existing request-context pattern through `getAdminPageContext()`.
+- For admin locale and dictionary access, call `resolveLocale("admin")` from `src/server/i18n/request-locale.ts` directly in the admin page or layout, as the existing admin routes do.
 
 ## Component Rules
 - Before creating or restructuring components, load and follow the `/component-creation` skill.
