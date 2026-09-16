@@ -9,8 +9,6 @@ export const LOCALE_HEADER = "x-khryuchik-locale";
 
 export const ADMIN_LOCALE_COOKIE_NAME = "khryuchik-admin-locale";
 
-export const ADMIN_LOCALE_QUERY_PARAM = "adminLocale";
-
 // Locale codes are open-ended strings so admin-managed languages are not
 // constrained to the built-in set. `isLocale` still narrows against the
 // shipped UI locales for routing and dictionary resolution.
