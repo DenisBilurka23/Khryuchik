@@ -7,22 +7,6 @@ import {
   isLocale,
 } from "@/i18n/config";
 
-export const GET = async (request: NextRequest) => {
-  const localeParam = request.nextUrl.searchParams.get("locale");
-  const returnTo = request.nextUrl.searchParams.get("returnTo") ?? "/admin";
-  const locale = localeParam && isLocale(localeParam) ? localeParam : defaultLocale;
-  const redirectUrl = new URL(returnTo, request.url);
-  const response = NextResponse.redirect(redirectUrl);
-
-  response.cookies.set(ADMIN_LOCALE_COOKIE_NAME, locale, {
-    path: "/",
-    maxAge: 60 * 60 * 24 * 365,
-    sameSite: "lax",
-  });
-
-  return response;
-};
-
 export const POST = async (request: NextRequest) => {
   const payload = (await request.json().catch(() => null)) as
     | { locale?: string }
