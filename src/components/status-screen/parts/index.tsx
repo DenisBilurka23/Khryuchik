@@ -24,7 +24,7 @@ export const Screen = styled("section")({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  minHeight: "calc(100vh - 220px)",
+  flex: "1 0 auto",
   overflow: "hidden",
   padding: "64px 24px",
   background: "linear-gradient(160deg, #fdf2ea 0%, #f9dde3 100%)",
