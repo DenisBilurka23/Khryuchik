@@ -19,7 +19,7 @@ const LocalizedLoginPage = async ({
 
   return (
     <AuthPageView
-      callbackUrl={callbackUrl ?? `/${lang}/account`}
+      callbackUrl={callbackUrl ?? getLocalizedPath(lang, "/account")}
       isGoogleEnabled={isGoogleAuthEnabled}
       locale={lang}
       registerHref={getLocalizedPath(lang, "/register")}

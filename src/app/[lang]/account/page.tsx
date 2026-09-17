@@ -1,5 +1,6 @@
 import { Container } from "@mui/material";
 import { AccountPageView } from "@/components/account-page-view";
+import { defaultLocale } from "@/i18n/config";
 import { PageShell } from "@/components/storefront/page-shell";
 import { getShopCategories } from "@/server/catalog/services/categories.service";
 import {
@@ -10,7 +11,7 @@ import { requireAccountPageContext } from "@/server/auth/page-context";
 import { getRequestCountry } from "@/server/country/request-country";
 import { getUserPurchasedDownloads } from "@/server/downloads/downloads.service";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
-import { toAccountOrder } from "@/utils";
+import { getLocalizedPath, toAccountOrder } from "@/utils";
 import type { LocalizedAccountPageProps } from "@/types/auth-pages";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
@@ -20,7 +21,10 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
   await requireActiveLocale(lang);
 
   const { user } = await requireAccountPageContext(
-    `/${lang}/login?callbackUrl=${encodeURIComponent(`/${lang}/account`)}`,
+    getLocalizedPath(
+      lang,
+      `/login?callbackUrl=${encodeURIComponent(getLocalizedPath(lang, "/account"))}`,
+    ),
   );
 
   const [
@@ -48,7 +52,7 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
           country={country}
           availableLocales={availableLocales}
           availableCountries={availableCountries}
-          homeHref={lang === "en" ? "/" : `/${lang}`}
+          homeHref={lang === defaultLocale ? "/" : `/${lang}`}
           favoriteCategoryLabels={Object.fromEntries(
             categories.map((category) => [category.key, category.label]),
           )}

@@ -1,4 +1,5 @@
 import { BOOK_SERIES_VALUES } from "@/constants/catalog";
+import { defaultLocale } from "@/i18n/config";
 import type { BookSeries, LocalizedCategory } from "@/types/catalog";
 
 import type {
@@ -64,7 +65,7 @@ export const createShopPageViewModel = ({
   });
 
   return {
-    homeHref: locale === "en" ? "/" : `/${locale}/`,
+    homeHref: locale === defaultLocale ? "/" : `/${locale}`,
     shopHref: locale === "en" ? "/shop" : `/${locale}/shop`,
     filters,
     seriesFilters,
