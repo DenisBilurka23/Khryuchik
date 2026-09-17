@@ -5,6 +5,7 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   experimental: {
+    globalNotFound: true,
     serverActions: {
       bodySizeLimit: "100mb",
     },
