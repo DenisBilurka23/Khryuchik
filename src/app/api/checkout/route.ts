@@ -17,6 +17,7 @@ import { BOOK_FORMAT } from "@/constants/catalog";
 import {
   asOptionalString,
   getCountryPaymentMethods,
+  getLocalizedPath,
   isIsoCountryCode,
   isPostalCodeValid,
   normalizeOrderEmail,
@@ -203,12 +204,14 @@ export const POST = async (request: NextRequest) => {
 
     if (paymentMethod === "stripe") {
       const origin = process.env.NEXT_PUBLIC_APP_URL ?? request.nextUrl.origin;
+      const successPath = getLocalizedPath(locale, "/checkout/success");
+      const cancelPath = getLocalizedPath(locale, "/checkout/cancel");
 
       let session;
       try {
         session = await createStripeCheckoutSession(order, {
-          successUrl: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-          cancelUrl: `${origin}/checkout/cancel?order_id=${order.id}`,
+          successUrl: `${origin}${successPath}?session_id={CHECKOUT_SESSION_ID}`,
+          cancelUrl: `${origin}${cancelPath}?order_id=${order.id}`,
         });
       } catch (stripeError) {
         console.error("Stripe session creation failed", stripeError);
