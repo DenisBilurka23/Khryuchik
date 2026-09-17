@@ -8,6 +8,7 @@ export type CheckoutResultViewProps = {
   kind: CheckoutResultKind;
   orderId?: string;
   paymentMethod?: PaymentMethod;
+  isDigitalOnly?: boolean;
   /** Set only for a paid order that has digital files to hand over. */
   downloadsHref?: string;
 };

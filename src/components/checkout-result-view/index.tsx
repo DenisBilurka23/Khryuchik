@@ -18,6 +18,7 @@ export const CheckoutResultView = ({
   kind,
   orderId,
   paymentMethod,
+  isDigitalOnly,
   downloadsHref,
 }: CheckoutResultViewProps) => {
   const t = useTranslations("storefront.checkoutResult");
@@ -46,7 +47,7 @@ export const CheckoutResultView = ({
 
   if (kind === "success") {
     title = success.title;
-    text = success.text;
+    text = isDigitalOnly ? success.digitalText : success.text;
     primary = { label: success.backToShop, href: shopHref };
     orderLabel = orderNumber ? `${success.orderLabel} ${orderNumber}` : null;
   } else if (kind === "cancel") {

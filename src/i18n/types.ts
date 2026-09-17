@@ -331,6 +331,7 @@ export type CheckoutResultLabels = {
   success: {
     title: string;
     text: string;
+    digitalText: string;
     orderLabel: string;
     backToShop: string;
     downloadsAction: string;

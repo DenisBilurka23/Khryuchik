@@ -850,6 +850,7 @@
       "success": {
         "title": "Payment received",
         "text": "Thank you! We've started preparing your parcel and will email tracking details once it ships.",
+        "digitalText": "Thank you! Your e-books are ready to download — we've emailed the same link, and it stays active for 90 days.",
         "orderLabel": "Order",
         "backToShop": "Back to the shop",
         "downloadsAction": "Download your books"

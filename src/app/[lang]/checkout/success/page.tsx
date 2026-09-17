@@ -28,6 +28,7 @@ const LocalizedCheckoutSuccessPage = async ({
       locale={lang}
       kind="success"
       orderId={order?.id}
+      isDigitalOnly={order?.fulfillmentType === "digital"}
       downloadsHref={downloadsHref ?? undefined}
     />
   );
