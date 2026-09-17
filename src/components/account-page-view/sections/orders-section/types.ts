@@ -3,5 +3,6 @@ import type { AccountOrder } from "@/types/order";
 
 export type OrdersSectionProps = {
   locale: Locale;
+  timeZone: string;
   orders: AccountOrder[];
 };

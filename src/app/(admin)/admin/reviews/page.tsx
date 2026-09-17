@@ -26,10 +26,12 @@ import {
 } from "@/components/admin-page-shared";
 import type { AdminStatusChipTone } from "@/components/admin-page-shared";
 import { createAdminMetadata } from "@/server/admin/metadata";
+import { resolveAdminTimeZone } from "@/server/i18n/admin-time-zone";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { getAdminReviews } from "@/server/reviews/services/reviews.service";
 import type { AdminPageDictionary } from "@/i18n/types";
 import type { ReviewStatus } from "@/types/reviews";
+import { formatDate } from "@/utils";
 
 type ReviewColumns = AdminPageDictionary["reviews"]["columns"];
 
@@ -54,7 +56,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const AdminReviewsPage = async () => {
-  const locale = await resolveLocale("admin");
+  const [locale, timeZone] = await Promise.all([
+    resolveLocale("admin"),
+    resolveAdminTimeZone(),
+  ]);
   const tReviews = await getTranslations({
     locale,
     namespace: "adminPage.reviews",
@@ -124,7 +129,7 @@ const AdminReviewsPage = async () => {
                       />
                     </TableCell>
                     <TableCell>
-                      {new Date(review.createdAt).toLocaleDateString(locale)}
+                      {formatDate(review.createdAt, locale, timeZone)}
                     </TableCell>
                     <TableCell align="right">
                       <Stack

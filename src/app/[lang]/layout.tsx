@@ -8,7 +8,10 @@ import { StorefrontThemeProvider } from "@/components/providers/storefront-theme
 import { StorefrontHeader } from "@/components/storefront-header";
 import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
 import { defaultLocale } from "@/i18n/config";
-import { getRequestCountry } from "@/server/country/request-country";
+import {
+  getRequestCountry,
+  getRequestTimeZone,
+} from "@/server/country/request-country";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import {
   getActiveLocaleCodes,
@@ -26,9 +29,10 @@ const LocaleLayout = async ({
 
   await requireActiveLocale(lang);
 
-  const [country, messages, availableLocales, availableCountries] =
+  const [country, timeZone, messages, availableLocales, availableCountries] =
     await Promise.all([
       getRequestCountry(),
+      getRequestTimeZone(),
       getMessages({ locale: lang }),
       getActiveLocaleCodes(),
       getActiveRegionCodes(),
@@ -40,7 +44,7 @@ const LocaleLayout = async ({
   const homeHref = lang === defaultLocale ? "/" : `/${lang}`;
 
   return (
-    <IntlClientProvider locale={lang} messages={messages}>
+    <IntlClientProvider locale={lang} messages={messages} timeZone={timeZone}>
       <StorefrontThemeProvider>
         <StorefrontHeader
           locale={lang}

@@ -26,6 +26,7 @@ import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { getAdminPromoCodes } from "@/server/promo/services/promo-codes.service";
 import { formatAdminDate } from "@/utils/admin";
+import { resolveAdminTimeZone } from "@/server/i18n/admin-time-zone";
 
 type AdminPromoCodesPageProps = {
   searchParams: Promise<{ deleted?: string; error?: string; saved?: string }>;
@@ -49,7 +50,10 @@ const AdminPromoCodesPage = async ({
   searchParams,
 }: AdminPromoCodesPageProps) => {
   const { deleted, error, saved } = await searchParams;
-  const locale = await resolveLocale("admin");
+  const [locale, timeZone] = await Promise.all([
+    resolveLocale("admin"),
+    resolveAdminTimeZone(),
+  ]);
   const [promoCodes, tPromoCodes] = await Promise.all([
     getAdminPromoCodes(),
     getTranslations({ locale, namespace: "adminPage.promocodes" }),
@@ -129,7 +133,7 @@ const AdminPromoCodesPage = async ({
               promoCode={promoCode}
               description={tPromoCodes("cardDescription", {
                 percentOff: promoCode.percentOff,
-                createdAt: formatAdminDate(promoCode.createdAt, locale),
+                createdAt: formatAdminDate(promoCode.createdAt, locale, timeZone),
               })}
               saveAction={saveAdminPromoCodeAction}
               deleteAction={deleteAdminPromoCodeAction}

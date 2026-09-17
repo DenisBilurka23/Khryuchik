@@ -6,7 +6,7 @@ import {
   getActiveRegionCodes,
   getDefaultRegionCode,
 } from "@/server/localization/localization.service";
-import { COUNTRY_HEADER, readCountryCookie } from "@/utils";
+import { COUNTRY_HEADER, getCountryTimeZone, readCountryCookie } from "@/utils";
 
 export const getRequestCountry = async () => {
   const requestHeaders = await headers();
@@ -27,3 +27,6 @@ export const getRequestCountry = async () => {
 
   return isActive(requestCountry) ? requestCountry : defaultRegion;
 };
+
+export const getRequestTimeZone = async () =>
+  getCountryTimeZone(await getRequestCountry());

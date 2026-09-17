@@ -7,6 +7,7 @@ import type { ProfileEditorState } from "@/hooks/useProfileEditor.types";
 
 export type OverviewSectionProps = {
   locale: Locale;
+  timeZone: string;
   orders: AccountOrder[];
   downloads: AccountDownload[];
   addresses: UserShippingAddress[];

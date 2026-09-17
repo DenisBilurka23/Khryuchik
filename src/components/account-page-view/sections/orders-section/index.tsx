@@ -4,12 +4,17 @@ import { useTranslations } from "next-intl";
 import { Plate } from "@/components/primitives";
 import { customerOrderStatusColors } from "@/constants/order";
 import { formatOrderTracking } from "@/utils";
+import { formatDate } from "@/utils";
 
 import { accountOrderTotalSx, SectionCard } from "../../shared";
 import { ConfirmDeliveryButton } from "./confirm-delivery-button";
 import type { OrdersSectionProps } from "./types";
 
-export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
+export const OrdersSection = ({
+  locale,
+  orders,
+  timeZone,
+}: OrdersSectionProps) => {
   const t = useTranslations("accountPage");
   const tStatus = useTranslations("accountPage.orderStatuses");
   const tParcels = useTranslations("accountPage.orderParcels");
@@ -38,7 +43,7 @@ export const OrdersSection = ({ locale, orders }: OrdersSectionProps) => {
                     {order.number}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {new Date(order.createdAt).toLocaleDateString(locale)}
+                    {formatDate(order.createdAt, locale, timeZone)}
                   </Typography>
                 </Stack>
 

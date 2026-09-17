@@ -31,10 +31,12 @@ import {
   AdminSectionCard,
 } from "@/components/admin-page-shared";
 import { createAdminMetadata } from "@/server/admin/metadata";
+import { resolveAdminTimeZone } from "@/server/i18n/admin-time-zone";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { findOrders } from "@/server/orders/repositories/orders.repository";
 import { canBuyShippingLabel } from "@/server/shipping/providers/registry";
 import type { AdminPageDictionary } from "@/i18n/types";
+import { formatDate, formatTime } from "@/utils";
 import {
   formatCurrency,
   formatCustomerName,
@@ -56,7 +58,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const AdminOrdersPage = async () => {
-  const locale = await resolveLocale("admin");
+  const [locale, timeZone] = await Promise.all([
+    resolveLocale("admin"),
+    resolveAdminTimeZone(),
+  ]);
   const tOrders = await getTranslations({
     locale,
     namespace: "adminPage.orders",
@@ -119,7 +124,14 @@ const AdminOrdersPage = async () => {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      {new Date(order.createdAt).toLocaleDateString(locale)}
+                      <Stack>
+                        <Typography>
+                          {formatDate(order.createdAt, locale, timeZone)}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {formatTime(order.createdAt, locale, timeZone)}
+                        </Typography>
+                      </Stack>
                     </TableCell>
                     <TableCell>
                       <Stack>

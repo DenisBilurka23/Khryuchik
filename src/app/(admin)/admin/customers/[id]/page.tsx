@@ -31,6 +31,7 @@ import { requireAdminPageAccess } from "@/server/admin/auth";
 import { getAdminCustomerEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
+import { resolveAdminTimeZone } from "@/server/i18n/admin-time-zone";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { formatAdminDate } from "@/utils/admin";
 import {
@@ -41,6 +42,7 @@ import {
   isRefundableOrder,
 } from "@/utils";
 import type { AdminPageDictionary } from "@/i18n/types";
+import { formatDate } from "@/utils";
 
 type ViewAdminCustomerPageProps = {
   params: Promise<{ id: string }>;
@@ -67,7 +69,11 @@ type OrderColumns = AdminPageDictionary["orders"]["columns"];
 const ViewAdminCustomerPage = async ({
   params,
 }: ViewAdminCustomerPageProps) => {
-  const [{ id }, locale] = await Promise.all([params, resolveLocale("admin")]);
+  const [{ id }, locale, timeZone] = await Promise.all([
+    params,
+    resolveLocale("admin"),
+    resolveAdminTimeZone(),
+  ]);
 
   await requireAdminPageAccess("/admin/customers");
 
@@ -149,7 +155,7 @@ const ViewAdminCustomerPage = async ({
           </Typography>
           <Typography color="text.secondary" variant="body2">
             {tCustomerView("fields.createdAt")}:{" "}
-            {formatAdminDate(customer.createdAt, locale)}
+            {formatAdminDate(customer.createdAt, locale, timeZone)}
           </Typography>
         </Stack>
       </AdminSectionCard>
@@ -183,7 +189,7 @@ const ViewAdminCustomerPage = async ({
                       {formatOrderNumber(order.id)}
                     </TableCell>
                     <TableCell>
-                      {new Date(order.createdAt).toLocaleDateString(locale)}
+                      {formatDate(order.createdAt, locale, timeZone)}
                     </TableCell>
                     <TableCell align="right">
                       {formatCurrency(order.total, locale, order.currency)}

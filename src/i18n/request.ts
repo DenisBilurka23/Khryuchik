@@ -1,8 +1,10 @@
 import { getRequestConfig } from "next-intl/server";
 
-import { TIME_ZONE } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
-import { getRequestCountry } from "@/server/country/request-country";
+import {
+  getRequestCountry,
+  getRequestTimeZone,
+} from "@/server/country/request-country";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
 export default getRequestConfig(async ({ locale, requestLocale }) => {
@@ -15,6 +17,6 @@ export default getRequestConfig(async ({ locale, requestLocale }) => {
   return {
     locale: resolvedLocale,
     messages,
-    timeZone: TIME_ZONE,
+    timeZone: await getRequestTimeZone(),
   };
 });

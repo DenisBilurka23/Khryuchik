@@ -16,7 +16,7 @@ import { getTranslations } from "next-intl/server";
 import { getAdminSummaryData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
-import { formatPersonName } from "@/utils";
+import { formatPersonName, formatTime } from "@/utils";
 import {
   formatAdminDate,
   getAdminAuthProviderLabel,
@@ -25,6 +25,7 @@ import {
   getAdminOrderStatusTone,
 } from "@/utils/admin";
 import type { AdminPageDictionary } from "@/i18n/types";
+import { resolveAdminTimeZone } from "@/server/i18n/admin-time-zone";
 
 import {
   AdminEmptyState,
@@ -53,7 +54,10 @@ type OrderPaymentStatusLabels =
   AdminPageDictionary["orders"]["paymentStatusLabels"];
 
 const AdminDashboardPage = async () => {
-  const locale = await resolveLocale("admin");
+  const [locale, timeZone] = await Promise.all([
+    resolveLocale("admin"),
+    resolveAdminTimeZone(),
+  ]);
   const [summary, tDashboard, tShared, tLayout, tOrders] = await Promise.all([
     getAdminSummaryData(locale),
     getTranslations({ locale, namespace: "adminPage.dashboard" }),
@@ -285,7 +289,7 @@ const AdminDashboardPage = async () => {
                       sx={{ mt: 0.25 }}
                     >
                       {tDashboard("recentCustomers.createdLabel")}:{" "}
-                      {formatAdminDate(customer.createdAt, locale)}
+                      {formatAdminDate(customer.createdAt, locale, timeZone)}
                     </Typography>
                   </Box>
                   <Stack direction="row" gap={1} flexWrap="wrap">
@@ -437,7 +441,9 @@ const AdminDashboardPage = async () => {
                         color="text.secondary"
                         sx={{ mt: 0.25 }}
                       >
-                        {formatAdminDate(order.createdAt, locale)}
+                        {formatAdminDate(order.createdAt, locale, timeZone)}
+                        {" · "}
+                        {formatTime(order.createdAt, locale, timeZone)}
                       </Typography>
                     </Box>
                     <Stack

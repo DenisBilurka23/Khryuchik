@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useTimeZone, useTranslations } from "next-intl";
 import {
   Alert,
   Box,
@@ -16,6 +16,7 @@ import {
 } from "@mui/material";
 
 import { formatCurrency } from "@/utils";
+import { FALLBACK_TIME_ZONE, formatDateTime } from "@/utils";
 
 import { AdminSectionCard, AdminStatusChip } from "../../../admin-page-shared";
 import type {
@@ -30,6 +31,7 @@ export const AdminProductPrintifySection = ({
   syncAction,
   relinkAction,
 }: AdminProductPrintifySectionProps) => {
+  const timeZone = useTimeZone() ?? FALLBACK_TIME_ZONE;
   const tForm = useTranslations("adminPage.productForm");
   const tShared = useTranslations("adminPage.shared");
   const [isPending, startTransition] = useTransition();
@@ -105,9 +107,7 @@ export const AdminProductPrintifySection = ({
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {tForm("printifySyncedAtLabel")}:{" "}
-              {new Date(link.syncedAt).toLocaleString(
-                locale === "ru" ? "ru-RU" : "en-US",
-              )}
+              {formatDateTime(link.syncedAt, locale, timeZone)}
             </Typography>
           </Stack>
 

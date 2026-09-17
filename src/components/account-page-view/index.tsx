@@ -33,6 +33,7 @@ import { useProfileEditor } from "@/hooks/useProfileEditor";
 import { useShippingAddressSelection } from "@/hooks/useShippingAddressSelection";
 import { accountSectionKeys, accountSidebarConfig } from "@/constants/account";
 import { secondaryButtonSx } from "@/theme/sx";
+import { getCountryTimeZone } from "@/utils";
 import type { AccountPageViewProps, SectionKey } from "./types";
 
 const asideCardSx = {
@@ -194,10 +195,18 @@ export const AccountPageView = ({
     onAddressesChange: handleAddressesChange,
   });
 
+  const timeZone = getCountryTimeZone(country);
+
   const renderSection = () => {
     switch (activeSection) {
       case "orders":
-        return <OrdersSection locale={locale} orders={orders} />;
+        return (
+          <OrdersSection
+            locale={locale}
+            orders={orders}
+            timeZone={timeZone}
+          />
+        );
       case "books":
         return <BooksSection locale={locale} downloads={downloads} />;
       case "addresses":
@@ -239,6 +248,7 @@ export const AccountPageView = ({
         return (
           <OverviewSection
             locale={locale}
+            timeZone={timeZone}
             orders={orders}
             downloads={downloads}
             addresses={overviewAddresses}

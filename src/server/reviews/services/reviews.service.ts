@@ -14,6 +14,7 @@ import {
   insertReview,
 } from "@/server/reviews/repositories/reviews.repository";
 import type { ProductReview } from "@/types/product-details";
+import { getRequestTimeZone } from "@/server/country/request-country";
 import type {
   AdminReviewListItem,
   CreateReviewInput,
@@ -131,23 +132,27 @@ export const createReview = async (
   return saved;
 };
 
-const formatReviewDate = (iso: string, locale: Locale) =>
+const formatReviewDate = (iso: string, locale: Locale, timeZone: string) =>
   new Intl.DateTimeFormat(locale === "ru" ? "ru-RU" : "en-US", {
     day: "2-digit",
     month: "short",
     year: "numeric",
+    timeZone,
   }).format(new Date(iso));
 
 export const getApprovedReviewsForProduct = async (
   productId: string,
   locale: Locale,
 ): Promise<ProductReview[]> => {
-  const reviews = await findApprovedReviewsByProductId(productId);
+  const [reviews, timeZone] = await Promise.all([
+    findApprovedReviewsByProductId(productId),
+    getRequestTimeZone(),
+  ]);
 
   return reviews.map((review) => ({
     id: review.id,
     author: review.author,
-    date: formatReviewDate(review.createdAt, locale),
+    date: formatReviewDate(review.createdAt, locale, timeZone),
     rating: review.rating,
     text: review.text,
   }));
@@ -168,10 +173,12 @@ export const getUserReviewForProduct = async (
     return null;
   }
 
+  const timeZone = await getRequestTimeZone();
+
   return {
     id: existing.id,
     author: existing.author,
-    date: formatReviewDate(existing.createdAt, locale),
+    date: formatReviewDate(existing.createdAt, locale, timeZone),
     rating: existing.rating,
     text: existing.text,
     status: existing.status,

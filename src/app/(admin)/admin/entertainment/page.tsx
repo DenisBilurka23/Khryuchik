@@ -33,6 +33,7 @@ import { AdminEntertainmentFormErrorCode } from "@/server/admin/entertainment-fo
 import { getAdminEntertainmentItems } from "@/server/admin/entertainment.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
+import { resolveAdminTimeZone } from "@/server/i18n/admin-time-zone";
 import {
   formatAdminCount,
   formatAdminDate,
@@ -65,7 +66,10 @@ const AdminEntertainmentPage = async ({
   searchParams,
 }: AdminEntertainmentPageProps) => {
   const { deleted, requeued, error } = await searchParams;
-  const locale = await resolveLocale("admin");
+  const [locale, timeZone] = await Promise.all([
+    resolveLocale("admin"),
+    resolveAdminTimeZone(),
+  ]);
   const [items, tEntertainment, tForm, tCategories, tShared] =
     await Promise.all([
       getAdminEntertainmentItems(locale),
@@ -182,7 +186,7 @@ const AdminEntertainmentPage = async ({
                       {formatAdminCount(item.viewCount, locale)}
                     </TableCell>
                     <TableCell>
-                      {formatAdminDate(item.updatedAt, locale)}
+                      {formatAdminDate(item.updatedAt, locale, timeZone)}
                     </TableCell>
                     <TableCell align="right">
                       <Stack

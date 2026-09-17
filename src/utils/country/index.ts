@@ -6,6 +6,10 @@ import {
   REGION_LABEL_BY_COUNTRY,
 } from "@/constants/country";
 import { ALL_COUNTRY_CODES } from "@/constants/all-country-codes";
+import {
+  COUNTRY_TIME_ZONE,
+  FALLBACK_TIME_ZONE,
+} from "@/constants/country-timezone";
 
 export type CountryCode = string;
 
@@ -17,8 +21,12 @@ export {
   COUNTRY_COOKIE_NAME,
   COUNTRY_HEADER,
   defaultCountry,
+  FALLBACK_TIME_ZONE,
   geoCountryHeaderNames,
 };
+
+export const getCountryTimeZone = (country: string) =>
+  COUNTRY_TIME_ZONE[country.toUpperCase()] ?? FALLBACK_TIME_ZONE;
 
 // Whether an address in this country is incomplete without a region.
 export const isRegionRequired = (country: string) =>

@@ -25,6 +25,7 @@ import {
 import { AdminCustomerFormErrorCode } from "@/server/admin/customer-form-state";
 import { formatPersonName } from "@/utils";
 import { formatAdminDate, getAdminAuthProviderLabel } from "@/utils/admin";
+import { resolveAdminTimeZone } from "@/server/i18n/admin-time-zone";
 
 import { AdminCustomerAvatarUploadField } from "./avatar-upload-field";
 import type { AdminCustomerFormProps } from "./types";
@@ -37,7 +38,8 @@ export const AdminCustomerForm = async ({
   errorCode,
   isCurrentUser = false,
 }: AdminCustomerFormProps) => {
-  const [tForm, tShared, tAuthProviders] = await Promise.all([
+  const [timeZone, tForm, tShared, tAuthProviders] = await Promise.all([
+    resolveAdminTimeZone(),
     getTranslations({ locale, namespace: "adminPage.customers.form" }),
     getTranslations({ locale, namespace: "adminPage.shared" }),
     getTranslations({ locale, namespace: "adminPage.shared.status.authProviders" }),
@@ -145,10 +147,10 @@ export const AdminCustomerForm = async ({
                 ))}
               </Stack>
               <Typography variant="body2" color="text.secondary">
-                {tForm("fields.createdAt")}: {formatAdminDate(customer.createdAt, locale)}
+                {tForm("fields.createdAt")}: {formatAdminDate(customer.createdAt, locale, timeZone)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {tForm("fields.updatedAt")}: {formatAdminDate(customer.updatedAt, locale)}
+                {tForm("fields.updatedAt")}: {formatAdminDate(customer.updatedAt, locale, timeZone)}
               </Typography>
             </Stack>
           </Paper>
@@ -297,7 +299,7 @@ export const AdminCustomerForm = async ({
                 <TextField
                   fullWidth
                   label={tForm("fields.createdAt")}
-                  defaultValue={formatAdminDate(customer.createdAt, locale)}
+                  defaultValue={formatAdminDate(customer.createdAt, locale, timeZone)}
                   slotProps={{ input: { readOnly: true } }}
                 />
               </Grid>
@@ -305,7 +307,7 @@ export const AdminCustomerForm = async ({
                 <TextField
                   fullWidth
                   label={tForm("fields.updatedAt")}
-                  defaultValue={formatAdminDate(customer.updatedAt, locale)}
+                  defaultValue={formatAdminDate(customer.updatedAt, locale, timeZone)}
                   slotProps={{ input: { readOnly: true } }}
                 />
               </Grid>

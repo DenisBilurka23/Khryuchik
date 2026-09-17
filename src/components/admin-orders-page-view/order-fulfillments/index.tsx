@@ -1,5 +1,5 @@
 import { Link, Stack, Typography } from "@mui/material";
-import { useTranslations } from "next-intl";
+import { useTimeZone, useTranslations } from "next-intl";
 
 import {
   formatCurrency,
@@ -13,6 +13,7 @@ import { AdminOrderMarkDeliveredButton } from "./mark-delivered-button";
 import { AdminOrderPickupPointButton } from "./pickup-point-button";
 import { AdminOrderTrackingButton } from "./tracking-button";
 import type { AdminOrderFulfillmentsProps } from "./types";
+import { FALLBACK_TIME_ZONE, formatDate } from "@/utils";
 
 export const AdminOrderFulfillments = ({
   orderId,
@@ -22,6 +23,7 @@ export const AdminOrderFulfillments = ({
   buyableIds,
   address,
 }: AdminOrderFulfillmentsProps) => {
+  const timeZone = useTimeZone() ?? FALLBACK_TIME_ZONE;
   const t = useTranslations("adminPage.orders.tracking");
   const tParcels = useTranslations("adminPage.orders.parcels");
   const tLabel = useTranslations("adminPage.orders.buyLabel");
@@ -108,9 +110,7 @@ export const AdminOrderFulfillments = ({
             {fulfillment.deliveredAt ? (
               <Typography variant="caption" color="text.secondary">
                 {tDelivered("deliveredLabel", {
-                  date: new Date(fulfillment.deliveredAt).toLocaleDateString(
-                    locale,
-                  ),
+                  date: formatDate(fulfillment.deliveredAt, locale, timeZone),
                   by: tDelivered(`by.${fulfillment.deliveredBy ?? "carrier"}`),
                 })}
               </Typography>

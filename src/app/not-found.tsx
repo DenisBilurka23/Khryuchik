@@ -7,16 +7,20 @@ import { StorefrontThemeProvider } from "@/components/providers/storefront-theme
 import { StorefrontHeader } from "@/components/storefront-header";
 import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
 import { defaultLocale } from "@/i18n/config";
-import { getRequestCountry } from "@/server/country/request-country";
+import {
+  getRequestCountry,
+  getRequestTimeZone,
+} from "@/server/country/request-country";
 import {
   getActiveLocaleCodes,
   getActiveRegionCodes,
 } from "@/server/localization/localization.service";
 
 const NotFound = async () => {
-  const [country, messages, availableLocales, availableCountries] =
+  const [country, timeZone, messages, availableLocales, availableCountries] =
     await Promise.all([
       getRequestCountry(),
+      getRequestTimeZone(),
       getMessages({ locale: defaultLocale }),
       getActiveLocaleCodes(),
       getActiveRegionCodes(),
@@ -27,7 +31,11 @@ const NotFound = async () => {
   );
 
   return (
-    <IntlClientProvider locale={defaultLocale} messages={messages}>
+    <IntlClientProvider
+      locale={defaultLocale}
+      messages={messages}
+      timeZone={timeZone}
+    >
       <StorefrontThemeProvider>
         <StorefrontHeader
           locale={defaultLocale}

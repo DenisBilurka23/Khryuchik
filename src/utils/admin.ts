@@ -52,11 +52,16 @@ export const createAdminNavItems = (labels: AdminNavLabels): AdminNavItem[] => [
   { key: "promocodes", label: labels.promocodes, href: "/admin/promocodes" },
 ];
 
-export const formatAdminDate = (value: string, locale: Locale) =>
+export const formatAdminDate = (
+  value: string,
+  locale: Locale,
+  timeZone: string,
+) =>
   new Intl.DateTimeFormat(locale === "ru" ? "ru-RU" : "en-US", {
     day: "2-digit",
     month: "short",
     year: "numeric",
+    timeZone,
   }).format(new Date(value));
 
 export const formatAdminCount = (value: number, locale: Locale) =>

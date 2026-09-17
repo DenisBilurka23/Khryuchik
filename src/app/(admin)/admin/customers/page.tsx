@@ -31,6 +31,7 @@ import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { formatPersonName } from "@/utils";
 import { formatAdminDate } from "@/utils/admin";
+import { resolveAdminTimeZone } from "@/server/i18n/admin-time-zone";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await resolveLocale("admin");
@@ -53,9 +54,10 @@ type AdminCustomersPageProps = {
 const AdminCustomersPage = async ({
   searchParams,
 }: AdminCustomersPageProps) => {
-  const [{ deleted, error }, locale] = await Promise.all([
+  const [{ deleted, error }, locale, timeZone] = await Promise.all([
     searchParams,
     resolveLocale("admin"),
+    resolveAdminTimeZone(),
   ]);
   const [customers, session, tCustomers, tCustomerForm, tShared] =
     await Promise.all([
@@ -150,7 +152,7 @@ const AdminCustomersPage = async ({
                     />
                   </TableCell>
                   <TableCell>
-                    {formatAdminDate(customer.createdAt, locale)}
+                    {formatAdminDate(customer.createdAt, locale, timeZone)}
                   </TableCell>
                   <TableCell align="right">
                     <Stack direction="row" gap={0.5} justifyContent="flex-end">

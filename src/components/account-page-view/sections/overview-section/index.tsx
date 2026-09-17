@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 import { DownloadRow } from "@/components/download-row";
 import { Plate } from "@/components/primitives";
 import { customerOrderStatusColors } from "@/constants/order";
+import { formatDate } from "@/utils";
 import {
   getUserShippingAddressLines,
   getUserShippingAddressTitle,
@@ -42,6 +43,7 @@ const addressPlateSx = {
 
 export const OverviewSection = ({
   locale,
+  timeZone,
   orders,
   downloads,
   addresses,
@@ -84,7 +86,7 @@ export const OverviewSection = ({
                       color="text.secondary"
                       sx={{ mt: 0.5 }}
                     >
-                      {new Date(order.createdAt).toLocaleDateString(locale)}
+                      {formatDate(order.createdAt, locale, timeZone)}
                     </Typography>
                     <Typography sx={{ mt: 1.25 }}>
                       {order.itemsSummary}
