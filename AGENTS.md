@@ -29,8 +29,11 @@ You are the project architecture specialist for the Khryuchik repository. Your j
 ## Routing Rules
 - Treat this as a Next.js App Router project using Next 16 conventions.
 - Page and layout props may use `params: Promise<...>` and `searchParams: Promise<...>`; await them rather than assuming synchronous objects.
-- Default-locale storefront routes live under `src/app/(default)`.
-- Localized storefront routes live under `src/app/[lang]`.
+- All storefront routes live in one tree, `src/app/[lang]`. There is no `(default)` tree; do not add one.
+- Unprefixed URLs reach that tree through a rewrite in `src/proxy.ts`, so `/shop` renders `[lang]/shop` with the default locale while the browser keeps `/shop`. An explicit `/en/...` prefix is redirected to the unprefixed form.
+- Keep the canonical rule in `createStorefrontMetadata` (`src/server/i18n/metadata.ts`) rather than writing `alternates` by hand in a page.
+- Guard localized pages with `requireActiveLocale` from `src/server/i18n/require-active-locale.ts`.
+- URL-routable locales come from `locales` in `src/i18n/config.ts`; activating a locale in the admin alone does not give it a prefixed route.
 - Admin stays under `src/app/(admin)/admin` and must not be moved under `[lang]`.
 - For admin locale and dictionary access, call `resolveLocale("admin")` from `src/server/i18n/request-locale.ts` directly in the admin page or layout, as the existing admin routes do.
 
