@@ -81,11 +81,18 @@ export const ForgotPasswordPageView = ({
     setIsSubmitting(false);
 
     if (!response.ok) {
-      setErrorMessage(
-        data?.error === AuthInputErrorCode.InvalidEmail
-          ? t("invalidEmail")
-          : t("unexpectedError"),
-      );
+      switch (data?.error ?? AuthInputErrorCode.UnexpectedError) {
+        case AuthInputErrorCode.InvalidEmail:
+          setErrorMessage(t("invalidEmail"));
+          break;
+        case AuthInputErrorCode.TooManyRequests:
+          setErrorMessage(t("tooManyRequests"));
+          break;
+        default:
+          setErrorMessage(t("unexpectedError"));
+          break;
+      }
+
       return;
     }
 

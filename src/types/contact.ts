@@ -4,6 +4,7 @@ export enum ContactErrorCode {
   InvalidName = "invalid_name",
   InvalidEmail = "invalid_email",
   InvalidMessage = "invalid_message",
+  TooManyRequests = "too_many_requests",
   UnexpectedError = "unexpected_error",
 }
 

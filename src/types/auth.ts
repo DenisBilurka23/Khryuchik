@@ -2,6 +2,7 @@ export enum AuthInputErrorCode {
   MissingFields = "missing_fields",
   InvalidEmail = "invalid_email",
   PasswordTooShort = "password_too_short",
+  TooManyRequests = "too_many_requests",
   UnexpectedError = "unexpected_error",
 }
 

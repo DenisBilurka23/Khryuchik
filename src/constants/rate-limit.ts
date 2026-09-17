@@ -14,3 +14,13 @@ export const ENTERTAINMENT_VIEW_RATE_LIMIT = {
   limit: 30,
   windowMs: 60_000,
 } as const;
+
+export const AUTH_RATE_LIMIT = {
+  limit: 10,
+  windowMs: 60 * 60_000,
+} as const;
+
+export const CONTACT_RATE_LIMIT = {
+  limit: 5,
+  windowMs: 60 * 60_000,
+} as const;

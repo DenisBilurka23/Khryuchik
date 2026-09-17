@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { AUTH_RATE_LIMIT } from "@/constants/rate-limit";
+import {
+  consumeRateLimit,
+  getClientIpKey,
+} from "@/server/rate-limit/rate-limit.service";
+
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { sendPasswordResetEmail } from "@/server/email/password-reset";
 import { requestPasswordReset } from "@/server/users/services/users.service";
@@ -26,11 +32,30 @@ export async function POST(request: Request) {
     const body = await request.json();
     const email = typeof body.email === "string" ? body.email.trim() : "";
     const origin = typeof body.origin === "string" ? body.origin : undefined;
-    const requestedLocale = typeof body.locale === "string" ? body.locale : defaultLocale;
+    const requestedLocale =
+      typeof body.locale === "string" ? body.locale : defaultLocale;
     const locale = isLocale(requestedLocale) ? requestedLocale : defaultLocale;
 
     if (!email || !EMAIL_PATTERN.test(email)) {
-      return NextResponse.json({ error: AuthInputErrorCode.InvalidEmail }, { status: 400 });
+      return NextResponse.json(
+        { error: AuthInputErrorCode.InvalidEmail },
+        { status: 400 },
+      );
+    }
+
+    const rateLimit = consumeRateLimit({
+      key: `password-reset:${getClientIpKey(request.headers)}`,
+      ...AUTH_RATE_LIMIT,
+    });
+
+    if (!rateLimit.isAllowed) {
+      return NextResponse.json(
+        { error: AuthInputErrorCode.TooManyRequests },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+        },
+      );
     }
 
     const token = await requestPasswordReset(email);
@@ -47,6 +72,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch {
-    return NextResponse.json({ error: AuthInputErrorCode.UnexpectedError }, { status: 500 });
+    return NextResponse.json(
+      { error: AuthInputErrorCode.UnexpectedError },
+      { status: 500 },
+    );
   }
 }

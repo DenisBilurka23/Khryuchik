@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { CONTACT_RATE_LIMIT } from "@/constants/rate-limit";
+import {
+  consumeRateLimit,
+  getClientIpKey,
+} from "@/server/rate-limit/rate-limit.service";
+
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { sendContactMessage } from "@/server/email/contact-message";
 import { notifyAdminContactMessage } from "@/server/payments/telegram";
@@ -34,6 +40,21 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: ContactErrorCode.InvalidMessage },
         { status: 400 },
+      );
+    }
+
+    const rateLimit = consumeRateLimit({
+      key: `contact:${getClientIpKey(request.headers)}`,
+      ...CONTACT_RATE_LIMIT,
+    });
+
+    if (!rateLimit.isAllowed) {
+      return NextResponse.json(
+        { error: ContactErrorCode.TooManyRequests },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+        },
       );
     }
 

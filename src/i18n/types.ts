@@ -467,6 +467,7 @@ export type ContactPageLabels = {
     invalidName: string;
     invalidEmail: string;
     invalidMessage: string;
+    tooManyRequests: string;
     unexpectedError: string;
     success: {
       titlePrefix: string;
@@ -817,6 +818,7 @@ export type ForgotPasswordPageDictionary = {
   loginLinkLabel: string;
   successMessage: string;
   invalidEmail: string;
+  tooManyRequests: string;
   unexpectedError: string;
 };
 
@@ -890,6 +892,7 @@ export type RegisterPageDictionary = {
   passwordTooShort: string;
   invalidEmail: string;
   missingFields: string;
+  tooManyRequests: string;
   unexpectedError: string;
   verificationSentTitle: string;
   verificationSentText: string;

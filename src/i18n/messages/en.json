@@ -900,6 +900,7 @@
         "invalidName": "How should we address you?",
         "invalidEmail": "Please check your email address",
         "invalidMessage": "A few more words — it helps us help you",
+        "tooManyRequests": "Too many messages sent. Please wait a little and try again.",
         "unexpectedError": "Something went wrong. Please try again.",
         "success": {
           "titlePrefix": "Message",
@@ -1075,6 +1076,7 @@
     "passwordTooShort": "Password must be at least 8 characters.",
     "invalidEmail": "Enter a valid email address.",
     "missingFields": "Fill in all required fields.",
+    "tooManyRequests": "Too many attempts. Please wait a little and try again.",
     "unexpectedError": "Unable to create account right now. Try again in a moment.",
     "verificationSentTitle": "Confirm your email",
     "verificationSentText": "We sent a confirmation link to {email}. Open it to activate your account — the link is valid for 24 hours."
@@ -1093,6 +1095,7 @@
     "loginLinkLabel": "Back to sign in",
     "successMessage": "If an account with this email exists, the reset link has been prepared.",
     "invalidEmail": "Enter a valid email address.",
+    "tooManyRequests": "Too many attempts. Please wait a little and try again.",
     "unexpectedError": "Unable to start password reset right now. Try again in a moment."
   },
   "resetPasswordPage": {

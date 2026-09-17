@@ -7,6 +7,7 @@ import { sendContactMessageClient } from "@/client-api/contact";
 import { SectionEyebrow } from "@/components/section-eyebrow";
 import { accentSx, inputFieldSx } from "@/theme/sx";
 import { EMAIL_PATTERN } from "@/utils/validation";
+import { ContactErrorCode } from "@/types/contact";
 
 import type { ContactFieldErrors, ContactFormProps } from "./types";
 
@@ -113,7 +114,11 @@ export const ContactForm = ({
     setIsSubmitting(false);
 
     if (!response.ok) {
-      setFormError(labels.unexpectedError);
+      setFormError(
+        response.data?.error === ContactErrorCode.TooManyRequests
+          ? labels.tooManyRequests
+          : labels.unexpectedError,
+      );
       return;
     }
 

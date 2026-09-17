@@ -108,6 +108,9 @@ export const RegisterPageView = ({
         case AuthInputErrorCode.MissingFields:
           setErrorMessage(t("missingFields"));
           break;
+        case AuthInputErrorCode.TooManyRequests:
+          setErrorMessage(t("tooManyRequests"));
+          break;
         default:
           setErrorMessage(t("unexpectedError"));
           break;

@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { AUTH_RATE_LIMIT } from "@/constants/rate-limit";
+import {
+  consumeRateLimit,
+  getClientIpKey,
+} from "@/server/rate-limit/rate-limit.service";
+
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { buildEmailVerificationUrl } from "@/server/auth/verification-url";
 import { sendEmailVerificationEmail } from "@/server/email/email-verification";
@@ -41,6 +47,21 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: AuthInputErrorCode.PasswordTooShort },
         { status: 400 },
+      );
+    }
+
+    const rateLimit = consumeRateLimit({
+      key: `register:${getClientIpKey(request.headers)}`,
+      ...AUTH_RATE_LIMIT,
+    });
+
+    if (!rateLimit.isAllowed) {
+      return NextResponse.json(
+        { error: AuthInputErrorCode.TooManyRequests },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+        },
       );
     }
 
