@@ -3,7 +3,7 @@ import "server-only";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { defaultLocale, locales, type Locale } from "@/i18n/config";
+import { locales, type Locale } from "@/i18n/config";
 import { getLocalizedPath } from "@/utils";
 
 type StorefrontOpenGraphInput = {
@@ -20,21 +20,13 @@ type StorefrontMetadataInput = {
   openGraph?: StorefrontOpenGraphInput;
 };
 
-const toAlternatePath = (locale: Locale, path: string) => {
-  if (path !== "/") {
-    return getLocalizedPath(locale, path);
-  }
-
-  return locale === defaultLocale ? "/" : `/${locale}`;
-};
-
 export const createStorefrontAlternates = (
   locale: Locale,
   path: string,
 ): Metadata["alternates"] => ({
-  canonical: toAlternatePath(locale, path),
+  canonical: getLocalizedPath(locale, path),
   languages: Object.fromEntries(
-    locales.map((code) => [code, toAlternatePath(code, path)]),
+    locales.map((code) => [code, getLocalizedPath(code, path)]),
   ),
 });
 
