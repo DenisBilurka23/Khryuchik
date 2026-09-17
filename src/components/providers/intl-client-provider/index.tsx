@@ -3,6 +3,8 @@
 import { useEffect } from "react";
 import { NextIntlClientProvider } from "next-intl";
 
+import { TIME_ZONE } from "@/i18n/config";
+
 import type { IntlClientProviderProps } from "./types";
 
 export const IntlClientProvider = ({
@@ -19,7 +21,7 @@ export const IntlClientProvider = ({
   }, [locale]);
 
   return (
-    <NextIntlClientProvider locale={locale} {...props}>
+    <NextIntlClientProvider locale={locale} timeZone={TIME_ZONE} {...props}>
       {children}
     </NextIntlClientProvider>
   );
