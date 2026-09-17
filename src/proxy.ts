@@ -45,28 +45,30 @@ const stripDefaultLocalePrefix = (pathname: string) => {
     : null;
 };
 
-const getLocaleFromPathname = (pathname: string) => {
-  const matchedLocale = locales.find(
+const getPrefixedLocale = (pathname: string) =>
+  locales.find(
     (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`),
-  );
-
-  return matchedLocale ?? defaultLocale;
-};
+  ) ?? null;
 
 const withRequestContextHeaders = (
   request: NextRequest,
   locale: string,
   country: string,
+  rewriteTo?: URL,
 ) => {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(LOCALE_HEADER, locale);
   requestHeaders.set(COUNTRY_HEADER, country);
 
-  return NextResponse.next({
+  const init = {
     request: {
       headers: requestHeaders,
     },
-  });
+  };
+
+  return rewriteTo
+    ? NextResponse.rewrite(rewriteTo, init)
+    : NextResponse.next(init);
 };
 
 export const proxy = (request: NextRequest) => {
@@ -90,15 +92,25 @@ export const proxy = (request: NextRequest) => {
     return NextResponse.redirect(redirectedUrl, 308);
   }
 
+  const prefixedLocale = getPrefixedLocale(pathname);
+
+  if (prefixedLocale) {
+    return withRequestContextHeaders(request, prefixedLocale, country);
+  }
+
+  const rewrittenUrl = request.nextUrl.clone();
+  rewrittenUrl.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
+
   return withRequestContextHeaders(
     request,
-    getLocaleFromPathname(pathname),
+    defaultLocale,
     country,
+    rewrittenUrl,
   );
 };
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|icon.png|apple-icon.png|robots.txt|sitemap.xml).*)",
   ],
 };
