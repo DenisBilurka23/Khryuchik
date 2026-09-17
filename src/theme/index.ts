@@ -133,5 +133,15 @@ export const storefrontTheme = createTheme({
         },
       },
     },
+    MuiMenu: {
+      defaultProps: {
+        disableScrollLock: true,
+      },
+    },
+    MuiPopover: {
+      defaultProps: {
+        disableScrollLock: true,
+      },
+    },
   },
 });
