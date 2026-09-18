@@ -177,3 +177,19 @@ export type ProductDetailDocument = {
   relatedProductIds: string[];
   translations: Record<Locale, ProductDetailTranslation>;
 };
+
+export type SeedStorefrontBook = {
+  slug: string;
+  title: string;
+  lang: string;
+  desc: string;
+  emoji: string;
+};
+
+export type SeedStorefrontProduct = {
+  id: string;
+  title: string;
+  price: number;
+  emoji: string;
+  category: string;
+};

@@ -1,5 +1,8 @@
 import type { Locale } from "@/i18n/config";
-import type { SeedStorefrontBook, SeedStorefrontProduct } from "@/i18n/types";
+import type {
+  SeedStorefrontBook,
+  SeedStorefrontProduct,
+} from "@/types/catalog";
 
 const storefrontBooksByLocale: Record<Locale, SeedStorefrontBook[]> = {
   ru: [

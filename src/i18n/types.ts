@@ -2,22 +2,6 @@ import type { EntertainmentCategoryKey } from "@/types/entertainment";
 import type { OrderFulfillmentSource } from "@/types/order";
 import type { CountryCode } from "@/utils/country";
 
-export type SeedStorefrontBook = {
-  slug: string;
-  title: string;
-  lang: string;
-  desc: string;
-  emoji: string;
-};
-
-export type SeedStorefrontProduct = {
-  id: string;
-  title: string;
-  price: number;
-  emoji: string;
-  category: string;
-};
-
 export type CountLabelForms = {
   one: string;
   few?: string;
