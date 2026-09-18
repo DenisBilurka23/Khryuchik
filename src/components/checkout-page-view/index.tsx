@@ -372,6 +372,7 @@ export const CheckoutPageView = ({
                     {!isDigitalOnly ? (
                       <CheckoutShippingMethodSection
                         groups={shippingQuote.groups}
+                        country={form.country}
                         items={items}
                         isLoading={shippingQuote.status === "loading"}
                         errorMessage={globalShippingError ?? undefined}

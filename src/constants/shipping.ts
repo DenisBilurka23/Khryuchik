@@ -60,6 +60,42 @@ export const EUROPE_HUB_COUNTRIES: readonly CountryCode[] = [
   "VA",
 ];
 
+export const EU_CUSTOMS_TERRITORY: readonly CountryCode[] = [
+  "AT",
+  "BE",
+  "BG",
+  "CY",
+  "CZ",
+  "DE",
+  "DK",
+  "EE",
+  "ES",
+  "FI",
+  "FR",
+  "GR",
+  "HR",
+  "HU",
+  "IE",
+  "IT",
+  "LT",
+  "LU",
+  "LV",
+  "MT",
+  "NL",
+  "PL",
+  "PT",
+  "RO",
+  "SE",
+  "SI",
+  "SK",
+];
+
+export const FINAL_PRICE_DESTINATIONS: readonly CountryCode[] = [
+  ...EU_CUSTOMS_TERRITORY,
+  "CA",
+  "US",
+];
+
 export const SHIPPING_HUB_CODES: readonly ShippingHubCode[] = [
   "europe",
   "northAmerica",

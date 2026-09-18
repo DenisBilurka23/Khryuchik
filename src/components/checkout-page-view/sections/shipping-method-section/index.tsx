@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 import { SHIPPING_FRACTION_DIGITS } from "@/constants/shipping";
-import { formatCurrency } from "@/utils";
+import { formatCurrency, mayIncurImportCharges } from "@/utils";
 
 import { CheckoutSectionCard } from "../../section-card";
 import {
@@ -28,6 +28,7 @@ import type { ShippingMethodSectionProps } from "./types";
 
 export const CheckoutShippingMethodSection = ({
   groups,
+  country,
   items,
   isLoading,
   errorMessage,
@@ -70,6 +71,10 @@ export const CheckoutShippingMethodSection = ({
             <Typography variant="body2" color="text.secondary">
               {labels.shippingMethod.multipleParcels}
             </Typography>
+          ) : null}
+
+          {mayIncurImportCharges(country) ? (
+            <Alert severity="info">{labels.shippingMethod.importCharges}</Alert>
           ) : null}
 
           {shippableGroups.map((group) => {

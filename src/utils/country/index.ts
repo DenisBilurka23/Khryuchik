@@ -6,6 +6,7 @@ import {
   REGION_LABEL_BY_COUNTRY,
 } from "@/constants/country";
 import { ALL_COUNTRY_CODES } from "@/constants/all-country-codes";
+import { FINAL_PRICE_DESTINATIONS } from "@/constants/shipping";
 import {
   COUNTRY_TIME_ZONE,
   FALLBACK_TIME_ZONE,
@@ -27,6 +28,9 @@ export {
 
 export const getCountryTimeZone = (country: string) =>
   COUNTRY_TIME_ZONE[country.toUpperCase()] ?? FALLBACK_TIME_ZONE;
+
+export const mayIncurImportCharges = (country: string) =>
+  !FINAL_PRICE_DESTINATIONS.includes(country.toUpperCase());
 
 // Whether an address in this country is incomplete without a region.
 export const isRegionRequired = (country: string) =>
@@ -67,8 +71,7 @@ const defaultPaymentMethods: PaymentMethod[] = ["stripe"];
 
 // Countries that pay by something other than a card. Empty since Belarus
 // moved to Stripe - kept as the hook a region needs when it cannot.
-const countryPaymentMethods: Partial<Record<CountryCode, PaymentMethod[]>> =
-  {};
+const countryPaymentMethods: Partial<Record<CountryCode, PaymentMethod[]>> = {};
 
 export const getCountryPaymentMethods = (
   country: CountryCode,
