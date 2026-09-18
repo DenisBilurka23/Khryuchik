@@ -12,6 +12,7 @@ export {
   getAllCountriesSorted,
   isIsoCountryCode,
   isRegionRequired,
+  mayIncurImportCharges,
   regionFieldKey,
   isPaymentMethodAvailable,
   readCountryCookie,

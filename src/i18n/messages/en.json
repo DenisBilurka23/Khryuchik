@@ -790,6 +790,7 @@
         "calculating": "Calculating delivery…",
         "removeGroup": "Remove these items",
         "multipleParcels": "This order travels in more than one parcel.",
+        "importCharges": "Local taxes and a customs handling fee may be due on delivery to this country. They are not included in your order total.",
         "toAddress": "To the address",
         "pickupPoint": "To a parcel point",
         "pickupPointSelect": {

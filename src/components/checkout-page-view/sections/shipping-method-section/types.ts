@@ -8,7 +8,7 @@ import type { CheckoutLabels } from "../../types";
 
 export type ShippingMethodSectionProps = {
   groups: ShippingQuoteGroup[];
-  // The resolved cart, so a blocked parcel can name the items it holds.
+  country: string;
   items: CartItem[];
   isLoading: boolean;
   errorMessage?: string;

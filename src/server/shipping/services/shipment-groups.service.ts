@@ -103,7 +103,7 @@ export const buildShipmentGroups = async (
     group.value += item.unitPrice * item.quantity;
     group.contents.push({
       quantity: item.quantity,
-      valueAmount: item.unitPrice * item.quantity,
+      valueAmount: item.unitPrice,
       hsCode: shipping.hsCode,
       originCountry: manufacturer?.country,
       manufacturer,
