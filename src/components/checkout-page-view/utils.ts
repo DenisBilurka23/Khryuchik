@@ -1,14 +1,13 @@
+import type { CheckoutRequestPayload } from "@/client-api/checkout";
 import type { ShippingQuoteStatus } from "@/hooks/useShippingQuote.types";
-import { isPostalCodeValid, isRegionRequired } from "@/utils";
+import { type CountryCode, isPostalCodeValid, isRegionRequired } from "@/utils";
 
-import type {
-  ShippingGroupIssue,
-  ShippingQuoteGroup,
-} from "@/types/shipping";
+import type { ShippingGroupIssue, ShippingQuoteGroup } from "@/types/shipping";
 
 import type {
   CheckoutLabels,
   CheckoutPageViewProps,
+  CheckoutRequestInput,
   FieldErrors,
   FormState,
 } from "./types";
@@ -89,6 +88,48 @@ export const validateForm = (
   }
 
   return errors;
+};
+
+export const checkoutErrorMessage = (
+  code: string,
+  labels: CheckoutLabels,
+): string => {
+  switch (code) {
+    case "empty_cart":
+    case "unresolved_items":
+      return labels.errors.emptyCart;
+    case "invalid_payload":
+      return labels.errors.invalidPayload;
+    case "invalid_email":
+      return labels.errors.invalidEmail;
+    case "unsupported_payment_method":
+      return labels.errors.unsupportedMethod;
+    case "pricing_unavailable":
+      return labels.errors.pricingUnavailable;
+    case "shipping_unavailable":
+      return labels.errors.shippingUnavailable;
+    case "shipping_unsupported_destination":
+      return labels.errors.shippingUnsupportedDestination;
+    case "shipping_unsupported_parcel":
+      return labels.errors.shippingUnsupportedParcel;
+    case "shipping_missing_data":
+      return labels.errors.shippingMissingData;
+    case "unsupported_variant":
+      return labels.errors.unsupportedVariant;
+    case "item_out_of_stock":
+      return labels.errors.itemOutOfStock;
+    case "invalid_promo_code":
+      return labels.errors.invalidPromoCode;
+    case "pickup_point_required":
+      return labels.fieldErrors.pickupPointRequired;
+    case "shop_closed":
+      return labels.errors.shopClosed;
+    case "payment_failed":
+    case "stripe_session_missing_url":
+      return labels.errors.paymentFailed;
+    default:
+      return labels.errors.generic;
+  }
 };
 
 export const shippingOptionLabel = (
@@ -207,3 +248,41 @@ export const shippingGroupIssueMessage = (
 
 export const unshippableGroups = (groups: ShippingQuoteGroup[]) =>
   groups.filter((group) => group.issue);
+
+export const buildCheckoutRequest = ({
+  locale,
+  items,
+  form,
+  isDigitalOnly,
+  paymentMethod,
+  groups,
+  selectedOptionIds,
+  pickupPointIds,
+  promoCode,
+}: CheckoutRequestInput): CheckoutRequestPayload => ({
+  locale,
+  items,
+  customer: {
+    firstName: form.firstName.trim(),
+    lastName: form.lastName.trim(),
+    email: form.email.trim(),
+    phone: form.phone.trim() || undefined,
+  },
+  shippingAddress: isDigitalOnly
+    ? undefined
+    : {
+        line1: form.line1.trim(),
+        line2: form.line2.trim() || undefined,
+        city: form.city.trim(),
+        region: form.region.trim() || undefined,
+        postalCode: form.postalCode.trim() || undefined,
+        country: form.country as CountryCode,
+      },
+  paymentMethod,
+  selectedShippingOptionIds: isDigitalOnly
+    ? undefined
+    : resolveShippingSelection(groups, selectedOptionIds),
+  pickupPointIds,
+  promoCode,
+  notes: form.notes.trim() || undefined,
+});

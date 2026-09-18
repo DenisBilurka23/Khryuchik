@@ -2,8 +2,10 @@ import type { ChangeEvent } from "react";
 
 import type { Locale } from "@/i18n/config";
 import type { CheckoutPageLabels } from "@/i18n/types";
+import type { StoredCartItem } from "@/types/cart";
+import type { ShippingQuoteGroup } from "@/types/shipping";
 import type { UserShippingAddress } from "@/types/users";
-import type { CountryCode, CurrencyCode } from "@/utils";
+import type { CountryCode, CurrencyCode, PaymentMethod } from "@/utils";
 
 export type CheckoutInitialCustomer = {
   firstName?: string;
@@ -66,4 +68,16 @@ export type CheckoutLabels = {
   errors: CheckoutPageLabels["errors"];
   fieldErrors: CheckoutPageLabels["fieldErrors"];
   emptyState: CheckoutPageLabels["emptyState"];
+};
+
+export type CheckoutRequestInput = {
+  locale: Locale;
+  items: StoredCartItem[];
+  form: FormState;
+  isDigitalOnly: boolean;
+  paymentMethod: PaymentMethod;
+  groups: ShippingQuoteGroup[];
+  selectedOptionIds: Record<string, string>;
+  pickupPointIds?: Record<string, string>;
+  promoCode?: string;
 };

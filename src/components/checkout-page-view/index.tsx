@@ -1,7 +1,6 @@
 "use client";
 
 import { Box, Container, Grid, Stack, Typography } from "@mui/material";
-import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
 import { submitCheckoutClient } from "@/client-api/checkout";
@@ -11,13 +10,14 @@ import { clearBuyNowItem } from "@/components/cart/buy-now-store";
 import { useCart } from "@/components/cart/store";
 import { PageShell } from "@/components/storefront/page-shell";
 import { useBuyNowCheckoutItems } from "@/hooks/useBuyNowCheckoutItems";
+import { useCheckoutForm } from "@/hooks/useCheckoutForm";
+import { useCheckoutLabels } from "@/hooks/useCheckoutLabels";
+import { useCheckoutShippingSelection } from "@/hooks/useCheckoutShippingSelection";
 import { usePickupPoints } from "@/hooks/usePickupPoints";
 import { usePromoCode } from "@/hooks/usePromoCode";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { useShippingQuote } from "@/hooks/useShippingQuote";
-import type { ShippingPickupPoint } from "@/types/shipping";
 import {
-  type CountryCode,
   getAllCountriesSorted,
   getCountryPaymentMethods,
   getLocalizedPath,
@@ -34,18 +34,11 @@ import {
   CheckoutShippingAddressSection,
   CheckoutShippingMethodSection,
 } from "./sections";
-import type {
-  CheckoutLabels,
-  CheckoutPageViewProps,
-  FieldErrors,
-  FormFieldKey,
-  FormState,
-} from "./types";
+import type { CheckoutPageViewProps } from "./types";
 import {
-  formFromAddress,
+  buildCheckoutRequest,
+  checkoutErrorMessage,
   isShippingBlocking,
-  resolvePickupGroupIds,
-  resolveShippingSelection,
   resolveShippingTotal,
   shippingErrorMessage,
   shippingGroupIssueMessage,
@@ -61,27 +54,7 @@ export const CheckoutPageView = ({
   initialShippingAddresses,
   initialSelectedAddressId,
 }: CheckoutPageViewProps) => {
-  const t = useTranslations("storefront.checkoutPage");
-  const labels: CheckoutLabels = {
-    eyebrow: t("eyebrow"),
-    title: t("title"),
-    lead: t("lead"),
-    breadcrumbs: t.raw("breadcrumbs") as CheckoutLabels["breadcrumbs"],
-    contactTitle: t("contactTitle"),
-    shippingTitle: t("shippingTitle"),
-    paymentTitle: t("paymentTitle"),
-    summaryTitle: t("summaryTitle"),
-    shippingMethod: t.raw("shippingMethod") as CheckoutLabels["shippingMethod"],
-    fields: t.raw("fields") as CheckoutLabels["fields"],
-    savedAddressesTitle: t("savedAddressesTitle"),
-    newAddressOption: t("newAddressOption"),
-    paymentMethods: t.raw("paymentMethods") as CheckoutLabels["paymentMethods"],
-    summary: t.raw("summary") as CheckoutLabels["summary"],
-    submit: t.raw("submit") as CheckoutLabels["submit"],
-    errors: t.raw("errors") as CheckoutLabels["errors"],
-    fieldErrors: t.raw("fieldErrors") as CheckoutLabels["fieldErrors"],
-    emptyState: t.raw("emptyState") as CheckoutLabels["emptyState"],
-  };
+  const labels = useCheckoutLabels();
 
   const cart = useCart();
   const buyNowItems = useBuyNowCheckoutItems();
@@ -104,32 +77,23 @@ export const CheckoutPageView = ({
     ? selectedMethod
     : availableMethods[0];
 
-  const hasSavedAddresses =
-    initialShippingAddresses !== undefined &&
-    initialShippingAddresses.length > 0;
+  const {
+    form,
+    fieldErrors,
+    hasSavedAddresses,
+    selectedSavedAddressId,
+    showAddressForm,
+    setFieldErrors,
+    handleField,
+    handleCountryChange,
+    handleRegionChange,
+    handleSavedAddressSelect,
+  } = useCheckoutForm({
+    initialCustomer,
+    initialShippingAddresses,
+    initialSelectedAddressId,
+  });
 
-  const defaultSelectedAddressId = hasSavedAddresses
-    ? (initialSelectedAddressId ?? initialShippingAddresses![0]?.id ?? "")
-    : "";
-
-  const defaultAddress = hasSavedAddresses
-    ? initialShippingAddresses!.find((a) => a.id === defaultSelectedAddressId)
-    : undefined;
-
-  const [selectedSavedAddressId, setSelectedSavedAddressId] = useState<string>(
-    defaultSelectedAddressId,
-  );
-  const [form, setForm] = useState<FormState>(() =>
-    formFromAddress(initialCustomer, defaultAddress),
-  );
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [selectedShippingOptionIds, setSelectedShippingOptionIds] = useState<
-    Record<string, string>
-  >({});
-  const [selectedPickupPoints, setSelectedPickupPoints] = useState<
-    Record<string, ShippingPickupPoint>
-  >({});
-  const [pickupPointError, setPickupPointError] = useState<string | null>(null);
   const [isLocationFieldFocused, setIsLocationFieldFocused] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -160,13 +124,13 @@ export const CheckoutPageView = ({
     isLocationFieldFocused,
   });
 
-  const pickupGroupIds = resolvePickupGroupIds(
-    shippingQuote.groups,
-    selectedShippingOptionIds,
-  );
+  const shippingSelection = useCheckoutShippingSelection({
+    groups: shippingQuote.groups,
+    pickupPointRequiredMessage: labels.fieldErrors.pickupPointRequired,
+  });
   const pickupPoints = usePickupPoints({
     address: quoteAddress,
-    isEnabled: pickupGroupIds.length > 0,
+    isEnabled: shippingSelection.pickupGroupIds.length > 0,
   });
 
   const {
@@ -182,7 +146,10 @@ export const CheckoutPageView = ({
 
   const shipping =
     shippingQuote.groups.length > 0
-      ? resolveShippingTotal(shippingQuote.groups, selectedShippingOptionIds)
+      ? resolveShippingTotal(
+          shippingQuote.groups,
+          shippingSelection.selectedOptionIds,
+        )
       : (shippingQuote.shipping ?? 0);
   const total = subtotal + shipping - discount;
   const blockedGroups = unshippableGroups(shippingQuote.groups);
@@ -208,117 +175,6 @@ export const CheckoutPageView = ({
 
         group?.itemIds.forEach((itemId) => cart.removeItem(itemId));
       };
-
-  const clearFieldError = (key: FormFieldKey) => {
-    setFieldErrors((prev) => {
-      if (!prev[key]) return prev;
-      const next = { ...prev };
-      delete next[key];
-      return next;
-    });
-  };
-
-  const handleField =
-    (key: FormFieldKey) =>
-    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setForm((prev) => ({ ...prev, [key]: event.target.value }));
-      clearFieldError(key);
-    };
-
-  const handleShippingOptionChange = (groupId: string, optionId: string) => {
-    setSelectedShippingOptionIds((prev) => ({ ...prev, [groupId]: optionId }));
-    setPickupPointError(null);
-  };
-
-  const handlePickupPointChange = (
-    groupId: string,
-    point: ShippingPickupPoint,
-  ) => {
-    setSelectedPickupPoints((prev) => ({ ...prev, [groupId]: point }));
-    setPickupPointError(null);
-  };
-
-  const handleCountryChange = (value: string) => {
-    setForm((prev) => ({ ...prev, country: value, region: "" }));
-    clearFieldError("country");
-    clearFieldError("region");
-  };
-
-  const handleRegionChange = (value: string) => {
-    setForm((prev) => ({ ...prev, region: value }));
-    clearFieldError("region");
-  };
-
-  const handleSavedAddressSelect = (addressId: string) => {
-    setSelectedSavedAddressId(addressId);
-    setFieldErrors({});
-
-    if (addressId === "") {
-      setForm((prev) => ({
-        ...prev,
-        line1: "",
-        line2: "",
-        city: "",
-        region: "",
-        postalCode: "",
-        country: "",
-      }));
-      return;
-    }
-
-    const address = initialShippingAddresses?.find((a) => a.id === addressId);
-
-    if (address) {
-      setForm((prev) => ({
-        ...prev,
-        line1: address.line1,
-        line2: address.line2 ?? "",
-        city: address.city,
-        region: address.region ?? "",
-        postalCode: address.postalCode ?? "",
-        country: address.country,
-      }));
-    }
-  };
-
-  const errorForCode = (code: string): string => {
-    switch (code) {
-      case "empty_cart":
-      case "unresolved_items":
-        return labels.errors.emptyCart;
-      case "invalid_payload":
-        return labels.errors.invalidPayload;
-      case "invalid_email":
-        return labels.errors.invalidEmail;
-      case "unsupported_payment_method":
-        return labels.errors.unsupportedMethod;
-      case "pricing_unavailable":
-        return labels.errors.pricingUnavailable;
-      case "shipping_unavailable":
-        return labels.errors.shippingUnavailable;
-      case "shipping_unsupported_destination":
-        return labels.errors.shippingUnsupportedDestination;
-      case "shipping_unsupported_parcel":
-        return labels.errors.shippingUnsupportedParcel;
-      case "shipping_missing_data":
-        return labels.errors.shippingMissingData;
-      case "unsupported_variant":
-        return labels.errors.unsupportedVariant;
-      case "item_out_of_stock":
-        return labels.errors.itemOutOfStock;
-      case "invalid_promo_code":
-        return labels.errors.invalidPromoCode;
-      case "pickup_point_required":
-        return labels.fieldErrors.pickupPointRequired;
-      case "shop_closed":
-        return labels.errors.shopClosed;
-      case "payment_failed":
-      case "stripe_session_missing_url":
-        return labels.errors.paymentFailed;
-      default:
-        return labels.errors.generic;
-    }
-  };
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
@@ -352,67 +208,36 @@ export const CheckoutPageView = ({
       return;
     }
 
-    const missingPickupPoint = pickupGroupIds.some(
-      (groupId) => !selectedPickupPoints[groupId],
-    );
-
-    if (missingPickupPoint) {
-      setPickupPointError(labels.fieldErrors.pickupPointRequired);
+    if (!shippingSelection.validatePickupPoints()) {
       setError(null);
       return;
     }
 
     setFieldErrors({});
-    setPickupPointError(null);
     setError(null);
     setIsSubmitting(true);
 
     try {
-      const response = await submitCheckoutClient({
-        locale,
-        items: buyNowItems ?? cart.items,
-        customer: {
-          firstName: form.firstName.trim(),
-          lastName: form.lastName.trim(),
-          email: form.email.trim(),
-          phone: form.phone.trim() || undefined,
-        },
-        shippingAddress: isDigitalOnly
-          ? undefined
-          : {
-              line1: form.line1.trim(),
-              line2: form.line2.trim() || undefined,
-              city: form.city.trim(),
-              region: form.region.trim() || undefined,
-              postalCode: form.postalCode.trim() || undefined,
-              country: form.country as CountryCode,
-            },
-        paymentMethod,
-        selectedShippingOptionIds: isDigitalOnly
-          ? undefined
-          : resolveShippingSelection(
-              shippingQuote.groups,
-              selectedShippingOptionIds,
-            ),
-        pickupPointIds:
-          pickupGroupIds.length > 0
-            ? Object.fromEntries(
-                pickupGroupIds.map((groupId) => [
-                  groupId,
-                  selectedPickupPoints[groupId].id,
-                ]),
-              )
-            : undefined,
-        promoCode: appliedPromo?.code,
-        notes: form.notes.trim() || undefined,
-      });
+      const response = await submitCheckoutClient(
+        buildCheckoutRequest({
+          locale,
+          items: buyNowItems ?? cart.items,
+          form,
+          isDigitalOnly,
+          paymentMethod,
+          groups: shippingQuote.groups,
+          selectedOptionIds: shippingSelection.selectedOptionIds,
+          pickupPointIds: shippingSelection.resolvePickupPointIds(),
+          promoCode: appliedPromo?.code,
+        }),
+      );
 
       if (!response.ok || !response.data || "error" in response.data) {
         const code =
           response.data && "error" in response.data
             ? response.data.error
             : "generic";
-        setError(errorForCode(code));
+        setError(checkoutErrorMessage(code, labels));
         setIsSubmitting(false);
         return;
       }
@@ -434,8 +259,6 @@ export const CheckoutPageView = ({
       setIsSubmitting(false);
     }
   };
-
-  const showAddressForm = selectedSavedAddressId === "" || !hasSavedAddresses;
 
   return (
     <PageShell>
@@ -537,14 +360,20 @@ export const CheckoutPageView = ({
                         items={items}
                         isLoading={shippingQuote.status === "loading"}
                         errorMessage={globalShippingError ?? undefined}
-                        selectedOptionIds={selectedShippingOptionIds}
-                        onOptionChange={handleShippingOptionChange}
+                        selectedOptionIds={shippingSelection.selectedOptionIds}
+                        onOptionChange={shippingSelection.selectOption}
                         onRemoveGroup={handleRemoveGroup}
                         pickupPoints={pickupPoints.points}
                         pickupPointsStatus={pickupPoints.status}
-                        selectedPickupPoints={selectedPickupPoints}
-                        onPickupPointChange={handlePickupPointChange}
-                        pickupPointErrorMessage={pickupPointError ?? undefined}
+                        selectedPickupPoints={
+                          shippingSelection.selectedPickupPoints
+                        }
+                        onPickupPointChange={
+                          shippingSelection.selectPickupPoint
+                        }
+                        pickupPointErrorMessage={
+                          shippingSelection.pickupPointError ?? undefined
+                        }
                         currency={currency}
                         locale={locale}
                         labels={labels}
