@@ -9,3 +9,5 @@ export const SOCIAL_LINKS = {
     US: "https://www.instagram.com/khryuchik.kids/",
   },
 } as const;
+
+export const CONTACT_MESSAGE_MIN_LENGTH = 10;

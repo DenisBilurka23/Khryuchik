@@ -142,6 +142,20 @@ export const ENTERTAINMENT_TRANSCODE_VARIANTS: EntertainmentTranscodeVariant[] =
 
 export const ENTERTAINMENT_PLAYER_ABR_INITIAL_ESTIMATE = 6_000_000;
 
+export const ENTERTAINMENT_PLAYER_HLS_CONFIG = {
+  abrEwmaDefaultEstimate: ENTERTAINMENT_PLAYER_ABR_INITIAL_ESTIMATE,
+};
+
+export const ENTERTAINMENT_PLAYER_STALL_TIMEOUT_MS = 12_000;
+
+export const ENTERTAINMENT_PLAYER_RENDITION_MENU_ID =
+  "entertainment-rendition-menu";
+
+export const ENTERTAINMENT_PLAYER_AUDIO_MENU_ID = "entertainment-audio-menu";
+
+export const ENTERTAINMENT_PLAYER_CAPTIONS_MENU_ID =
+  "entertainment-captions-menu";
+
 export const ENTERTAINMENT_AUDIO_BITRATE_KBPS = 128;
 
 export const ENTERTAINMENT_AUDIO_CODEC = "mp4a.40.2";

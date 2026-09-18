@@ -25,7 +25,13 @@ import {
 import { setLanguage } from "media-chrome/utils/i18n";
 import { type CSSProperties, useRef } from "react";
 
-import { ENTERTAINMENT_PLAYER_ABR_INITIAL_ESTIMATE } from "@/constants/entertainment";
+import {
+  ENTERTAINMENT_PLAYER_AUDIO_MENU_ID,
+  ENTERTAINMENT_PLAYER_CAPTIONS_MENU_ID,
+  ENTERTAINMENT_PLAYER_HLS_CONFIG,
+  ENTERTAINMENT_PLAYER_RENDITION_MENU_ID,
+  ENTERTAINMENT_PLAYER_STALL_TIMEOUT_MS,
+} from "@/constants/entertainment";
 import { useHlsPlayback } from "@/hooks/useHlsPlayback";
 import { useMediaKeyboardShortcuts } from "@/hooks/useMediaKeyboardShortcuts";
 import { useMediaCueStyles } from "@/hooks/useMediaCueStyles";
@@ -37,18 +43,6 @@ import { displayFont, leadSx } from "@/theme/sx";
 import type { PlayerSurfaceProps } from "../types";
 
 import { rememberQualityLevel } from "./utils";
-
-const HLS_CONFIG = {
-  abrEwmaDefaultEstimate: ENTERTAINMENT_PLAYER_ABR_INITIAL_ESTIMATE,
-};
-
-const RENDITION_MENU_ID = "entertainment-rendition-menu";
-
-const AUDIO_MENU_ID = "entertainment-audio-menu";
-
-const CAPTIONS_MENU_ID = "entertainment-captions-menu";
-
-const STALL_TIMEOUT_MS = 12_000;
 
 const playerSx = {
   "--media-font-family": "inherit",
@@ -240,13 +234,13 @@ export const PlayerSurface = ({
   useHlsPlayback({
     videoRef,
     playlistUrl,
-    config: HLS_CONFIG,
+    config: ENTERTAINMENT_PLAYER_HLS_CONFIG,
     onLevelChange: rememberQualityLevel,
   });
 
   const hasFailed = useMediaFailure({
     videoRef,
-    timeoutMs: STALL_TIMEOUT_MS,
+    timeoutMs: ENTERTAINMENT_PLAYER_STALL_TIMEOUT_MS,
   });
 
   useMediaFullscreenGesture({ videoRef });
@@ -324,16 +318,16 @@ export const PlayerSurface = ({
 
             {hasSubtitles ? (
               <MediaCaptionsMenuButton
-                invokeTarget={CAPTIONS_MENU_ID}
+                invokeTarget={ENTERTAINMENT_PLAYER_CAPTIONS_MENU_ID}
                 aria-label={captionsLabel}
               />
             ) : null}
             <MediaAudioTrackMenuButton
-              invokeTarget={AUDIO_MENU_ID}
+              invokeTarget={ENTERTAINMENT_PLAYER_AUDIO_MENU_ID}
               aria-label={audioLabel}
             />
             <MediaRenditionMenuButton
-              invokeTarget={RENDITION_MENU_ID}
+              invokeTarget={ENTERTAINMENT_PLAYER_RENDITION_MENU_ID}
               aria-label={qualityLabel}
             />
             <MediaPipButton />
@@ -342,10 +336,22 @@ export const PlayerSurface = ({
         </Box>
 
         {hasSubtitles ? (
-          <MediaCaptionsMenu id={CAPTIONS_MENU_ID} anchor="auto" hidden />
+          <MediaCaptionsMenu
+            id={ENTERTAINMENT_PLAYER_CAPTIONS_MENU_ID}
+            anchor="auto"
+            hidden
+          />
         ) : null}
-        <MediaAudioTrackMenu id={AUDIO_MENU_ID} anchor="auto" hidden />
-        <MediaRenditionMenu id={RENDITION_MENU_ID} anchor="auto" hidden />
+        <MediaAudioTrackMenu
+          id={ENTERTAINMENT_PLAYER_AUDIO_MENU_ID}
+          anchor="auto"
+          hidden
+        />
+        <MediaRenditionMenu
+          id={ENTERTAINMENT_PLAYER_RENDITION_MENU_ID}
+          anchor="auto"
+          hidden
+        />
       </MediaController>
     </Box>
   );

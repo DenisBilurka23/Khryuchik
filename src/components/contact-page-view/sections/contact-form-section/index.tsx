@@ -5,6 +5,7 @@ import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 
 import { sendContactMessageClient } from "@/client-api/contact";
 import { SectionEyebrow } from "@/components/section-eyebrow";
+import { CONTACT_MESSAGE_MIN_LENGTH } from "@/constants/contact";
 import { accentSx, inputFieldSx } from "@/theme/sx";
 import { EMAIL_PATTERN } from "@/utils/validation";
 import { ContactErrorCode } from "@/types/contact";
@@ -40,8 +41,6 @@ const textareaSx = {
 } as const;
 
 const requiredSx = { color: "var(--color-action)" } as const;
-
-const MIN_MESSAGE_LENGTH = 10;
 
 const ArrowIcon = () => (
   <svg
@@ -84,7 +83,7 @@ export const ContactForm = ({
     if (!EMAIL_PATTERN.test(email.trim())) {
       next.email = labels.invalidEmail;
     }
-    if (message.trim().length < MIN_MESSAGE_LENGTH) {
+    if (message.trim().length < CONTACT_MESSAGE_MIN_LENGTH) {
       next.message = labels.invalidMessage;
     }
 
