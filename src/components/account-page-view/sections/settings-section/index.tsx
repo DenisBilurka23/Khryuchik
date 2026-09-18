@@ -1,6 +1,5 @@
 "use client";
 
-import { type SyntheticEvent, useEffect, useState } from "react";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
@@ -15,17 +14,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
-import {
-  changeAccountPasswordClient,
-  deleteAccountClient,
-  getAccountNewsletterStatusClient,
-  setAccountNewsletterSubscriptionClient,
-} from "@/client-api/account";
-import { requestPasswordResetClient } from "@/client-api/auth";
 import { ModalButton } from "@/components/modal-button";
 import { Plate } from "@/components/primitives";
-import { AuthInputErrorCode } from "@/types/auth";
-import { UserOperationErrorReason } from "@/types/users";
+import { useAccountSettingsForm } from "@/hooks/useAccountSettingsForm";
 import { secondaryButtonSx } from "@/theme/sx";
 
 import { PersonalDetailsSection, SectionCard } from "../../shared";
@@ -52,129 +43,11 @@ export const SettingsSection = ({
 
   const hasCredentials = authProviders.includes("credentials");
 
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [isSendingReset, setIsSendingReset] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
-  const [deletePassword, setDeletePassword] = useState("");
-  const [deleteErrorMessage, setDeleteErrorMessage] = useState<string | null>(
-    null,
-  );
-
-  const [isSubscribed, setIsSubscribed] = useState<boolean | null>(null);
-  const [isTogglingSubscription, setIsTogglingSubscription] = useState(false);
-  const [subscriptionError, setSubscriptionError] = useState<string | null>(
-    null,
-  );
-
-  useEffect(() => {
-    let isActive = true;
-
-    void getAccountNewsletterStatusClient().then((response) => {
-      if (isActive && response.ok) {
-        setIsSubscribed(Boolean(response.data?.subscribed));
-      }
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, []);
-
-  const handleSubscriptionToggle = async (nextSubscribed: boolean) => {
-    setIsTogglingSubscription(true);
-    setSubscriptionError(null);
-    setIsSubscribed(nextSubscribed);
-
-    const response = await setAccountNewsletterSubscriptionClient(
-      nextSubscribed,
-      locale,
-    );
-
-    setIsTogglingSubscription(false);
-
-    if (!response.ok) {
-      setIsSubscribed(!nextSubscribed);
-      setSubscriptionError(t("notificationsUpdateError"));
-    }
-  };
-
-  const handleForgotPassword = async () => {
-    if (isSendingReset || resetSent) return;
-    setIsSendingReset(true);
-    await requestPasswordResetClient(userEmail, locale);
-    setIsSendingReset(false);
-    setResetSent(true);
-  };
-
-  const handlePasswordSubmit = async (
-    event: SyntheticEvent<HTMLFormElement>,
-  ) => {
-    event.preventDefault();
-    setErrorMessage(null);
-    setSuccessMessage(null);
-
-    if (newPassword !== repeatPassword) {
-      setErrorMessage(t("securityPasswordMismatch"));
-      return;
-    }
-
-    setIsSaving(true);
-
-    const response = await changeAccountPasswordClient({
-      currentPassword,
-      newPassword,
-    });
-
-    setIsSaving(false);
-
-    if (!response.ok) {
-      const error = response.data?.error;
-
-      if (error === UserOperationErrorReason.WrongPassword) {
-        setErrorMessage(t("securityWrongPassword"));
-      } else if (error === AuthInputErrorCode.PasswordTooShort) {
-        setErrorMessage(t("securityPasswordTooShort"));
-      } else {
-        setErrorMessage(t("securityUnexpectedError"));
-      }
-
-      return;
-    }
-
-    setCurrentPassword("");
-    setNewPassword("");
-    setRepeatPassword("");
-    setSuccessMessage(t("securitySaveSuccess"));
-  };
-
-  const handleDeleteAccount = async () => {
-    setDeleteErrorMessage(null);
-
-    const response = await deleteAccountClient({
-      currentPassword: deletePassword,
-    });
-
-    if (!response.ok) {
-      const error = response.data?.error;
-
-      if (error === UserOperationErrorReason.WrongPassword) {
-        setDeleteErrorMessage(t("deleteAccountWrongPassword"));
-      } else if (error === UserOperationErrorReason.LastAdmin) {
-        setDeleteErrorMessage(t("deleteAccountLastAdmin"));
-      } else {
-        setDeleteErrorMessage(t("deleteAccountUnexpectedError"));
-      }
-
-      return false;
-    }
-
-    onAccountDeletedAction();
-  };
+  const { password, deletion, newsletter } = useAccountSettingsForm({
+    locale,
+    userEmail,
+    onAccountDeletedAction,
+  });
 
   return (
     <Stack spacing={3}>
@@ -238,19 +111,19 @@ export const SettingsSection = ({
               </Typography>
             </Box>
             <Switch
-              checked={isSubscribed ?? false}
-              disabled={isSubscribed === null || isTogglingSubscription}
-              onChange={(event) =>
-                void handleSubscriptionToggle(event.target.checked)
+              checked={newsletter.isSubscribed ?? false}
+              disabled={
+                newsletter.isSubscribed === null || newsletter.isToggling
               }
+              onChange={(event) => void newsletter.toggle(event.target.checked)}
               slotProps={{
                 input: { "aria-label": t("notificationsEmailUpdatesTitle") },
               }}
             />
           </Box>
-          {subscriptionError ? (
+          {newsletter.errorMessage ? (
             <Alert severity="error" sx={{ mt: 1.5 }}>
-              {subscriptionError}
+              {newsletter.errorMessage}
             </Alert>
           ) : null}
         </Plate>
@@ -264,7 +137,7 @@ export const SettingsSection = ({
             form="security-password-form"
             variant="contained"
             startIcon={<SaveOutlinedIcon />}
-            loading={isSaving}
+            loading={password.isSaving}
           >
             {t("save")}
           </Button>
@@ -274,11 +147,13 @@ export const SettingsSection = ({
           id="security-password-form"
           component="form"
           spacing={2}
-          onSubmit={handlePasswordSubmit}
+          onSubmit={password.submit}
         >
-          {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-          {successMessage ? (
-            <Alert severity="success">{successMessage}</Alert>
+          {password.errorMessage ? (
+            <Alert severity="error">{password.errorMessage}</Alert>
+          ) : null}
+          {password.successMessage ? (
+            <Alert severity="success">{password.successMessage}</Alert>
           ) : null}
 
           {hasCredentials ? (
@@ -287,12 +162,12 @@ export const SettingsSection = ({
                 fullWidth
                 label={t("currentPasswordLabel")}
                 type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
+                value={password.currentPassword}
+                onChange={(e) => password.setCurrentPassword(e.target.value)}
                 autoComplete="current-password"
                 required
               />
-              {resetSent ? (
+              {password.resetSent ? (
                 <Typography
                   variant="body2"
                   color="success.main"
@@ -304,8 +179,8 @@ export const SettingsSection = ({
                 <Button
                   variant="text"
                   size="small"
-                  loading={isSendingReset}
-                  onClick={() => void handleForgotPassword()}
+                  loading={password.isSendingReset}
+                  onClick={() => void password.requestReset()}
                   sx={{
                     alignSelf: "flex-start",
                     p: 0,
@@ -323,8 +198,8 @@ export const SettingsSection = ({
             fullWidth
             label={t("newPasswordLabel")}
             type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            value={password.newPassword}
+            onChange={(e) => password.setNewPassword(e.target.value)}
             autoComplete="new-password"
             required
           />
@@ -333,8 +208,8 @@ export const SettingsSection = ({
             fullWidth
             label={t("repeatPasswordLabel")}
             type="password"
-            value={repeatPassword}
-            onChange={(e) => setRepeatPassword(e.target.value)}
+            value={password.repeatPassword}
+            onChange={(e) => password.setRepeatPassword(e.target.value)}
             autoComplete="new-password"
             required
           />
@@ -343,8 +218,8 @@ export const SettingsSection = ({
 
       <SectionCard title={t("deleteAccountTitle")}>
         <Stack spacing={2}>
-          {deleteErrorMessage ? (
-            <Alert severity="error">{deleteErrorMessage}</Alert>
+          {deletion.errorMessage ? (
+            <Alert severity="error">{deletion.errorMessage}</Alert>
           ) : null}
 
           <Typography color="text.secondary" sx={{ lineHeight: 1.8 }}>
@@ -356,11 +231,8 @@ export const SettingsSection = ({
               fullWidth
               label={t("deleteAccountPasswordLabel")}
               type="password"
-              value={deletePassword}
-              onChange={(e) => {
-                setDeletePassword(e.target.value);
-                setDeleteErrorMessage(null);
-              }}
+              value={deletion.password}
+              onChange={(e) => deletion.setPassword(e.target.value)}
               autoComplete="current-password"
             />
           ) : null}
@@ -370,8 +242,8 @@ export const SettingsSection = ({
             color="error"
             variant="outlined"
             icon={<DeleteOutlineOutlinedIcon />}
-            disabled={hasCredentials && deletePassword.trim().length === 0}
-            onConfirmAction={handleDeleteAccount}
+            disabled={hasCredentials && deletion.password.trim().length === 0}
+            onConfirmAction={deletion.confirm}
             dialogTitle={t("deleteAccountDialogTitle")}
             dialogDescription={t("deleteAccountDialogDescription")}
             confirmLabel={t("deleteAccountConfirmButton")}
