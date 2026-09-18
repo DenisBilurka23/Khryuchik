@@ -3,7 +3,7 @@ import type { CountryCode } from "@/utils";
 import { defaultLocale, type Locale } from "./config";
 import enDictionary from "./messages/en.json";
 import ruDictionary from "./messages/ru.json";
-import type { Dictionary, SeedDictionary, StorefrontDictionary } from "./types";
+import type { Dictionary, StorefrontDictionary } from "./types";
 
 type DeepPartial<T> = {
   [K in keyof T]?: T[K] extends Array<infer Item>
@@ -15,7 +15,7 @@ type DeepPartial<T> = {
 
 type StorefrontDictionaryOverride = DeepPartial<StorefrontDictionary>;
 
-export const dictionariesByLocale: Record<Locale, SeedDictionary> = {
+export const dictionariesByLocale: Record<Locale, Dictionary> = {
   en: enDictionary,
   ru: ruDictionary,
 };
@@ -88,33 +88,13 @@ const mergeDeep = <T extends Record<string, unknown>>(
 
 const buildStorefrontDictionary = async (
   locale: Locale,
-  dictionary: SeedDictionary,
+  dictionary: Dictionary,
   country: CountryCode,
 ): Promise<StorefrontDictionary> => {
-  const baseStorefront = {
-    ...dictionary.storefront,
-    booksSection: {
-      eyebrow: dictionary.storefront.booksSection.eyebrow,
-      title: dictionary.storefront.booksSection.title,
-      actionLabel: dictionary.storefront.booksSection.actionLabel,
-      detailsButton: dictionary.storefront.booksSection.detailsButton,
-    },
-    shopSection: {
-      eyebrow: dictionary.storefront.shopSection.eyebrow,
-      title: dictionary.storefront.shopSection.title,
-      actionLabel: dictionary.storefront.shopSection.actionLabel,
-      addToCart: dictionary.storefront.shopSection.addToCart,
-      selectOptions: dictionary.storefront.shopSection.selectOptions,
-      wishlistAriaLabel: dictionary.storefront.shopSection.wishlistAriaLabel,
-      outOfStock: dictionary.storefront.shopSection.outOfStock,
-      viewProduct: dictionary.storefront.shopSection.viewProduct,
-    },
-  };
-
   const overrideLoader = storefrontOverrideLoaders[country]?.[locale];
   const override = overrideLoader ? await overrideLoader() : undefined;
 
-  return mergeDeep(baseStorefront, override);
+  return mergeDeep(dictionary.storefront, override);
 };
 
 export const loadMessages = async (

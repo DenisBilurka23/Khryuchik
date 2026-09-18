@@ -1677,36 +1677,12 @@ export type AdminPageDictionary = {
   };
 };
 
-export type SeedStorefrontDictionary = Omit<
-  StorefrontDictionary,
-  "booksSection" | "shopSection"
-> & {
-  booksSection: StorefrontDictionary["booksSection"];
-  shopSection: StorefrontDictionary["shopSection"];
-};
-
 export type Dictionary = {
   metadata: {
     title: string;
     description: string;
   };
   storefront: StorefrontDictionary;
-  authPage: AuthPageDictionary;
-  registerPage: RegisterPageDictionary;
-  forgotPasswordPage: ForgotPasswordPageDictionary;
-  resetPasswordPage: ResetPasswordPageDictionary;
-  verifyEmailPage: VerifyEmailPageDictionary;
-  downloadsPage: DownloadsPageDictionary;
-  accountPage: AccountPageDictionary;
-  adminPage: AdminPageDictionary;
-};
-
-export type SeedDictionary = {
-  metadata: {
-    title: string;
-    description: string;
-  };
-  storefront: SeedStorefrontDictionary;
   authPage: AuthPageDictionary;
   registerPage: RegisterPageDictionary;
   forgotPasswordPage: ForgotPasswordPageDictionary;
