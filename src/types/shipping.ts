@@ -2,11 +2,7 @@ import type { CountryCode, CurrencyCode } from "@/utils";
 
 export type ShippingHubCode = "europe" | "northAmerica";
 
-export type ShippingProviderCode =
-  | "bpost"
-  | "easyship"
-  | "chitchats"
-  | "printify";
+export type ShippingProviderCode = "bpost" | "chitchats" | "printify";
 
 export type ShippingDeliveryType = "address" | "pickup-point";
 

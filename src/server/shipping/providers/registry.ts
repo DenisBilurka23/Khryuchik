@@ -6,16 +6,11 @@ import type { ShippingHubCode, ShippingProviderCode } from "@/types/shipping";
 import type { ShippingProvider } from "../types";
 import { bpostProvider } from "./bpost.provider";
 import { chitchatsProvider } from "./chitchats.provider";
-import { easyshipProvider } from "./easyship.provider";
 
-const PROVIDERS: ShippingProvider[] = [
-  bpostProvider,
-  chitchatsProvider,
-  easyshipProvider,
-];
+const PROVIDERS: ShippingProvider[] = [bpostProvider, chitchatsProvider];
 
 export const PROVIDERS_BY_HUB: Record<ShippingHubCode, ShippingProvider[]> = {
-  europe: [bpostProvider, easyshipProvider],
+  europe: [bpostProvider],
   northAmerica: [chitchatsProvider],
 };
 

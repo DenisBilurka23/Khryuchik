@@ -154,20 +154,20 @@ One deployment note: `NEXT_PUBLIC_APP_URL` must be set in production. It is the 
 
 ## Scripts
 
-| Command                                              | What it does                                |
-| ---------------------------------------------------- | ------------------------------------------- |
-| `npm run dev`                                        | Development server                          |
-| `npm run dev:stripe`                                 | Forward Stripe webhooks to the local server |
-| `npm run build` / `npm run start`                    | Production build and server                 |
-| `npm run lint` / `npm run format`                    | ESLint, Prettier                            |
-| `npm run seed:mongodb`                               | Seed catalog, locales and regions           |
-| `npm run seed:entertainment`                         | Seed cartoons                               |
-| `npm run admin:grant -- <email>`                     | Grant admin rights                          |
-| `npm run books:physical`                             | Mark books as physical products             |
-| `npm run printify:publish`                           | Publish products to the fulfilment provider |
-| `npm run printify:webhooks`                          | Register fulfilment webhooks                |
-| `npm run chitchats:quote` / `npm run easyship:quote` | Probe carrier rates from the command line   |
-| `npm run email:logo`                                 | Rebuild the inline logo used in e-mails     |
+| Command                           | What it does                                |
+| --------------------------------- | ------------------------------------------- |
+| `npm run dev`                     | Development server                          |
+| `npm run dev:stripe`              | Forward Stripe webhooks to the local server |
+| `npm run build` / `npm run start` | Production build and server                 |
+| `npm run lint` / `npm run format` | ESLint, Prettier                            |
+| `npm run seed:mongodb`            | Seed catalog, locales and regions           |
+| `npm run seed:entertainment`      | Seed cartoons                               |
+| `npm run admin:grant -- <email>`  | Grant admin rights                          |
+| `npm run books:physical`          | Mark books as physical products             |
+| `npm run printify:publish`        | Publish products to the fulfilment provider |
+| `npm run printify:webhooks`       | Register fulfilment webhooks                |
+| `npm run chitchats:quote`         | Probe carrier rates from the command line   |
+| `npm run email:logo`              | Rebuild the inline logo used in e-mails     |
 
 ## Scheduled jobs
 
