@@ -36,4 +36,6 @@ export type CartItem = {
 export type CartResolveResponse = {
   items: CartItem[];
   isPricingUnavailable: boolean;
+  missingItemIds: string[];
+  regionBlockedItemIds: string[];
 };

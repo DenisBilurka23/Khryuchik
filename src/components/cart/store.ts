@@ -213,11 +213,15 @@ export const clearCart = () => {
   setCartState(emptyState);
 };
 
-export const retainCartItems = (validIds: string[]) => {
+export const removeCartItems = (ids: string[]) => {
+  if (ids.length === 0) {
+    return;
+  }
+
   const currentState = ensureStateLoaded();
-  const validIdSet = new Set(validIds);
-  const nextItems = currentState.items.filter((item) =>
-    validIdSet.has(item.id),
+  const removedIds = new Set(ids);
+  const nextItems = currentState.items.filter(
+    (item) => !removedIds.has(item.id),
   );
 
   if (nextItems.length === currentState.items.length) {

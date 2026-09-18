@@ -14,6 +14,8 @@ import { CartEmptyState } from "./empty-state";
 import { CartHero } from "./hero";
 import type { CartPageViewProps } from "./types";
 
+const noticeSx = { mt: 3, borderRadius: "var(--radius-field)" };
+
 export const CartPageView = ({
   locale,
   country,
@@ -29,6 +31,7 @@ export const CartPageView = ({
     emptyState: t.raw("emptyState") as ReturnType<typeof t.raw>,
     itemCard: t.raw("itemCard") as ReturnType<typeof t.raw>,
     pricingUnavailable: t("pricingUnavailable"),
+    regionUnavailable: t("regionUnavailable"),
   };
   const {
     items,
@@ -37,7 +40,7 @@ export const CartPageView = ({
     removeItem,
     isLoading,
     isPricingUnavailable,
-    hasStoredItems,
+    regionBlockedCount,
   } = useResolvedCart(locale, country);
 
   const {
@@ -110,24 +113,16 @@ export const CartPageView = ({
           />
 
           {isPricingUnavailable ? (
-            <Alert
-              severity="warning"
-              sx={{ mt: 3, borderRadius: "var(--radius-field)" }}
-            >
+            <Alert severity="warning" sx={noticeSx}>
               {cartPage.pricingUnavailable}
+            </Alert>
+          ) : regionBlockedCount > 0 ? (
+            <Alert severity="info" sx={noticeSx}>
+              {cartPage.regionUnavailable}
             </Alert>
           ) : null}
 
-          {!hasStoredItems && !isLoading ? (
-            <Box sx={{ mt: 4 }}>
-              <CartEmptyState
-                title={cartPage.emptyState.title}
-                text={cartPage.emptyState.text}
-                actionLabel={cartPage.emptyState.action}
-                actionHref={shopHref}
-              />
-            </Box>
-          ) : isLoading ? (
+          {isLoading ? (
             <Box
               sx={{
                 mt: 4,
@@ -140,6 +135,15 @@ export const CartPageView = ({
               }}
             >
               <Typography color="text.secondary">Loading cart...</Typography>
+            </Box>
+          ) : items.length === 0 ? (
+            <Box sx={{ mt: 4 }}>
+              <CartEmptyState
+                title={cartPage.emptyState.title}
+                text={cartPage.emptyState.text}
+                actionLabel={cartPage.emptyState.action}
+                actionHref={shopHref}
+              />
             </Box>
           ) : (
             <Box

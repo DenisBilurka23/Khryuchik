@@ -11,7 +11,7 @@ import type {
 } from "@/types/cart";
 import type { CountryCode } from "@/utils";
 
-import { retainCartItems, useCart } from "@/components/cart/store";
+import { removeCartItems, useCart } from "@/components/cart/store";
 
 export const useResolvedCart = (
   locale: Locale,
@@ -23,16 +23,21 @@ export const useResolvedCart = (
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isPricingUnavailable, setIsPricingUnavailable] = useState(false);
+  const [regionBlockedCount, setRegionBlockedCount] = useState(0);
+  const [hasResolved, setHasResolved] = useState(false);
 
   useEffect(() => {
     if (storedItems.length === 0) {
       setItems([]);
       setIsPricingUnavailable(false);
+      setRegionBlockedCount(0);
       setIsLoading(false);
       return;
     }
 
     const abortController = new AbortController();
+
+    setHasResolved(false);
 
     const resolveItems = async () => {
       setIsLoading(true);
@@ -50,6 +55,7 @@ export const useResolvedCart = (
           if (!abortController.signal.aborted) {
             console.error(`Failed to resolve cart: ${response.status}`);
             setItems([]);
+            setRegionBlockedCount(0);
           }
 
           return;
@@ -59,23 +65,27 @@ export const useResolvedCart = (
 
         if (!payload) {
           setItems([]);
+          setRegionBlockedCount(0);
           return;
         }
 
         setItems(payload.items);
         setIsPricingUnavailable(payload.isPricingUnavailable);
+        setRegionBlockedCount(payload.regionBlockedItemIds.length);
 
         if (!itemsOverride) {
-          retainCartItems(payload.items.map((item) => item.id));
+          removeCartItems(payload.missingItemIds);
         }
       } catch (error) {
         if (!abortController.signal.aborted) {
           console.error(error);
           setItems([]);
+          setRegionBlockedCount(0);
         }
       } finally {
         if (!abortController.signal.aborted) {
           setIsLoading(false);
+          setHasResolved(true);
         }
       }
     };
@@ -96,8 +106,9 @@ export const useResolvedCart = (
     ...cart,
     items,
     subtotal,
-    isLoading,
+    isLoading: isLoading || (storedItems.length > 0 && !hasResolved),
     isPricingUnavailable,
+    regionBlockedCount,
     hasStoredItems: storedItems.length > 0,
   };
 };

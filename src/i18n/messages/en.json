@@ -712,6 +712,7 @@
         "soldOut": "Out of stock"
       },
       "pricingUnavailable": "Some items cannot be priced right now — we could not get an up-to-date exchange rate. Please try again in a few minutes.",
+      "regionUnavailable": "Some items are not sold in the selected region, so they are hidden for now. Switch the region back and they will be waiting in your cart.",
       "summary": {
         "title": "Your order",
         "itemsLabel": "Items",
@@ -840,6 +841,7 @@
         "invalidPostalCode": "Enter a valid postal code",
         "pickupPointRequired": "Choose a pickup point"
       },
+      "regionUnavailable": "Some items are not sold in the selected region and cannot be ordered here. Switch the region back to order them.",
       "emptyState": {
         "title": "Your cart is empty",
         "text": "Add a few items before placing an order.",

@@ -35,6 +35,7 @@ export const useCheckoutLabels = (): UseCheckoutLabelsResult => {
       fieldErrors: t.raw(
         "fieldErrors",
       ) as UseCheckoutLabelsResult["fieldErrors"],
+      regionUnavailable: t("regionUnavailable"),
       emptyState: t.raw("emptyState") as UseCheckoutLabelsResult["emptyState"],
     }),
     [t],

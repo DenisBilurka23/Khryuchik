@@ -67,6 +67,7 @@ export type CheckoutLabels = {
   submit: CheckoutPageLabels["submit"];
   errors: CheckoutPageLabels["errors"];
   fieldErrors: CheckoutPageLabels["fieldErrors"];
+  regionUnavailable: string;
   emptyState: CheckoutPageLabels["emptyState"];
 };
 

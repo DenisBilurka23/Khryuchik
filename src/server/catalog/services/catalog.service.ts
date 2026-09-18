@@ -300,6 +300,8 @@ const buildVariantLabel = (
 export type ResolvedCart = {
   items: CartItem[];
   isPricingUnavailable: boolean;
+  missingItemIds: string[];
+  regionBlockedItemIds: string[];
 };
 
 export const resolveCartItems = async (
@@ -308,12 +310,17 @@ export const resolveCartItems = async (
   items: StoredCartItem[],
 ): Promise<ResolvedCart> => {
   const productIds = Array.from(new Set(items.map((item) => item.productId)));
-  const [summaries, regionPricing] = await Promise.all([
-    getProductSummariesByIds(locale, country, productIds),
+  const [products, regionPricing] = await Promise.all([
+    findActiveProductsByIds(productIds),
     getRegionPricing(country),
   ]);
+  const catalogProductIds = new Set(
+    products.map((product) => product.productId),
+  );
   const summaryById = new Map(
-    summaries.map((summary) => [summary.id, summary]),
+    localizeProductSummaries(products, locale, country, regionPricing).map(
+      (summary) => [summary.id, summary],
+    ),
   );
   const detailsEntries = await Promise.all(
     productIds.map(
@@ -373,11 +380,24 @@ export const resolveCartItems = async (
     ];
   });
 
+  const missingItemIds = items
+    .filter((item) => !catalogProductIds.has(item.productId))
+    .map((item) => item.id);
+  const regionBlockedItemIds = items
+    .filter(
+      (item) =>
+        catalogProductIds.has(item.productId) &&
+        !summaryById.has(item.productId),
+    )
+    .map((item) => item.id);
+
   return {
     items: resolvedItems,
     isPricingUnavailable:
       regionPricing.status === "unavailable" &&
       productIds.some((productId) => !summaryById.has(productId)),
+    missingItemIds,
+    regionBlockedItemIds,
   };
 };
 

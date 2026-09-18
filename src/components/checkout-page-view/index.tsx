@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Container, Grid, Stack, Typography } from "@mui/material";
+import { Alert, Box, Container, Grid, Stack, Typography } from "@mui/material";
 import { useMemo, useState } from "react";
 
 import { submitCheckoutClient } from "@/client-api/checkout";
@@ -59,8 +59,14 @@ export const CheckoutPageView = ({
   const cart = useCart();
   const buyNowItems = useBuyNowCheckoutItems();
 
-  const { items, subtotal, isLoading, isPricingUnavailable, hasStoredItems } =
-    useResolvedCart(locale, country, buyNowItems ?? undefined);
+  const {
+    items,
+    subtotal,
+    isLoading,
+    isPricingUnavailable,
+    regionBlockedCount,
+    hasStoredItems,
+  } = useResolvedCart(locale, country, buyNowItems ?? undefined);
   const hasUnavailableItems = items.some(
     (item) => !isPurchasableAvailability(item.availability),
   );
@@ -312,7 +318,16 @@ export const CheckoutPageView = ({
             </Typography>
           </Box>
 
-          {!hasStoredItems && !isLoading ? (
+          {regionBlockedCount > 0 && !isPricingUnavailable ? (
+            <Alert
+              severity="info"
+              sx={{ mb: 4, borderRadius: "var(--radius-field)" }}
+            >
+              {labels.regionUnavailable}
+            </Alert>
+          ) : null}
+
+          {items.length === 0 && !isLoading ? (
             <EmptyCartState
               title={labels.emptyState.title}
               text={labels.emptyState.text}
