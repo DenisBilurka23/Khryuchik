@@ -45,7 +45,7 @@ src/components/feature-name/
 
 - Styling is `sx` plus MUI `styled()`. There are no CSS modules in the storefront; do not add one back.
 - Use the design tokens from `src/app/globals.css`; no hex colours in components.
-- Compose from `src/components/primitives` where it fits: `Panel`, `Plate`, `Pill`, `IconTile`, `Note`. Shared text fragments live in `src/theme/sx.ts`.
+- Compose from `src/components/primitives` where it fits: `Panel`, `Plate`, `Pill`, `IconTile`, `Note`, `HeroPanel`. Shared text fragments live in `src/theme/sx.ts`.
 - Lift an `sx` object into a named `const …Sx` above the component once it grows past a few declarations.
 - Use `styled()` for prop-driven variants, with the variant map as a `Record<Tone, CSSObject>` and `shouldForwardProp` filtering the prop.
 - `styled()` requires `"use client"`. Keep the section a server component and put the styled pieces in a child module (`parts/`, or `src/components/primitives`).
