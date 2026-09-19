@@ -40,6 +40,7 @@ import {
   findAllUsers,
   findUserByEmail,
   findUserById,
+  removeUserShippingAddress,
   setSelectedUserShippingAddress,
   setUserAdminByEmail,
   setUserEmailVerified,
@@ -47,6 +48,7 @@ import {
   toCredentialsAuthUser,
   updateAdminUser,
   updateUserProfile,
+  updateUserShippingAddress,
 } from "../repositories/users.repository";
 import {
   findActiveEmailVerificationToken,
@@ -421,14 +423,7 @@ export const updateAccountUserProfile = async (
   };
 };
 
-export const addAccountUserShippingAddress = async (
-  userId: string,
-  input: UserShippingAddressInput,
-) => {
-  if (!ObjectId.isValid(userId)) {
-    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
-  }
-
+const validateShippingAddressInput = (input: UserShippingAddressInput) => {
   const normalizedInput = normalizeShippingAddressInput(input);
 
   if (
@@ -456,28 +451,10 @@ export const addAccountUserShippingAddress = async (
     };
   }
 
-  const existingUser = await findUserById(new ObjectId(userId));
-
-  if (!existingUser?._id) {
-    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
-  }
-
-  const result = await addUserShippingAddress(
-    new ObjectId(userId),
-    normalizedInput,
-  );
-
-  return {
-    ok: true as const,
-    address: result.address,
-    user: result.user,
-  };
+  return { ok: true as const, input: normalizedInput };
 };
 
-export const selectAccountUserShippingAddress = async (
-  userId: string,
-  addressId: string,
-) => {
+const findUserShippingAddress = async (userId: string, addressId: string) => {
   if (!ObjectId.isValid(userId)) {
     return { ok: false as const, reason: UserOperationErrorReason.NotFound };
   }
@@ -508,9 +485,105 @@ export const selectAccountUserShippingAddress = async (
     };
   }
 
+  return { ok: true as const, addressId: normalizedAddressId };
+};
+
+export const addAccountUserShippingAddress = async (
+  userId: string,
+  input: UserShippingAddressInput,
+) => {
+  if (!ObjectId.isValid(userId)) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  const validation = validateShippingAddressInput(input);
+
+  if (!validation.ok) {
+    return validation;
+  }
+
+  const existingUser = await findUserById(new ObjectId(userId));
+
+  if (!existingUser?._id) {
+    return { ok: false as const, reason: UserOperationErrorReason.NotFound };
+  }
+
+  const result = await addUserShippingAddress(
+    new ObjectId(userId),
+    validation.input,
+  );
+
+  return {
+    ok: true as const,
+    address: result.address,
+    user: result.user,
+  };
+};
+
+export const updateAccountUserShippingAddress = async (
+  userId: string,
+  addressId: string,
+  input: UserShippingAddressInput,
+) => {
+  const existingAddress = await findUserShippingAddress(userId, addressId);
+
+  if (!existingAddress.ok) {
+    return existingAddress;
+  }
+
+  const validation = validateShippingAddressInput(input);
+
+  if (!validation.ok) {
+    return validation;
+  }
+
+  const result = await updateUserShippingAddress(
+    new ObjectId(userId),
+    existingAddress.addressId,
+    validation.input,
+  );
+
+  return {
+    ok: true as const,
+    address: result.address,
+    user: result.user,
+  };
+};
+
+export const deleteAccountUserShippingAddress = async (
+  userId: string,
+  addressId: string,
+) => {
+  const existingAddress = await findUserShippingAddress(userId, addressId);
+
+  if (!existingAddress.ok) {
+    return existingAddress;
+  }
+
+  const result = await removeUserShippingAddress(
+    new ObjectId(userId),
+    existingAddress.addressId,
+  );
+
+  return {
+    ok: true as const,
+    user: result.user,
+  };
+};
+
+export const selectAccountUserShippingAddress = async (
+  userId: string,
+  addressId: string,
+) => {
+  const existingAddress = await findUserShippingAddress(userId, addressId);
+
+  if (!existingAddress.ok) {
+    return existingAddress;
+  }
+
   const user = await setSelectedUserShippingAddress(
     new ObjectId(userId),
-    normalizedAddressId,
+    existingAddress.addressId,
   );
 
   return {

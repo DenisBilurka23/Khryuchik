@@ -1,4 +1,4 @@
-import { GET, PATCH, POST } from "@/client-api";
+import { DELETE, GET, PATCH, POST, PUT } from "@/client-api";
 
 import type { Locale } from "@/i18n/config";
 import type {
@@ -63,6 +63,18 @@ export const updateAccountProfileClient = async (payload: {
 export const addAccountAddressClient = async (
   payload: UserShippingAddressInput,
 ) => POST<UpdateAccountAddressesResponse>("/api/account/addresses", payload);
+
+export const updateAccountAddressClient = async (
+  addressId: string,
+  payload: UserShippingAddressInput,
+) =>
+  PUT<UpdateAccountAddressesResponse>(
+    `/api/account/addresses/${addressId}`,
+    payload,
+  );
+
+export const deleteAccountAddressClient = async (addressId: string) =>
+  DELETE<UpdateAccountAddressesResponse>(`/api/account/addresses/${addressId}`);
 
 export const selectAccountAddressClient = async (addressId: string) =>
   PATCH<UpdateAccountAddressesResponse>("/api/account/addresses", {

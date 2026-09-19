@@ -5,6 +5,7 @@ import type {
 } from "@/types/users";
 
 import { getCountryDisplayName } from "./country";
+import { asOptionalString } from "./optional-string";
 
 export const getUserShippingAddressLines = (
   address: UserShippingAddress,
@@ -26,6 +27,24 @@ export const getUserShippingAddressLines = (
 
 export const getUserShippingAddressTitle = (address: UserShippingAddress) =>
   address.title.trim() || address.line1;
+
+export const readShippingAddressInput = (
+  body: unknown,
+): UserShippingAddressInput => {
+  const source = (
+    typeof body === "object" && body !== null ? body : {}
+  ) as Record<string, unknown>;
+
+  return {
+    title: asOptionalString(source.title) ?? "",
+    line1: asOptionalString(source.line1) ?? "",
+    line2: asOptionalString(source.line2),
+    city: asOptionalString(source.city) ?? "",
+    region: asOptionalString(source.region),
+    postalCode: asOptionalString(source.postalCode),
+    country: asOptionalString(source.country) ?? "",
+  };
+};
 
 export const normalizeShippingAddressInput = (
   input: UserShippingAddressInput,

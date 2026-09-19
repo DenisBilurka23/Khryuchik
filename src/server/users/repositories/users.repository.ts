@@ -359,10 +359,7 @@ export const updateAdminUser = async (
   return updatedUser;
 };
 
-export const addUserShippingAddress = async (
-  userId: ObjectId,
-  input: UserShippingAddressInput,
-) => {
+const loadUserShippingAddresses = async (userId: ObjectId) => {
   const collection = await getUsersCollection();
   const existingUser = await collection.findOne(
     { _id: userId },
@@ -373,16 +370,18 @@ export const addUserShippingAddress = async (
     throw new Error("Failed to load existing user");
   }
 
-  const address: UserShippingAddress = normalizeShippingAddress({
-    id: new ObjectId().toString(),
-    ...input,
-  });
-  const shippingAddresses = [...(existingUser.shippingAddresses ?? []), address];
-  const selectedShippingAddressId =
-    getSelectedShippingAddressId({
-      shippingAddresses,
-      selectedShippingAddressId: existingUser.selectedShippingAddressId,
-    }) ?? address.id;
+  return {
+    shippingAddresses: existingUser.shippingAddresses ?? [],
+    selectedShippingAddressId: existingUser.selectedShippingAddressId ?? null,
+  };
+};
+
+const saveUserShippingAddresses = async (
+  userId: ObjectId,
+  shippingAddresses: UserShippingAddress[],
+  selectedShippingAddressId: string | null,
+) => {
+  const collection = await getUsersCollection();
 
   await collection.updateOne(
     { _id: userId },
@@ -401,10 +400,77 @@ export const addUserShippingAddress = async (
     throw new Error("Failed to load updated user");
   }
 
-  return {
-    address,
-    user: toSafeAuthUser(updatedUser),
-  };
+  return toSafeAuthUser(updatedUser);
+};
+
+export const addUserShippingAddress = async (
+  userId: ObjectId,
+  input: UserShippingAddressInput,
+) => {
+  const existing = await loadUserShippingAddresses(userId);
+  const address: UserShippingAddress = normalizeShippingAddress({
+    id: new ObjectId().toString(),
+    ...input,
+  });
+  const shippingAddresses = [...existing.shippingAddresses, address];
+  const user = await saveUserShippingAddresses(
+    userId,
+    shippingAddresses,
+    getSelectedShippingAddressId({
+      shippingAddresses,
+      selectedShippingAddressId: existing.selectedShippingAddressId,
+    }) ?? address.id,
+  );
+
+  return { address, user };
+};
+
+export const updateUserShippingAddress = async (
+  userId: ObjectId,
+  addressId: string,
+  input: UserShippingAddressInput,
+) => {
+  const existing = await loadUserShippingAddresses(userId);
+  const address: UserShippingAddress = normalizeShippingAddress({
+    id: addressId,
+    ...input,
+  });
+  const shippingAddresses = existing.shippingAddresses.map((current) =>
+    current.id === addressId ? address : current,
+  );
+  const user = await saveUserShippingAddresses(
+    userId,
+    shippingAddresses,
+    getSelectedShippingAddressId({
+      shippingAddresses,
+      selectedShippingAddressId: existing.selectedShippingAddressId,
+    }),
+  );
+
+  return { address, user };
+};
+
+export const removeUserShippingAddress = async (
+  userId: ObjectId,
+  addressId: string,
+) => {
+  const existing = await loadUserShippingAddresses(userId);
+  const shippingAddresses = existing.shippingAddresses.filter(
+    (current) => current.id !== addressId,
+  );
+  const user = await saveUserShippingAddresses(
+    userId,
+    shippingAddresses,
+    getSelectedShippingAddressId({
+      shippingAddresses,
+      selectedShippingAddressId:
+        existing.selectedShippingAddressId === addressId
+          ? null
+          : existing.selectedShippingAddressId,
+    }),
+  );
+
+  return { user };
 };
 
 export const setSelectedUserShippingAddress = async (

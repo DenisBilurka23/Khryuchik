@@ -2,14 +2,16 @@ import { NextResponse } from "next/server";
 
 import { getServerAuthSession } from "@/server/auth/config";
 import {
-  addAccountUserShippingAddress,
-  selectAccountUserShippingAddress,
+  deleteAccountUserShippingAddress,
+  updateAccountUserShippingAddress,
 } from "@/server/users/services/users.service";
 import { statusForUserOperationError } from "@/server/users/user-error-status";
-import { asOptionalString } from "@/utils";
 import { readShippingAddressInput } from "@/utils/account-page";
 
-export async function POST(request: Request) {
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ addressId: string }> },
+) {
   try {
     const session = await getServerAuthSession();
 
@@ -17,9 +19,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
 
+    const { addressId } = await params;
     const body = await request.json().catch(() => null);
-    const result = await addAccountUserShippingAddress(
+    const result = await updateAccountUserShippingAddress(
       session.user.id,
+      addressId,
       readShippingAddressInput(body),
     );
 
@@ -40,7 +44,10 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PATCH(request: Request) {
+export async function DELETE(
+  _request: Request,
+  { params }: { params: Promise<{ addressId: string }> },
+) {
   try {
     const session = await getServerAuthSession();
 
@@ -48,11 +55,10 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json().catch(() => null);
-    const result = await selectAccountUserShippingAddress(
+    const { addressId } = await params;
+    const result = await deleteAccountUserShippingAddress(
       session.user.id,
-      asOptionalString((body as Record<string, unknown> | null)?.addressId) ??
-        "",
+      addressId,
     );
 
     if (!result.ok) {

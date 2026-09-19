@@ -1185,6 +1185,12 @@
     "addressInvalidCountry": "Choose a valid country for this address.",
     "addressInvalidPostalCode": "Enter a valid postal code for this address.",
     "addressNotFound": "This address is no longer available.",
+    "editAddress": "Edit",
+    "editAddressTitle": "Edit address",
+    "deleteAddress": "Delete",
+    "deleteAddressDialogTitle": "Delete this address?",
+    "deleteAddressDialogDescription": "The address will be removed from your saved addresses. You can add it again later.",
+    "deleteAddressConfirmButton": "Delete address",
     "allOrders": "All orders",
     "noOrders": "You don't have any orders yet. Your first order will appear here.",
     "orderStatuses": {

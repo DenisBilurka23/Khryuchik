@@ -1185,6 +1185,12 @@
     "addressInvalidCountry": "Выберите корректную страну для этого адреса.",
     "addressInvalidPostalCode": "Укажите корректный индекс для этого адреса.",
     "addressNotFound": "Этот адрес больше недоступен.",
+    "editAddress": "Изменить",
+    "editAddressTitle": "Изменение адреса",
+    "deleteAddress": "Удалить",
+    "deleteAddressDialogTitle": "Удалить адрес?",
+    "deleteAddressDialogDescription": "Адрес будет удалён из сохранённых. Вы сможете добавить его снова.",
+    "deleteAddressConfirmButton": "Удалить адрес",
     "allOrders": "Все заказы",
     "noOrders": "У вас пока нет заказов. Когда оформите первый — он появится здесь.",
     "orderStatuses": {

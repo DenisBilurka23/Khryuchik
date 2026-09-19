@@ -65,6 +65,12 @@ export const POST = async <TResponse>(
   options?: RequestOptions,
 ) => request<TResponse>("POST", url, body, options);
 
+export const PUT = async <TResponse>(
+  url: string,
+  body: unknown,
+  options?: RequestOptions,
+) => request<TResponse>("PUT", url, body, options);
+
 export const PATCH = async <TResponse>(
   url: string,
   body: unknown,
