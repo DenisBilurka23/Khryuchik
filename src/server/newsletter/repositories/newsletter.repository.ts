@@ -18,7 +18,10 @@ const getNewsletterSubscribersCollection = async () => {
 
   if (!newsletterIndexesPromise) {
     newsletterIndexesPromise = Promise.all([
-      collection.createIndex({ email: 1 }, { unique: true, name: "email_unique" }),
+      collection.createIndex(
+        { email: 1 },
+        { unique: true, name: "email_unique" },
+      ),
       collection.createIndex(
         { unsubscribeToken: 1 },
         { unique: true, name: "unsubscribeToken_unique" },
@@ -31,7 +34,10 @@ const getNewsletterSubscribersCollection = async () => {
   return collection;
 };
 
-export const addNewsletterSubscriber = async (email: string, locale: Locale) => {
+export const addNewsletterSubscriber = async (
+  email: string,
+  locale: Locale,
+) => {
   const collection = await getNewsletterSubscribersCollection();
 
   await collection.updateOne(

@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material";
 
 import { AdminCategoriesSection } from "./categories-section";
-import { AdminDashboardHero } from "./dashboard-hero";
+import { AdminDashboardHero } from "./hero";
 import { AdminDashboardStats } from "./dashboard-stats";
 import { AdminRecentCustomersSection } from "./recent-customers-section";
 import { AdminRecentOrdersSection } from "./recent-orders-section";

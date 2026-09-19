@@ -5,7 +5,7 @@ import { Badge, IconButton } from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { useCart } from "../../cart/store";
+import { useCart } from "@/stores/cart";
 
 import type { CartButtonProps } from "./types";
 

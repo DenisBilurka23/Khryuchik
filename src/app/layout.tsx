@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 
-import { AuthSessionProvider } from "@/components/providers/auth-session-provider";
+import { AuthSessionProvider } from "@/components/providers";
 import { getRequestCountry } from "@/server/country/request-country";
 import { getAppOrigin } from "@/server/email/transport";
 import { resolveLocale } from "@/server/i18n/request-locale";

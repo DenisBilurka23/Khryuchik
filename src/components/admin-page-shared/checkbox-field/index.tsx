@@ -2,7 +2,10 @@ import { Box, Typography } from "@mui/material";
 
 import type { AdminCheckboxFieldProps } from "./types";
 
-export const AdminCheckboxField = ({ control, label }: AdminCheckboxFieldProps) => {
+export const AdminCheckboxField = ({
+  control,
+  label,
+}: AdminCheckboxFieldProps) => {
   return (
     <Box
       component="label"

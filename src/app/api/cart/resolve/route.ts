@@ -9,12 +9,14 @@ import { isStoredCartItem } from "@/types/cart-guards";
 export const dynamic = "force-dynamic";
 
 export const POST = async (request: NextRequest) => {
-  const payload = (await request.json().catch(() => null)) as
-    | { locale?: string; items?: unknown[] }
-    | null;
-  const locale = payload?.locale && isLocale(payload.locale)
-    ? payload.locale
-    : defaultLocale;
+  const payload = (await request.json().catch(() => null)) as {
+    locale?: string;
+    items?: unknown[];
+  } | null;
+  const locale =
+    payload?.locale && isLocale(payload.locale)
+      ? payload.locale
+      : defaultLocale;
   const items = Array.isArray(payload?.items)
     ? payload.items.filter(isStoredCartItem)
     : [];

@@ -36,13 +36,13 @@ import { resolveLocale } from "@/server/i18n/request-locale";
 import { formatAdminDate } from "@/utils/admin";
 import {
   formatCurrency,
+  formatDate,
   formatOrderNumber,
   formatPersonName,
   hasLivePrintifyOrder,
   isRefundableOrder,
 } from "@/utils";
 import type { AdminPageDictionary } from "@/i18n/types";
-import { formatDate } from "@/utils";
 
 type ViewAdminCustomerPageProps = {
   params: Promise<{ id: string }>;

@@ -23,7 +23,10 @@ export const resolveLocale = async (
   scope: LocaleScope,
   options: ResolveLocaleOptions = {},
 ) => {
-  const [requestHeaders, cookieStore] = await Promise.all([headers(), cookies()]);
+  const [requestHeaders, cookieStore] = await Promise.all([
+    headers(),
+    cookies(),
+  ]);
   const headerLocale = getValidLocale(requestHeaders.get(LOCALE_HEADER));
   const requestLocale = getValidLocale(options.requestLocale);
   const adminCookieLocale = getValidLocale(

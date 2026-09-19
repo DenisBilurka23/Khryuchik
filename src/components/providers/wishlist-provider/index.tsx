@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -24,10 +19,7 @@ import type {
   UseWishlistResult,
   WishlistItem,
 } from "@/types/wishlist";
-import {
-  getGuestWishlist,
-  toggleGuestWishlist,
-} from "@/utils/wishlist";
+import { getGuestWishlist, toggleGuestWishlist } from "@/utils/wishlist";
 
 import type { WishlistProviderProps } from "./types";
 
@@ -245,7 +237,9 @@ export const WishlistProvider = ({ children }: WishlistProviderProps) => {
   };
 
   return (
-    <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>
+    <WishlistContext.Provider value={value}>
+      {children}
+    </WishlistContext.Provider>
   );
 };
 

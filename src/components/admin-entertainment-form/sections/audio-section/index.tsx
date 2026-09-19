@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 
 import { useAdminEntertainmentAudioTracks } from "@/hooks/useAdminEntertainmentAudioTracks";
 
-import { AdminSectionCard } from "../../../admin-page-shared";
+import { AdminSectionCard } from "@/components/admin-page-shared";
 import { AdminEntertainmentAudioTrackRow } from "./track-row";
 import type { AdminEntertainmentAudioSectionProps } from "./types";
 

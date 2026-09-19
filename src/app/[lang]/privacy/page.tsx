@@ -32,9 +32,7 @@ export const generateMetadata = async ({
   });
 };
 
-const LocalizedPrivacyPage = async ({
-  params,
-}: LocalizedPrivacyPageProps) => {
+const LocalizedPrivacyPage = async ({ params }: LocalizedPrivacyPageProps) => {
   const { lang } = await params;
 
   await requireActiveLocale(lang);

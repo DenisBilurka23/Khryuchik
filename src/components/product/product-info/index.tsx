@@ -30,9 +30,9 @@ import {
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useWishlist } from "@/hooks/useWishlist";
 import { BOOK_FORMAT } from "@/constants/catalog";
-import { showCartToast } from "../../cart/cart-toast-store";
-import { useCart } from "../../cart/store";
-import { setBuyNowItem } from "../../cart/buy-now-store";
+import { showCartToast } from "@/stores/cart-toast";
+import { useCart } from "@/stores/cart";
+import { setBuyNowItem } from "@/stores/buy-now";
 import type { ProductInfoProps } from "../types";
 
 export const ProductInfo = ({

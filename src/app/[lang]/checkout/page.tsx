@@ -47,7 +47,9 @@ const initialCustomerFromSession = (
   };
 };
 
-const LocalizedCheckoutPage = async ({ params }: LocalizedCheckoutPageProps) => {
+const LocalizedCheckoutPage = async ({
+  params,
+}: LocalizedCheckoutPageProps) => {
   const { lang } = await params;
 
   await requireActiveLocale(lang);
@@ -69,7 +71,9 @@ const LocalizedCheckoutPage = async ({ params }: LocalizedCheckoutPageProps) => 
       currency={currency}
       initialCustomer={initialCustomerFromSession(session)}
       initialShippingAddresses={session?.user?.shippingAddresses ?? []}
-      initialSelectedAddressId={session?.user?.selectedShippingAddressId ?? null}
+      initialSelectedAddressId={
+        session?.user?.selectedShippingAddressId ?? null
+      }
     />
   );
 };

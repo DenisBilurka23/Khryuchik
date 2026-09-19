@@ -20,7 +20,7 @@ import {
 import type { EntertainmentCategoryKey } from "@/types/entertainment";
 import { getLocaleDisplayName } from "@/utils";
 
-import { AdminConfirmSubmitButton } from "../../admin-page-shared";
+import { AdminConfirmSubmitButton } from "@/components/admin-page-shared";
 import {
   AdminEntertainmentAudioSection,
   AdminEntertainmentBaseSection,

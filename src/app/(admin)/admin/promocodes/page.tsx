@@ -83,17 +83,41 @@ const AdminPromoCodesPage = async ({
 
   return (
     <Stack gap={3}>
-      <AdminPageHero eyebrow={labels.eyebrow} title={labels.title} description={labels.description} />
+      <AdminPageHero
+        eyebrow={labels.eyebrow}
+        title={labels.title}
+        description={labels.description}
+      />
 
-      {saved === "1" ? <Alert severity="success">{labels.savedMessage}</Alert> : null}
-      {deleted === "1" ? <Alert severity="success">{labels.deletedMessage}</Alert> : null}
-      {error === "invalid-code" ? <Alert severity="error">{labels.invalidCodeMessage}</Alert> : null}
-      {error === "invalid-percent" ? <Alert severity="error">{labels.invalidPercentMessage}</Alert> : null}
+      {saved === "1" ? (
+        <Alert severity="success">{labels.savedMessage}</Alert>
+      ) : null}
+      {deleted === "1" ? (
+        <Alert severity="success">{labels.deletedMessage}</Alert>
+      ) : null}
+      {error === "invalid-code" ? (
+        <Alert severity="error">{labels.invalidCodeMessage}</Alert>
+      ) : null}
+      {error === "invalid-percent" ? (
+        <Alert severity="error">{labels.invalidPercentMessage}</Alert>
+      ) : null}
 
-      <AdminSectionCard title={labels.newPromoCodeTitle} description={labels.newPromoCodeDescription}>
+      <AdminSectionCard
+        title={labels.newPromoCodeTitle}
+        description={labels.newPromoCodeDescription}
+      >
         <form action={saveAdminPromoCodeAction}>
           <Stack gap={2}>
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" }, gap: 2 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  md: "repeat(2, minmax(0, 1fr))",
+                },
+                gap: 2,
+              }}
+            >
               <AdminPromoCodeInput
                 key={existingCodes.join("|")}
                 existingCodes={existingCodes}
@@ -110,7 +134,10 @@ const AdminPromoCodesPage = async ({
               />
             </Box>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              <AdminCheckboxField control={<Checkbox name="isActive" defaultChecked />} label={labels.toggles.isActive} />
+              <AdminCheckboxField
+                control={<Checkbox name="isActive" defaultChecked />}
+                label={labels.toggles.isActive}
+              />
             </Box>
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
               <AdminConfirmSubmitButton
@@ -124,7 +151,10 @@ const AdminPromoCodesPage = async ({
       </AdminSectionCard>
 
       {promoCodes.length === 0 ? (
-        <AdminEmptyState title={labels.emptyTitle} description={labels.emptyDescription} />
+        <AdminEmptyState
+          title={labels.emptyTitle}
+          description={labels.emptyDescription}
+        />
       ) : (
         <Stack gap={2}>
           {promoCodes.map((promoCode) => (
@@ -133,7 +163,11 @@ const AdminPromoCodesPage = async ({
               promoCode={promoCode}
               description={tPromoCodes("cardDescription", {
                 percentOff: promoCode.percentOff,
-                createdAt: formatAdminDate(promoCode.createdAt, locale, timeZone),
+                createdAt: formatAdminDate(
+                  promoCode.createdAt,
+                  locale,
+                  timeZone,
+                ),
               })}
               saveAction={saveAdminPromoCodeAction}
               deleteAction={deleteAdminPromoCodeAction}

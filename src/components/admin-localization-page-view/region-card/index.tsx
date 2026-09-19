@@ -65,7 +65,7 @@ export const AdminRegionCard = ({
     <AdminSectionCard
       title={region.label}
       description={`${region.code} • ${region.currency}`}
-      action={(
+      action={
         <Stack direction="row" gap={1} flexWrap="wrap">
           <AdminStatusChip
             label={region.isActive ? sharedStatus.active : sharedStatus.hidden}
@@ -75,7 +75,7 @@ export const AdminRegionCard = ({
             <AdminStatusChip label={labels.defaultBadge} tone="info" />
           ) : null}
         </Stack>
-      )}
+      }
     >
       <form ref={deleteFormRef} action={deleteAction}>
         <input type="hidden" name="code" value={region.code} />
@@ -83,8 +83,23 @@ export const AdminRegionCard = ({
 
       <form action={saveAction}>
         <Stack gap={2}>
-          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(3, minmax(0, 1fr))" }, gap: 2 }}>
-            <TextField label={labels.fields.regionCode} name="code" defaultValue={region.code} required slotProps={{ input: { readOnly: true } }} />
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "repeat(3, minmax(0, 1fr))",
+              },
+              gap: 2,
+            }}
+          >
+            <TextField
+              label={labels.fields.regionCode}
+              name="code"
+              defaultValue={region.code}
+              required
+              slotProps={{ input: { readOnly: true } }}
+            />
             <AdminCurrencySelectField
               name="currency"
               label={labels.fields.currency}
@@ -94,13 +109,35 @@ export const AdminRegionCard = ({
               placeholder={labels.currencyPlaceholder}
               noOptionsText={labels.currencyNoOptions}
             />
-            <TextField label={labels.fields.sortOrder} name="sortOrder" type="number" defaultValue={region.sortOrder} />
+            <TextField
+              label={labels.fields.sortOrder}
+              name="sortOrder"
+              type="number"
+              defaultValue={region.sortOrder}
+            />
           </Box>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-            <AdminCheckboxField control={<Checkbox name="isActive" defaultChecked={region.isActive} />} label={labels.toggles.isActive} />
-            <AdminCheckboxField control={<Checkbox name="isDefault" defaultChecked={region.isDefault} />} label={labels.toggles.isDefault} />
+            <AdminCheckboxField
+              control={
+                <Checkbox name="isActive" defaultChecked={region.isActive} />
+              }
+              label={labels.toggles.isActive}
+            />
+            <AdminCheckboxField
+              control={
+                <Checkbox name="isDefault" defaultChecked={region.isDefault} />
+              }
+              label={labels.toggles.isDefault}
+            />
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1, flexWrap: "wrap" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 1,
+              flexWrap: "wrap",
+            }}
+          >
             <ModalButton
               label={labels.deleteButton}
               onConfirmAction={handleDeleteConfirm}
@@ -109,9 +146,14 @@ export const AdminRegionCard = ({
               confirmLabel={labels.confirmDeleteButton}
               cancelLabel={labels.cancelDeleteButton}
               disabled={region.isDefault}
-              tooltip={region.isDefault ? labels.deleteProtectedHint : undefined}
+              tooltip={
+                region.isDefault ? labels.deleteProtectedHint : undefined
+              }
             />
-            <AdminConfirmSubmitButton variant="outlined" label={labels.updateButton} />
+            <AdminConfirmSubmitButton
+              variant="outlined"
+              label={labels.updateButton}
+            />
           </Box>
         </Stack>
       </form>

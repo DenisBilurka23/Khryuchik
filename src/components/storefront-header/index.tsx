@@ -2,7 +2,7 @@ import { AppBar, Box, Container, Toolbar } from "@mui/material";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import { Logo } from "../logo";
+import { Logo } from "@/components/logo";
 import { CartButton } from "./cart-button";
 import { CountrySwitcher } from "./country-switcher";
 import { FavoritesButton } from "./favorites-button";

@@ -17,7 +17,10 @@ import { AdminProductFormErrorCode } from "@/server/admin/product-form-state";
 import type { ProductType } from "@/types/catalog";
 import { getLocaleDisplayName, toCurrencyCodes } from "@/utils";
 
-import { AdminConfirmSubmitButton, AdminSectionCard } from "../../admin-page-shared";
+import {
+  AdminConfirmSubmitButton,
+  AdminSectionCard,
+} from "@/components/admin-page-shared";
 import { AdminReviewsField } from "../reviews-field";
 import { AdminProductFormHero } from "../form-hero";
 import {

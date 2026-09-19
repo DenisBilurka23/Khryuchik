@@ -58,3 +58,5 @@ export const useAdminProductUploadRegistry = () => {
 
   return value;
 };
+
+export type { AdminProductUploadRunner } from "./types";

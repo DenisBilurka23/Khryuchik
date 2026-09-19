@@ -3,7 +3,10 @@ import "server-only";
 import { redirect } from "next/navigation";
 
 import { getServerAuthSession } from "@/server/auth/config";
-import { getAccountUserByEmail, getAccountUserById } from "@/server/users/services/users.service";
+import {
+  getAccountUserByEmail,
+  getAccountUserById,
+} from "@/server/users/services/users.service";
 
 const hasDatabaseAdminAccess = async (input: {
   userId?: string;

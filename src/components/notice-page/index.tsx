@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { PageShell } from "@/components/storefront/page-shell";
+import { PageShell } from "@/components/page-shell";
 
 import type { NoticePageProps } from "./types";
 

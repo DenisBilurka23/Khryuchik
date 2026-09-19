@@ -18,7 +18,7 @@ import { HeroPanel, IconTile, Plate } from "@/components/primitives";
 import { AuthInputErrorCode } from "@/types/auth";
 import { UserOperationErrorReason } from "@/types/users";
 
-import { PageShell } from "../storefront/page-shell";
+import { PageShell } from "@/components/page-shell";
 import { RegisterForm } from "./form";
 import { RegisterIllustration } from "./illustration";
 

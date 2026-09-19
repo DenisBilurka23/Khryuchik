@@ -19,7 +19,7 @@ import {
   AdminPageHero,
   AdminSectionCard,
 } from "@/components/admin-page-shared";
-import { ImportPrintifyProductButton } from "@/components/admin-printify-page-view/import-product-button";
+import { ImportPrintifyProductButton } from "@/components/admin-printify-page-view";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { getImportablePrintifyProducts } from "@/server/printify/services/printify-catalog.service";

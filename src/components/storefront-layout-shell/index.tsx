@@ -1,8 +1,10 @@
 import { getMessages } from "next-intl/server";
 
 import { FooterSection } from "@/components/footer-section";
-import { IntlClientProvider } from "@/components/providers/intl-client-provider";
-import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
+import {
+  IntlClientProvider,
+  StorefrontThemeProvider,
+} from "@/components/providers";
 import { StorefrontHeader } from "@/components/storefront-header";
 import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
 import { defaultLocale } from "@/i18n/config";
@@ -37,11 +39,7 @@ export const StorefrontLayoutShell = async ({
   );
 
   return (
-    <IntlClientProvider
-      locale={locale}
-      messages={messages}
-      timeZone={timeZone}
-    >
+    <IntlClientProvider locale={locale} messages={messages} timeZone={timeZone}>
       <StorefrontThemeProvider>
         <StorefrontHeader
           locale={locale}

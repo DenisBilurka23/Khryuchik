@@ -23,11 +23,9 @@ export const findAllProductDetails = async () => {
 export const upsertProductDetails = async (details: ProductDetailDocument) => {
   const db = await getMongoDb();
 
-  await db.collection<ProductDetailDocument>("productDetails").replaceOne(
-    { productId: details.productId },
-    details,
-    { upsert: true },
-  );
+  await db
+    .collection<ProductDetailDocument>("productDetails")
+    .replaceOne({ productId: details.productId }, details, { upsert: true });
 
   return details;
 };

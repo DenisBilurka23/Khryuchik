@@ -11,7 +11,7 @@ import type {
 } from "@/types/cart";
 import type { CountryCode } from "@/utils";
 
-import { removeCartItems, useCart } from "@/components/cart/store";
+import { removeCartItems, useCart } from "@/stores/cart";
 
 export const useResolvedCart = (
   locale: Locale,

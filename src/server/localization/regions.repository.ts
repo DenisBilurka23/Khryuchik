@@ -16,11 +16,9 @@ export const findAllRegions = async () => {
 export const upsertRegion = async (region: RegionDocument) => {
   const db = await getMongoDb();
 
-  await db.collection<RegionDocument>("regions").replaceOne(
-    { code: region.code },
-    region,
-    { upsert: true },
-  );
+  await db
+    .collection<RegionDocument>("regions")
+    .replaceOne({ code: region.code }, region, { upsert: true });
 
   return region;
 };

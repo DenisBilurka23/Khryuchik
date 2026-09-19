@@ -1,8 +1,8 @@
 import { Box, Container, Grid } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
-import { BookCard } from "../book-card";
-import { SectionHeading } from "../section-heading";
+import { BookCard } from "@/components/book-card";
+import { SectionHeading } from "@/components/section-heading";
 import { getLocalizedPath, getLocalizedProductPath } from "@/utils";
 import type { BooksSectionProps } from "./types";
 

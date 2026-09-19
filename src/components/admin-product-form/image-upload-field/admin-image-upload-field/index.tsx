@@ -21,19 +21,17 @@ import {
 import { Box, Button, Stack, Typography } from "@mui/material";
 
 import { requestAdminProductGalleryUploadUrls } from "@/client-api/admin";
+import { uploadDirectToR2 } from "@/utils";
 
 import {
   buildImagesJsonValue,
   getStatusLabel,
   mapExistingImages,
-} from "../helpers";
+} from "../utils";
 import { ImageCard } from "../image-card";
 import { SortableImageCard } from "../sortable-image-card";
-import styles from "../styles.module.css";
-import {
-  uploadDirectToR2,
-  useAdminProductUploadRegistry,
-} from "../../upload-registry";
+import styles from "../image-upload-field.module.css";
+import { useAdminProductUploadRegistry } from "../../upload-registry";
 import type {
   AdminImageUploadFieldProps,
   ImageUploadStatus,
@@ -105,7 +103,10 @@ export const AdminImageUploadField = ({
   }, []);
 
   useEffect(() => {
-    document.body.classList.toggle("admin-image-dragging", Boolean(activeImageId));
+    document.body.classList.toggle(
+      "admin-image-dragging",
+      Boolean(activeImageId),
+    );
 
     return () => {
       document.body.classList.remove("admin-image-dragging");
@@ -198,8 +199,12 @@ export const AdminImageUploadField = ({
     }
 
     const currentImages = orderedImagesRef.current;
-    const sourceIndex = currentImages.findIndex((image) => image.id === sourceId);
-    const targetIndex = currentImages.findIndex((image) => image.id === targetId);
+    const sourceIndex = currentImages.findIndex(
+      (image) => image.id === sourceId,
+    );
+    const targetIndex = currentImages.findIndex(
+      (image) => image.id === targetId,
+    );
 
     if (sourceIndex < 0 || targetIndex < 0) {
       return;
@@ -221,7 +226,7 @@ export const AdminImageUploadField = ({
   };
 
   const activeImage = activeImageId
-    ? orderedImages.find((image) => image.id === activeImageId) ?? null
+    ? (orderedImages.find((image) => image.id === activeImageId) ?? null)
     : null;
 
   const removeImage = (imageId: string) => {
@@ -321,7 +326,11 @@ export const AdminImageUploadField = ({
         </DndContext>
       ) : null}
 
-      <Button component="label" variant="outlined" sx={{ alignSelf: "flex-start" }}>
+      <Button
+        component="label"
+        variant="outlined"
+        sx={{ alignSelf: "flex-start" }}
+      >
         {buttonLabel}
         <input
           hidden

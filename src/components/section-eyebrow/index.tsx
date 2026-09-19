@@ -1,6 +1,6 @@
 import { Stack, Typography } from "@mui/material";
 
-import { BrandCurl } from "../brand-curl";
+import { BrandCurl } from "@/components/brand-curl";
 
 import type { SectionEyebrowProps } from "./types";
 

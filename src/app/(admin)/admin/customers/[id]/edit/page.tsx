@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import { Alert, Stack } from "@mui/material";
 
 import { AdminCustomerForm } from "@/components/admin-customer-form";
-import { deleteAdminCustomerAction, saveAdminCustomerAction } from "@/app/(admin)/admin/actions";
+import {
+  deleteAdminCustomerAction,
+  saveAdminCustomerAction,
+} from "@/app/(admin)/admin/actions";
 import { getAdminCustomerEditorData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { requireAdminPageAccess } from "@/server/admin/auth";
@@ -18,10 +21,7 @@ type EditAdminCustomerPageProps = {
 export const generateMetadata = async ({
   params,
 }: EditAdminCustomerPageProps): Promise<Metadata> => {
-  const [locale, { id }] = await Promise.all([
-    resolveLocale("admin"),
-    params,
-  ]);
+  const [locale, { id }] = await Promise.all([resolveLocale("admin"), params]);
   const tCustomerForm = await getTranslations({
     locale,
     namespace: "adminPage.customers.form",
@@ -56,7 +56,9 @@ const EditAdminCustomerPage = async ({
 
   return (
     <Stack gap={2}>
-      {saved === "1" ? <Alert severity="success">{tCustomerForm("savedMessage")}</Alert> : null}
+      {saved === "1" ? (
+        <Alert severity="success">{tCustomerForm("savedMessage")}</Alert>
+      ) : null}
       <AdminCustomerForm
         customer={customer}
         locale={locale}

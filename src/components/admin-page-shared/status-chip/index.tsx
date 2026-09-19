@@ -1,9 +1,6 @@
 import { Chip } from "@mui/material";
 
-import type {
-  AdminStatusChipProps,
-  AdminStatusChipTone,
-} from "./types";
+import type { AdminStatusChipProps, AdminStatusChipTone } from "./types";
 
 const toneStyles: Record<AdminStatusChipTone, { bg: string }> = {
   success: { bg: "#E6F6EC" },
@@ -13,7 +10,10 @@ const toneStyles: Record<AdminStatusChipTone, { bg: string }> = {
   accent: { bg: "#FCE5EA" },
 };
 
-export const AdminStatusChip = ({ label, tone = "neutral" }: AdminStatusChipProps) => {
+export const AdminStatusChip = ({
+  label,
+  tone = "neutral",
+}: AdminStatusChipProps) => {
   const currentTone =
     label.toLowerCase() === "admin"
       ? { bg: "#FCE5EA" }

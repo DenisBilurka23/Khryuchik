@@ -5,7 +5,7 @@ import { Box, Button, Divider, Typography } from "@mui/material";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { PromoCodeField } from "@/components/cart/promo-code-field";
+import { PromoCodeField } from "../promo-code-field";
 import { Note, Plate } from "@/components/primitives";
 import type { CartPageLabels } from "@/i18n/types";
 import { displayFont } from "@/theme/sx";

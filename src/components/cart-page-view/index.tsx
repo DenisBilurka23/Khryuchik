@@ -8,8 +8,8 @@ import { usePromoCode } from "@/hooks/usePromoCode";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
-import { CartItemCard, OrderSummaryCard } from "../cart";
-import { PageShell } from "../storefront/page-shell";
+import { CartItemCard, OrderSummaryCard } from "@/components/cart";
+import { PageShell } from "@/components/page-shell";
 import { CartEmptyState } from "./empty-state";
 import { CartHero } from "./hero";
 import type { CartPageViewProps } from "./types";

@@ -59,7 +59,7 @@ export const AdminLocaleCard = ({
   return (
     <AdminSectionCard
       title={locale.label}
-      action={(
+      action={
         <Stack direction="row" gap={1} flexWrap="wrap">
           <AdminStatusChip
             label={locale.isActive ? sharedStatus.active : sharedStatus.hidden}
@@ -69,7 +69,7 @@ export const AdminLocaleCard = ({
             <AdminStatusChip label={labels.defaultBadge} tone="info" />
           ) : null}
         </Stack>
-      )}
+      }
     >
       <form ref={deleteFormRef} action={deleteAction}>
         <input type="hidden" name="code" value={locale.code} />
@@ -77,15 +77,52 @@ export const AdminLocaleCard = ({
 
       <form action={saveAction}>
         <Stack gap={2}>
-          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" }, gap: 2 }}>
-            <TextField label={labels.fields.code} name="code" defaultValue={locale.code} required slotProps={{ input: { readOnly: true } }} />
-            <TextField label={labels.fields.sortOrder} name="sortOrder" type="number" defaultValue={locale.sortOrder} />
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "repeat(2, minmax(0, 1fr))",
+              },
+              gap: 2,
+            }}
+          >
+            <TextField
+              label={labels.fields.code}
+              name="code"
+              defaultValue={locale.code}
+              required
+              slotProps={{ input: { readOnly: true } }}
+            />
+            <TextField
+              label={labels.fields.sortOrder}
+              name="sortOrder"
+              type="number"
+              defaultValue={locale.sortOrder}
+            />
           </Box>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-            <AdminCheckboxField control={<Checkbox name="isActive" defaultChecked={locale.isActive} />} label={labels.toggles.isActive} />
-            <AdminCheckboxField control={<Checkbox name="isDefault" defaultChecked={locale.isDefault} />} label={labels.toggles.isDefault} />
+            <AdminCheckboxField
+              control={
+                <Checkbox name="isActive" defaultChecked={locale.isActive} />
+              }
+              label={labels.toggles.isActive}
+            />
+            <AdminCheckboxField
+              control={
+                <Checkbox name="isDefault" defaultChecked={locale.isDefault} />
+              }
+              label={labels.toggles.isDefault}
+            />
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1, flexWrap: "wrap" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 1,
+              flexWrap: "wrap",
+            }}
+          >
             <ModalButton
               label={labels.deleteButton}
               onConfirmAction={handleDeleteConfirm}
@@ -94,9 +131,14 @@ export const AdminLocaleCard = ({
               confirmLabel={labels.confirmDeleteButton}
               cancelLabel={labels.cancelDeleteButton}
               disabled={locale.isDefault}
-              tooltip={locale.isDefault ? labels.deleteProtectedHint : undefined}
+              tooltip={
+                locale.isDefault ? labels.deleteProtectedHint : undefined
+              }
             />
-            <AdminConfirmSubmitButton variant="outlined" label={labels.updateButton} />
+            <AdminConfirmSubmitButton
+              variant="outlined"
+              label={labels.updateButton}
+            />
           </Box>
         </Stack>
       </form>

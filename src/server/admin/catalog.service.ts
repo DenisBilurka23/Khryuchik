@@ -27,11 +27,7 @@ import type {
   ProductTranslation,
 } from "@/types/catalog";
 
-import {
-  formatCurrency,
-  formatCustomerName,
-  formatOrderNumber,
-} from "@/utils";
+import { formatCurrency, formatCustomerName, formatOrderNumber } from "@/utils";
 import {
   buildUniqueValue,
   createEmptyAdminProductPayload,

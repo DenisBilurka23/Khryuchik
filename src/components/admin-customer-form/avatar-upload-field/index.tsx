@@ -22,7 +22,9 @@ export const AdminCustomerAvatarUploadField = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const previewUrlRef = useRef<string | null>(null);
   const inputId = `${name}-input`;
-  const [previewSrc, setPreviewSrc] = useState<string | null>(currentImageSrc ?? null);
+  const [previewSrc, setPreviewSrc] = useState<string | null>(
+    currentImageSrc ?? null,
+  );
   const [isMarkedForRemoval, setIsMarkedForRemoval] = useState(false);
 
   useEffect(() => {
@@ -48,7 +50,11 @@ export const AdminCustomerAvatarUploadField = ({
 
   return (
     <Stack gap={1.25} alignItems={{ xs: "center", md: "flex-start" }}>
-      <input type="hidden" name={removeInputName} value={isMarkedForRemoval ? "1" : "0"} />
+      <input
+        type="hidden"
+        name={removeInputName}
+        value={isMarkedForRemoval ? "1" : "0"}
+      />
       <input
         id={inputId}
         ref={inputRef}

@@ -8,7 +8,7 @@ import {
   clearStoredPromo,
   setStoredPromo,
   useStoredPromo,
-} from "@/components/cart/promo-store";
+} from "@/stores/promo";
 import type { OrderPromoCode } from "@/types/order";
 import { calculatePromoDiscount, normalizePromoCode } from "@/utils";
 

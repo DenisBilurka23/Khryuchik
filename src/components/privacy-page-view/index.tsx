@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 
 import type { StorefrontDictionary } from "@/i18n/types";
 
-import { LegalPageShared } from "../legal-page-shared";
+import { LegalPageShared } from "@/components/legal-page-shared";
 import type { PrivacyPageViewProps } from "./types";
 
 export const PrivacyPageView = async ({ locale }: PrivacyPageViewProps) => {

@@ -8,10 +8,7 @@ export const findShopVisibleCategories = async () => {
 
   return db
     .collection<CategoryDocument>("categories")
-    .find(
-      { isActive: true, visibleInShop: true },
-      { projection: { _id: 0 } },
-    )
+    .find({ isActive: true, visibleInShop: true }, { projection: { _id: 0 } })
     .sort({ sortOrder: 1 })
     .toArray();
 };
@@ -42,11 +39,9 @@ export const findAllCategories = async () => {
 export const upsertCategory = async (category: CategoryDocument) => {
   const db = await getMongoDb();
 
-  await db.collection<CategoryDocument>("categories").replaceOne(
-    { key: category.key },
-    category,
-    { upsert: true },
-  );
+  await db
+    .collection<CategoryDocument>("categories")
+    .replaceOne({ key: category.key }, category, { upsert: true });
 
   return category;
 };

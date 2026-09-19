@@ -7,7 +7,5 @@ const PASSWORD_SALT_ROUNDS = 12;
 export const hashPassword = async (value: string) =>
   hash(value, PASSWORD_SALT_ROUNDS);
 
-export const verifyPassword = async (
-  value: string,
-  passwordHash: string,
-) => compare(value, passwordHash);
+export const verifyPassword = async (value: string, passwordHash: string) =>
+  compare(value, passwordHash);

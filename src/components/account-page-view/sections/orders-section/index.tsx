@@ -3,9 +3,7 @@ import { useTranslations } from "next-intl";
 
 import { Plate } from "@/components/primitives";
 import { customerOrderStatusColors } from "@/constants/order";
-import { formatOrderTracking } from "@/utils";
-import { formatDate } from "@/utils";
-
+import { formatDate, formatOrderTracking } from "@/utils";
 import { accountOrderTotalSx, SectionCard } from "../../shared";
 import { ConfirmDeliveryButton } from "./confirm-delivery-button";
 import type { OrdersSectionProps } from "./types";

@@ -72,11 +72,11 @@ const mergeDeep = <T extends Record<string, unknown>>(
     const typedKey = key as keyof T;
     const targetValue = output[typedKey];
 
-    if (
-      isPlainObject(value) &&
-      isPlainObject(targetValue)
-    ) {
-      output[typedKey] = mergeDeep(targetValue, value as DeepPartial<typeof targetValue>);
+    if (isPlainObject(value) && isPlainObject(targetValue)) {
+      output[typedKey] = mergeDeep(
+        targetValue,
+        value as DeepPartial<typeof targetValue>,
+      );
       continue;
     }
 

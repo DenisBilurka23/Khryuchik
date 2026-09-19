@@ -8,7 +8,7 @@ import { AuthInviteCard, AuthPageHeading } from "@/components/auth-page-shared";
 import { HeroPanel, IconTile, Plate } from "@/components/primitives";
 import { useEmailVerification } from "@/hooks/useEmailVerification";
 
-import { PageShell } from "../storefront/page-shell";
+import { PageShell } from "@/components/page-shell";
 
 import type { VerifyEmailPageViewProps } from "./types";
 

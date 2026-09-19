@@ -59,7 +59,9 @@ const getSelectedShippingAddressId = (
 
   if (
     user.selectedShippingAddressId &&
-    shippingAddresses.some((address) => address.id === user.selectedShippingAddressId)
+    shippingAddresses.some(
+      (address) => address.id === user.selectedShippingAddressId,
+    )
   ) {
     return user.selectedShippingAddressId;
   }

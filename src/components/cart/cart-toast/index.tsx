@@ -3,7 +3,7 @@
 import { Alert, Snackbar } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import { hideCartToast, useCartToast } from "../cart-toast-store";
+import { hideCartToast, useCartToast } from "@/stores/cart-toast";
 
 export const CartToast = () => {
   const t = useTranslations("storefront.cartToast");

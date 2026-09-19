@@ -4,9 +4,9 @@ import type {
   LocalizedProductSummary,
 } from "@/types/catalog";
 import type { EntertainmentCategoryView } from "@/types/entertainment";
-import type { HomeShopFilterValue } from "../shop-section/types";
+import type { HomeShopFilterValue } from "@/components/shop-section/types";
 
-export type StorefrontProps = {
+export type HomePageViewProps = {
   locale: Locale;
   shopCategories: LocalizedCategory[];
   books: LocalizedProductSummary[];

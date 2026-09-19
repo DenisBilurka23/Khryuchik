@@ -5,8 +5,4 @@ export const DELIVERY_METHOD_ICONS = [
   "card",
 ] as const;
 
-export const DELIVERY_RETURNS_ICONS = [
-  "digital",
-  "physical",
-  "merch",
-] as const;
+export const DELIVERY_RETURNS_ICONS = ["digital", "physical", "merch"] as const;

@@ -4,8 +4,12 @@ import { useSyncExternalStore } from "react";
 
 import { CART_STORAGE_KEY } from "@/constants/cart";
 import { isStoredCartItem } from "@/types/cart-guards";
-import type { StoredCartItem } from "@/types/cart";
-import type { CartItemInput, CartSnapshot, CartState } from "./types";
+import type {
+  CartItemInput,
+  CartSnapshot,
+  CartState,
+  StoredCartItem,
+} from "@/types/cart";
 
 const emptyState: CartState = { items: [] };
 const emptySnapshot: CartSnapshot = {

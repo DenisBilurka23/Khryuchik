@@ -1,11 +1,11 @@
 export { AdminProductForm } from "./admin-product-form";
 export { AdminProductFormHero } from "./form-hero";
 export {
-	AdminProductBaseSection,
-	AdminProductLocaleSection,
-	AdminProductPricingSection,
-	AdminProductPrintifySection,
-	AdminProductRelatedSection,
+  AdminProductBaseSection,
+  AdminProductLocaleSection,
+  AdminProductPricingSection,
+  AdminProductPrintifySection,
+  AdminProductRelatedSection,
 } from "./sections";
 export { AdminFileUploadField } from "./file-upload-field";
 export { AdminImageUploadField } from "./image-upload-field";
@@ -16,25 +16,20 @@ export { AdminSpecsField } from "./specs-field";
 
 export type { AdminProductFormProps } from "./types";
 export type { AdminProductFormHeroProps } from "./form-hero";
+export type { AdminProductBaseSectionProps } from "./sections/base-section";
+export type { AdminProductLocaleSectionProps } from "./sections/locale-section";
+export type { AdminProductPricingSectionProps } from "./sections/pricing-section";
 export type {
-	AdminProductBaseSectionProps,
-} from "./sections/base-section";
-export type {
-	AdminProductLocaleSectionProps,
-} from "./sections/locale-section";
-export type {
-	AdminProductPricingSectionProps,
-} from "./sections/pricing-section";
-export type {
-	AdminPrintifyAction,
-	AdminPrintifyActionResult,
-	AdminProductPrintifySectionProps,
+  AdminPrintifyAction,
+  AdminPrintifyActionResult,
+  AdminProductPrintifySectionProps,
 } from "./sections/printify-section";
-export type {
-	AdminProductRelatedSectionProps,
-} from "./sections/related-section";
+export type { AdminProductRelatedSectionProps } from "./sections/related-section";
 export type { AdminFileUploadFieldProps } from "./file-upload-field";
-export type { AdminImageUploadFieldProps, PreviewImage } from "./image-upload-field";
+export type {
+  AdminImageUploadFieldProps,
+  PreviewImage,
+} from "./image-upload-field";
 export type { AdminOptionPriceDeltaFieldProps } from "./option-price-delta-field";
 export type { AdminOptionsFieldProps } from "./options-field";
 export type { AdminReviewsFieldProps } from "./reviews-field";

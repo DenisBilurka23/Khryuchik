@@ -31,7 +31,8 @@ const getAutocompleteSlotProps = () => ({
     sx: {
       borderRadius: "20px",
       border: "1px solid #EED9C2",
-      boxShadow: "0 24px 60px rgba(39, 27, 20, 0.16), 0 10px 24px rgba(39, 27, 20, 0.10)",
+      boxShadow:
+        "0 24px 60px rgba(39, 27, 20, 0.16), 0 10px 24px rgba(39, 27, 20, 0.10)",
       backgroundImage: "none",
     },
   },
@@ -52,8 +53,10 @@ const renderAutocompleteOption = (
   </Box>
 );
 
-const isOptionEqualToValue = (option: AdminProductOption, value: AdminProductOption) =>
-  option.id === value.id;
+const isOptionEqualToValue = (
+  option: AdminProductOption,
+  value: AdminProductOption,
+) => option.id === value.id;
 
 const getOptionLabel = (option: AdminProductOption) => option.title;
 
@@ -118,7 +121,11 @@ export const AdminProductAutocompleteField = ({
                 {...itemProps}
                 key={option.id}
                 label={option.title}
-                sx={{ borderRadius: "999px", fontWeight: 600, bgcolor: "#FFF4F6" }}
+                sx={{
+                  borderRadius: "999px",
+                  fontWeight: 600,
+                  bgcolor: "#FFF4F6",
+                }}
               />
             );
           })
@@ -128,7 +135,9 @@ export const AdminProductAutocompleteField = ({
           <TextField
             {...params}
             label={label}
-            placeholder={Array.isArray(value) && value.length === 0 ? placeholder : ""}
+            placeholder={
+              Array.isArray(value) && value.length === 0 ? placeholder : ""
+            }
             helperText={helperText}
             fullWidth
           />

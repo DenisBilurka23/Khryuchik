@@ -3,15 +3,17 @@ import { getTranslations } from "next-intl/server";
 import type { DeliveryPageLabels } from "@/i18n/types";
 import { getCountryDisplayName, getLocalizedPath } from "@/utils";
 
-import { PageShell } from "../storefront/page-shell";
-import { DeliveryCtaSection } from "./sections/delivery-cta-section";
-import { DeliveryFaqSection } from "./sections/delivery-faq-section";
-import { DeliveryHeroSection } from "./sections/delivery-hero-section";
-import { DeliveryMethodsSection } from "./sections/delivery-methods-section";
-import { DeliveryPaymentSection } from "./sections/delivery-payment-section";
-import { DeliveryReturnsSection } from "./sections/delivery-returns-section";
-import { DeliveryStepsSection } from "./sections/delivery-steps-section";
-import { getDeliveryPaymentVariant } from "./region-config";
+import { PageShell } from "@/components/page-shell";
+import {
+  DeliveryCtaSection,
+  DeliveryFaqSection,
+  DeliveryHeroSection,
+  DeliveryMethodsSection,
+  DeliveryPaymentSection,
+  DeliveryReturnsSection,
+  DeliveryStepsSection,
+} from "./sections";
+import { getDeliveryPaymentVariant } from "./utils";
 import type { DeliveryPageViewProps } from "./types";
 
 export const DeliveryPageView = async ({

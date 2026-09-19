@@ -9,7 +9,7 @@ import type { EntertainmentCategoryKey } from "@/types/entertainment";
 import {
   AdminCheckboxField,
   AdminSectionCard,
-} from "../../../admin-page-shared";
+} from "@/components/admin-page-shared";
 import type { AdminEntertainmentBaseSectionProps } from "./types";
 
 const fieldsGridSx = {

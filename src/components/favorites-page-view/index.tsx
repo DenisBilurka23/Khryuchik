@@ -8,8 +8,8 @@ import { Plate } from "@/components/primitives";
 import { useWishlist } from "@/hooks/useWishlist";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
-import { PageShell } from "../storefront/page-shell";
-import { useCart } from "../cart/store";
+import { PageShell } from "@/components/page-shell";
+import { useCart } from "@/stores/cart";
 import { FavoritesCompactEmptyState } from "./compact-empty-state";
 import { FavoritesEmptyState } from "./empty-state";
 import { FavoritesHero } from "./hero";

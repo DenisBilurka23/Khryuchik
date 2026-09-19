@@ -32,7 +32,7 @@ import { useState } from "react";
 import { getLocalizedPath } from "@/utils";
 import { isNavItemActive } from "@/utils/active-nav";
 
-import { Logo } from "../../logo";
+import { Logo } from "@/components/logo";
 import { CountrySwitcher } from "../country-switcher";
 import { LocaleSwitcher } from "../locale-switcher";
 

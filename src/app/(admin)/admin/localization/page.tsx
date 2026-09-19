@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { Alert, Box, Checkbox, Stack, TextField } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
-import { AdminLocaleCard } from "@/components/admin-localization-page-view/locale-card";
-import { NewRegionFields } from "@/components/admin-localization-page-view/new-region-fields";
-import { AdminRegionCard } from "@/components/admin-localization-page-view/region-card";
+import {
+  AdminLocaleCard,
+  AdminRegionCard,
+  NewRegionFields,
+} from "@/components/admin-localization-page-view";
 import {
   AdminCheckboxField,
   AdminConfirmSubmitButton,
@@ -90,15 +92,26 @@ const AdminLocalizationPage = async ({
         description={labels.description}
       />
 
-      {saved === "1" ? <Alert severity="success">{labels.savedMessage}</Alert> : null}
-      {deleted === "1" ? <Alert severity="success">{labels.deletedMessage}</Alert> : null}
-      {error === "protected" ? <Alert severity="warning">{labels.deleteProtectedMessage}</Alert> : null}
-      {error === "invalid-currency" ? <Alert severity="error">{labels.invalidCurrencyMessage}</Alert> : null}
+      {saved === "1" ? (
+        <Alert severity="success">{labels.savedMessage}</Alert>
+      ) : null}
+      {deleted === "1" ? (
+        <Alert severity="success">{labels.deletedMessage}</Alert>
+      ) : null}
+      {error === "protected" ? (
+        <Alert severity="warning">{labels.deleteProtectedMessage}</Alert>
+      ) : null}
+      {error === "invalid-currency" ? (
+        <Alert severity="error">{labels.invalidCurrencyMessage}</Alert>
+      ) : null}
       {error === "invalid-code" ? (
         <Alert severity="error">{labels.deleteFailedMessage}</Alert>
       ) : null}
 
-      <AdminSectionCard title={labels.languagesTitle} description={labels.languagesDescription}>
+      <AdminSectionCard
+        title={labels.languagesTitle}
+        description={labels.languagesDescription}
+      >
         <Stack gap={2}>
           {data.locales.map((item) => (
             <AdminLocaleCard
@@ -111,10 +124,22 @@ const AdminLocalizationPage = async ({
         </Stack>
       </AdminSectionCard>
 
-      <AdminSectionCard title={labels.newLanguageTitle} description={labels.newLanguageDescription}>
+      <AdminSectionCard
+        title={labels.newLanguageTitle}
+        description={labels.newLanguageDescription}
+      >
         <form action={saveAdminLocaleAction}>
           <Stack gap={2}>
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" }, gap: 2 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  md: "repeat(2, minmax(0, 1fr))",
+                },
+                gap: 2,
+              }}
+            >
               <AdminLanguageSelectField
                 name="code"
                 label={labels.fields.code}
@@ -124,11 +149,22 @@ const AdminLocalizationPage = async ({
                 noOptionsText={labels.fields.codeNoOptions}
                 required
               />
-              <TextField label={labels.fields.sortOrder} name="sortOrder" type="number" defaultValue={100} />
+              <TextField
+                label={labels.fields.sortOrder}
+                name="sortOrder"
+                type="number"
+                defaultValue={100}
+              />
             </Box>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              <AdminCheckboxField control={<Checkbox name="isActive" defaultChecked />} label={labels.toggles.isActive} />
-              <AdminCheckboxField control={<Checkbox name="isDefault" />} label={labels.toggles.isDefault} />
+              <AdminCheckboxField
+                control={<Checkbox name="isActive" defaultChecked />}
+                label={labels.toggles.isActive}
+              />
+              <AdminCheckboxField
+                control={<Checkbox name="isDefault" />}
+                label={labels.toggles.isDefault}
+              />
             </Box>
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
               <AdminConfirmSubmitButton
@@ -141,7 +177,10 @@ const AdminLocalizationPage = async ({
         </form>
       </AdminSectionCard>
 
-      <AdminSectionCard title={labels.regionsTitle} description={labels.regionsDescription}>
+      <AdminSectionCard
+        title={labels.regionsTitle}
+        description={labels.regionsDescription}
+      >
         <Stack gap={2}>
           {data.regions.map((item) => (
             <AdminRegionCard
@@ -155,19 +194,42 @@ const AdminLocalizationPage = async ({
         </Stack>
       </AdminSectionCard>
 
-      <AdminSectionCard title={labels.newRegionTitle} description={labels.newRegionDescription}>
+      <AdminSectionCard
+        title={labels.newRegionTitle}
+        description={labels.newRegionDescription}
+      >
         <form action={saveAdminRegionAction}>
           <Stack gap={2}>
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(3, minmax(0, 1fr))" }, gap: 2 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  md: "repeat(3, minmax(0, 1fr))",
+                },
+                gap: 2,
+              }}
+            >
               <NewRegionFields
                 locale={locale}
                 excludeCodes={data.regions.map((region) => region.code)}
               />
-              <TextField label={labels.fields.sortOrder} name="sortOrder" type="number" defaultValue={100} />
+              <TextField
+                label={labels.fields.sortOrder}
+                name="sortOrder"
+                type="number"
+                defaultValue={100}
+              />
             </Box>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              <AdminCheckboxField control={<Checkbox name="isActive" defaultChecked />} label={labels.toggles.isActive} />
-              <AdminCheckboxField control={<Checkbox name="isDefault" />} label={labels.toggles.isDefault} />
+              <AdminCheckboxField
+                control={<Checkbox name="isActive" defaultChecked />}
+                label={labels.toggles.isActive}
+              />
+              <AdminCheckboxField
+                control={<Checkbox name="isDefault" />}
+                label={labels.toggles.isDefault}
+              />
             </Box>
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
               <AdminConfirmSubmitButton

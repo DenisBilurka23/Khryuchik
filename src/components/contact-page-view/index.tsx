@@ -8,11 +8,13 @@ import { getServerAuthSession } from "@/server/auth/config";
 import { formatPersonName } from "@/utils";
 import { getFooterItemHref } from "@/utils/footer";
 
-import { PageShell } from "../storefront/page-shell";
-import { ContactChannelsSection } from "./sections/contact-channels-section";
-import type { ContactChannelItem } from "./sections/contact-channels-section/types";
-import { ContactForm } from "./sections/contact-form-section";
-import { ContactHero } from "./sections/contact-hero";
+import { PageShell } from "@/components/page-shell";
+import { ContactHero } from "./hero";
+import {
+  ContactChannelsSection,
+  ContactForm,
+  type ContactChannelItem,
+} from "./sections";
 import type { ContactPageViewProps } from "./types";
 
 const panelSx = {

@@ -4,7 +4,7 @@ import { Fragment } from "react";
 import { Box, Stack, TextField, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import { AdminSectionCard } from "../../../admin-page-shared";
+import { AdminSectionCard } from "@/components/admin-page-shared";
 import type { AdminProductShippingSectionProps } from "./types";
 
 export const AdminProductShippingSection = ({

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Storefront } from "@/components/storefront";
+import { HomePageView } from "@/components/home-page-view";
 import {
   getProductsForPlacement,
   getShopProducts,
@@ -66,7 +66,7 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
   });
 
   return (
-    <Storefront
+    <HomePageView
       locale={lang}
       shopCategories={shopCategories}
       books={books}

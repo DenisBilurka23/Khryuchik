@@ -15,10 +15,11 @@ import {
   Typography,
 } from "@mui/material";
 
-import { formatCurrency } from "@/utils";
-import { FALLBACK_TIME_ZONE, formatDateTime } from "@/utils";
-
-import { AdminSectionCard, AdminStatusChip } from "../../../admin-page-shared";
+import { FALLBACK_TIME_ZONE, formatCurrency, formatDateTime } from "@/utils";
+import {
+  AdminSectionCard,
+  AdminStatusChip,
+} from "@/components/admin-page-shared";
 import type {
   AdminPrintifyAction,
   AdminProductPrintifySectionProps,

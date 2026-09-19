@@ -5,9 +5,9 @@ import { ENTERTAINMENT_QUERY_PARAM } from "@/constants/entertainment";
 import { getLocalizedPath, getLocalizedProductPath } from "@/utils";
 import { createCategoryTabOptions } from "@/utils/category-tabs";
 
-import { CategoryTabs } from "../category-tabs";
-import { ProductCard } from "../product-card";
-import { SectionHeading } from "../section-heading";
+import { CategoryTabs } from "@/components/category-tabs";
+import { ProductCard } from "@/components/product-card";
+import { SectionHeading } from "@/components/section-heading";
 import type { ShopSectionProps } from "./types";
 
 export const ShopSection = async ({

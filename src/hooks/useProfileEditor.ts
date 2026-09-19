@@ -9,9 +9,15 @@ import { formatPersonName } from "@/utils";
 import { EMAIL_PATTERN } from "@/utils/validation";
 
 import type { AccountPageUser } from "@/components/account-page-view/types";
-import type { ProfileEditorState, UseProfileEditorReturn } from "./useProfileEditor.types";
+import type {
+  ProfileEditorState,
+  UseProfileEditorReturn,
+} from "./useProfileEditor.types";
 
-export type { ProfileEditorState, UseProfileEditorReturn } from "./useProfileEditor.types";
+export type {
+  ProfileEditorState,
+  UseProfileEditorReturn,
+} from "./useProfileEditor.types";
 
 export const useProfileEditor = (
   user: AccountPageUser,

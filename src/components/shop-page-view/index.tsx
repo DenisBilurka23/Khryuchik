@@ -14,11 +14,11 @@ import {
   isShopFilterValue,
 } from "@/utils/shop-page";
 
-import { NewsletterSection } from "../newsletter-section";
-import { ProductCard } from "../product-card";
-import { ShopSearchField } from "../shop-search-field";
-import { PageShell } from "../storefront/page-shell";
-import { ShopHero } from "./shop-hero";
+import { NewsletterSection } from "@/components/newsletter-section";
+import { ProductCard } from "@/components/product-card";
+import { ShopSearchField } from "@/components/shop-search-field";
+import { PageShell } from "@/components/page-shell";
+import { ShopHero } from "./hero";
 import type {
   ShopFilterValue,
   ShopPageViewProps,

@@ -4,7 +4,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { Box, IconButton, Paper, Typography } from "@mui/material";
 
 import type { ImageCardProps } from "../types";
-import styles from "../styles.module.css";
+import styles from "../image-upload-field.module.css";
 
 const getImageCardStyles = ({
   isPrimary,
@@ -56,7 +56,9 @@ export const ImageCard = ({
   return (
     <Paper
       variant="outlined"
-      className={isDragging || isOverlay ? styles.draggingCard : styles.draggableCard}
+      className={
+        isDragging || isOverlay ? styles.draggingCard : styles.draggableCard
+      }
       {...dragHandleAttributes}
       {...dragHandleListeners}
       sx={getImageCardStyles({
@@ -66,7 +68,10 @@ export const ImageCard = ({
       })}
     >
       <Box className={styles.header}>
-        <Typography variant="caption" sx={{ display: "block", fontWeight: 700 }}>
+        <Typography
+          variant="caption"
+          sx={{ display: "block", fontWeight: 700 }}
+        >
           {index === 0 ? thumbnailLabel : `${galleryLabel} ${index}`}
         </Typography>
         <Box className={styles.actions}>
@@ -106,11 +111,19 @@ export const ImageCard = ({
           </Box>
         </Box>
       </Box>
-      <Box className={styles.imageFrame} sx={{ bgcolor: image.bgColor ?? "#FFF8F0" }}>
+      <Box
+        className={styles.imageFrame}
+        sx={{ bgcolor: image.bgColor ?? "#FFF8F0" }}
+      >
         {image.src ? (
-          <Box component="img" src={image.src} alt={image.alt} className={styles.image} />
+          <Box
+            component="img"
+            src={image.src}
+            alt={image.alt}
+            className={styles.image}
+          />
         ) : (
-          image.emoji ?? "🖼️"
+          (image.emoji ?? "🖼️")
         )}
       </Box>
       {statusLabel ? (

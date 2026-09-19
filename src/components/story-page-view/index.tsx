@@ -3,12 +3,12 @@ import { getTranslations } from "next-intl/server";
 import { getBookCountsBySeries } from "@/server/catalog/services/catalog.service";
 import { getLocalizedPath } from "@/utils";
 
-import { NewsletterSection } from "../newsletter-section";
-import { StoryAuthorSection } from "../story-author-section";
-import { StorySeriesSection } from "../story-series-section";
-import { StoryTimelineSection } from "../story-timeline-section";
-import { StoryValuesSection } from "../story-values-section";
-import { PageShell } from "../storefront/page-shell";
+import { NewsletterSection } from "@/components/newsletter-section";
+import { StoryAuthorSection } from "@/components/story-author-section";
+import { StorySeriesSection } from "@/components/story-series-section";
+import { StoryTimelineSection } from "@/components/story-timeline-section";
+import { StoryValuesSection } from "@/components/story-values-section";
+import { PageShell } from "@/components/page-shell";
 import type { StoryPageDictionary, StoryPageViewProps } from "./types";
 
 export const StoryPageView = async ({

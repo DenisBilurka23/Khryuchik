@@ -8,12 +8,13 @@ import {
 } from "@/i18n/config";
 
 export const POST = async (request: NextRequest) => {
-  const payload = (await request.json().catch(() => null)) as
-    | { locale?: string }
-    | null;
-  const locale = payload?.locale && isLocale(payload.locale)
-    ? payload.locale
-    : defaultLocale;
+  const payload = (await request.json().catch(() => null)) as {
+    locale?: string;
+  } | null;
+  const locale =
+    payload?.locale && isLocale(payload.locale)
+      ? payload.locale
+      : defaultLocale;
   const response = NextResponse.json({ ok: true, locale });
 
   response.cookies.set(ADMIN_LOCALE_COOKIE_NAME, locale, {

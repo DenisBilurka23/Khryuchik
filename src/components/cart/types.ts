@@ -3,28 +3,8 @@ import type { SxProps, Theme } from "@mui/material";
 import type { Locale } from "@/i18n/config";
 import type { PromoCodeStatus } from "@/hooks/usePromoCode.types";
 import type { CurrencyCode } from "@/utils";
-import type { CartItem, CartSelections, StoredCartItem } from "@/types/cart";
+import type { CartItem } from "@/types/cart";
 import type { OrderPromoCode } from "@/types/order";
-
-export type CartState = {
-  items: StoredCartItem[];
-};
-
-export type CartSnapshot = {
-  items: StoredCartItem[];
-  totalCount: number;
-};
-
-export type CartToastSnapshot = {
-  open: boolean;
-  addedCount: number;
-};
-
-export type CartItemInput = {
-  productId: string;
-  quantity?: number;
-  selections?: CartSelections;
-};
 
 export type PromoCodeFieldProps = {
   code: string;

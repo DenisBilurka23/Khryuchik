@@ -8,13 +8,17 @@ import type {
 import { clearGuestWishlist, getGuestWishlist } from "@/utils/wishlist";
 
 export const getWishlist = async (locale: Locale) =>
-  GET<WishlistListResponse>(`/api/wishlist?locale=${encodeURIComponent(locale)}`);
+  GET<WishlistListResponse>(
+    `/api/wishlist?locale=${encodeURIComponent(locale)}`,
+  );
 
 export const addToWishlist = async (productId: string) =>
   POST<WishlistMutationResponse>("/api/wishlist", { productId });
 
 export const removeFromWishlist = async (productId: string) =>
-  DELETE<WishlistMutationResponse>(`/api/wishlist/${encodeURIComponent(productId)}`);
+  DELETE<WishlistMutationResponse>(
+    `/api/wishlist/${encodeURIComponent(productId)}`,
+  );
 
 export const mergeWishlist = async (productIds: string[]) =>
   POST<WishlistMutationResponse>("/api/wishlist/merge", { productIds });

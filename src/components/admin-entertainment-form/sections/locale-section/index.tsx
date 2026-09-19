@@ -17,7 +17,7 @@ import {
 import type { AdminEntertainmentUploadedFile } from "@/types/admin";
 import type { ProductImage } from "@/types/product-details";
 
-import { AdminSectionCard } from "../../../admin-page-shared";
+import { AdminSectionCard } from "@/components/admin-page-shared";
 import { AdminEntertainmentPosterFramePicker } from "../../poster-frame-picker";
 import { AdminEntertainmentUploadField } from "../../upload-field";
 import type { AdminEntertainmentLocaleSectionProps } from "./types";

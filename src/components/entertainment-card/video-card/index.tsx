@@ -5,7 +5,7 @@ import Link from "next/link";
 import { cardFrameSx } from "@/theme/sx";
 import { formatVideoDuration } from "@/utils";
 
-import { ArrowLink } from "../../arrow-link";
+import { ArrowLink } from "@/components/arrow-link";
 import { EntertainmentPoster } from "../parts/poster";
 import type { EntertainmentVideoCardProps } from "../types";
 

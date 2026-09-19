@@ -19,7 +19,10 @@ export const generateMetadata = async ({
 
   await requireActiveLocale(lang);
 
-  const tStorefront = await getTranslations({ locale: lang, namespace: "storefront" });
+  const tStorefront = await getTranslations({
+    locale: lang,
+    namespace: "storefront",
+  });
 
   return createStorefrontMetadata({
     locale: lang,

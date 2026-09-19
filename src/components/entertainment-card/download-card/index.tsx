@@ -3,7 +3,7 @@ import { Box, CardContent, Typography } from "@mui/material";
 import { cardFrameSx } from "@/theme/sx";
 import { formatFileSize } from "@/utils";
 
-import { ArrowLink } from "../../arrow-link";
+import { ArrowLink } from "@/components/arrow-link";
 import { EntertainmentPoster } from "../parts/poster";
 import type { EntertainmentDownloadCardProps } from "../types";
 

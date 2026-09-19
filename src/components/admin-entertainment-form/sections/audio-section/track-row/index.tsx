@@ -14,7 +14,7 @@ import { getAdminEntertainmentStatusTone } from "@/utils/admin";
 import {
   AdminLanguageSelectField,
   AdminStatusChip,
-} from "../../../../admin-page-shared";
+} from "@/components/admin-page-shared";
 import { AdminEntertainmentUploadField } from "../../../upload-field";
 import type { AdminEntertainmentAudioTrackRowProps } from "./types";
 

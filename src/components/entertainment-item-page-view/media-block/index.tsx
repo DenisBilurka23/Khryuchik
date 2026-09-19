@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { displayFont, leadSx } from "@/theme/sx";
 import { formatFileSize, getEntertainmentAspectRatio } from "@/utils";
 
-import { EntertainmentPlayer } from "../../entertainment-player";
+import { EntertainmentPlayer } from "@/components/entertainment-player";
 import { EntertainmentDownloadLink } from "../download-link";
 import type { EntertainmentMediaBlockProps } from "../types";
 import { toPlayerSubtitleTracks } from "../utils";

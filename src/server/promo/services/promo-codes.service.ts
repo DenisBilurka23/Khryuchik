@@ -59,10 +59,7 @@ export const validatePromoCode = async (
     return { status: "inactive" };
   }
 
-  const usedCount = await countUserOrdersWithPromoCode(
-    userId,
-    promoCode.code,
-  );
+  const usedCount = await countUserOrdersWithPromoCode(userId, promoCode.code);
 
   if (usedCount > 0) {
     return { status: "already-used" };

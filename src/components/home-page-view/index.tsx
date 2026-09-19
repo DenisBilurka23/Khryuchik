@@ -1,23 +1,23 @@
-import { BookSection } from "../books-section";
-import { EntertainmentSection } from "../entertainment-section";
-import { HeroSection } from "../hero-section";
-import { NewsletterSection } from "../newsletter-section";
-import { OrderSection } from "../order-section";
-import { ShopSection } from "../shop-section";
+import { BookSection } from "@/components/books-section";
+import { EntertainmentSection } from "@/components/entertainment-section";
+import { HeroSection } from "@/components/hero-section";
+import { NewsletterSection } from "@/components/newsletter-section";
+import { OrderSection } from "@/components/order-section";
+import { ShopSection } from "@/components/shop-section";
 
-import { createStorefrontHeaderViewModel } from "../storefront-header/navigation";
+import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
 
-import { PageShell } from "./page-shell";
-import type { StorefrontProps } from "./types";
+import { PageShell } from "@/components/page-shell";
+import type { HomePageViewProps } from "./types";
 
-export const Storefront = async ({
+export const HomePageView = async ({
   locale,
   shopCategories,
   books,
   shopProducts,
   selectedShopCategory,
   entertainment,
-}: StorefrontProps) => {
+}: HomePageViewProps) => {
   const { navigationPaths } = createStorefrontHeaderViewModel(locale);
   const { shop: shopHref, cart: cartHref } = navigationPaths;
 
@@ -42,4 +42,4 @@ export const Storefront = async ({
   );
 };
 
-export type { StorefrontProps } from "./types";
+export type { HomePageViewProps } from "./types";

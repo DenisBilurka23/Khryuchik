@@ -13,11 +13,11 @@ import {
 } from "@mui/material";
 
 import { Logo } from "@/components/logo";
-import { StorefrontThemeProvider } from "@/components/providers/storefront-theme-provider";
+import { StorefrontThemeProvider } from "@/components/providers";
 import { createAdminNavItems } from "@/utils/admin";
 
 import { AdminLocaleSwitcher } from "./locale-switcher";
-import { AdminNavigation } from "../admin-navigation";
+import { AdminNavigation } from "@/components/admin-navigation";
 import type { AdminLayoutShellProps } from "./types";
 
 export const AdminLayoutShell = async ({
@@ -57,7 +57,10 @@ export const AdminLayoutShell = async ({
           }}
         >
           <Container maxWidth="xl">
-            <Toolbar disableGutters sx={{ py: 1.5, justifyContent: "space-between", gap: 2 }}>
+            <Toolbar
+              disableGutters
+              sx={{ py: 1.5, justifyContent: "space-between", gap: 2 }}
+            >
               <Box sx={{ flex: 1, minWidth: 0 }} />
 
               <Stack direction="row" spacing={1} alignItems="center">
@@ -65,7 +68,11 @@ export const AdminLayoutShell = async ({
                   locale={locale}
                   label={tLayout("languageSwitcherLabel")}
                 />
-                <Button href="/admin/products/new" variant="contained" startIcon={<AddOutlinedIcon />}>
+                <Button
+                  href="/admin/products/new"
+                  variant="contained"
+                  startIcon={<AddOutlinedIcon />}
+                >
                   {tLayout("addProduct")}
                 </Button>
                 <Link

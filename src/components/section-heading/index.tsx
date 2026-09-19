@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from "@mui/material";
 import Link from "next/link";
 
-import { SectionEyebrow } from "../section-eyebrow";
+import { SectionEyebrow } from "@/components/section-eyebrow";
 
 import type { SectionHeadingProps } from "./types";
 

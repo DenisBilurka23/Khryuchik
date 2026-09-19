@@ -13,7 +13,7 @@ import { useEmailVerificationResend } from "@/hooks/useEmailVerificationResend";
 import { SignInErrorCode } from "@/types/auth";
 import { getLocalizedPath } from "@/utils";
 
-import { PageShell } from "../storefront/page-shell";
+import { PageShell } from "@/components/page-shell";
 import { AuthIntro } from "./intro";
 import { AuthRegisterInvite } from "./register-invite";
 import { AuthSignInCard } from "./sign-in-card";

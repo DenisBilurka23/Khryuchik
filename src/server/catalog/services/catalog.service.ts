@@ -87,7 +87,10 @@ export const getShopProducts = cache(
 );
 
 export const getStoryTimelineBooks = cache(
-  async (locale: Locale, country: CountryCode): Promise<StoryTimelineBook[]> => {
+  async (
+    locale: Locale,
+    country: CountryCode,
+  ): Promise<StoryTimelineBook[]> => {
     const [products, regionPricing] = await Promise.all([
       findShopVisibleProducts(country),
       getRegionPricing(country),

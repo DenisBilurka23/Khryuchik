@@ -1,7 +1,10 @@
 import { redirect } from "next/navigation";
 
 import type { Locale } from "@/i18n/config";
-import { getAccountUserByEmail, getAccountUserById } from "@/server/users/services/users.service";
+import {
+  getAccountUserByEmail,
+  getAccountUserById,
+} from "@/server/users/services/users.service";
 
 import { getServerAuthSession } from "./config";
 

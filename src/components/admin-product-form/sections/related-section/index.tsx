@@ -12,7 +12,7 @@ import { useProductSearch } from "@/hooks/useProductSearch";
 import {
   AdminProductAutocompleteField,
   AdminSectionCard,
-} from "../../../admin-page-shared";
+} from "@/components/admin-page-shared";
 import type { AdminProductRelatedSectionProps } from "./types";
 
 const createFallbackOption = (id: string): AdminProductOption => ({
@@ -56,7 +56,9 @@ export const AdminProductRelatedSection = ({
         ),
     [payload.details.relatedProductIds, selectedProductOptions],
   );
-  const [selectedOptions, setSelectedOptions] = useState(initialSelectedOptions);
+  const [selectedOptions, setSelectedOptions] = useState(
+    initialSelectedOptions,
+  );
   const [selectedStoryOption, setSelectedStoryOption] = useState(
     selectedStoryProductOption ?? null,
   );
@@ -87,12 +89,13 @@ export const AdminProductRelatedSection = ({
     excludeProductId: payload.product.productId,
     fallbackOptions,
   });
-  const { options: storySearchOptions, isLoading: isStoryLoading } = useProductSearch({
-    locale,
-    query: storyInputValue,
-    excludeProductId: payload.product.productId,
-    fallbackOptions,
-  });
+  const { options: storySearchOptions, isLoading: isStoryLoading } =
+    useProductSearch({
+      locale,
+      query: storyInputValue,
+      excludeProductId: payload.product.productId,
+      fallbackOptions,
+    });
 
   const relatedOptions = useMemo(
     () => mergeOptions(fallbackOptions, relatedSearchOptions),

@@ -2,7 +2,7 @@
 
 import { useEntertainmentView } from "@/hooks/useEntertainmentView";
 
-import { ArrowLink } from "../../arrow-link";
+import { ArrowLink } from "@/components/arrow-link";
 import type { EntertainmentDownloadLinkProps } from "../types";
 
 export const EntertainmentDownloadLink = ({

@@ -6,8 +6,8 @@ import { Pill } from "@/components/primitives";
 import { leadSx } from "@/theme/sx";
 import { formatVideoDuration, getLocalizedPath } from "@/utils";
 
-import { NewsletterSection } from "../newsletter-section";
-import { PageShell } from "../storefront/page-shell";
+import { NewsletterSection } from "@/components/newsletter-section";
+import { PageShell } from "@/components/page-shell";
 
 import { EntertainmentMediaBlock } from "./media-block";
 import type { EntertainmentItemPageViewProps } from "./types";

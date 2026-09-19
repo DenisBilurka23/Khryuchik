@@ -1,6 +1,6 @@
 import { Box, Container, Typography } from "@mui/material";
 
-import { PageShell } from "../storefront/page-shell";
+import { PageShell } from "@/components/page-shell";
 import type { LegalPageSharedProps } from "./types";
 
 const serif = "var(--font-display, var(--font-display-fallback)), serif";

@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 
 import { groupRegionsByCurrency } from "@/utils";
 
-import { AdminSectionCard } from "../../../admin-page-shared";
+import { AdminSectionCard } from "@/components/admin-page-shared";
 import type { AdminProductPricingSectionProps } from "./types";
 
 export const AdminProductPricingSection = ({

@@ -18,7 +18,7 @@ import {
   getLocalizedProductPath,
 } from "@/utils";
 
-import { PageShell } from "../../storefront/page-shell";
+import { PageShell } from "@/components/page-shell";
 import { ProductGallery } from "../product-gallery";
 import { ProductInfo } from "../product-info";
 import { ProductTabs } from "../product-tabs";

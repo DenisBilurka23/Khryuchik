@@ -14,11 +14,9 @@ import {
 } from "@mui/material";
 import { requestAdminProductAssetUploadUrls } from "@/client-api/admin";
 import type { ProductFileAsset } from "@/types/product-details";
+import { uploadDirectToR2 } from "@/utils";
 
-import {
-  uploadDirectToR2,
-  useAdminProductUploadRegistry,
-} from "../upload-registry";
+import { useAdminProductUploadRegistry } from "../upload-registry";
 import type {
   AdminFileUploadFieldProps,
   AdminFileUploadItem,

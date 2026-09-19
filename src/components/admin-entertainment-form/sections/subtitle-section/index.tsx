@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 
 import { useAdminEntertainmentSubtitleTracks } from "@/hooks/useAdminEntertainmentSubtitleTracks";
 
-import { AdminSectionCard } from "../../../admin-page-shared";
+import { AdminSectionCard } from "@/components/admin-page-shared";
 import { AdminEntertainmentSubtitleTrackRow } from "./track-row";
 import type { AdminEntertainmentSubtitleSectionProps } from "./types";
 

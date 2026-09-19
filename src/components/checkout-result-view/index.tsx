@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
-import { clearStoredPromo } from "@/components/cart/promo-store";
-import { clearCart } from "@/components/cart/store";
+import { clearStoredPromo } from "@/stores/promo";
+import { clearCart } from "@/stores/cart";
 import { NoticePage } from "@/components/notice-page";
 import type { CheckoutResultLabels } from "@/i18n/types";
 import { formatOrderNumber, getLocalizedPath } from "@/utils";

@@ -197,4 +197,4 @@ export const ContactChannelsSection = ({
   );
 };
 
-export type { ContactChannelsSectionProps } from "./types";
+export type { ContactChannelItem, ContactChannelsSectionProps } from "./types";

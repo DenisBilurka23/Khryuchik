@@ -1,7 +1,7 @@
 import { Container } from "@mui/material";
 import { AccountPageView } from "@/components/account-page-view";
 import { defaultLocale } from "@/i18n/config";
-import { PageShell } from "@/components/storefront/page-shell";
+import { PageShell } from "@/components/page-shell";
 import { getShopCategories } from "@/server/catalog/services/categories.service";
 import {
   getActiveLocaleCodes,

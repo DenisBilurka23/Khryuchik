@@ -4,7 +4,7 @@ import Link from "next/link";
 import { cardFrameSx, displayFont } from "@/theme/sx";
 import { formatCurrency, isPurchasableAvailability } from "@/utils";
 
-import { ArrowLink } from "../arrow-link";
+import { ArrowLink } from "@/components/arrow-link";
 import { WishlistButton } from "./wishlist-button";
 import type { ProductCardProps } from "./types";
 

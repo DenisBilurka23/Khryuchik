@@ -3,10 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 
-import {
-  clearBuyNowItem,
-  getBuyNowItem,
-} from "@/components/cart/buy-now-store";
+import { clearBuyNowItem, getBuyNowItem } from "@/stores/buy-now";
 import type { StoredCartItem } from "@/types/cart";
 
 const subscribe = () => () => {};

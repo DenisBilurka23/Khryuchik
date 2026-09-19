@@ -23,8 +23,8 @@ import {
   PersonalDetailsSection,
   SectionCard,
 } from "../../shared";
-import { CountrySwitcher } from "../../../storefront-header/country-switcher";
-import { LocaleSwitcher } from "../../../storefront-header/locale-switcher";
+import { CountrySwitcher } from "@/components/storefront-header/country-switcher";
+import { LocaleSwitcher } from "@/components/storefront-header/locale-switcher";
 
 import type { SettingsSectionProps } from "./types";
 

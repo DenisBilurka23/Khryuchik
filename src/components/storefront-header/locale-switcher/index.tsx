@@ -86,7 +86,11 @@ export const LocaleSwitcher = (props: LocaleSwitcherProps) => {
             );
           }
 
-          const nextPathname = getPathForLocale(pathname, value, availableLocales);
+          const nextPathname = getPathForLocale(
+            pathname,
+            value,
+            availableLocales,
+          );
           const nextSearch = nextSearchParams.toString();
 
           startTransition(() => {

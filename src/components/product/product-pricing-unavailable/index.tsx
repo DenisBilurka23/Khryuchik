@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 
 import { getLocalizedPath } from "@/utils";
 
-import { PageShell } from "../../storefront/page-shell";
+import { PageShell } from "@/components/page-shell";
 import type { ProductPricingUnavailableProps } from "../types";
 
 export const ProductPricingUnavailable = async ({

@@ -4,13 +4,13 @@ import { getTranslations } from "next-intl/server";
 import { ENTERTAINMENT_QUERY_PARAM } from "@/constants/entertainment";
 import { getLocalizedEntertainmentPath, getLocalizedPath } from "@/utils";
 
-import { CategoryTabs } from "../category-tabs";
+import { CategoryTabs } from "@/components/category-tabs";
 import {
   EntertainmentDownloadCard,
   EntertainmentVideoCard,
-} from "../entertainment-card";
-import { Panel } from "../primitives";
-import { SectionHeading } from "../section-heading";
+} from "@/components/entertainment-card";
+import { Panel } from "@/components/primitives";
+import { SectionHeading } from "@/components/section-heading";
 
 import type { EntertainmentSectionProps } from "./types";
 

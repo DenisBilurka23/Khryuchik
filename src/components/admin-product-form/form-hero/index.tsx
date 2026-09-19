@@ -2,7 +2,7 @@ import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import { Button, Paper, Stack, Tooltip, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import { DeleteProductButton } from "@/components/admin-products-page-view/delete-product-button";
+import { DeleteProductButton } from "@/components/admin-products-page-view";
 
 import { getAdminCategoryLabel, getAdminProductTypeLabel } from "@/utils/admin";
 
@@ -10,7 +10,7 @@ import {
   AdminConfirmSubmitButton,
   AdminPageHero,
   AdminStatusChip,
-} from "../../admin-page-shared";
+} from "@/components/admin-page-shared";
 import type { AdminProductFormHeroProps } from "./types";
 
 export const AdminProductFormHero = ({
@@ -28,8 +28,8 @@ export const AdminProductFormHero = ({
 }: AdminProductFormHeroProps) => {
   const categoryLabel =
     getAdminCategoryLabel(
-      categories.find((category) => category.key === selectedCategory)?.translations ??
-        {},
+      categories.find((category) => category.key === selectedCategory)
+        ?.translations ?? {},
       locale,
     ) || selectedCategory;
   const tForm = useTranslations("adminPage.productForm");
@@ -38,9 +38,15 @@ export const AdminProductFormHero = ({
     book: tShared("status.productTypes.book"),
     merch: tShared("status.productTypes.merch"),
   };
-  const title = isNew ? tForm("newTitle") : `${tForm("editTitlePrefix")}: ${productId}`;
-  const description = isNew ? tForm("newDescription") : tForm("editDescription");
-  const submitLabel = isNew ? tForm("createButton") : tForm("saveChangesButton");
+  const title = isNew
+    ? tForm("newTitle")
+    : `${tForm("editTitlePrefix")}: ${productId}`;
+  const description = isNew
+    ? tForm("newDescription")
+    : tForm("editDescription");
+  const submitLabel = isNew
+    ? tForm("createButton")
+    : tForm("saveChangesButton");
   const pendingSubmitLabel = isNew
     ? tForm("creatingButton")
     : tForm("savingChangesButton");
@@ -63,12 +69,13 @@ export const AdminProductFormHero = ({
             </Button>
           </Tooltip>
           {!isNew && productId && deleteAction ? (
-            <DeleteProductButton
-              productId={productId}
-              action={deleteAction}
-            />
+            <DeleteProductButton productId={productId} action={deleteAction} />
           ) : null}
-          <Tooltip title={isSubmitting ? pendingSubmitLabel ?? submitLabel : submitLabel}>
+          <Tooltip
+            title={
+              isSubmitting ? (pendingSubmitLabel ?? submitLabel) : submitLabel
+            }
+          >
             <span>
               <AdminConfirmSubmitButton
                 form="admin-product-form"
@@ -99,15 +106,16 @@ export const AdminProductFormHero = ({
             </Typography>
             <Stack direction="row" gap={1} flexWrap="wrap">
               <AdminStatusChip
-                label={getAdminProductTypeLabel(selectedType, productTypeLabels)}
+                label={getAdminProductTypeLabel(
+                  selectedType,
+                  productTypeLabels,
+                )}
                 tone="info"
               />
               <AdminStatusChip label={categoryLabel} tone="accent" />
               <AdminStatusChip
                 label={
-                  isActive
-                    ? tShared("status.active")
-                    : tShared("status.hidden")
+                  isActive ? tShared("status.active") : tShared("status.hidden")
                 }
                 tone={isActive ? "success" : "neutral"}
               />

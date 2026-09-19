@@ -15,7 +15,7 @@ import {
   AdminCheckboxField,
   AdminLanguageSelectField,
   AdminStatusChip,
-} from "../../../../admin-page-shared";
+} from "@/components/admin-page-shared";
 import { AdminEntertainmentUploadField } from "../../../upload-field";
 import type { AdminEntertainmentSubtitleTrackRowProps } from "./types";
 

@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
-import { DeleteProductButton } from "@/components/admin-products-page-view/delete-product-button";
+import { DeleteProductButton } from "@/components/admin-products-page-view";
 import {
   AdminEditLinkButton,
   AdminPageHero,

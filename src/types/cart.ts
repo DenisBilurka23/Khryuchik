@@ -17,6 +17,26 @@ export type StoredCartItem = {
   selections?: CartSelections;
 };
 
+export type CartState = {
+  items: StoredCartItem[];
+};
+
+export type CartSnapshot = {
+  items: StoredCartItem[];
+  totalCount: number;
+};
+
+export type CartToastSnapshot = {
+  open: boolean;
+  addedCount: number;
+};
+
+export type CartItemInput = {
+  productId: string;
+  quantity?: number;
+  selections?: CartSelections;
+};
+
 export type CartItem = {
   id: string;
   productId: string;

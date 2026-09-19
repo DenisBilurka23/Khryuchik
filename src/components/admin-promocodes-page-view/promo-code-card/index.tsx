@@ -55,7 +55,7 @@ export const AdminPromoCodeCard = ({
     <AdminSectionCard
       title={promoCode.code}
       description={description}
-      action={(
+      action={
         <AdminStatusChip
           label={
             promoCode.isActive
@@ -64,7 +64,7 @@ export const AdminPromoCodeCard = ({
           }
           tone={promoCode.isActive ? "success" : "neutral"}
         />
-      )}
+      }
     >
       <form ref={deleteFormRef} action={deleteAction}>
         <input type="hidden" name="code" value={promoCode.code} />
@@ -72,7 +72,16 @@ export const AdminPromoCodeCard = ({
 
       <form action={saveAction}>
         <Stack gap={2}>
-          <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" }, gap: 2 }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "1fr",
+                md: "repeat(2, minmax(0, 1fr))",
+              },
+              gap: 2,
+            }}
+          >
             <TextField
               label={labels.fields.code}
               name="code"
@@ -93,11 +102,20 @@ export const AdminPromoCodeCard = ({
           </Box>
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
             <AdminCheckboxField
-              control={<Checkbox name="isActive" defaultChecked={promoCode.isActive} />}
+              control={
+                <Checkbox name="isActive" defaultChecked={promoCode.isActive} />
+              }
               label={labels.toggles.isActive}
             />
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1, flexWrap: "wrap" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 1,
+              flexWrap: "wrap",
+            }}
+          >
             <ModalButton
               label={labels.deleteButton}
               onConfirmAction={handleDeleteConfirm}

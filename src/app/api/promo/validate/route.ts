@@ -8,9 +8,9 @@ import type { PromoValidation } from "@/types/promo";
 export const dynamic = "force-dynamic";
 
 export const POST = async (request: NextRequest) => {
-  const payload = (await request.json().catch(() => null)) as
-    | { code?: string }
-    | null;
+  const payload = (await request.json().catch(() => null)) as {
+    code?: string;
+  } | null;
   const code = typeof payload?.code === "string" ? payload.code : "";
   const session = await getServerAuthSession();
   const validation: PromoValidation = await validatePromoCode(

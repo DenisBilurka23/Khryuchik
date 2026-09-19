@@ -1,7 +1,5 @@
 import { BUY_NOW_STORAGE_KEY } from "@/constants/cart";
-import type { StoredCartItem } from "@/types/cart";
-
-import type { CartItemInput } from "./types";
+import type { CartItemInput, StoredCartItem } from "@/types/cart";
 
 const buildItemId = (
   productId: string,

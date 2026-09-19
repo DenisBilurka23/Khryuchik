@@ -18,7 +18,7 @@ import { getAdminCategoryLabel } from "@/utils/admin";
 import {
   AdminCheckboxField,
   AdminSectionCard,
-} from "../../../admin-page-shared";
+} from "@/components/admin-page-shared";
 import { AdminFormatsField } from "../../formats-field";
 import { AdminOptionPriceDeltaField } from "../../option-price-delta-field";
 import { AdminLanguagesField } from "../../languages-field";
@@ -139,9 +139,7 @@ export const AdminProductBaseSection = ({
             defaultValue={payload.product.series ?? ""}
             helperText={tForm("helpers.series")}
           >
-            <MenuItem value="">
-              {tShared("placeholders.emptyValue")}
-            </MenuItem>
+            <MenuItem value="">{tShared("placeholders.emptyValue")}</MenuItem>
             {BOOK_SERIES_VALUES.map((value) => (
               <MenuItem key={value} value={value}>
                 {tSeries(value)}

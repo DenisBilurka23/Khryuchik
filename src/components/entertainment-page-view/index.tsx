@@ -10,11 +10,11 @@ import { getLocalizedEntertainmentPath, getLocalizedPath } from "@/utils";
 import {
   EntertainmentDownloadCard,
   EntertainmentVideoCard,
-} from "../entertainment-card";
-import { NewsletterSection } from "../newsletter-section";
-import { PageShell } from "../storefront/page-shell";
+} from "@/components/entertainment-card";
+import { NewsletterSection } from "@/components/newsletter-section";
+import { PageShell } from "@/components/page-shell";
 
-import { EntertainmentHero } from "./entertainment-hero";
+import { EntertainmentHero } from "./hero";
 import type { EntertainmentPageViewProps } from "./types";
 
 const gridSx = {

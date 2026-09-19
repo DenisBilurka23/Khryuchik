@@ -5,7 +5,10 @@ import { ObjectId } from "mongodb";
 import { defaultLocale, isLocale, type Locale } from "@/i18n/config";
 import { getProductSummariesByIds } from "@/server/catalog/services/catalog.service";
 import { findActiveProductsByIds } from "@/server/catalog/repositories/products.repository";
-import { getUserWishlist, setUserWishlist } from "@/server/users/repositories/users.repository";
+import {
+  getUserWishlist,
+  setUserWishlist,
+} from "@/server/users/repositories/users.repository";
 import type { LocalizedProductSummary } from "@/types/catalog";
 import type { WishlistEntryDocument } from "@/types/users";
 import type { CountryCode } from "@/utils";
@@ -18,11 +21,7 @@ export type WishlistProductItem = {
 
 const normalizeProductIds = (productIds: string[]) =>
   Array.from(
-    new Set(
-      productIds
-        .map((productId) => productId.trim())
-        .filter(Boolean),
-    ),
+    new Set(productIds.map((productId) => productId.trim()).filter(Boolean)),
   );
 
 const validateUserId = (userId: string) =>
@@ -51,7 +50,10 @@ export const getWishlistEntries = async (userId: string) => {
   return getUserWishlist(objectId);
 };
 
-export const addProductToWishlist = async (userId: string, productId: string) => {
+export const addProductToWishlist = async (
+  userId: string,
+  productId: string,
+) => {
   const objectId = validateUserId(userId);
 
   if (!objectId) {
@@ -76,7 +78,10 @@ export const addProductToWishlist = async (userId: string, productId: string) =>
   ]);
 };
 
-export const removeProductFromWishlist = async (userId: string, productId: string) => {
+export const removeProductFromWishlist = async (
+  userId: string,
+  productId: string,
+) => {
   const objectId = validateUserId(userId);
 
   if (!objectId) {
@@ -91,7 +96,10 @@ export const removeProductFromWishlist = async (userId: string, productId: strin
   );
 };
 
-export const mergeWishlistEntries = async (userId: string, productIds: string[]) => {
+export const mergeWishlistEntries = async (
+  userId: string,
+  productIds: string[],
+) => {
   const objectId = validateUserId(userId);
 
   if (!objectId) {
@@ -125,7 +133,9 @@ export const getResolvedWishlistItems = async (
     country,
     getWishlistIds(wishlist),
   );
-  const summariesById = new Map(summaries.map((summary) => [summary.id, summary]));
+  const summariesById = new Map(
+    summaries.map((summary) => [summary.id, summary]),
+  );
 
   return wishlist.flatMap((entry): WishlistProductItem[] => {
     const product = summariesById.get(entry.productId);
@@ -152,8 +162,12 @@ export const resolveGuestWishlistItems = async (
   const nextLocale = locale && isLocale(locale) ? locale : defaultLocale;
   const normalizedItems = items
     .map((item) => ({
-      productId: typeof item.productId === "string" ? item.productId.trim() : "",
-      addedAt: typeof item.addedAt === "string" ? item.addedAt : new Date(0).toISOString(),
+      productId:
+        typeof item.productId === "string" ? item.productId.trim() : "",
+      addedAt:
+        typeof item.addedAt === "string"
+          ? item.addedAt
+          : new Date(0).toISOString(),
     }))
     .filter((item) => item.productId);
   const summaries = await getProductSummariesByIds(
@@ -161,7 +175,9 @@ export const resolveGuestWishlistItems = async (
     country,
     normalizedItems.map((item) => item.productId),
   );
-  const summariesById = new Map(summaries.map((summary) => [summary.id, summary]));
+  const summariesById = new Map(
+    summaries.map((summary) => [summary.id, summary]),
+  );
 
   return normalizedItems.flatMap((item): WishlistProductItem[] => {
     const product = summariesById.get(item.productId);

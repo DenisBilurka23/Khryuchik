@@ -10,7 +10,7 @@ import { AuthInviteCard, AuthPageHeading } from "@/components/auth-page-shared";
 import { HeroPanel } from "@/components/primitives";
 import { AuthInputErrorCode } from "@/types/auth";
 
-import { PageShell } from "../storefront/page-shell";
+import { PageShell } from "@/components/page-shell";
 import { ForgotPasswordForm } from "./form";
 import { ForgotPasswordIllustration } from "./illustration";
 

@@ -14,11 +14,15 @@ export const POST = async (request: Request) => {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const payload = (await request.json().catch(() => null)) as
-    | { productId?: string; productSlug?: string; rating?: number; text?: string }
-    | null;
+  const payload = (await request.json().catch(() => null)) as {
+    productId?: string;
+    productSlug?: string;
+    rating?: number;
+    text?: string;
+  } | null;
 
-  const productId = typeof payload?.productId === "string" ? payload.productId : "";
+  const productId =
+    typeof payload?.productId === "string" ? payload.productId : "";
   const productSlug =
     typeof payload?.productSlug === "string" ? payload.productSlug : "";
   const rating = typeof payload?.rating === "number" ? payload.rating : 0;

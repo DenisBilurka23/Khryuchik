@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Box, Button, Paper, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 import type { AdminSpecsFieldProps } from "./types";
 
@@ -21,8 +28,17 @@ export const AdminSpecsField = ({
 
   return (
     <Stack gap={1.5}>
-      <input type="hidden" name={name} value={JSON.stringify(specs.filter((spec) => spec.label.trim() && spec.value.trim()))} />
-      <Typography variant="h6" sx={{ fontWeight: 800, fontSize: 18, color: "text.primary" }}>
+      <input
+        type="hidden"
+        name={name}
+        value={JSON.stringify(
+          specs.filter((spec) => spec.label.trim() && spec.value.trim()),
+        )}
+      />
+      <Typography
+        variant="h6"
+        sx={{ fontWeight: 800, fontSize: 18, color: "text.primary" }}
+      >
         {title}
       </Typography>
       <Box component="p" sx={{ m: 0, color: "text.secondary", fontSize: 14 }}>
@@ -30,16 +46,24 @@ export const AdminSpecsField = ({
       </Box>
       <Stack gap={1.5}>
         {specs.map((spec, index) => (
-          <Paper key={`${name}-${index}`} variant="outlined" sx={{ p: 1.5, borderRadius: "18px" }}>
+          <Paper
+            key={`${name}-${index}`}
+            variant="outlined"
+            sx={{ p: 1.5, borderRadius: "18px" }}
+          >
             <Stack gap={1.5}>
               <TextField
                 label={labelTitle}
                 value={spec.label}
                 onChange={(event) => {
                   const nextValue = event.target.value;
-                  setSpecs((currentSpecs) => currentSpecs.map((item, itemIndex) => (
-                    itemIndex === index ? { ...item, label: nextValue } : item
-                  )));
+                  setSpecs((currentSpecs) =>
+                    currentSpecs.map((item, itemIndex) =>
+                      itemIndex === index
+                        ? { ...item, label: nextValue }
+                        : item,
+                    ),
+                  );
                 }}
                 fullWidth
               />
@@ -48,9 +72,13 @@ export const AdminSpecsField = ({
                 value={spec.value}
                 onChange={(event) => {
                   const nextValue = event.target.value;
-                  setSpecs((currentSpecs) => currentSpecs.map((item, itemIndex) => (
-                    itemIndex === index ? { ...item, value: nextValue } : item
-                  )));
+                  setSpecs((currentSpecs) =>
+                    currentSpecs.map((item, itemIndex) =>
+                      itemIndex === index
+                        ? { ...item, value: nextValue }
+                        : item,
+                    ),
+                  );
                 }}
                 fullWidth
               />
@@ -60,9 +88,13 @@ export const AdminSpecsField = ({
                 color="inherit"
                 sx={{ alignSelf: "flex-start" }}
                 onClick={() => {
-                  setSpecs((currentSpecs) => currentSpecs.length > 1
-                    ? currentSpecs.filter((_, itemIndex) => itemIndex !== index)
-                    : [{ label: "", value: "" }]);
+                  setSpecs((currentSpecs) =>
+                    currentSpecs.length > 1
+                      ? currentSpecs.filter(
+                          (_, itemIndex) => itemIndex !== index,
+                        )
+                      : [{ label: "", value: "" }],
+                  );
                 }}
               >
                 {removeButtonLabel}
@@ -76,7 +108,10 @@ export const AdminSpecsField = ({
         variant="outlined"
         sx={{ alignSelf: "flex-start" }}
         onClick={() => {
-          setSpecs((currentSpecs) => [...currentSpecs, { label: "", value: "" }]);
+          setSpecs((currentSpecs) => [
+            ...currentSpecs,
+            { label: "", value: "" },
+          ]);
         }}
       >
         {addButtonLabel}

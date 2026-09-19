@@ -10,11 +10,17 @@ export async function POST(request: Request) {
     const password = typeof body.password === "string" ? body.password : "";
 
     if (!token || !password) {
-      return NextResponse.json({ error: AuthInputErrorCode.MissingFields }, { status: 400 });
+      return NextResponse.json(
+        { error: AuthInputErrorCode.MissingFields },
+        { status: 400 },
+      );
     }
 
     if (password.length < 8) {
-      return NextResponse.json({ error: AuthInputErrorCode.PasswordTooShort }, { status: 400 });
+      return NextResponse.json(
+        { error: AuthInputErrorCode.PasswordTooShort },
+        { status: 400 },
+      );
     }
 
     const result = await resetPasswordWithToken(token, password);
@@ -25,6 +31,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true });
   } catch {
-    return NextResponse.json({ error: AuthInputErrorCode.UnexpectedError }, { status: 500 });
+    return NextResponse.json(
+      { error: AuthInputErrorCode.UnexpectedError },
+      { status: 500 },
+    );
   }
 }

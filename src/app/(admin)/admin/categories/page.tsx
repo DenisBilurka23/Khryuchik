@@ -2,14 +2,17 @@ import type { Metadata } from "next";
 import { Alert, Box, Checkbox, Stack, TextField } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
-import { AdminCategoryCard } from "@/components/admin-categories-page-view/category-card";
+import { AdminCategoryCard } from "@/components/admin-categories-page-view";
 import {
   AdminCheckboxField,
   AdminConfirmSubmitButton,
   AdminPageHero,
   AdminSectionCard,
 } from "@/components/admin-page-shared";
-import { deleteAdminCategoryAction, saveAdminCategoryAction } from "@/app/(admin)/admin/actions";
+import {
+  deleteAdminCategoryAction,
+  saveAdminCategoryAction,
+} from "@/app/(admin)/admin/actions";
 import { getAdminCategories } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveLocale } from "@/server/i18n/request-locale";
@@ -33,7 +36,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
   );
 };
 
-const AdminCategoriesPage = async ({ searchParams }: AdminCategoriesPageProps) => {
+const AdminCategoriesPage = async ({
+  searchParams,
+}: AdminCategoriesPageProps) => {
   const { deleted, error, saved } = await searchParams;
   const locale = await resolveLocale("admin");
   const [categories, tCategories] = await Promise.all([
@@ -68,27 +73,75 @@ const AdminCategoriesPage = async ({ searchParams }: AdminCategoriesPageProps) =
 
   return (
     <Stack gap={3}>
-      <AdminPageHero eyebrow={labels.eyebrow} title={labels.title} description={labels.description} />
+      <AdminPageHero
+        eyebrow={labels.eyebrow}
+        title={labels.title}
+        description={labels.description}
+      />
 
-      {saved === "1" ? <Alert severity="success">{labels.savedMessage}</Alert> : null}
-      {deleted === "1" ? <Alert severity="success">{labels.deletedMessage}</Alert> : null}
-      {error === "not-empty" ? <Alert severity="warning">{labels.deleteBlockedMessage}</Alert> : null}
-      {error === "protected" ? <Alert severity="warning">{labels.deleteProtectedMessage}</Alert> : null}
-      {error === "invalid-key" ? <Alert severity="error">{labels.deleteFailedMessage}</Alert> : null}
+      {saved === "1" ? (
+        <Alert severity="success">{labels.savedMessage}</Alert>
+      ) : null}
+      {deleted === "1" ? (
+        <Alert severity="success">{labels.deletedMessage}</Alert>
+      ) : null}
+      {error === "not-empty" ? (
+        <Alert severity="warning">{labels.deleteBlockedMessage}</Alert>
+      ) : null}
+      {error === "protected" ? (
+        <Alert severity="warning">{labels.deleteProtectedMessage}</Alert>
+      ) : null}
+      {error === "invalid-key" ? (
+        <Alert severity="error">{labels.deleteFailedMessage}</Alert>
+      ) : null}
 
-      <AdminSectionCard title={labels.newCategoryTitle} description={labels.newCategoryDescription}>
+      <AdminSectionCard
+        title={labels.newCategoryTitle}
+        description={labels.newCategoryDescription}
+      >
         <form action={saveAdminCategoryAction}>
           <Stack gap={2}>
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "repeat(2, minmax(0, 1fr))" }, gap: 2 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  md: "repeat(2, minmax(0, 1fr))",
+                },
+                gap: 2,
+              }}
+            >
               <TextField label={labels.fields.key} name="key" />
-              <TextField label={labels.fields.sortOrder} name="sortOrder" type="number" defaultValue={100} />
-              <TextField label={labels.fields.ruLabel} name="ru.label" required />
-              <TextField label={labels.fields.enLabel} name="en.label" required />
+              <TextField
+                label={labels.fields.sortOrder}
+                name="sortOrder"
+                type="number"
+                defaultValue={100}
+              />
+              <TextField
+                label={labels.fields.ruLabel}
+                name="ru.label"
+                required
+              />
+              <TextField
+                label={labels.fields.enLabel}
+                name="en.label"
+                required
+              />
             </Box>
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              <AdminCheckboxField control={<Checkbox name="isActive" defaultChecked />} label={labels.toggles.isActive} />
-              <AdminCheckboxField control={<Checkbox name="visibleInShop" defaultChecked />} label={labels.toggles.visibleInShop} />
-              <AdminCheckboxField control={<Checkbox name="visibleInHomeTabs" />} label={labels.toggles.visibleInHomeTabs} />
+              <AdminCheckboxField
+                control={<Checkbox name="isActive" defaultChecked />}
+                label={labels.toggles.isActive}
+              />
+              <AdminCheckboxField
+                control={<Checkbox name="visibleInShop" defaultChecked />}
+                label={labels.toggles.visibleInShop}
+              />
+              <AdminCheckboxField
+                control={<Checkbox name="visibleInHomeTabs" />}
+                label={labels.toggles.visibleInHomeTabs}
+              />
             </Box>
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
               <AdminConfirmSubmitButton
@@ -106,7 +159,10 @@ const AdminCategoriesPage = async ({ searchParams }: AdminCategoriesPageProps) =
           <AdminCategoryCard
             key={category.key}
             category={category}
-            title={getAdminCategoryLabel(category.translations, locale) || category.key}
+            title={
+              getAdminCategoryLabel(category.translations, locale) ||
+              category.key
+            }
             saveAction={saveAdminCategoryAction}
             deleteAction={deleteAdminCategoryAction}
           />

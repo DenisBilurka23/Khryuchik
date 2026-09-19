@@ -20,9 +20,7 @@ const ALLOWED_IMAGE_CONTENT_TYPES = new Set([
   "image/gif",
 ]);
 
-const ALLOWED_ASSET_CONTENT_TYPES = new Set([
-  "application/pdf",
-]);
+const ALLOWED_ASSET_CONTENT_TYPES = new Set(["application/pdf"]);
 
 type UploadKind = "gallery" | "asset";
 
@@ -67,10 +65,7 @@ export const POST = async (request: NextRequest) => {
   }
 
   if (!isR2Configured) {
-    return NextResponse.json(
-      { error: "storage_unavailable" },
-      { status: 503 },
-    );
+    return NextResponse.json({ error: "storage_unavailable" }, { status: 503 });
   }
 
   let body: RequestBody;
@@ -81,9 +76,12 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
 
-  const kind = body.kind === "gallery" || body.kind === "asset" ? body.kind : null;
+  const kind =
+    body.kind === "gallery" || body.kind === "asset" ? body.kind : null;
   const locale =
-    typeof body.locale === "string" && isLocale(body.locale) ? body.locale : null;
+    typeof body.locale === "string" && isLocale(body.locale)
+      ? body.locale
+      : null;
 
   if (!kind || !locale) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
@@ -94,7 +92,9 @@ export const POST = async (request: NextRequest) => {
   }
 
   const allowedContentTypes =
-    kind === "gallery" ? ALLOWED_IMAGE_CONTENT_TYPES : ALLOWED_ASSET_CONTENT_TYPES;
+    kind === "gallery"
+      ? ALLOWED_IMAGE_CONTENT_TYPES
+      : ALLOWED_ASSET_CONTENT_TYPES;
   const files = parseFiles(body.files, allowedContentTypes);
 
   if (!files) {

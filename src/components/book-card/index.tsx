@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { cardFrameSx } from "@/theme/sx";
 
-import { ArrowLink } from "../arrow-link";
+import { ArrowLink } from "@/components/arrow-link";
 
 import type { BookCardProps } from "./types";
 

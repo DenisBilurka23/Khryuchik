@@ -25,7 +25,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
   );
 };
 
-const NewAdminProductPage = async ({ searchParams }: NewAdminProductPageProps) => {
+const NewAdminProductPage = async ({
+  searchParams,
+}: NewAdminProductPageProps) => {
   const { error } = await searchParams;
   const locale = await resolveLocale("admin");
   const editorData = await getAdminProductEditorData(undefined, locale);

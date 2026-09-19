@@ -1,7 +1,8 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import type { CartToastSnapshot } from "./types";
+
+import type { CartToastSnapshot } from "@/types/cart";
 
 const closedSnapshot: CartToastSnapshot = { open: false, addedCount: 0 };
 let snapshot: CartToastSnapshot = closedSnapshot;

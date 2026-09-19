@@ -5,9 +5,9 @@ import { ADMIN_TIME_ZONE_COOKIE_NAME } from "@/i18n/config";
 import { FALLBACK_TIME_ZONE, isSupportedTimeZone } from "@/utils";
 
 export const POST = async (request: NextRequest) => {
-  const payload = (await request.json().catch(() => null)) as
-    | { timeZone?: string }
-    | null;
+  const payload = (await request.json().catch(() => null)) as {
+    timeZone?: string;
+  } | null;
   const timeZone = isSupportedTimeZone(payload?.timeZone)
     ? payload.timeZone
     : FALLBACK_TIME_ZONE;

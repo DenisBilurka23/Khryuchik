@@ -16,11 +16,9 @@ export const findAllLocales = async () => {
 export const upsertLocale = async (locale: LocaleDocument) => {
   const db = await getMongoDb();
 
-  await db.collection<LocaleDocument>("locales").replaceOne(
-    { code: locale.code },
-    locale,
-    { upsert: true },
-  );
+  await db
+    .collection<LocaleDocument>("locales")
+    .replaceOne({ code: locale.code }, locale, { upsert: true });
 
   return locale;
 };

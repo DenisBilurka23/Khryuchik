@@ -42,7 +42,10 @@ export const AdminCustomerForm = async ({
     resolveAdminTimeZone(),
     getTranslations({ locale, namespace: "adminPage.customers.form" }),
     getTranslations({ locale, namespace: "adminPage.shared" }),
-    getTranslations({ locale, namespace: "adminPage.shared.status.authProviders" }),
+    getTranslations({
+      locale,
+      namespace: "adminPage.shared.status.authProviders",
+    }),
   ]);
   const errorMessage = (() => {
     switch (errorCode) {
@@ -80,7 +83,9 @@ export const AdminCustomerForm = async ({
   return (
     <Stack gap={3}>
       {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
-      {isCurrentUser ? <Alert severity="info">{tForm("helpers.currentAccount")}</Alert> : null}
+      {isCurrentUser ? (
+        <Alert severity="info">{tForm("helpers.currentAccount")}</Alert>
+      ) : null}
 
       <AdminPageHero
         eyebrow={tForm("editEyebrow")}
@@ -125,7 +130,11 @@ export const AdminCustomerForm = async ({
           >
             <Stack gap={1.5}>
               <Stack direction="row" spacing={1.5} alignItems="center">
-                <Avatar src={customer.image ?? undefined} alt={title} sx={{ width: 52, height: 52 }} />
+                <Avatar
+                  src={customer.image ?? undefined}
+                  alt={title}
+                  sx={{ width: 52, height: 52 }}
+                />
                 <Stack>
                   <Typography fontWeight={700}>{title}</Typography>
                   <Typography variant="body2" color="text.secondary">
@@ -135,22 +144,31 @@ export const AdminCustomerForm = async ({
               </Stack>
               <Stack direction="row" gap={1} flexWrap="wrap">
                 <AdminStatusChip
-                  label={customer.isAdmin ? tShared("status.admin") : tShared("status.user")}
+                  label={
+                    customer.isAdmin
+                      ? tShared("status.admin")
+                      : tShared("status.user")
+                  }
                   tone={customer.isAdmin ? "accent" : "neutral"}
                 />
                 {customer.authProviders.map((provider) => (
                   <AdminStatusChip
                     key={provider}
-                    label={getAdminAuthProviderLabel(provider, authProviderLabels)}
+                    label={getAdminAuthProviderLabel(
+                      provider,
+                      authProviderLabels,
+                    )}
                     tone={provider === "google" ? "info" : "warning"}
                   />
                 ))}
               </Stack>
               <Typography variant="body2" color="text.secondary">
-                {tForm("fields.createdAt")}: {formatAdminDate(customer.createdAt, locale, timeZone)}
+                {tForm("fields.createdAt")}:{" "}
+                {formatAdminDate(customer.createdAt, locale, timeZone)}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {tForm("fields.updatedAt")}: {formatAdminDate(customer.updatedAt, locale, timeZone)}
+                {tForm("fields.updatedAt")}:{" "}
+                {formatAdminDate(customer.updatedAt, locale, timeZone)}
               </Typography>
             </Stack>
           </Paper>
@@ -176,7 +194,11 @@ export const AdminCustomerForm = async ({
                 boxShadow: "0 20px 45px rgba(225, 193, 167, 0.12)",
               }}
             >
-              <Stack direction={{ xs: "column", md: "row" }} gap={{ xs: 2.5, md: 3 }} alignItems={{ xs: "stretch", md: "flex-start" }}>
+              <Stack
+                direction={{ xs: "column", md: "row" }}
+                gap={{ xs: 2.5, md: 3 }}
+                alignItems={{ xs: "stretch", md: "flex-start" }}
+              >
                 <Box
                   sx={{
                     flexShrink: 0,
@@ -262,12 +284,17 @@ export const AdminCustomerForm = async ({
           >
             <Stack gap={2}>
               <Stack gap={1}>
-                <Typography fontWeight={700}>{tForm("fields.providers")}</Typography>
+                <Typography fontWeight={700}>
+                  {tForm("fields.providers")}
+                </Typography>
                 <Stack direction="row" gap={1} flexWrap="wrap">
                   {customer.authProviders.map((provider) => (
                     <AdminStatusChip
                       key={provider}
-                      label={getAdminAuthProviderLabel(provider, authProviderLabels)}
+                      label={getAdminAuthProviderLabel(
+                        provider,
+                        authProviderLabels,
+                      )}
                       tone={provider === "google" ? "info" : "warning"}
                     />
                   ))}
@@ -279,7 +306,9 @@ export const AdminCustomerForm = async ({
 
               <AdminCheckboxField
                 label={tForm("toggles.isAdmin")}
-                control={<Checkbox name="isAdmin" defaultChecked={customer.isAdmin} />}
+                control={
+                  <Checkbox name="isAdmin" defaultChecked={customer.isAdmin} />
+                }
               />
 
               {isCurrentUser ? (
@@ -299,7 +328,11 @@ export const AdminCustomerForm = async ({
                 <TextField
                   fullWidth
                   label={tForm("fields.createdAt")}
-                  defaultValue={formatAdminDate(customer.createdAt, locale, timeZone)}
+                  defaultValue={formatAdminDate(
+                    customer.createdAt,
+                    locale,
+                    timeZone,
+                  )}
                   slotProps={{ input: { readOnly: true } }}
                 />
               </Grid>
@@ -307,7 +340,11 @@ export const AdminCustomerForm = async ({
                 <TextField
                   fullWidth
                   label={tForm("fields.updatedAt")}
-                  defaultValue={formatAdminDate(customer.updatedAt, locale, timeZone)}
+                  defaultValue={formatAdminDate(
+                    customer.updatedAt,
+                    locale,
+                    timeZone,
+                  )}
                   slotProps={{ input: { readOnly: true } }}
                 />
               </Grid>

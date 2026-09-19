@@ -22,10 +22,7 @@ type EditAdminProductPageProps = {
 export const generateMetadata = async ({
   params,
 }: EditAdminProductPageProps): Promise<Metadata> => {
-  const [locale, { id }] = await Promise.all([
-    resolveLocale("admin"),
-    params,
-  ]);
+  const [locale, { id }] = await Promise.all([resolveLocale("admin"), params]);
   const tProductForm = await getTranslations({
     locale,
     namespace: "adminPage.productForm",
@@ -53,7 +50,9 @@ const EditAdminProductPage = async ({
 
   return (
     <Stack gap={2}>
-      {saved === "1" ? <Alert severity="success">{tProductForm("savedMessage")}</Alert> : null}
+      {saved === "1" ? (
+        <Alert severity="success">{tProductForm("savedMessage")}</Alert>
+      ) : null}
       {imported === "1" ? (
         <Alert severity="info">{tProductForm("printifyImportedMessage")}</Alert>
       ) : null}

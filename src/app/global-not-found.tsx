@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 
 import { NotFoundView } from "@/components/not-found-view";
-import { AuthSessionProvider } from "@/components/providers/auth-session-provider";
+import { AuthSessionProvider } from "@/components/providers";
 import { StorefrontLayoutShell } from "@/components/storefront-layout-shell";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getRequestCountry } from "@/server/country/request-country";

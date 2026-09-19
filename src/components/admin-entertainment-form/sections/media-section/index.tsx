@@ -15,7 +15,10 @@ import type { AdminEntertainmentVideoMetadata } from "../../types";
 import { formatFileSize } from "@/utils";
 import { getAdminEntertainmentStatusTone } from "@/utils/admin";
 
-import { AdminSectionCard, AdminStatusChip } from "../../../admin-page-shared";
+import {
+  AdminSectionCard,
+  AdminStatusChip,
+} from "@/components/admin-page-shared";
 import { AdminEntertainmentUploadField } from "../../upload-field";
 import { getEntertainmentMediaFileName, readVideoMetadata } from "../../utils";
 import type { AdminEntertainmentMediaSectionProps } from "./types";
