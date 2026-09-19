@@ -1,5 +1,7 @@
 export { AccountAvatarUploadField } from "./avatar-upload-field";
 export type { AccountAvatarUploadFieldProps } from "./avatar-upload-field";
+export { AccountPasswordField } from "./password-field";
+export type { AccountPasswordFieldProps } from "./password-field";
 export { PersonalDetailsSection } from "./personal-details-section";
 export type { PersonalDetailsSectionProps } from "./personal-details-section";
 export { SectionCard } from "./section-card";

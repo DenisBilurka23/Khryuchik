@@ -10,7 +10,6 @@ import {
   Grid,
   Stack,
   Switch,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
@@ -19,7 +18,11 @@ import { Plate } from "@/components/primitives";
 import { useAccountSettingsForm } from "@/hooks/useAccountSettingsForm";
 import { secondaryButtonSx } from "@/theme/sx";
 
-import { PersonalDetailsSection, SectionCard } from "../../shared";
+import {
+  AccountPasswordField,
+  PersonalDetailsSection,
+  SectionCard,
+} from "../../shared";
 import { CountrySwitcher } from "../../../storefront-header/country-switcher";
 import { LocaleSwitcher } from "../../../storefront-header/locale-switcher";
 
@@ -158,13 +161,13 @@ export const SettingsSection = ({
 
           {hasCredentials ? (
             <Stack spacing={0.5}>
-              <TextField
-                fullWidth
+              <AccountPasswordField
                 label={t("currentPasswordLabel")}
-                type="password"
                 value={password.currentPassword}
-                onChange={(e) => password.setCurrentPassword(e.target.value)}
+                onChange={password.setCurrentPassword}
                 autoComplete="current-password"
+                showPasswordLabel={t("showPassword")}
+                hidePasswordLabel={t("hidePassword")}
                 required
               />
               {password.resetSent ? (
@@ -194,23 +197,23 @@ export const SettingsSection = ({
             </Stack>
           ) : null}
 
-          <TextField
-            fullWidth
+          <AccountPasswordField
             label={t("newPasswordLabel")}
-            type="password"
             value={password.newPassword}
-            onChange={(e) => password.setNewPassword(e.target.value)}
+            onChange={password.setNewPassword}
             autoComplete="new-password"
+            showPasswordLabel={t("showPassword")}
+            hidePasswordLabel={t("hidePassword")}
             required
           />
 
-          <TextField
-            fullWidth
+          <AccountPasswordField
             label={t("repeatPasswordLabel")}
-            type="password"
             value={password.repeatPassword}
-            onChange={(e) => password.setRepeatPassword(e.target.value)}
+            onChange={password.setRepeatPassword}
             autoComplete="new-password"
+            showPasswordLabel={t("showPassword")}
+            hidePasswordLabel={t("hidePassword")}
             required
           />
         </Stack>
@@ -227,13 +230,13 @@ export const SettingsSection = ({
           </Typography>
 
           {hasCredentials ? (
-            <TextField
-              fullWidth
+            <AccountPasswordField
               label={t("deleteAccountPasswordLabel")}
-              type="password"
               value={deletion.password}
-              onChange={(e) => deletion.setPassword(e.target.value)}
+              onChange={deletion.setPassword}
               autoComplete="current-password"
+              showPasswordLabel={t("showPassword")}
+              hidePasswordLabel={t("hidePassword")}
             />
           ) : null}
 
