@@ -20,7 +20,10 @@ const productSharedDetailsMap: Record<string, SeedProductSharedDetails> = {
   stickers: { slug: "stickers", sku: "KHR-STK-01" },
 };
 
-const productDetailsMap: Record<Locale, Record<string, SeedLocalizedProductDetails>> = {
+const productDetailsMap: Record<
+  Locale,
+  Record<string, SeedLocalizedProductDetails>
+> = {
   ru: {
     mug: {
       title: "Кружка Хрючик",

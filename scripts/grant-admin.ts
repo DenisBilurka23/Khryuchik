@@ -11,7 +11,9 @@ const main = async () => {
   }
 
   if (!uri || !dbName) {
-    console.error("MONGODB_URI and MONGODB_DB must be set before running admin:grant");
+    console.error(
+      "MONGODB_URI and MONGODB_DB must be set before running admin:grant",
+    );
     process.exit(1);
   }
 
@@ -30,7 +32,9 @@ const main = async () => {
     const existingUser = await usersCollection.findOne({ email });
 
     if (!existingUser?._id) {
-      console.error(`User with email ${email} was not found. Create the account first, then run this command again.`);
+      console.error(
+        `User with email ${email} was not found. Create the account first, then run this command again.`,
+      );
       process.exit(1);
     }
 

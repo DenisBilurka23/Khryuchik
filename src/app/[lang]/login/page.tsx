@@ -1,4 +1,3 @@
-
 import { AuthPageView } from "@/components/auth-page-view";
 import { isGoogleAuthEnabled } from "@/server/auth/config";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";

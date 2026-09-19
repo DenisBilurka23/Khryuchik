@@ -43,7 +43,6 @@ const SUBTITLE_MAX_LENGTH = 160;
 // headroom for the product still in flight when the batch runs out of time.
 const PRINTIFY_SYNC_BUDGET_MS = 45_000;
 
-
 export const printifyImportErrorCodes = {
   NotConfigured: "not-configured",
   NotFound: "not-found",

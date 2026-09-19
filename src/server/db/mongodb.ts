@@ -25,8 +25,7 @@ const client = new MongoClient(uri, {
   },
 });
 
-const clientPromise =
-  global.__khryuchikMongoClientPromise ?? client.connect();
+const clientPromise = global.__khryuchikMongoClientPromise ?? client.connect();
 
 if (process.env.NODE_ENV !== "production") {
   global.__khryuchikMongoClientPromise = clientPromise;

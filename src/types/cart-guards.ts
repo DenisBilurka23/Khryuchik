@@ -21,6 +21,7 @@ export const isStoredCartItem = (value: unknown): value is StoredCartItem => {
     typeof item.id === "string" &&
     typeof item.productId === "string" &&
     typeof item.quantity === "number" &&
-    (typeof item.selections === "undefined" || isCartSelections(item.selections))
+    (typeof item.selections === "undefined" ||
+      isCartSelections(item.selections))
   );
 };

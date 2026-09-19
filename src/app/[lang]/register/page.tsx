@@ -1,4 +1,3 @@
-
 import { RegisterPageView } from "@/components/register-page-view";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";

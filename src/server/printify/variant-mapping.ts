@@ -157,9 +157,7 @@ const buildOptionPriceDeltaCents = (
 const toPriceDelta = (
   deltaCents: number,
 ): ProductOptionPriceDelta | undefined =>
-  deltaCents === 0
-    ? undefined
-    : { [PRINTIFY_CURRENCY]: deltaCents / 100 };
+  deltaCents === 0 ? undefined : { [PRINTIFY_CURRENCY]: deltaCents / 100 };
 
 export const buildPrintifyProductOptions = (product: PrintifyProduct) => {
   const optionValueIndex = buildOptionValueIndex(product.options);

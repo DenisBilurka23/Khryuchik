@@ -15,8 +15,7 @@ export const populateAdminProductIdentifiers = async (
 ): Promise<AdminProductPayload> => {
   const currentProductId = payload.product.productId.trim();
   const requestedSlug =
-    payload.product.slug.trim() ||
-    payload.product.translations.en.title.trim();
+    payload.product.slug.trim() || payload.product.translations.en.title.trim();
 
   const [products, detailsDocuments] = await Promise.all([
     findAllProducts(),
@@ -50,8 +49,7 @@ export const populateAdminProductIdentifiers = async (
     normalizeIdentifierPart(currentProductId || slug) || "product",
     (candidate) => takenProductIds.has(candidate),
   );
-  const requestedSku =
-    payload.details.sku.trim();
+  const requestedSku = payload.details.sku.trim();
   const sku = buildUniqueValue(
     normalizeSkuPart(requestedSku || productId) || "SKU",
     (candidate) => takenSkus.has(candidate),

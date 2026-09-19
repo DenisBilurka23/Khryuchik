@@ -9,7 +9,9 @@ export const AdminStatCard = ({ title, value, note }: AdminStatCardProps) => {
         <Typography color="text.secondary" variant="body2">
           {title}
         </Typography>
-        <Typography sx={{ mt: 1, fontSize: 34, fontWeight: 800 }}>{value}</Typography>
+        <Typography sx={{ mt: 1, fontSize: 34, fontWeight: 800 }}>
+          {value}
+        </Typography>
         <Typography sx={{ mt: 0.75 }} color="text.secondary">
           {note}
         </Typography>

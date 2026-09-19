@@ -61,7 +61,8 @@ export type DeliveryPageLabels = Omit<RawDeliveryPage, "hero" | "payment"> & {
   };
 };
 
-export type StorefrontFooterSection = RawStorefront["footer"]["sections"][number];
+export type StorefrontFooterSection =
+  RawStorefront["footer"]["sections"][number];
 
 export type StorefrontDictionary = Omit<
   RawStorefront,

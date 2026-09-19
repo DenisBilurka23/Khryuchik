@@ -11,7 +11,11 @@ export const LogoutSection = ({ onSignOut }: LogoutSectionProps) => {
   return (
     <SectionCard
       title={t("signOutTitle")}
-      action={<Button variant="contained" onClick={onSignOut}>{t("signOutButton")}</Button>}
+      action={
+        <Button variant="contained" onClick={onSignOut}>
+          {t("signOutButton")}
+        </Button>
+      }
     >
       <Typography color="text.secondary" sx={{ lineHeight: 1.8 }}>
         {t("signOutText")}

@@ -34,7 +34,8 @@ const request = async <TResponse>(
   options?: RequestOptions,
 ): Promise<ClientApiResponse<TResponse>> => {
   const headers = new Headers(options?.headers);
-  const { serializedBody, shouldSetJsonContentType } = serializeRequestBody(body);
+  const { serializedBody, shouldSetJsonContentType } =
+    serializeRequestBody(body);
 
   if (shouldSetJsonContentType && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");

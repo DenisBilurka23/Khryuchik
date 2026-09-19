@@ -1,4 +1,3 @@
-
 import { ResetPasswordPageView } from "@/components/reset-password-page-view";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import type { LocalizedResetPasswordPageProps } from "@/types/auth-pages";

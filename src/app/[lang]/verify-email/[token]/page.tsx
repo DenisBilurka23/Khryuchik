@@ -1,4 +1,3 @@
-
 import { VerifyEmailPageView } from "@/components/verify-email-page-view";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import type { LocalizedVerifyEmailPageProps } from "@/types/auth-pages";

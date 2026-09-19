@@ -22,7 +22,8 @@ const isGuestWishlistItem = (value: unknown): value is GuestWishlistItem => {
 
 const sortWishlistItems = (items: GuestWishlistItem[]) =>
   [...items].sort(
-    (left, right) => new Date(right.addedAt).getTime() - new Date(left.addedAt).getTime(),
+    (left, right) =>
+      new Date(right.addedAt).getTime() - new Date(left.addedAt).getTime(),
   );
 
 const emitGuestWishlistChange = (items: GuestWishlistItem[]) => {

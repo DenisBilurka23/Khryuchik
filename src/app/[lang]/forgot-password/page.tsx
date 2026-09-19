@@ -1,4 +1,3 @@
-
 import { ForgotPasswordPageView } from "@/components/forgot-password-page-view";
 import { getGuestAuthPageContext } from "@/server/auth/page-context";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";

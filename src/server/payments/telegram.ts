@@ -49,14 +49,17 @@ const formatContact = (order: OrderDocument): string => {
   const parts: string[] = [];
   if (order.customer.email) parts.push(order.customer.email);
   if (order.customer.phone) parts.push(order.customer.phone);
-  if (order.customer.telegram) parts.push(`@${order.customer.telegram.replace(/^@/, "")}`);
+  if (order.customer.telegram)
+    parts.push(`@${order.customer.telegram.replace(/^@/, "")}`);
   return parts.length > 0 ? parts.join(" · ") : "—";
 };
 
 const formatItems = (order: OrderDocument): string =>
   order.items
     .map((item) => {
-      const name = item.variant ? `${item.title} — ${item.variant}` : item.title;
+      const name = item.variant
+        ? `${item.title} — ${item.variant}`
+        : item.title;
       return `• ${name} ×${item.quantity} — ${item.lineTotal.toFixed(2)} ${order.currency}`;
     })
     .join("\n");

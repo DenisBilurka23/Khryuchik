@@ -24,11 +24,12 @@ export const AdminLocaleSwitcher = ({
   }, [locale]);
 
   const options = useMemo(
-    () => locales.map((item) => ({
-      value: item,
-      label: getLocaleDisplayName(item, selectedLocale),
-      selectedLabel: getLocaleShortLabel(item),
-    })),
+    () =>
+      locales.map((item) => ({
+        value: item,
+        label: getLocaleDisplayName(item, selectedLocale),
+        selectedLabel: getLocaleShortLabel(item),
+      })),
     [selectedLocale],
   );
 

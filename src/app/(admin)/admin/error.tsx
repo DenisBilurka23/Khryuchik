@@ -50,9 +50,7 @@ const AdminErrorPage = ({ error, reset }: AdminErrorPageProps) => {
       <Typography variant="h4" fontWeight={800}>
         {tError("title")}
       </Typography>
-      <Alert severity="error">
-        {errorMessage}
-      </Alert>
+      <Alert severity="error">{errorMessage}</Alert>
       <Stack direction={{ xs: "column", sm: "row" }} gap={1.5}>
         <Button variant="contained" onClick={() => reset()}>
           {tError("retryButton")}

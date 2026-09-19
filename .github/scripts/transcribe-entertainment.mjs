@@ -6,7 +6,9 @@ const ENDPOINT = "https://api.openai.com/v1/audio/transcriptions";
 const [audioPath, language, model, prompt] = process.argv.slice(2);
 
 if (!audioPath || !model) {
-  console.error("usage: transcribe-entertainment.mjs <audio> <language> <model> [prompt]");
+  console.error(
+    "usage: transcribe-entertainment.mjs <audio> <language> <model> [prompt]",
+  );
   process.exit(2);
 }
 
@@ -20,7 +22,11 @@ if (!apiKey) {
 const audio = await readFile(audioPath);
 const form = new FormData();
 
-form.append("file", new Blob([audio], { type: "audio/mp4" }), basename(audioPath));
+form.append(
+  "file",
+  new Blob([audio], { type: "audio/mp4" }),
+  basename(audioPath),
+);
 form.append("model", model);
 form.append("response_format", "vtt");
 
@@ -41,7 +47,9 @@ const response = await fetch(ENDPOINT, {
 if (!response.ok) {
   const detail = await response.text().catch(() => "");
 
-  console.error(`transcription failed with HTTP ${response.status}: ${detail.slice(0, 300)}`);
+  console.error(
+    `transcription failed with HTTP ${response.status}: ${detail.slice(0, 300)}`,
+  );
   process.exit(1);
 }
 

@@ -1,4 +1,3 @@
-
 import { CheckoutResultView } from "@/components/checkout-result-view";
 import { buildOrderDownloadsHref } from "@/server/downloads/order-downloads.service";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";

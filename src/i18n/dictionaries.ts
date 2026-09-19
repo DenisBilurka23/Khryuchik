@@ -7,6 +7,6 @@ import type { CountryCode } from "@/utils";
 
 import { loadMessages } from "./message-loader";
 
-export const getDictionary = cache(async (locale: Locale, country: CountryCode) =>
-  loadMessages(locale, country),
+export const getDictionary = cache(
+  async (locale: Locale, country: CountryCode) => loadMessages(locale, country),
 );

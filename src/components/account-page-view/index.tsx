@@ -201,11 +201,7 @@ export const AccountPageView = ({
     switch (activeSection) {
       case "orders":
         return (
-          <OrdersSection
-            locale={locale}
-            orders={orders}
-            timeZone={timeZone}
-          />
+          <OrdersSection locale={locale} orders={orders} timeZone={timeZone} />
         );
       case "books":
         return <BooksSection locale={locale} downloads={downloads} />;
