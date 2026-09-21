@@ -36,5 +36,5 @@ export type AccountDownload = {
 
 export type ProductPurchaseContext = {
   ownedLanguages: string[];
-  hasPurchased: boolean;
+  hasDeliveredPurchase: boolean;
 };

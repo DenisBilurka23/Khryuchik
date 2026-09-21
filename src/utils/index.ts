@@ -74,6 +74,7 @@ export {
   isDigitalOrderItem,
   isOrderStatus,
   isRefundableOrder,
+  isReviewableOrder,
   normalizeOrderEmail,
   toAccountOrder,
 } from "./order";

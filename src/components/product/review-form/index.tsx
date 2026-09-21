@@ -20,7 +20,7 @@ import type { FormStatus, ReviewFormProps } from "../types";
 
 export const ReviewForm = ({
   isAuthenticated,
-  hasPurchased,
+  hasDelivered,
   existingStatus,
   productId,
   productSlug,
@@ -52,10 +52,10 @@ export const ReviewForm = ({
     );
   }
 
-  if (!hasPurchased) {
+  if (!hasDelivered) {
     return (
       <Alert severity="info" sx={{ borderRadius: "var(--radius-card)" }}>
-        <Typography variant="body2">{labels.purchasePrompt}</Typography>
+        <Typography variant="body2">{labels.deliveryPrompt}</Typography>
       </Alert>
     );
   }
@@ -77,8 +77,8 @@ export const ReviewForm = ({
     switch (code) {
       case "already_reviewed":
         return labels.errors.alreadyReviewed;
-      case "not_purchased":
-        return labels.errors.notPurchased;
+      case "not_delivered":
+        return labels.errors.notDelivered;
       case "empty_text":
         return labels.errors.emptyText;
       case "invalid_rating":

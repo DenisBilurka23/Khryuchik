@@ -88,6 +88,20 @@ export const getCustomerOrderStatus = (order: {
   return "pending";
 };
 
+export const isReviewableOrder = (order: {
+  status: OrderStatus;
+  payment: { status: OrderPaymentStatus };
+  fulfillmentType?: string;
+}): boolean => {
+  if (order.payment.status !== "paid") {
+    return false;
+  }
+
+  const status = getCustomerOrderStatus(order);
+
+  return status === "delivered" || status === "completed";
+};
+
 export const canConfirmOrderDelivery = (order: OrderDocument): boolean =>
   order.status === "shipped" &&
   (order.fulfillments ?? []).some((fulfillment) => !fulfillment.deliveredAt);
@@ -98,8 +112,11 @@ const buildItemsSummary = (order: OrderDocument): string =>
 const toAccountOrderItem = (
   item: OrderDocument["items"][number],
 ): AccountOrderItem => ({
+  productId: item.productId,
+  slug: item.slug,
   title: item.title,
   emoji: item.emoji,
+  thumbnailBackgroundColor: item.thumbnailBackgroundColor,
   variant: item.variant,
   formatSelection: item.formatSelection,
   quantity: item.quantity,
@@ -119,4 +136,5 @@ export const toAccountOrder = (
   status: getCustomerOrderStatus(order),
   trackings: getOrderTrackings(order),
   canConfirmDelivery: canConfirmOrderDelivery(order),
+  canReview: isReviewableOrder(order),
 });

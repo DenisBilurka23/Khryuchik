@@ -11,10 +11,12 @@ import {
   findApprovedReviewsByProductId,
   findReviewByUserAndProduct,
   findReviews,
+  findReviewsByUser,
   insertReview,
 } from "@/server/reviews/repositories/reviews.repository";
 import type { ProductReview } from "@/types/product-details";
 import { getRequestTimeZone } from "@/server/country/request-country";
+import { isReviewableOrder } from "@/utils";
 import type {
   AdminReviewListItem,
   CreateReviewInput,
@@ -27,9 +29,8 @@ export class ReviewValidationError extends Error {
     message: string,
     readonly code:
       | "invalid_rating"
-      | "empty_text"
       | "product_not_found"
-      | "not_purchased"
+      | "not_delivered"
       | "already_reviewed",
   ) {
     super(message);
@@ -41,7 +42,7 @@ const MIN_RATING = 1;
 const MAX_RATING = 5;
 const MAX_TEXT_LENGTH = 2000;
 
-const hasPurchasedProduct = async (
+const hasDeliveredProduct = async (
   userId: string,
   email: string | undefined,
   productId: string,
@@ -50,7 +51,7 @@ const hasPurchasedProduct = async (
 
   return orders.some(
     (order) =>
-      order.payment.status === "paid" &&
+      isReviewableOrder(order) &&
       order.items.some((item) => item.productId === productId),
   );
 };
@@ -69,10 +70,6 @@ export const createReview = async (
 
   const text = input.text.trim();
 
-  if (text.length === 0) {
-    throw new ReviewValidationError("Review text is empty", "empty_text");
-  }
-
   const details = await findProductDetailsByProductId(input.productId);
 
   if (!details) {
@@ -82,16 +79,16 @@ export const createReview = async (
     );
   }
 
-  const purchased = await hasPurchasedProduct(
+  const delivered = await hasDeliveredProduct(
     input.userId,
     input.email,
     input.productId,
   );
 
-  if (!purchased) {
+  if (!delivered) {
     throw new ReviewValidationError(
-      "User has not purchased this product",
-      "not_purchased",
+      "This product has not been delivered to the user yet",
+      "not_delivered",
     );
   }
 
@@ -183,6 +180,34 @@ export const getUserReviewForProduct = async (
     text: existing.text,
     status: existing.status,
   };
+};
+
+export const getUserReviewsByProduct = async (
+  userId: string | undefined,
+  locale: Locale,
+): Promise<Record<string, UserReviewSummary>> => {
+  if (!userId) {
+    return {};
+  }
+
+  const [reviews, timeZone] = await Promise.all([
+    findReviewsByUser(userId),
+    getRequestTimeZone(),
+  ]);
+
+  return Object.fromEntries(
+    reviews.map((review) => [
+      review.productId,
+      {
+        id: review.id,
+        author: review.author,
+        date: formatReviewDate(review.createdAt, locale, timeZone),
+        rating: review.rating,
+        text: review.text,
+        status: review.status,
+      },
+    ]),
+  );
 };
 
 export const getAdminReviews = async (): Promise<AdminReviewListItem[]> => {

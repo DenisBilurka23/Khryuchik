@@ -89,7 +89,7 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
           )
         : Promise.resolve<ProductPurchaseContext>({
             ownedLanguages: [],
-            hasPurchased: false,
+            hasDeliveredPurchase: false,
           }),
       session?.user
         ? getUserReviewForProduct(
@@ -108,7 +108,7 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
       storyProduct={storyProducts[0] ?? null}
       ownedLanguages={purchaseContext.ownedLanguages}
       isAuthenticated={Boolean(session?.user)}
-      hasPurchased={purchaseContext.hasPurchased}
+      hasDelivered={purchaseContext.hasDeliveredPurchase}
       userReview={userReview}
     />
   );

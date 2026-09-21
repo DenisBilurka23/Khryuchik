@@ -81,6 +81,8 @@ export const AccountPageView = ({
   favoriteCategoryLabels,
   user,
   orders,
+  orderProducts,
+  productReviews,
   downloads,
 }: AccountPageViewProps) => {
   const t = useTranslations("accountPage");
@@ -201,7 +203,13 @@ export const AccountPageView = ({
     switch (activeSection) {
       case "orders":
         return (
-          <OrdersSection locale={locale} orders={orders} timeZone={timeZone} />
+          <OrdersSection
+            locale={locale}
+            orders={orders}
+            timeZone={timeZone}
+            orderProducts={orderProducts}
+            productReviews={productReviews}
+          />
         );
       case "books":
         return <BooksSection locale={locale} downloads={downloads} />;

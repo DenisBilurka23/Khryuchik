@@ -52,6 +52,17 @@ export const findReviewByUserAndProduct = async (
   return collection.findOne({ userId, productId }, { projection: { _id: 0 } });
 };
 
+export const findReviewsByUser = async (
+  userId: string,
+): Promise<ReviewDocument[]> => {
+  const collection = await getReviewsCollection();
+
+  return collection
+    .find({ userId }, { projection: { _id: 0 } })
+    .sort({ createdAt: -1 })
+    .toArray();
+};
+
 export const findApprovedReviewsByProductId = async (
   productId: string,
 ): Promise<ReviewDocument[]> => {

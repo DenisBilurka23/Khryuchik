@@ -68,7 +68,7 @@ export const ProductPageView = async ({
   storyProduct,
   ownedLanguages,
   isAuthenticated,
-  hasPurchased,
+  hasDelivered,
   userReview,
 }: ProductPageViewProps) => {
   const tProductPage = await getTranslations({
@@ -178,7 +178,7 @@ export const ProductPageView = async ({
             }
             reviewForm={{
               isAuthenticated,
-              hasPurchased,
+              hasDelivered,
               existingStatus: userReview?.status ?? null,
               productId: product.productId,
               productSlug: product.slug,

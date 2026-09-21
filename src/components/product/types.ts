@@ -54,7 +54,7 @@ export type ProductInfoProps = {
 
 export type ReviewFormViewModel = {
   isAuthenticated: boolean;
-  hasPurchased: boolean;
+  hasDelivered: boolean;
   existingStatus: ReviewStatus | null;
   productId: string;
   productSlug: string;
@@ -90,7 +90,7 @@ export type ProductPageViewProps = {
   storyProduct?: LocalizedProductSummary | null;
   ownedLanguages?: string[];
   isAuthenticated: boolean;
-  hasPurchased: boolean;
+  hasDelivered: boolean;
   userReview: UserReviewSummary | null;
 };
 

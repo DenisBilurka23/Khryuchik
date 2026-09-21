@@ -3,7 +3,7 @@ import "server-only";
 import { findProductDetailsByProductId } from "@/server/catalog/repositories/product-details.repository";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
 import type { AccountDownload, ProductPurchaseContext } from "@/types/download";
-import { isDigitalOrderItem } from "@/utils";
+import { isDigitalOrderItem, isReviewableOrder } from "@/utils";
 
 export const getUserPurchasedDownloads = async (
   userId: string | undefined,
@@ -82,13 +82,13 @@ export const getProductPurchaseContext = async (
   const paidOrders = orders.filter((o) => o.payment.status === "paid");
 
   const languages = new Set<string>();
-  let hasPurchased = false;
+  let hasDeliveredPurchase = false;
 
   for (const order of paidOrders) {
     for (const item of order.items) {
       if (item.productId !== productId) continue;
 
-      hasPurchased = true;
+      hasDeliveredPurchase ||= isReviewableOrder(order);
 
       if (isDigitalOrderItem(item)) {
         languages.add(item.languageSelection ?? order.locale);
@@ -96,7 +96,7 @@ export const getProductPurchaseContext = async (
     }
   }
 
-  return { ownedLanguages: [...languages], hasPurchased };
+  return { ownedLanguages: [...languages], hasDeliveredPurchase };
 };
 
 export type PurchasedAsset = {

@@ -10,6 +10,8 @@ export const customerOrderStatusColors: Record<CustomerOrderStatus, string> = {
   refunded: "var(--color-products)",
 };
 
+export const ORDER_REVIEW_CONFIRMATION_MS = 1800;
+
 export const orderStatusRank: Record<OrderStatus, number> = {
   new: 0,
   processing: 1,

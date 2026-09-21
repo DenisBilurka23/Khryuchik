@@ -20,6 +20,7 @@ import type {
   ProductDetailTranslation,
   ProductDocument,
   ProductPlacement,
+  ProductPreview,
 } from "@/types/catalog";
 import type { RegionPricing } from "@/types/localization";
 import { getRegionPricing } from "@/server/localization/localization.service";
@@ -30,6 +31,7 @@ import {
   findActiveProductBySlug,
   findActiveProductsByIds,
   findActiveProductSlugs,
+  findProductsByIds,
   findProductsForPlacement,
   findShopVisibleProducts,
   findSitemapProductSlugs,
@@ -181,6 +183,33 @@ export const getProductSummariesByIds = async (
   return productIds
     .map((productId) => productsById.get(productId) ?? null)
     .filter(isLocalizedProductSummary);
+};
+
+export const getProductPreviewsByIds = async (
+  locale: Locale,
+  productIds: string[],
+): Promise<Record<string, ProductPreview>> => {
+  const products = await findProductsByIds(productIds);
+
+  return Object.fromEntries(
+    products.map((product) => {
+      const translation =
+        product.translations[locale] ?? product.translations[defaultLocale];
+
+      return [
+        product.productId,
+        {
+          id: product.productId,
+          type: product.classification.type,
+          emoji: translation?.thumbnail?.emoji ?? translation?.emoji,
+          thumbnailSrc: translation?.thumbnail?.src,
+          thumbnailBackgroundColor:
+            translation?.thumbnail?.bgColor ??
+            translation?.thumbnailBackgroundColor,
+        },
+      ];
+    }),
+  );
 };
 
 export type ProductDetailsResult =

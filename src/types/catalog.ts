@@ -76,6 +76,14 @@ export type ProductTranslation = {
   lang?: string;
 };
 
+export type ProductPreview = {
+  id: string;
+  type: ProductType;
+  emoji?: string;
+  thumbnailSrc?: string;
+  thumbnailBackgroundColor?: string;
+};
+
 export type ProductCurrencyPricing = {
   price: number;
   oldPrice?: number;

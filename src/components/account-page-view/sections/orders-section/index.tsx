@@ -6,12 +6,24 @@ import { customerOrderStatusColors } from "@/constants/order";
 import { formatDate, formatOrderTracking } from "@/utils";
 import { accountOrderTotalSx, SectionCard } from "../../shared";
 import { ConfirmDeliveryButton } from "./confirm-delivery-button";
+import { OrderItemReview } from "./item-review";
+import { OrderItemThumbnail } from "./item-thumbnail";
+import { getOrderItemDetails, getOrderItemThumbnail } from "./utils";
 import type { OrdersSectionProps } from "./types";
+
+const itemChipSx = {
+  bgcolor: "var(--color-cream)",
+  fontWeight: 500,
+  height: 22,
+  fontSize: "0.7rem",
+} as const;
 
 export const OrdersSection = ({
   locale,
   orders,
   timeZone,
+  orderProducts,
+  productReviews,
 }: OrdersSectionProps) => {
   const t = useTranslations("accountPage");
   const tStatus = useTranslations("accountPage.orderStatuses");
@@ -24,6 +36,11 @@ export const OrdersSection = ({
       </SectionCard>
     );
   }
+
+  const formatLabels = {
+    digital: t("orderFormatDigital"),
+    printed: t("orderFormatPrinted"),
+  };
 
   return (
     <SectionCard title={t("allOrders")}>
@@ -45,52 +62,58 @@ export const OrdersSection = ({
                   </Typography>
                 </Stack>
 
-                <Stack spacing={1}>
-                  {order.items.map((item, i) => (
-                    <Stack key={i} spacing={0.5}>
-                      <Typography>
-                        {item.quantity > 1
-                          ? `${item.title} ×${item.quantity}`
-                          : item.title}
-                      </Typography>
-                      <Stack direction="row" spacing={0.5} flexWrap="wrap">
-                        {item.variant ? (
-                          item.variant
-                            .split("/")
-                            .map((part) => part.trim())
-                            .filter(Boolean)
-                            .map((part, j) => (
-                              <Chip
-                                key={j}
-                                label={part}
-                                size="small"
-                                sx={{
-                                  bgcolor: "var(--color-cream)",
-                                  fontWeight: 500,
-                                  height: 22,
-                                  fontSize: "0.7rem",
-                                }}
-                              />
-                            ))
-                        ) : item.formatSelection ? (
-                          <Chip
-                            label={
-                              item.formatSelection === "digital"
-                                ? t("orderFormatDigital")
-                                : t("orderFormatPrinted")
-                            }
-                            size="small"
-                            sx={{
-                              bgcolor: "var(--color-cream)",
-                              fontWeight: 500,
-                              height: 22,
-                              fontSize: "0.7rem",
-                            }}
-                          />
-                        ) : null}
+                <Stack spacing={1.5}>
+                  {order.items.map((item, i) => {
+                    const details = getOrderItemDetails(item, formatLabels);
+                    const product = orderProducts[item.productId];
+                    const thumbnail = getOrderItemThumbnail(item, product);
+
+                    return (
+                      <Stack
+                        key={i}
+                        direction="row"
+                        spacing={1.5}
+                        alignItems="flex-start"
+                      >
+                        <OrderItemThumbnail {...thumbnail} size="md" />
+                        <Stack spacing={1} alignItems="flex-start">
+                          <Typography>
+                            {item.quantity > 1
+                              ? `${item.title} ×${item.quantity}`
+                              : item.title}
+                          </Typography>
+                          {details.length > 0 && (
+                            <Stack
+                              direction="row"
+                              spacing={0.5}
+                              flexWrap="wrap"
+                            >
+                              {details.map((detail, j) => (
+                                <Chip
+                                  key={j}
+                                  label={detail}
+                                  size="small"
+                                  sx={itemChipSx}
+                                />
+                              ))}
+                            </Stack>
+                          )}
+                          {order.canReview && (
+                            <OrderItemReview
+                              productId={item.productId}
+                              productSlug={item.slug}
+                              productTitle={item.title}
+                              productType={product?.type ?? null}
+                              thumbnail={thumbnail}
+                              orderNumber={order.number}
+                              details={details}
+                              review={productReviews[item.productId] ?? null}
+                            />
+                          )}
+                        </Stack>
                       </Stack>
-                    </Stack>
-                  ))}
+                    );
+                  })}
                 </Stack>
               </Stack>
 

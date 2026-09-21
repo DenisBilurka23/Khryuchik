@@ -170,8 +170,11 @@ export type CustomerOrderStatus =
   | "refunded";
 
 export type AccountOrderItem = {
+  productId: string;
+  slug: string;
   title: string;
   emoji: string;
+  thumbnailBackgroundColor?: string;
   variant?: string;
   formatSelection?: string;
   quantity: number;
@@ -188,6 +191,7 @@ export type AccountOrder = {
   status: CustomerOrderStatus;
   trackings: OrderTracking[];
   canConfirmDelivery: boolean;
+  canReview: boolean;
 };
 
 export type CreateOrderInput = {

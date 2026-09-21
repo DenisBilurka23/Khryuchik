@@ -11,6 +11,8 @@ import { requireAccountPageContext } from "@/server/auth/page-context";
 import { getRequestCountry } from "@/server/country/request-country";
 import { getUserPurchasedDownloads } from "@/server/downloads/downloads.service";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
+import { getUserReviewsByProduct } from "@/server/reviews/services/reviews.service";
+import { getProductPreviewsByIds } from "@/server/catalog/services/catalog.service";
 import { getLocalizedPath, toAccountOrder } from "@/utils";
 import type { LocalizedAccountPageProps } from "@/types/auth-pages";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
@@ -34,6 +36,7 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
     categories,
     availableLocales,
     availableCountries,
+    productReviews,
   ] = await Promise.all([
     getRequestCountry(),
     findOrdersForUser(user.id, user.email),
@@ -41,8 +44,14 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
     getShopCategories(lang),
     getActiveLocaleCodes(),
     getActiveRegionCodes(),
+    getUserReviewsByProduct(user.id, lang),
   ]);
   const orders = rawOrders.map((order) => toAccountOrder(order, lang));
+  const orderProducts = await getProductPreviewsByIds(lang, [
+    ...new Set(
+      rawOrders.flatMap((order) => order.items.map((item) => item.productId)),
+    ),
+  ]);
 
   return (
     <PageShell>
@@ -58,6 +67,8 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
           )}
           user={user}
           orders={orders}
+          orderProducts={orderProducts}
+          productReviews={productReviews}
           downloads={downloads}
         />
       </Container>
