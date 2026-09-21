@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import type { ProductAvailability } from "@/types/catalog";
 
 export type SitemapChangeFrequency = NonNullable<
   MetadataRoute.Sitemap[number]["changeFrequency"]
@@ -47,3 +48,10 @@ export const ROBOTS_DISALLOWED_STOREFRONT_PATHS: readonly string[] = [
 ];
 
 export const ROBOTS_DISALLOWED_PATHS: readonly string[] = ["/admin", "/api"];
+
+export const SCHEMA_AVAILABILITY: Record<ProductAvailability, string> = {
+  in_stock: "https://schema.org/InStock",
+  out_of_stock: "https://schema.org/OutOfStock",
+  preorder: "https://schema.org/PreOrder",
+  made_to_order: "https://schema.org/MadeToOrder",
+};

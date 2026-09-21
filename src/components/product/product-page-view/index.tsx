@@ -11,6 +11,7 @@ import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { StoryConnectionCard } from "@/components/product";
 import type { Locale } from "@/i18n/config";
+import { getAppOrigin } from "@/server/email/transport";
 import type { ProductPageLabels } from "@/i18n/types";
 import {
   formatCurrency,
@@ -24,6 +25,7 @@ import { ProductInfo } from "../product-info";
 import { ProductTabs } from "../product-tabs";
 import { RelatedProducts } from "../related-products";
 import type { ProductPageViewProps } from "../types";
+import { createProductStructuredData } from "./utils";
 
 const createProductPageViewModel = ({
   locale,
@@ -103,8 +105,18 @@ export const ProductPageView = async ({
       storyProduct,
     });
 
+  const structuredData = createProductStructuredData(
+    product,
+    locale,
+    getAppOrigin(),
+  );
+
   return (
     <PageShell>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <Box>
         <Container maxWidth="lg">
           <Breadcrumbs
