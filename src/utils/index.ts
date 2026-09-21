@@ -114,6 +114,11 @@ export {
   toProductDetails,
 } from "./product";
 export {
+  createRobotsDisallowList,
+  createSitemapEntry,
+  normalizeOrigin,
+} from "./seo";
+export {
   buildProductVariantMatrix,
   filterOfferedVariantOptions,
   getVariantSelectionAvailability,

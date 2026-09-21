@@ -105,6 +105,30 @@ export const findShopVisibleProducts = async (
   return cursor.toArray();
 };
 
+export const findSitemapProductSlugs = async (country: CountryCode) => {
+  const db = await getMongoDb();
+  const products = await db
+    .collection<ProductDocument>("products")
+    .find(
+      {
+        "status.isActive": true,
+        "status.visibleInShop": true,
+        availableRegions: country,
+      },
+      { projection: { _id: 0, slug: 1 } },
+    )
+    .sort({ "merchandising.sortOrder": 1 })
+    .toArray();
+
+  return Array.from(
+    new Set(
+      products
+        .map((product) => product.slug)
+        .filter((slug): slug is string => Boolean(slug)),
+    ),
+  );
+};
+
 export const findCategoryKeysWithProducts = async (country: CountryCode) => {
   const db = await getMongoDb();
 

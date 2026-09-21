@@ -22,6 +22,7 @@ import {
   findEntertainmentItemBySlug,
   findHomeEntertainmentItems,
   findPublishedEntertainmentItems,
+  findSitemapEntertainmentEntries,
   incrementEntertainmentItemViews,
 } from "../repositories/entertainment.repository";
 
@@ -81,6 +82,14 @@ export const getEntertainmentItem = cache(
 
     return item ? localizeEntertainmentItem(item, locale) : null;
   },
+);
+
+export const getSitemapEntertainmentEntries = cache(
+  async (): Promise<{ slug: string; updatedAt: string }[]> =>
+    (await findSitemapEntertainmentEntries()).map((item) => ({
+      slug: item.slug,
+      updatedAt: item.updatedAt,
+    })),
 );
 
 export const registerEntertainmentItemView = async (slug: string) => {

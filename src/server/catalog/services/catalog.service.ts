@@ -32,6 +32,7 @@ import {
   findActiveProductSlugs,
   findProductsForPlacement,
   findShopVisibleProducts,
+  findSitemapProductSlugs,
 } from "../repositories/products.repository";
 import { findProductDetailsByProductId } from "../repositories/product-details.repository";
 import { findUnstockedPrintedLines } from "./printed-stock.service";
@@ -186,6 +187,11 @@ export type ProductDetailsResult =
   | { status: "ok"; product: ProductDetails }
   | { status: "not-found" }
   | { status: "pricing-unavailable"; title: string };
+
+export const getSitemapProductSlugs = cache(
+  async (country: CountryCode): Promise<string[]> =>
+    findSitemapProductSlugs(country),
+);
 
 export const getProductDetails = cache(
   async (

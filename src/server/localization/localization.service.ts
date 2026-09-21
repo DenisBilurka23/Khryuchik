@@ -107,6 +107,15 @@ export const getDefaultRegionCode = async (): Promise<string> => {
   return regions.find((region) => region.isDefault)?.code ?? defaultCountry;
 };
 
+export const getSitemapRegionCode = async (): Promise<string> => {
+  const [activeCodes, defaultRegion] = await Promise.all([
+    getActiveRegionCodes(),
+    getDefaultRegionCode(),
+  ]);
+
+  return activeCodes.includes(defaultCountry) ? defaultCountry : defaultRegion;
+};
+
 export const getRegionCurrency = async (
   code: string,
 ): Promise<CurrencyCode> => {

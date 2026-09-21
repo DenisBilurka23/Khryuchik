@@ -44,6 +44,17 @@ export const findPublishedEntertainmentItems = async () => {
     .toArray();
 };
 
+export const findSitemapEntertainmentEntries = async () => {
+  const collection = await getEntertainmentCollection();
+
+  return collection
+    .find(publishedFilter, {
+      projection: { _id: 0, slug: 1, updatedAt: 1 },
+    })
+    .sort({ sortOrder: 1 })
+    .toArray();
+};
+
 export const findEntertainmentItemBySlug = async (slug: string) => {
   const collection = await getEntertainmentCollection();
 
