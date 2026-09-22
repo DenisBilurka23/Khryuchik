@@ -105,6 +105,7 @@ export {
   getStockedHubs,
   hasPrintedStock,
   isPrintedOffered,
+  isPrintedStockTracked,
   toPrintedLanguages,
 } from "./printed-stock";
 export {

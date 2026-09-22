@@ -5,6 +5,7 @@ import { Box, IconButton, Typography } from "@mui/material";
 import Link from "next/link";
 
 import { Pill, Plate } from "@/components/primitives";
+import { MAX_CART_ITEM_QUANTITY } from "@/constants/cart";
 import { displayFont } from "@/theme/sx";
 import {
   formatCurrency,
@@ -53,6 +54,7 @@ export const CartItemCard = ({
   removeLabel,
   soldOutLabel,
   maxQuantityLabel,
+  remainingStockLabel,
   isIncreaseDisabled,
   onDecrease,
   onIncrease,
@@ -60,6 +62,15 @@ export const CartItemCard = ({
 }: CartItemCardProps) => {
   const productHref = getLocalizedProductPath(locale, item.slug);
   const isSoldOut = !isPurchasableAvailability(item.availability);
+  const isOverStock =
+    item.availableQuantity !== undefined &&
+    item.quantity > item.availableQuantity;
+  const isAtMaxQuantity = item.quantity >= MAX_CART_ITEM_QUANTITY;
+  const stockLabel = isOverStock
+    ? (remainingStockLabel ?? soldOutLabel)
+    : isSoldOut
+      ? soldOutLabel
+      : null;
 
   return (
     <Plate
@@ -102,9 +113,9 @@ export const CartItemCard = ({
           <Link href={productHref}>{item.title}</Link>
         </Typography>
 
-        {isSoldOut ? (
+        {stockLabel ? (
           <Pill sx={{ mt: 1.25, fontSize: 13, fontWeight: 500 }}>
-            {soldOutLabel}
+            {stockLabel}
           </Pill>
         ) : null}
 
@@ -167,7 +178,7 @@ export const CartItemCard = ({
                 <AddIcon fontSize="small" />
               </IconButton>
 
-              {isIncreaseDisabled ? (
+              {isAtMaxQuantity ? (
                 <Pill sx={{ fontSize: 12, fontWeight: 500 }}>
                   {maxQuantityLabel}
                 </Pill>

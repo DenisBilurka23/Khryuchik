@@ -17,7 +17,12 @@ import type { ProductDocument } from "@/types/catalog";
 import type { OrderDocument, OrderPrintedStockMovement } from "@/types/order";
 import type { ShippingHubCode } from "@/types/shipping";
 import type { CountryCode } from "@/utils";
-import { getStockedHubs, hasPrintedStock } from "@/utils";
+import {
+  getPrintedStockCount,
+  getStockedHubs,
+  hasPrintedStock,
+  isPrintedStockTracked,
+} from "@/utils";
 
 export type PrintedStockLine = {
   id: string;
@@ -96,6 +101,38 @@ const loadProducts = async (lines: PrintedStockLine[]) => {
   );
 
   return new Map(products.map((product) => [product.productId, product]));
+};
+
+export const getPrintedStockAvailability = async (
+  lines: PrintedStockLine[],
+  destinationCountry: CountryCode,
+): Promise<Map<string, number>> => {
+  const candidates = lines.filter((line) => !line.isDigital);
+  const availability = new Map<string, number>();
+
+  if (candidates.length === 0) {
+    return availability;
+  }
+
+  const productById = await loadProducts(candidates);
+
+  for (const group of groupShelfLines(candidates, productById)) {
+    const product = productById.get(group.productId);
+    const stock = product?.shipping?.stockByLanguage;
+
+    if (!product || !isPrintedStockTracked(stock)) {
+      continue;
+    }
+
+    const hubs = sellableHubsFor(product, group.language, destinationCountry);
+    const available = getPrintedStockCount(stock, group.language, hubs);
+
+    for (const lineId of group.lineIds) {
+      availability.set(lineId, available);
+    }
+  }
+
+  return availability;
 };
 
 export const findUnstockedPrintedLines = async (

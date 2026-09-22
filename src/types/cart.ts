@@ -56,6 +56,7 @@ export type CartItem = {
   variant?: string;
   isDigital?: boolean;
   availability: ProductAvailability;
+  availableQuantity?: number;
 };
 
 export type CartResolveResponse = {

@@ -37,7 +37,7 @@ import {
   findSitemapProductSlugs,
 } from "../repositories/products.repository";
 import { findProductDetailsByProductId } from "../repositories/product-details.repository";
-import { findUnstockedPrintedLines } from "./printed-stock.service";
+import { getPrintedStockAvailability } from "./printed-stock.service";
 import { getApprovedReviewsForProduct } from "@/server/reviews/services/reviews.service";
 
 const localizeProductSummaries = (
@@ -367,7 +367,7 @@ export const resolveCartItems = async (
     ),
   );
   const detailsById = new Map(detailsEntries);
-  const unstockedLineIds = await findUnstockedPrintedLines(
+  const stockAvailability = await getPrintedStockAvailability(
     items.map((item) => ({
       id: item.id,
       productId: item.productId,
@@ -389,6 +389,9 @@ export const resolveCartItems = async (
       detailsById.get(item.productId) ?? null,
       locale,
     );
+    const availableQuantity = stockAvailability.get(item.id);
+    const isOverStock =
+      availableQuantity !== undefined && item.quantity > availableQuantity;
 
     return [
       {
@@ -411,9 +414,10 @@ export const resolveCartItems = async (
         quantity: item.quantity,
         variant: buildVariantLabel(item, translation),
         isDigital: item.selections?.format === BOOK_FORMAT.digital,
-        availability: unstockedLineIds.has(item.id)
+        availability: isOverStock
           ? ("out_of_stock" as const)
           : summary.availability,
+        availableQuantity,
       },
     ];
   });

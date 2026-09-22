@@ -7,7 +7,7 @@ const countInHubs = (
   hubs: readonly ShippingHubCode[],
 ) => hubs.reduce((sum, hub) => sum + (hubStock?.[hub] ?? 0), 0);
 
-const isTracked = (stock?: ProductPrintedStock) =>
+export const isPrintedStockTracked = (stock?: ProductPrintedStock) =>
   Boolean(stock && Object.keys(stock).length > 0);
 
 export const toPrintedLanguages = (stock?: ProductPrintedStock): string[] =>
@@ -19,7 +19,7 @@ export const getStockedHubs = (
   stock: ProductPrintedStock | undefined,
   language: string | undefined,
 ): ShippingHubCode[] => {
-  if (!isTracked(stock) || !language) {
+  if (!isPrintedStockTracked(stock) || !language) {
     return [];
   }
 
@@ -40,7 +40,7 @@ export const hasPrintedStock = (
   hubs: readonly ShippingHubCode[],
   quantity: number,
 ) => {
-  if (!isTracked(stock)) {
+  if (!isPrintedStockTracked(stock)) {
     return true;
   }
 

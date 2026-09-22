@@ -717,7 +717,8 @@
         "variantLabel": "Variant",
         "removeLabel": "Remove item",
         "soldOut": "Out of stock",
-        "maxQuantity": "Maximum {count}"
+        "maxQuantity": "Maximum {count}",
+        "remainingStock": "Only {count} left"
       },
       "pricingUnavailable": "Some items cannot be priced right now — we could not get an up-to-date exchange rate. Please try again in a few minutes.",
       "regionUnavailable": "Some items are not sold in the selected region, so they are hidden for now. Switch the region back and they will be waiting in your cart.",

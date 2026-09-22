@@ -80,6 +80,13 @@ export const CartPageView = ({
       return;
     }
 
+    if (
+      item.availableQuantity !== undefined &&
+      item.quantity >= item.availableQuantity
+    ) {
+      return;
+    }
+
     updateQuantity(id, item.quantity + 1);
   };
 
@@ -176,7 +183,18 @@ export const CartPageView = ({
                     removeLabel={cartPage.itemCard.removeLabel}
                     soldOutLabel={cartPage.itemCard.soldOut}
                     maxQuantityLabel={cartPage.maxQuantity}
-                    isIncreaseDisabled={item.quantity >= MAX_CART_ITEM_QUANTITY}
+                    remainingStockLabel={
+                      item.availableQuantity !== undefined
+                        ? t("itemCard.remainingStock", {
+                            count: item.availableQuantity,
+                          })
+                        : undefined
+                    }
+                    isIncreaseDisabled={
+                      item.quantity >= MAX_CART_ITEM_QUANTITY ||
+                      (item.availableQuantity !== undefined &&
+                        item.quantity >= item.availableQuantity)
+                    }
                     onIncrease={handleIncrease}
                     onDecrease={handleDecrease}
                     onRemove={handleRemove}
