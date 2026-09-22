@@ -13,8 +13,8 @@ export type ReviewDialogProps = {
   text: string;
   status: OrderReviewStatus;
   errorMessage: string | null;
-  onRatingChange: (rating: number | null) => void;
-  onTextChange: (text: string) => void;
-  onSubmit: () => void;
-  onClose: () => void;
+  onRatingChangeAction: (rating: number | null) => void;
+  onTextChangeAction: (text: string) => void;
+  onSubmitAction: () => void;
+  onCloseAction: () => void;
 };

@@ -98,22 +98,22 @@ export const ReviewDialog = ({
   text,
   status,
   errorMessage,
-  onRatingChange,
-  onTextChange,
-  onSubmit,
-  onClose,
+  onRatingChangeAction,
+  onTextChangeAction,
+  onSubmitAction,
+  onCloseAction,
 }: ReviewDialogProps) => {
   const t = useTranslations("accountPage.orderReview");
 
   return (
     <Dialog
       open={isOpen}
-      onClose={onClose}
+      onClose={onCloseAction}
       maxWidth="xs"
       fullWidth
       slotProps={{ paper: { sx: paperSx } }}
     >
-      <IconButton aria-label={t("close")} onClick={onClose} sx={closeSx}>
+      <IconButton aria-label={t("close")} onClick={onCloseAction} sx={closeSx}>
         <CloseRoundedIcon fontSize="small" />
       </IconButton>
 
@@ -160,13 +160,13 @@ export const ReviewDialog = ({
 
             <Rating
               value={rating}
-              onChange={(_event, value) => onRatingChange(value)}
+              onChange={(_event, value) => onRatingChangeAction(value)}
               sx={ratingSx}
             />
 
             <TextField
               value={text}
-              onChange={(event) => onTextChange(event.target.value)}
+              onChange={(event) => onTextChangeAction(event.target.value)}
               placeholder={t("placeholder")}
               multiline
               minRows={3}
@@ -188,7 +188,7 @@ export const ReviewDialog = ({
               variant="contained"
               fullWidth
               disabled={!rating || status === "submitting"}
-              onClick={onSubmit}
+              onClick={onSubmitAction}
               sx={submitSx}
             >
               {status === "submitting" ? t("submitting") : t("submit")}

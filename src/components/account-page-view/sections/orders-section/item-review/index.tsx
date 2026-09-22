@@ -1,10 +1,12 @@
 "use client";
 
+import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import { useTranslations } from "next-intl";
 
 import { useOrderReview } from "@/hooks/useOrderReview";
 
-import { ReviewButton } from "./review-button";
+import { OrderActionButton } from "../order-action-button";
 import { ReviewDialog } from "./review-dialog";
 import type { OrderItemReviewProps } from "./types";
 
@@ -38,10 +40,11 @@ export const OrderItemReview = ({
 
   return (
     <>
-      <ReviewButton
+      <OrderActionButton
         tone={isReviewed ? "done" : "accent"}
         label={isReviewed ? t("done") : t("button")}
-        onClick={openForm}
+        icon={isReviewed ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}
+        onClickAction={openForm}
       />
 
       <ReviewDialog
@@ -56,10 +59,10 @@ export const OrderItemReview = ({
         text={text}
         status={status}
         errorMessage={errorMessage}
-        onRatingChange={setRating}
-        onTextChange={setText}
-        onSubmit={() => void submitForm()}
-        onClose={closeForm}
+        onRatingChangeAction={setRating}
+        onTextChangeAction={setText}
+        onSubmitAction={() => void submitForm()}
+        onCloseAction={closeForm}
       />
     </>
   );

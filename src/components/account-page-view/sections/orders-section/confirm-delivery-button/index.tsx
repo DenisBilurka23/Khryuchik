@@ -1,50 +1,44 @@
 "use client";
 
-import { useState } from "react";
-
-import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
+import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import { Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 
-import { confirmAccountOrderDeliveryClient } from "@/client-api/account";
-import { ModalButton } from "@/components/modal-button";
+import { useOrderDeliveryConfirmation } from "@/hooks/useOrderDeliveryConfirmation";
 
+import { OrderActionButton } from "../order-action-button";
+import { ConfirmDeliveryDialog } from "./confirm-dialog";
 import type { ConfirmDeliveryButtonProps } from "./types";
 
 export const ConfirmDeliveryButton = ({
   orderId,
 }: ConfirmDeliveryButtonProps) => {
   const t = useTranslations("accountPage.confirmDelivery");
-  const router = useRouter();
-  const [error, setError] = useState(false);
-
-  const handleConfirm = async () => {
-    const response = await confirmAccountOrderDeliveryClient(orderId);
-
-    setError(!response.ok);
-
-    if (response.ok) {
-      router.refresh();
-    }
-  };
+  const {
+    isOpen,
+    isSubmitting,
+    hasError,
+    openDialog,
+    closeDialog,
+    confirmDelivery,
+  } = useOrderDeliveryConfirmation({ orderId });
 
   return (
     <>
-      <ModalButton
+      <OrderActionButton
         label={t("button")}
-        onConfirmAction={handleConfirm}
-        dialogTitle={t("dialogTitle")}
-        dialogDescription={t("dialogDescription")}
-        confirmLabel={t("confirmLabel")}
-        cancelLabel={t("cancelLabel")}
-        icon={<TaskAltOutlinedIcon key="confirm-delivery-icon" />}
-        variant="outlined"
-        size="small"
-        color="primary"
-        confirmColor="primary"
+        icon={<CheckCircleOutlineRoundedIcon />}
+        onClickAction={openDialog}
       />
-      {error && (
+
+      <ConfirmDeliveryDialog
+        isOpen={isOpen}
+        isSubmitting={isSubmitting}
+        onConfirmAction={() => void confirmDelivery()}
+        onCloseAction={closeDialog}
+      />
+
+      {hasError && (
         <Typography variant="caption" color="error">
           {t("error")}
         </Typography>

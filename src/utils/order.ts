@@ -103,8 +103,10 @@ export const isReviewableOrder = (order: {
 };
 
 export const canConfirmOrderDelivery = (order: OrderDocument): boolean =>
-  order.status === "shipped" &&
-  (order.fulfillments ?? []).some((fulfillment) => !fulfillment.deliveredAt);
+  (order.payment.status === "paid" || order.payment.status === "cod_pending") &&
+  order.fulfillmentType !== "digital" &&
+  order.status !== "delivered" &&
+  order.status !== "cancelled";
 
 const buildItemsSummary = (order: OrderDocument): string =>
   order.items.map((item) => item.title).join(" + ");

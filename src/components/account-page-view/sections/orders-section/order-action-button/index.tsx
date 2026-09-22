@@ -1,14 +1,12 @@
 "use client";
 
-import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
-import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type { CSSObject } from "@mui/material/styles";
 
-import type { ReviewButtonProps, ReviewButtonTone } from "./types";
+import type { OrderActionButtonProps, OrderActionButtonTone } from "./types";
 
-const toneStyles: Record<ReviewButtonTone, CSSObject> = {
+const toneStyles: Record<OrderActionButtonTone, CSSObject> = {
   accent: {
     borderColor: "var(--color-accent-soft)",
     color: "var(--color-action)",
@@ -30,8 +28,7 @@ const toneStyles: Record<ReviewButtonTone, CSSObject> = {
 
 const ToneButton = styled(Button, {
   shouldForwardProp: (prop) => prop !== "tone",
-})<{ tone: ReviewButtonTone }>(({ tone }) => ({
-  alignSelf: "flex-start",
+})<{ tone: OrderActionButtonTone }>(({ tone }) => ({
   minHeight: 0,
   gap: 6,
   padding: "5px 14px 5px 11px",
@@ -40,6 +37,7 @@ const ToneButton = styled(Button, {
   background: "var(--color-white)",
   fontSize: 13,
   fontWeight: 600,
+  whiteSpace: "nowrap",
   transition:
     "background 0.16s ease, border-color 0.16s ease, transform 0.16s ease",
   "& .MuiButton-startIcon": { marginLeft: 0, marginRight: 0 },
@@ -47,18 +45,22 @@ const ToneButton = styled(Button, {
   ...toneStyles[tone],
 }));
 
-export const ReviewButton = ({ tone, label, onClick }: ReviewButtonProps) => (
+export const OrderActionButton = ({
+  tone = "accent",
+  label,
+  icon,
+  onClickAction,
+}: OrderActionButtonProps) => (
   <ToneButton
     type="button"
     tone={tone}
     disabled={tone === "done"}
-    onClick={onClick}
-    startIcon={
-      tone === "done" ? <StarRoundedIcon /> : <StarBorderRoundedIcon />
-    }
+    disableRipple
+    onClick={onClickAction}
+    startIcon={icon}
   >
     {label}
   </ToneButton>
 );
 
-export type { ReviewButtonProps, ReviewButtonTone } from "./types";
+export type { OrderActionButtonProps, OrderActionButtonTone } from "./types";

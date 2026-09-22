@@ -37,6 +37,22 @@ const areAllParcelsDelivered = (order: OrderDocument) =>
     Boolean(fulfillment.deliveredAt),
   );
 
+const transitionOrderToDelivered = async (
+  order: OrderDocument,
+): Promise<void> => {
+  if (orderStatusRank.delivered <= orderStatusRank[order.status]) {
+    return;
+  }
+
+  await updateOrderStatus(order.id, "delivered");
+
+  const updated = await findOrderById(order.id);
+
+  if (updated) {
+    await sendOrderStatusEmail(updated, order.status);
+  }
+};
+
 export const settleOrderDelivery = async (orderId: string): Promise<void> => {
   const order = await findOrderById(orderId);
 
@@ -44,17 +60,7 @@ export const settleOrderDelivery = async (orderId: string): Promise<void> => {
     return;
   }
 
-  if (orderStatusRank.delivered <= orderStatusRank[order.status]) {
-    return;
-  }
-
-  await updateOrderStatus(orderId, "delivered");
-
-  const updated = await findOrderById(orderId);
-
-  if (updated) {
-    await sendOrderStatusEmail(updated, order.status);
-  }
+  await transitionOrderToDelivered(order);
 };
 
 export const markParcelDelivered = async (
@@ -72,8 +78,6 @@ export const markParcelDelivered = async (
   await settleOrderDelivery(orderId);
 };
 
-// The customer confirms the whole order — they cannot tell one parcel from
-// another — so every parcel still open gets the mark.
 export const markOrderDelivered = async (
   order: OrderDocument,
   deliveredBy: OrderDeliveredBy,
@@ -89,6 +93,11 @@ export const markOrderDelivered = async (
       deliveredAt,
       deliveredBy,
     });
+  }
+
+  if ((order.fulfillments ?? []).length === 0) {
+    await transitionOrderToDelivered(order);
+    return;
   }
 
   await settleOrderDelivery(order.id);
