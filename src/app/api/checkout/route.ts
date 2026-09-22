@@ -154,9 +154,8 @@ export const POST = async (request: NextRequest) => {
   ]);
   const userId = session?.user?.id || undefined;
 
-  const items = Array.isArray(payload.items)
-    ? payload.items.filter(isStoredCartItem)
-    : [];
+  const rawItems = Array.isArray(payload.items) ? payload.items : [];
+  const items = rawItems.filter(isStoredCartItem);
 
   const customer = parseCustomer(payload.customer);
   const shippingAddress = parseShippingAddress(payload.shippingAddress);
@@ -167,6 +166,7 @@ export const POST = async (request: NextRequest) => {
     items.every((item) => item.selections?.format === BOOK_FORMAT.digital);
 
   if (
+    items.length !== rawItems.length ||
     !customer ||
     (!isDigitalOnly && !shippingAddress) ||
     !isPaymentMethod(paymentMethod)

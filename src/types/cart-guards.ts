@@ -1,3 +1,5 @@
+import { isCartItemQuantity } from "@/utils/cart";
+
 import type { StoredCartItem } from "./cart";
 
 export const isCartSelections = (value: unknown) => {
@@ -20,7 +22,7 @@ export const isStoredCartItem = (value: unknown): value is StoredCartItem => {
   return (
     typeof item.id === "string" &&
     typeof item.productId === "string" &&
-    typeof item.quantity === "number" &&
+    isCartItemQuantity(item.quantity) &&
     (typeof item.selections === "undefined" ||
       isCartSelections(item.selections))
   );

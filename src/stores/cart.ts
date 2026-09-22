@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 
 import { CART_STORAGE_KEY } from "@/constants/cart";
+import { clampCartItemQuantity } from "@/utils/cart";
 import { isStoredCartItem } from "@/types/cart-guards";
 import type {
   CartItemInput,
@@ -113,7 +114,7 @@ const createCartItem = ({
 }: CartItemInput): StoredCartItem => ({
   id: buildCartItemId(productId, selections),
   productId,
-  quantity,
+  quantity: clampCartItemQuantity(quantity),
   selections,
 });
 
@@ -182,7 +183,9 @@ export const addCartItem = (item: CartItemInput) => {
   const items = [...currentState.items];
   items[existingItemIndex] = {
     ...items[existingItemIndex],
-    quantity: items[existingItemIndex].quantity + nextItem.quantity,
+    quantity: clampCartItemQuantity(
+      items[existingItemIndex].quantity + nextItem.quantity,
+    ),
   };
 
   setCartState({ items });
@@ -198,9 +201,11 @@ export const updateCartItemQuantity = (id: string, quantity: number) => {
     return;
   }
 
+  const nextQuantity = clampCartItemQuantity(quantity);
+
   setCartState({
     items: currentState.items.map((item) =>
-      item.id === id ? { ...item, quantity } : item,
+      item.id === id ? { ...item, quantity: nextQuantity } : item,
     ),
   });
 };

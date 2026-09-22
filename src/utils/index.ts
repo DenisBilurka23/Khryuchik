@@ -1,3 +1,4 @@
+export { clampCartItemQuantity, isCartItemQuantity } from "./cart";
 export { isLocalizedCategory, localizeCategory } from "./category";
 export {
   COUNTRY_COOKIE_NAME,

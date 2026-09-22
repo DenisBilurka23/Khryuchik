@@ -1,4 +1,5 @@
 import { BUY_NOW_STORAGE_KEY } from "@/constants/cart";
+import { clampCartItemQuantity } from "@/utils/cart";
 import type { CartItemInput, StoredCartItem } from "@/types/cart";
 
 const buildItemId = (
@@ -18,7 +19,7 @@ export const setBuyNowItem = (input: CartItemInput): void => {
   const item: StoredCartItem = {
     id: buildItemId(input.productId, input.selections),
     productId: input.productId,
-    quantity: input.quantity ?? 1,
+    quantity: clampCartItemQuantity(input.quantity ?? 1),
     selections: input.selections,
   };
 
