@@ -44,6 +44,8 @@ export type CartItemCardProps = {
   variantLabel: string;
   removeLabel: string;
   soldOutLabel: string;
+  maxQuantityLabel: string;
+  isIncreaseDisabled: boolean;
   onDecrease: (id: string) => void;
   onIncrease: (id: string) => void;
   onRemove: (id: string) => void;

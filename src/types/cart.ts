@@ -29,6 +29,11 @@ export type CartSnapshot = {
 export type CartToastSnapshot = {
   open: boolean;
   addedCount: number;
+  isCapped: boolean;
+};
+
+export type CartAddResult = {
+  isCapped: boolean;
 };
 
 export type CartItemInput = {

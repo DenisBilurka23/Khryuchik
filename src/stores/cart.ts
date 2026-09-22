@@ -6,6 +6,7 @@ import { CART_STORAGE_KEY } from "@/constants/cart";
 import { clampCartItemQuantity } from "@/utils/cart";
 import { isStoredCartItem } from "@/types/cart-guards";
 import type {
+  CartAddResult,
   CartItemInput,
   CartSnapshot,
   CartState,
@@ -166,7 +167,7 @@ const getSnapshot = (): CartSnapshot => {
 
 const getServerSnapshot = (): CartSnapshot => emptySnapshot;
 
-export const addCartItem = (item: CartItemInput) => {
+export const addCartItem = (item: CartItemInput): CartAddResult => {
   const nextItem = createCartItem(item);
   const currentState = ensureStateLoaded();
   const existingItemIndex = currentState.items.findIndex(
@@ -177,18 +178,22 @@ export const addCartItem = (item: CartItemInput) => {
     setCartState({
       items: [...currentState.items, nextItem],
     });
-    return;
+
+    return { isCapped: nextItem.quantity < (item.quantity ?? 1) };
   }
 
+  const requestedQuantity =
+    currentState.items[existingItemIndex].quantity + nextItem.quantity;
+  const nextQuantity = clampCartItemQuantity(requestedQuantity);
   const items = [...currentState.items];
   items[existingItemIndex] = {
     ...items[existingItemIndex],
-    quantity: clampCartItemQuantity(
-      items[existingItemIndex].quantity + nextItem.quantity,
-    ),
+    quantity: nextQuantity,
   };
 
   setCartState({ items });
+
+  return { isCapped: nextQuantity < requestedQuantity };
 };
 
 export const updateCartItemQuantity = (id: string, quantity: number) => {

@@ -4,7 +4,11 @@ import { useSyncExternalStore } from "react";
 
 import type { CartToastSnapshot } from "@/types/cart";
 
-const closedSnapshot: CartToastSnapshot = { open: false, addedCount: 0 };
+const closedSnapshot: CartToastSnapshot = {
+  open: false,
+  addedCount: 0,
+  isCapped: false,
+};
 let snapshot: CartToastSnapshot = closedSnapshot;
 
 const listeners = new Set<() => void>();
@@ -25,8 +29,12 @@ const getSnapshot = (): CartToastSnapshot => snapshot;
 
 const getServerSnapshot = (): CartToastSnapshot => closedSnapshot;
 
-export const showCartToast = () => {
-  snapshot = { open: true, addedCount: snapshot.addedCount + 1 };
+export const showCartToast = (options?: { isCapped?: boolean }) => {
+  snapshot = {
+    open: true,
+    addedCount: snapshot.addedCount + 1,
+    isCapped: Boolean(options?.isCapped),
+  };
   emitChange();
 };
 

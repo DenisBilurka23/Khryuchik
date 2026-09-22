@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
+  clampCartItemQuantity,
   formatCurrency,
   getLocalizedPath,
   isPurchasableAvailability,
@@ -29,6 +30,10 @@ import {
 
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useWishlist } from "@/hooks/useWishlist";
+import {
+  MAX_CART_ITEM_QUANTITY,
+  MIN_CART_ITEM_QUANTITY,
+} from "@/constants/cart";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import { showCartToast } from "@/stores/cart-toast";
 import { useCart } from "@/stores/cart";
@@ -69,12 +74,13 @@ export const ProductInfo = ({
     isDigital && ownedLanguages.includes(selections.language);
 
   const handleAddToCart = () => {
-    addItem({
+    const { isCapped } = addItem({
       productId: product.productId,
       quantity,
       selections: cartSelections,
     });
-    showCartToast();
+
+    showCartToast({ isCapped });
   };
 
   const handleBuyNow = () => {
@@ -326,11 +332,14 @@ export const ProductInfo = ({
             type="number"
             value={quantity}
             onChange={(event) =>
-              setQuantity(Math.max(1, Number(event.target.value) || 1))
+              setQuantity(
+                clampCartItemQuantity(Number(event.target.value) || 1),
+              )
             }
             slotProps={{
               htmlInput: {
-                min: 1,
+                min: MIN_CART_ITEM_QUANTITY,
+                max: MAX_CART_ITEM_QUANTITY,
               },
             }}
             fullWidth

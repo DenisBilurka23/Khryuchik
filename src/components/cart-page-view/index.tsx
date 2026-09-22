@@ -4,6 +4,7 @@ import { Alert, Box, Container, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { MAX_CART_ITEM_QUANTITY } from "@/constants/cart";
 import { usePromoCode } from "@/hooks/usePromoCode";
 import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
@@ -30,6 +31,9 @@ export const CartPageView = ({
     breadcrumbs: t.raw("breadcrumbs") as ReturnType<typeof t.raw>,
     emptyState: t.raw("emptyState") as ReturnType<typeof t.raw>,
     itemCard: t.raw("itemCard") as ReturnType<typeof t.raw>,
+    maxQuantity: t("itemCard.maxQuantity", {
+      count: MAX_CART_ITEM_QUANTITY,
+    }),
     pricingUnavailable: t("pricingUnavailable"),
     regionUnavailable: t("regionUnavailable"),
   };
@@ -69,6 +73,10 @@ export const CartPageView = ({
     const item = items.find((entry) => entry.id === id);
 
     if (!item) {
+      return;
+    }
+
+    if (item.quantity >= MAX_CART_ITEM_QUANTITY) {
       return;
     }
 
@@ -167,6 +175,8 @@ export const CartPageView = ({
                     variantLabel={cartPage.itemCard.variantLabel}
                     removeLabel={cartPage.itemCard.removeLabel}
                     soldOutLabel={cartPage.itemCard.soldOut}
+                    maxQuantityLabel={cartPage.maxQuantity}
+                    isIncreaseDisabled={item.quantity >= MAX_CART_ITEM_QUANTITY}
                     onIncrease={handleIncrease}
                     onDecrease={handleDecrease}
                     onRemove={handleRemove}

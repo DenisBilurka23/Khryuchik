@@ -13,7 +13,8 @@
     "countrySwitcherLabel": "Country switcher",
     "cartLabel": "Cart",
     "cartToast": {
-      "addedToCart": "Added to cart"
+      "addedToCart": "Added to cart",
+      "maxQuantityReached": "Maximum {count} per item in the cart"
     },
     "userMenu": {
       "account": "Account",
@@ -715,7 +716,8 @@
       "itemCard": {
         "variantLabel": "Variant",
         "removeLabel": "Remove item",
-        "soldOut": "Out of stock"
+        "soldOut": "Out of stock",
+        "maxQuantity": "Maximum {count}"
       },
       "pricingUnavailable": "Some items cannot be priced right now — we could not get an up-to-date exchange rate. Please try again in a few minutes.",
       "regionUnavailable": "Some items are not sold in the selected region, so they are hidden for now. Switch the region back and they will be waiting in your cart.",

@@ -39,6 +39,11 @@ const quantityButtonSx = {
     borderColor: "var(--color-border-rose)",
     background: "var(--color-accent-pale)",
   },
+  "&.Mui-disabled": {
+    opacity: 0.45,
+    borderColor: "var(--color-border)",
+    background: "var(--color-cream)",
+  },
 } as const;
 
 export const CartItemCard = ({
@@ -47,6 +52,8 @@ export const CartItemCard = ({
   variantLabel,
   removeLabel,
   soldOutLabel,
+  maxQuantityLabel,
+  isIncreaseDisabled,
   onDecrease,
   onIncrease,
   onRemove,
@@ -122,7 +129,14 @@ export const CartItemCard = ({
           }}
         >
           {!item.isDigital ? (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
               <IconButton
                 onClick={() => onDecrease(item.id)}
                 sx={quantityButtonSx}
@@ -147,10 +161,17 @@ export const CartItemCard = ({
 
               <IconButton
                 onClick={() => onIncrease(item.id)}
+                disabled={isIncreaseDisabled}
                 sx={quantityButtonSx}
               >
                 <AddIcon fontSize="small" />
               </IconButton>
+
+              {isIncreaseDisabled ? (
+                <Pill sx={{ fontSize: 12, fontWeight: 500 }}>
+                  {maxQuantityLabel}
+                </Pill>
+              ) : null}
             </Box>
           ) : null}
 
