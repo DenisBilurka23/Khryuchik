@@ -48,7 +48,11 @@ const profileCardSx = {
   height: "100%",
 } as const;
 
-const sidebarCardSx = asideCardSx;
+const sidebarCardSx = {
+  ...asideCardSx,
+  position: { xs: "static", md: "sticky" },
+  top: { md: 112 },
+} as const;
 
 const userNameSx = {
   mt: 2,
