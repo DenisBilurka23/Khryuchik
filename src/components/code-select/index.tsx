@@ -15,8 +15,6 @@ export const CodeSelect = ({
   inputName,
   autoComplete,
 }: CodeSelectProps) => {
-  // Search covers the visible label, the code, and whatever aliases the caller
-  // adds - so a name typed in another language still finds its option.
   const filterOptions = useMemo(
     () =>
       createFilterOptions<CodeOption>({
@@ -41,9 +39,6 @@ export const CodeSelect = ({
     return names;
   }, [options, aliasesOf]);
 
-  // MUI opens the listbox on every input event, right after our handler runs.
-  // On a filled-in name that leaves it hanging open with no way back: closing
-  // needs a blur, and a field the user never focused never blurs.
   const [isOpen, setIsOpen] = useState(false);
   const hasJustMatched = useRef(false);
 
@@ -53,9 +48,6 @@ export const CodeSelect = ({
       autoHighlight
       autoSelect
       disablePortal
-      // Emptying the input would otherwise drop the selection, so retyping a
-      // country and matching nothing leaves the field blank. Kept, the previous
-      // country comes back on blur.
       disableClearable={required}
       open={isOpen}
       onOpen={() => {
@@ -85,8 +77,6 @@ export const CodeSelect = ({
           return;
         }
 
-        // Only an already-closed listbox is about to be opened by MUI; when it
-        // is open the open call bails out on its own and needs no suppressing.
         hasJustMatched.current = !isOpen;
         setIsOpen(false);
 
@@ -94,7 +84,7 @@ export const CodeSelect = ({
           onChange(code);
         }
       }}
-      slotProps={{ paper: { sx: { maxHeight: 280 } } }}
+      slotProps={{ listbox: { sx: { maxHeight: 280 } } }}
       renderInput={(params) => (
         <TextField
           {...params}
@@ -103,9 +93,6 @@ export const CodeSelect = ({
           error={error}
           helperText={helperText}
           slotProps={{
-            // MUI pins autoComplete to "off" so the browser's own dropdown
-            // cannot cover its listbox, which also stops autofill reaching the
-            // field. Put the hint back.
             htmlInput: {
               ...params.inputProps,
               name: inputName,
