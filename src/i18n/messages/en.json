@@ -26,7 +26,13 @@
       "story": "Story",
       "faq": "Shipping",
       "contacts": "Contacts",
-      "entertainment": "Entertainment"
+      "entertainment": "Entertainment",
+      "about": "About",
+      "aboutHints": {
+        "story": "How Khryuchik came to be",
+        "faq": "Times and prices",
+        "contacts": "Write to us"
+      }
     },
     "hero": {
       "badge": "Shop and entertainment",
@@ -785,6 +791,10 @@
       },
       "savedAddressesTitle": "Saved addresses",
       "newAddressOption": "Enter a new address",
+      "savedAddressIncomplete": {
+        "text": "We can't calculate delivery for this address — some details are missing.",
+        "action": "Update it in your account"
+      },
       "shippingMethod": {
         "title": "Delivery method",
         "calculating": "Calculating delivery…",
@@ -1184,6 +1194,7 @@
     "addressMissingFields": "Add an address name, street address, and city.",
     "addressInvalidCountry": "Choose a valid country for this address.",
     "addressInvalidPostalCode": "Enter a valid postal code for this address.",
+    "addressMissingRegion": "Choose the state or province for this address.",
     "addressNotFound": "This address is no longer available.",
     "editAddress": "Edit",
     "editAddressTitle": "Edit address",

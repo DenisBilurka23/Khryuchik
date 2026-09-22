@@ -6,57 +6,45 @@ import { usePathname } from "next/navigation";
 
 import { isNavItemActive } from "@/utils/active-nav";
 
+import { HeaderAboutMenu } from "./about-menu";
 import type { HeaderNavLinksProps } from "./types";
-
-const navItemSx = (active: boolean) =>
-  ({
-    position: "relative",
-    minHeight: 44,
-    px: 1.5,
-    fontSize: 15,
-    fontWeight: active ? 600 : 500,
-    color: active ? "var(--color-action)" : "var(--color-text)",
-    transition: "color 0.2s ease",
-    "&:hover": {
-      backgroundColor: "transparent",
-      color: "var(--color-action)",
-    },
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      left: 12,
-      right: 12,
-      bottom: 6,
-      height: 2,
-      borderRadius: "var(--radius-pill)",
-      backgroundColor: "var(--color-action)",
-      opacity: active ? 1 : 0,
-      transition: "opacity 0.2s ease",
-    },
-  }) as const;
+import { isHeaderAboutNavItem, navItemSx } from "./utils";
 
 export const HeaderNavLinks = ({ items }: HeaderNavLinksProps) => {
   const pathname = usePathname();
+  const aboutItems = items.filter(isHeaderAboutNavItem);
 
   return (
-    <Stack direction="row" spacing={0.5}>
+    <Stack direction="row" spacing={0.5} alignItems="center">
       {items.map((item) => {
         const active = isNavItemActive(pathname, item.href);
 
         return (
-          <Link key={item.key} href={item.href}>
-            <Button
-              color="inherit"
-              disableRipple
-              component="span"
-              aria-current={active ? "page" : undefined}
-              sx={navItemSx(active)}
-            >
-              {item.label}
-            </Button>
-          </Link>
+          <Button
+            key={item.key}
+            component={Link}
+            href={item.href}
+            color="inherit"
+            disableRipple
+            aria-current={active ? "page" : undefined}
+            sx={{
+              ...navItemSx(active),
+              display: isHeaderAboutNavItem(item)
+                ? { xs: "none", xl: "inline-flex" }
+                : "inline-flex",
+            }}
+          >
+            {item.label}
+          </Button>
         );
       })}
+
+      {aboutItems.length > 0 && (
+        <HeaderAboutMenu
+          items={aboutItems}
+          sx={{ display: { xs: "inline-flex", xl: "none" } }}
+        />
+      )}
     </Stack>
   );
 };

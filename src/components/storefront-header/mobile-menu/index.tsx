@@ -1,15 +1,9 @@
 "use client";
 
-import AutoStoriesOutlinedIcon from "@mui/icons-material/AutoStoriesOutlined";
-import SmartDisplayOutlinedIcon from "@mui/icons-material/SmartDisplayOutlined";
-import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import StorefrontOutlinedIcon from "@mui/icons-material/StorefrontOutlined";
 import {
   Box,
   Button,
@@ -23,12 +17,15 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import type { SvgIconProps } from "@mui/material";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useSession } from "next-auth/react";
+import type { ComponentType } from "react";
 import { useState } from "react";
 
+import { navIconByKey } from "@/constants/navigation";
 import { getLocalizedPath } from "@/utils";
 import { isNavItemActive } from "@/utils/active-nav";
 
@@ -49,15 +46,13 @@ const menuItemSx = (active: boolean) =>
     py: 1.5,
   }) as const;
 
-const iconByKey: Record<MobileMenuItem["key"], React.ReactNode> = {
-  home: <HomeOutlinedIcon fontSize="small" />,
-  shop: <StorefrontOutlinedIcon fontSize="small" />,
-  story: <AutoStoriesOutlinedIcon fontSize="small" />,
-  entertainment: <SmartDisplayOutlinedIcon fontSize="small" />,
-  faq: <LocalShippingOutlinedIcon fontSize="small" />,
-  contacts: <ChatBubbleOutlineOutlinedIcon fontSize="small" />,
-  account: <PersonOutlineIcon fontSize="small" />,
-  favorites: <FavoriteBorderIcon fontSize="small" />,
+const iconByKey: Record<
+  MobileMenuItem["key"],
+  ComponentType<SvgIconProps>
+> = {
+  ...navIconByKey,
+  account: PersonOutlineIcon,
+  favorites: FavoriteBorderIcon,
 };
 
 export const MobileMenu = ({
@@ -187,6 +182,7 @@ export const MobileMenu = ({
           <List sx={{ p: 0 }}>
             {menuItems.map((item) => {
               const active = isNavItemActive(pathname, item.href);
+              const Icon = iconByKey[item.key];
 
               return (
                 <Link
@@ -205,7 +201,7 @@ export const MobileMenu = ({
                         color: active ? "var(--color-action)" : "text.primary",
                       }}
                     >
-                      {iconByKey[item.key]}
+                      <Icon fontSize="small" />
                     </ListItemIcon>
                     <ListItemText
                       primary={item.label}

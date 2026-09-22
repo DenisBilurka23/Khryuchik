@@ -26,7 +26,13 @@
       "story": "История",
       "faq": "Доставка",
       "contacts": "Контакты",
-      "entertainment": "Развлечения"
+      "entertainment": "Развлечения",
+      "about": "О нас",
+      "aboutHints": {
+        "story": "Как появился Хрючик",
+        "faq": "Сроки и стоимость",
+        "contacts": "Написать нам"
+      }
     },
     "hero": {
       "badge": "Магазин и развлечения",
@@ -785,6 +791,10 @@
       },
       "savedAddressesTitle": "Сохранённые адреса",
       "newAddressOption": "Ввести новый адрес",
+      "savedAddressIncomplete": {
+        "text": "Для этого адреса нельзя рассчитать доставку — не хватает данных.",
+        "action": "Обновить в личном кабинете"
+      },
       "shippingMethod": {
         "title": "Способ доставки",
         "calculating": "Считаем доставку…",
@@ -1184,6 +1194,7 @@
     "addressMissingFields": "Укажите название адреса, улицу и город.",
     "addressInvalidCountry": "Выберите корректную страну для этого адреса.",
     "addressInvalidPostalCode": "Укажите корректный индекс для этого адреса.",
+    "addressMissingRegion": "Выберите штат или провинцию для этого адреса.",
     "addressNotFound": "Этот адрес больше недоступен.",
     "editAddress": "Изменить",
     "editAddressTitle": "Изменение адреса",

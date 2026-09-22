@@ -34,14 +34,14 @@ export const StorefrontHeader = async ({
       href: navigationPaths?.shop ?? "#shop",
     },
     {
-      key: "story",
-      label: t("nav.story"),
-      href: navigationPaths?.story ?? "#story",
-    },
-    {
       key: "entertainment",
       label: t("nav.entertainment"),
       href: navigationPaths?.entertainment ?? "#entertainment",
+    },
+    {
+      key: "story",
+      label: t("nav.story"),
+      href: navigationPaths?.story ?? "#story",
     },
     {
       key: "faq",
@@ -85,7 +85,6 @@ export const StorefrontHeader = async ({
                 markSize={48}
                 title={t("brand.title")}
                 subtitle={t("brand.subtitle")}
-                textSx={{ display: { xs: "block", md: "none", lg: "block" } }}
                 subtitleSx={{ display: { xs: "none", sm: "block" } }}
               />
             </Link>
