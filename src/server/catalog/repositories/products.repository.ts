@@ -8,6 +8,38 @@ import type { ProductDocument, ProductPlacement } from "@/types/catalog";
 import type { ShippingHubCode } from "@/types/shipping";
 import type { CountryCode } from "@/utils";
 
+const collectionName = "products";
+
+let productsIndexesPromise: Promise<unknown> | null = null;
+
+const getProductsCollection = async () => {
+  const db = await getMongoDb();
+  const collection = db.collection<ProductDocument>(collectionName);
+
+  if (!productsIndexesPromise) {
+    productsIndexesPromise = Promise.all([
+      collection.createIndex({ productId: 1 }, { unique: true }),
+      collection.createIndex({ slug: 1 }, { unique: true }),
+      collection.createIndex({
+        "status.isActive": 1,
+        availableRegions: 1,
+        "merchandising.sortOrder": 1,
+      }),
+      collection.createIndex({
+        "status.isActive": 1,
+        "status.visibleInShop": 1,
+        availableRegions: 1,
+        "merchandising.sortOrder": 1,
+      }),
+    ]).catch((error) => {
+      productsIndexesPromise = null;
+      throw error;
+    });
+  }
+
+  return collection;
+};
+
 const escapeRegex = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -31,9 +63,9 @@ export const findActiveProductBySlug = async (
   _locale: Locale,
   slug: string,
 ) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
-  return db.collection<ProductDocument>("products").findOne(
+  return collection.findOne(
     {
       slug,
       "status.isActive": true,
@@ -47,12 +79,11 @@ export const findProductsForPlacement = async (
   country: CountryCode,
   options?: ProductPlacementQueryOptions,
 ) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
   const { category, limit } = options ?? {};
 
-  const cursor = db
-    .collection<ProductDocument>("products")
+  const cursor = collection
     .find(
       {
         "status.isActive": true,
@@ -81,12 +112,11 @@ export const findShopVisibleProducts = async (
   country: CountryCode,
   options?: ShopProductsQueryOptions,
 ) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
   const { category, limit } = options ?? {};
 
-  const cursor = db
-    .collection<ProductDocument>("products")
+  const cursor = collection
     .find(
       {
         "status.isActive": true,
@@ -106,9 +136,8 @@ export const findShopVisibleProducts = async (
 };
 
 export const findSitemapProductSlugs = async (country: CountryCode) => {
-  const db = await getMongoDb();
-  const products = await db
-    .collection<ProductDocument>("products")
+  const collection = await getProductsCollection();
+  const products = await collection
     .find(
       {
         "status.isActive": true,
@@ -130,10 +159,9 @@ export const findSitemapProductSlugs = async (country: CountryCode) => {
 };
 
 export const findCategoryKeysWithProducts = async (country: CountryCode) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
-  const categoryGroups = await db
-    .collection<ProductDocument>("products")
+  const categoryGroups = await collection
     .aggregate<{ _id: string }>([
       {
         $match: {
@@ -154,10 +182,9 @@ export const findActiveProductsByIds = async (productIds: string[]) => {
     return [];
   }
 
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
-  return db
-    .collection<ProductDocument>("products")
+  return collection
     .find(
       { productId: { $in: productIds }, "status.isActive": true },
       { projection: { _id: 0 } },
@@ -166,9 +193,8 @@ export const findActiveProductsByIds = async (productIds: string[]) => {
 };
 
 export const findActiveProductSlugs = async () => {
-  const db = await getMongoDb();
-  const products = await db
-    .collection<ProductDocument>("products")
+  const collection = await getProductsCollection();
+  const products = await collection
     .find({ "status.isActive": true }, { projection: { _id: 0, slug: 1 } })
     .toArray();
 
@@ -182,9 +208,8 @@ export const findActiveProductSlugs = async () => {
 };
 
 export const findPrintifyLinkedProductIds = async (afterProductId?: string) => {
-  const db = await getMongoDb();
-  const products = await db
-    .collection<ProductDocument>("products")
+  const collection = await getProductsCollection();
+  const products = await collection
     .find(
       {
         printify: { $exists: true },
@@ -199,10 +224,9 @@ export const findPrintifyLinkedProductIds = async (afterProductId?: string) => {
 };
 
 export const findAllProducts = async () => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
-  return db
-    .collection<ProductDocument>("products")
+  return collection
     .find({}, { projection: { _id: 0 } })
     .sort({ "merchandising.sortOrder": 1, productId: 1 })
     .toArray();
@@ -213,10 +237,9 @@ export const findProductsByIds = async (productIds: string[]) => {
     return [];
   }
 
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
-  return db
-    .collection<ProductDocument>("products")
+  return collection
     .find({ productId: { $in: productIds } }, { projection: { _id: 0 } })
     .toArray();
 };
@@ -225,7 +248,7 @@ export const findAdminProductsForSearch = async (
   _locale: Locale,
   options?: AdminProductSearchQueryOptions,
 ) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
   const query = options?.query?.trim() ?? "";
   const limit =
     typeof options?.limit === "number" && options.limit > 0
@@ -233,8 +256,7 @@ export const findAdminProductsForSearch = async (
       : 10;
   const regex = query ? new RegExp(escapeRegex(query), "i") : null;
 
-  return db
-    .collection<ProductDocument>("products")
+  return collection
     .find(
       {
         ...(options?.excludeProductId
@@ -259,39 +281,37 @@ export const findAdminProductsForSearch = async (
 };
 
 export const findProductById = async (productId: string) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
-  return db
-    .collection<ProductDocument>("products")
-    .findOne({ productId }, { projection: { _id: 0 } });
+  return collection.findOne({ productId }, { projection: { _id: 0 } });
 };
 
 export const upsertProduct = async (product: ProductDocument) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
-  await db
-    .collection<ProductDocument>("products")
-    .replaceOne({ productId: product.productId }, product, { upsert: true });
+  await collection.replaceOne({ productId: product.productId }, product, {
+    upsert: true,
+  });
 
   return product;
 };
 
 export const deleteProductById = async (productId: string) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
-  return db.collection<ProductDocument>("products").deleteOne({ productId });
+  return collection.deleteOne({ productId });
 };
 
 export const countProducts = async () => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
-  return db.collection<ProductDocument>("products").countDocuments();
+  return collection.countDocuments();
 };
 
 export const countProductsByCategoryKey = async (categoryKey: string) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
 
-  return db.collection<ProductDocument>("products").countDocuments({
+  return collection.countDocuments({
     "classification.category": categoryKey,
   });
 };
@@ -302,9 +322,9 @@ export const decrementPrintedStock = async (
   hub: ShippingHubCode,
   quantity: number,
 ) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
   const path = `shipping.stockByLanguage.${language}.${hub}`;
-  const result = await db.collection<ProductDocument>("products").updateOne(
+  const result = await collection.updateOne(
     { productId, [path]: { $gte: quantity } } as Filter<ProductDocument>,
     {
       $inc: { [path]: -quantity },
@@ -320,10 +340,10 @@ export const restorePrintedStock = async (
   hub: ShippingHubCode,
   quantity: number,
 ) => {
-  const db = await getMongoDb();
+  const collection = await getProductsCollection();
   const path = `shipping.stockByLanguage.${language}.${hub}`;
 
-  await db.collection<ProductDocument>("products").updateOne(
+  await collection.updateOne(
     { productId } as Filter<ProductDocument>,
     {
       $inc: { [path]: quantity },

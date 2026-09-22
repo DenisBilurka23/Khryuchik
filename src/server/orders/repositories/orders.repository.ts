@@ -22,12 +22,29 @@ const getOrdersCollection = async () => {
   const collection = db.collection<OrderDocument>(collectionName);
 
   if (!ordersIndexesPromise) {
-    ordersIndexesPromise = collection
-      .createIndex({ userId: 1, "promoCode.code": 1 })
-      .catch((error) => {
-        ordersIndexesPromise = null;
-        throw error;
-      });
+    ordersIndexesPromise = Promise.all([
+      collection.createIndex({ id: 1 }),
+      collection.createIndex({ createdAt: -1 }),
+      collection.createIndex({ status: 1, createdAt: -1 }),
+      collection.createIndex({ userId: 1, createdAt: -1 }),
+      collection.createIndex({ "customer.email": 1, createdAt: -1 }),
+      collection.createIndex({ userId: 1, "promoCode.code": 1 }),
+      collection.createIndex(
+        { "payment.stripeSessionId": 1 },
+        { sparse: true },
+      ),
+      collection.createIndex(
+        { "payment.stripePaymentIntentId": 1 },
+        { sparse: true },
+      ),
+      collection.createIndex(
+        { "printifyOrder.printifyOrderId": 1 },
+        { sparse: true },
+      ),
+    ]).catch((error) => {
+      ordersIndexesPromise = null;
+      throw error;
+    });
   }
 
   return collection;
