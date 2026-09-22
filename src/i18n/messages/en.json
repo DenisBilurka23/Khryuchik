@@ -2036,6 +2036,7 @@
       "footerDescription": "Review the product data and create the product card.",
       "helpers": {
         "productId": "Leave empty to generate it automatically.",
+        "productIdLocked": "Set when the product was created and cannot be changed.",
         "slug": "Leave empty to generate it from the EN title and normalize it for URLs.",
         "sku": "Leave empty to generate it automatically from the product ID.",
         "ageRating": "A short age hint, e.g. \"3+\". Shown on the \"Books by age\" slider on the story page.",

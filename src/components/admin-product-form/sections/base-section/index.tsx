@@ -68,7 +68,9 @@ export const AdminProductBaseSection = ({
           label={tForm("fields.productId")}
           name="productId"
           defaultValue={payload.product.productId}
-          helperText={tForm("helpers.productId")}
+          helperText={tForm(
+            isNew ? "helpers.productId" : "helpers.productIdLocked",
+          )}
           slotProps={{ input: { readOnly: !isNew } }}
         />
         <TextField
