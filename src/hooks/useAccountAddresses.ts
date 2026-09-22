@@ -13,7 +13,7 @@ import {
   type UserShippingAddress,
   type UserShippingAddressInput,
 } from "@/types/users";
-import { isIsoCountryCode, isPostalCodeValid } from "@/utils";
+import { isIsoCountryCode, isPostalCodeValid, isRegionRequired } from "@/utils";
 
 import { useShippingAddressSelection } from "./useShippingAddressSelection";
 
@@ -54,7 +54,7 @@ const toAddressForm = (
 export const useAccountAddresses = ({
   initialAddresses,
   initialSelectedId,
-  onAddressesChange,
+  onAddressesChangeAction,
   autoOpenAddForm = false,
 }: UseAccountAddressesParams): UseAccountAddressesResult => {
   const t = useTranslations("accountPage");
@@ -79,6 +79,8 @@ export const useAccountAddresses = ({
         return t("addressInvalidCountry");
       case UserOperationErrorReason.InvalidPostalCode:
         return t("addressInvalidPostalCode");
+      case UserOperationErrorReason.MissingRegion:
+        return t("addressMissingRegion");
       case UserOperationErrorReason.AddressNotFound:
         return t("addressNotFound");
       default:
@@ -91,7 +93,7 @@ export const useAccountAddresses = ({
       onAddressesChange: (nextAddresses, nextSelectedId) => {
         setAddresses(nextAddresses);
         setSelectedAddressId(nextSelectedId);
-        onAddressesChange?.(nextAddresses, nextSelectedId);
+        onAddressesChangeAction?.(nextAddresses, nextSelectedId);
       },
       onError: (reason) =>
         setErrorMessage(reason ? getErrorMessage(reason) : null),
@@ -154,6 +156,11 @@ export const useAccountAddresses = ({
 
     if (!isPostalCodeValid(form.postalCode ?? "")) {
       setErrorMessage(t("addressInvalidPostalCode"));
+      return;
+    }
+
+    if (isRegionRequired(form.country) && !form.region?.trim()) {
+      setErrorMessage(t("addressMissingRegion"));
       return;
     }
 

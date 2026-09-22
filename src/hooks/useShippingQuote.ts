@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { quoteShippingClient } from "@/client-api/shipping";
-import { isPostalCodeValid, isRegionRequired } from "@/utils";
+import { isQuotableShippingAddress } from "@/utils";
 import type { ShippingQuoteResponse } from "@/types/order";
 import type { ShippingQuoteGroup } from "@/types/shipping";
 
@@ -14,8 +14,6 @@ import type {
 } from "./useShippingQuote.types";
 
 const QUOTE_DEBOUNCE_MS = 800;
-
-const MIN_QUOTABLE_POSTAL_CODE_LENGTH = 3;
 
 type QuoteState = {
   key: string;
@@ -45,24 +43,19 @@ export const useShippingQuote = ({
   );
   const addressKey = useMemo(
     () =>
-      address?.postalCode &&
-      address.postalCode.trim().length >= MIN_QUOTABLE_POSTAL_CODE_LENGTH &&
-      isPostalCodeValid(address.postalCode)
-        ? [address.country, address.region ?? "", address.postalCode.trim()]
+      address && isQuotableShippingAddress(address)
+        ? [
+            address.country,
+            address.region ?? "",
+            address.postalCode?.trim() ?? "",
+          ]
             .join("|")
             .toUpperCase()
         : "",
     [address],
   );
 
-  const isAddressComplete = Boolean(
-    address?.line1?.trim() &&
-    address.city?.trim() &&
-    (!isRegionRequired(address.country) || address.region?.trim()),
-  );
-
-  const isQuotable =
-    isEnabled && Boolean(addressKey) && Boolean(itemsKey) && isAddressComplete;
+  const isQuotable = isEnabled && Boolean(addressKey) && Boolean(itemsKey);
   const requestKey = isQuotable ? `${locale}|${itemsKey}|${addressKey}` : "";
 
   const latestInput = useRef({ items, address });

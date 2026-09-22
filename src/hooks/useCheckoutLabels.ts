@@ -26,6 +26,9 @@ export const useCheckoutLabels = (): UseCheckoutLabelsResult => {
       fields: t.raw("fields") as UseCheckoutLabelsResult["fields"],
       savedAddressesTitle: t("savedAddressesTitle"),
       newAddressOption: t("newAddressOption"),
+      savedAddressIncomplete: t.raw(
+        "savedAddressIncomplete",
+      ) as UseCheckoutLabelsResult["savedAddressIncomplete"],
       paymentMethods: t.raw(
         "paymentMethods",
       ) as UseCheckoutLabelsResult["paymentMethods"],

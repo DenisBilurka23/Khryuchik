@@ -119,6 +119,7 @@ export {
   createSitemapEntry,
   normalizeOrigin,
 } from "./seo";
+export { isQuotableShippingAddress } from "./shipping-address";
 export {
   buildProductVariantMatrix,
   filterOfferedVariantOptions,

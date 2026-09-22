@@ -231,7 +231,7 @@ export const AccountPageView = ({
             locale={locale}
             initialAddresses={shippingAddresses}
             initialSelectedId={selectedShippingAddressId}
-            onAddressesChange={handleAddressesChange}
+            onAddressesChangeAction={handleAddressesChange}
             autoOpenAddForm={shouldAutoOpenAddAddress}
           />
         );

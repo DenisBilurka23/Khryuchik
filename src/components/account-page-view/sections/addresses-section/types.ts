@@ -5,7 +5,7 @@ export type AddressesSectionProps = {
   locale: Locale;
   initialAddresses: UserShippingAddress[];
   initialSelectedId: string | null;
-  onAddressesChange?: (
+  onAddressesChangeAction?: (
     addresses: UserShippingAddress[],
     selectedId: string | null,
   ) => void;

@@ -14,7 +14,7 @@ export const AddressesSection = ({
   locale,
   initialAddresses,
   initialSelectedId,
-  onAddressesChange,
+  onAddressesChangeAction,
   autoOpenAddForm = false,
 }: AddressesSectionProps) => {
   const t = useTranslations("accountPage");
@@ -40,7 +40,7 @@ export const AddressesSection = ({
   } = useAccountAddresses({
     initialAddresses,
     initialSelectedId,
-    onAddressesChange,
+    onAddressesChangeAction,
     autoOpenAddForm,
   });
 

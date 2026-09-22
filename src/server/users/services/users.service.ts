@@ -25,7 +25,7 @@ import type {
   UserShippingAddressInput,
 } from "@/types/users";
 import { UserOperationErrorReason } from "@/types/users";
-import { isIsoCountryCode, isPostalCodeValid } from "@/utils";
+import { isIsoCountryCode, isPostalCodeValid, isRegionRequired } from "@/utils";
 import { normalizeShippingAddressInput } from "@/utils/account-page";
 
 import {
@@ -448,6 +448,13 @@ const validateShippingAddressInput = (input: UserShippingAddressInput) => {
     return {
       ok: false as const,
       reason: UserOperationErrorReason.InvalidPostalCode,
+    };
+  }
+
+  if (isRegionRequired(normalizedInput.country) && !normalizedInput.region) {
+    return {
+      ok: false as const,
+      reason: UserOperationErrorReason.MissingRegion,
     };
   }
 

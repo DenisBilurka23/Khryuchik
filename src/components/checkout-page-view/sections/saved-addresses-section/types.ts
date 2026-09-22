@@ -7,6 +7,8 @@ export type SavedAddressesSectionProps = {
   addresses: UserShippingAddress[];
   selectedAddressId: string;
   onSelect: (addressId: string) => void;
+  isSelectedAddressIncomplete: boolean;
+  accountHref: string;
   locale: Locale;
   labels: CheckoutLabels;
 };

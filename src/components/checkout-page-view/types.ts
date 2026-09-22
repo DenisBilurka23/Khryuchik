@@ -61,6 +61,7 @@ export type CheckoutLabels = {
   fields: CheckoutPageLabels["fields"];
   savedAddressesTitle: string;
   newAddressOption: string;
+  savedAddressIncomplete: CheckoutPageLabels["savedAddressIncomplete"];
   shippingMethod: CheckoutPageLabels["shippingMethod"];
   paymentMethods: CheckoutPageLabels["paymentMethods"];
   summary: CheckoutPageLabels["summary"];

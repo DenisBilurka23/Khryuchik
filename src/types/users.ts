@@ -9,6 +9,7 @@ export enum UserOperationErrorReason {
   MissingFields = "missing_fields",
   InvalidCountry = "invalid_country",
   InvalidPostalCode = "invalid_postal_code",
+  MissingRegion = "missing_region",
   AddressNotFound = "address_not_found",
   CannotDemoteSelf = "cannot_demote_self",
   CannotDeleteSelf = "cannot_delete_self",

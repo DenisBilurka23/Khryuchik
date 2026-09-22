@@ -12,6 +12,7 @@ const STATUS_BY_REASON: Record<UserOperationErrorReason, number> = {
   [UserOperationErrorReason.MissingFields]: 400,
   [UserOperationErrorReason.InvalidCountry]: 400,
   [UserOperationErrorReason.InvalidPostalCode]: 400,
+  [UserOperationErrorReason.MissingRegion]: 400,
 };
 
 export const statusForUserOperationError = (reason: UserOperationErrorReason) =>

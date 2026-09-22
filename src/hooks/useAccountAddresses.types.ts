@@ -10,7 +10,7 @@ export type AccountAddressFormMode =
 export type UseAccountAddressesParams = {
   initialAddresses: UserShippingAddress[];
   initialSelectedId: string | null;
-  onAddressesChange?: (
+  onAddressesChangeAction?: (
     addresses: UserShippingAddress[],
     selectedId: string | null,
   ) => void;

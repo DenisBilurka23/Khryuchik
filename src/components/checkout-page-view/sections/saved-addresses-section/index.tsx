@@ -1,6 +1,7 @@
 import {
   Box,
   FormControlLabel,
+  Link as MuiLink,
   Paper,
   Radio,
   RadioGroup,
@@ -8,7 +9,10 @@ import {
   Typography,
 } from "@mui/material";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import ReportProblemOutlinedIcon from "@mui/icons-material/ReportProblemOutlined";
+import Link from "next/link";
 
+import { Note } from "@/components/primitives";
 import {
   getUserShippingAddressLines,
   getUserShippingAddressTitle,
@@ -22,10 +26,23 @@ const selectedBorder = (isSelected: boolean) =>
     ? "1px solid var(--color-action)"
     : "1px solid var(--color-border)";
 
+const noteIconSx = {
+  flexShrink: 0,
+  fontSize: 18,
+  color: "var(--color-accent)",
+} as const;
+
+const noteLinkSx = {
+  fontWeight: 600,
+  color: "var(--color-action)",
+} as const;
+
 export const CheckoutSavedAddressesSection = ({
   addresses,
   selectedAddressId,
   onSelect,
+  isSelectedAddressIncomplete,
+  accountHref,
   locale,
   labels,
 }: SavedAddressesSectionProps) => (
@@ -103,6 +120,20 @@ export const CheckoutSavedAddressesSection = ({
         </Paper>
       </Stack>
     </RadioGroup>
+
+    {isSelectedAddressIncomplete ? (
+      <Note sx={{ mt: 2 }}>
+        <ReportProblemOutlinedIcon sx={noteIconSx} />
+        <Box component="span">
+          {labels.savedAddressIncomplete.text}{" "}
+          <Link href={accountHref}>
+            <MuiLink component="span" underline="hover" sx={noteLinkSx}>
+              {labels.savedAddressIncomplete.action}
+            </MuiLink>
+          </Link>
+        </Box>
+      </Note>
+    ) : null}
   </CheckoutSectionCard>
 );
 

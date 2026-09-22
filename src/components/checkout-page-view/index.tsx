@@ -23,6 +23,7 @@ import {
   getLocalizedPath,
   isIsoCountryCode,
   isPurchasableAvailability,
+  isQuotableShippingAddress,
   type PaymentMethod,
 } from "@/utils";
 
@@ -107,6 +108,7 @@ export const CheckoutPageView = ({
   const homeHref = getLocalizedPath(locale, "/");
   const cartHref = getLocalizedPath(locale, "/cart");
   const loginHref = getLocalizedPath(locale, "/login");
+  const addressesHref = getLocalizedPath(locale, "/account?section=addresses");
   const shopHref = getLocalizedPath(locale, "/shop");
   const confirmationHref = getLocalizedPath(locale, "/checkout/confirmation");
   const isDigitalOnly =
@@ -122,6 +124,10 @@ export const CheckoutPageView = ({
         line1: form.line1.trim() || undefined,
       }
     : null;
+  const isSelectedAddressIncomplete =
+    !isDigitalOnly &&
+    selectedSavedAddressId !== "" &&
+    !isQuotableShippingAddress(quoteAddress);
   const shippingQuote = useShippingQuote({
     locale,
     items: checkoutItems,
@@ -351,6 +357,10 @@ export const CheckoutPageView = ({
                         addresses={initialShippingAddresses!}
                         selectedAddressId={selectedSavedAddressId}
                         onSelect={handleSavedAddressSelect}
+                        isSelectedAddressIncomplete={
+                          isSelectedAddressIncomplete
+                        }
+                        accountHref={addressesHref}
                         locale={locale}
                         labels={labels}
                       />
