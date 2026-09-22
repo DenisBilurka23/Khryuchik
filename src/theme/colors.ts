@@ -36,6 +36,9 @@ export const colors = {
   star: "#c99a3c",
   starEmpty: "#e7ddc8",
 
+  danger: "#b5544c",
+  dangerLight: "#f7e7e4",
+
   lilac: "#d9aec2",
   butter: "#fff2d6",
 

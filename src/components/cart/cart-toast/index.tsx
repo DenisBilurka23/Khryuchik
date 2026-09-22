@@ -6,6 +6,11 @@ import { useTranslations } from "next-intl";
 import { MAX_CART_ITEM_QUANTITY } from "@/constants/cart";
 import { hideCartToast, useCartToast } from "@/stores/cart-toast";
 
+const alertSx = {
+  width: "100%",
+  boxShadow: "var(--shadow-floating)",
+} as const;
+
 export const CartToast = () => {
   const t = useTranslations("storefront.cartToast");
   const { open, addedCount, isCapped } = useCartToast();
@@ -21,8 +26,7 @@ export const CartToast = () => {
       <Alert
         onClose={hideCartToast}
         severity={isCapped ? "warning" : "success"}
-        variant="filled"
-        sx={{ width: "100%" }}
+        sx={alertSx}
       >
         {isCapped
           ? t("maxQuantityReached", { count: MAX_CART_ITEM_QUANTITY })

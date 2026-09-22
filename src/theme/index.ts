@@ -1,6 +1,19 @@
 import { createTheme } from "@mui/material";
+import { darken } from "@mui/material/styles";
 
 import { colors } from "./colors";
+
+const alertTone = (background: string, accent: string, strength: number) => {
+  const ink = darken(accent, strength);
+
+  return {
+    backgroundColor: background,
+    border: `1px solid ${accent}`,
+    color: colors.text,
+    "& .MuiAlert-icon": { color: ink },
+    "& a, & .MuiLink-root": { color: ink },
+  };
+};
 
 export const storefrontTheme = createTheme({
   breakpoints: {
@@ -32,6 +45,18 @@ export const storefrontTheme = createTheme({
     action: {
       disabled: colors.disabledText,
       disabledBackground: colors.disabled,
+    },
+    success: {
+      main: colors.olive,
+    },
+    warning: {
+      main: colors.star,
+    },
+    error: {
+      main: colors.danger,
+    },
+    info: {
+      main: colors.aqua,
     },
     divider: colors.border,
   },
@@ -131,6 +156,14 @@ export const storefrontTheme = createTheme({
         root: {
           borderRadius: 12,
         },
+      },
+    },
+    MuiAlert: {
+      styleOverrides: {
+        standardSuccess: alertTone(colors.greenLight, colors.olive, 0.35),
+        standardWarning: alertTone(colors.butter, colors.star, 0.35),
+        standardError: alertTone(colors.dangerLight, colors.danger, 0.2),
+        standardInfo: alertTone(colors.aquaLight, colors.aqua, 0.4),
       },
     },
     MuiMenu: {
