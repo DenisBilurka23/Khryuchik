@@ -15,5 +15,7 @@ export type OverviewSectionProps = {
   profileEditor: ProfileEditorState;
   selectingAddressId: string | null;
   onAddAddress: () => void;
+  onShowAllOrders: () => void;
+  onShowAllBooks: () => void;
   onSelectAddress: (addressId: string) => void;
 };

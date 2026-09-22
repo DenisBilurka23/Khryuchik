@@ -52,6 +52,8 @@ export const OverviewSection = ({
   selectingAddressId,
   onAddAddress,
   onSelectAddress,
+  onShowAllOrders,
+  onShowAllBooks,
 }: OverviewSectionProps) => {
   const t = useTranslations("accountPage");
   const tStatus = useTranslations("accountPage.orderStatuses");
@@ -62,7 +64,11 @@ export const OverviewSection = ({
 
       <SectionCard
         title={t("recentOrders")}
-        action={<Button variant="text">{t("allOrders")}</Button>}
+        action={
+          <Button variant="text" onClick={onShowAllOrders}>
+            {t("allOrders")}
+          </Button>
+        }
       >
         <Stack spacing={2}>
           {orders.length === 0 ? (
@@ -114,7 +120,14 @@ export const OverviewSection = ({
         </Stack>
       </SectionCard>
 
-      <SectionCard title={t("downloadedBooks")}>
+      <SectionCard
+        title={t("books")}
+        action={
+          <Button variant="text" onClick={onShowAllBooks}>
+            {t("allBooks")}
+          </Button>
+        }
+      >
         <Stack spacing={2}>
           {downloads.length === 0 ? (
             <Typography color="text.secondary">{t("noBooks")}</Typography>

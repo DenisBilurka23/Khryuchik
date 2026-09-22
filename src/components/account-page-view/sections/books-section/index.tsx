@@ -8,7 +8,7 @@ export const BooksSection = ({ downloads }: BooksSectionProps) => {
   const t = useTranslations("accountPage");
 
   return (
-    <SectionCard title={t("downloadedBooks")}>
+    <SectionCard title={t("books")}>
       {downloads.length === 0 ? (
         <Typography color="text.secondary">{t("noBooks")}</Typography>
       ) : (

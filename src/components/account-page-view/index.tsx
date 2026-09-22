@@ -168,6 +168,14 @@ export const AccountPageView = ({
     replaceSection("addresses", { action: "add" });
   };
 
+  const handleShowAllOrders = () => {
+    replaceSection("orders");
+  };
+
+  const handleShowAllBooks = () => {
+    replaceSection("books");
+  };
+
   const shouldAutoOpenAddAddress =
     activeSection === "addresses" && searchParams.get("action") === "add";
 
@@ -260,6 +268,8 @@ export const AccountPageView = ({
             profileEditor={profileEditorState}
             selectingAddressId={selectingAddressId}
             onAddAddress={handleAddAddressFromOverview}
+            onShowAllOrders={handleShowAllOrders}
+            onShowAllBooks={handleShowAllBooks}
             onSelectAddress={(addressId) =>
               void selectAddress(addressId, selectedShippingAddressId)
             }
