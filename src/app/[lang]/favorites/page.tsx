@@ -28,6 +28,7 @@ export const generateMetadata = async ({
     path: "/favorites",
     title: `${tStorefront("favoritesPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
     description: tStorefront("favoritesPage.lead"),
+    noindex: true,
   });
 };
 

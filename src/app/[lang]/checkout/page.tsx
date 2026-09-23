@@ -8,6 +8,7 @@ import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
 import { isShopClosed } from "@/server/shop/maintenance.service";
 import { ShopMaintenanceView } from "@/components/shop-maintenance-view";
+import { NOINDEX_ROBOTS } from "@/constants/seo";
 import { createStorefrontAlternates } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
@@ -31,6 +32,7 @@ export const generateMetadata = async ({
     title: `${tStorefront("checkoutPage.breadcrumbs.current")} | ${tStorefront("brand.title")}`,
     description: tStorefront("checkoutPage.lead"),
     alternates: createStorefrontAlternates(lang, "/checkout"),
+    robots: NOINDEX_ROBOTS,
   };
 };
 

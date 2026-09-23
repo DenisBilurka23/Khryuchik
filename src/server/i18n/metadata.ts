@@ -3,6 +3,7 @@ import "server-only";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
+import { NOINDEX_ROBOTS } from "@/constants/seo";
 import { locales, type Locale } from "@/i18n/config";
 import { getLocalizedPath } from "@/utils";
 
@@ -17,6 +18,7 @@ type StorefrontMetadataInput = {
   path: string;
   title: string;
   description?: string;
+  noindex?: boolean;
   openGraph?: StorefrontOpenGraphInput;
 };
 
@@ -35,6 +37,7 @@ export const createStorefrontMetadata = async ({
   path,
   title,
   description,
+  noindex,
   openGraph,
 }: StorefrontMetadataInput): Promise<Metadata> => {
   const tBrand = await getTranslations({
@@ -46,6 +49,7 @@ export const createStorefrontMetadata = async ({
     title,
     description,
     alternates: createStorefrontAlternates(locale, path),
+    robots: noindex ? NOINDEX_ROBOTS : undefined,
     openGraph: {
       type: openGraph?.type ?? "website",
       locale,

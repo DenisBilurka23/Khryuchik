@@ -1,4 +1,4 @@
-import type { MetadataRoute } from "next";
+import type { Metadata, MetadataRoute } from "next";
 
 import type { ProductAvailability } from "@/types/catalog";
 
@@ -34,14 +34,7 @@ export const SITEMAP_ENTERTAINMENT_CHANGE_FREQUENCY: SitemapChangeFrequency =
 export const SITEMAP_ENTERTAINMENT_PRIORITY = 0.7;
 
 export const ROBOTS_DISALLOWED_STOREFRONT_PATHS: readonly string[] = [
-  "/account",
-  "/cart",
-  "/checkout",
   "/downloads",
-  "/favorites",
-  "/forgot-password",
-  "/login",
-  "/register",
   "/reset-password",
   "/unsubscribe",
   "/verify-email",
@@ -54,4 +47,9 @@ export const SCHEMA_AVAILABILITY: Record<ProductAvailability, string> = {
   out_of_stock: "https://schema.org/OutOfStock",
   preorder: "https://schema.org/PreOrder",
   made_to_order: "https://schema.org/MadeToOrder",
+};
+
+export const NOINDEX_ROBOTS: Metadata["robots"] = {
+  index: false,
+  follow: false,
 };

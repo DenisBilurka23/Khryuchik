@@ -1,6 +1,10 @@
+import type { Metadata } from "next";
 import { CheckoutResultView } from "@/components/checkout-result-view";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import { findOrderById } from "@/server/orders/repositories/orders.repository";
+import { NOINDEX_ROBOTS } from "@/constants/seo";
+
+export const metadata: Metadata = { robots: NOINDEX_ROBOTS };
 
 type LocalizedCheckoutConfirmationPageProps = {
   params: Promise<{ lang: string }>;

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Container } from "@mui/material";
 import { AccountPageView } from "@/components/account-page-view";
 import { defaultLocale } from "@/i18n/config";
@@ -16,6 +17,9 @@ import { getProductPreviewsByIds } from "@/server/catalog/services/catalog.servi
 import { getLocalizedPath, toAccountOrder } from "@/utils";
 import type { LocalizedAccountPageProps } from "@/types/auth-pages";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
+import { NOINDEX_ROBOTS } from "@/constants/seo";
+
+export const metadata: Metadata = { robots: NOINDEX_ROBOTS };
 
 const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
   const { lang } = await params;
