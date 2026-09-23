@@ -2,6 +2,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { Box, IconButton, Typography } from "@mui/material";
+import Image from "next/image";
 import Link from "next/link";
 
 import { Pill, Plate } from "@/components/primitives";
@@ -15,7 +16,10 @@ import {
 
 import type { CartItemCardProps } from "../types";
 
+const thumbnailSizes = "(max-width: 599px) 100vw, 140px";
+
 const thumbnailSx = {
+  position: "relative",
   display: "grid",
   placeItems: "center",
   width: { xs: "100%", sm: 140 },
@@ -96,11 +100,12 @@ export const CartItemCard = ({
           }}
         >
           {item.thumbnail?.src ? (
-            <Box
-              component="img"
+            <Image
               src={item.thumbnail.src}
               alt={item.thumbnail.alt ?? item.title}
-              sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+              fill
+              sizes={thumbnailSizes}
+              style={{ objectFit: "contain" }}
             />
           ) : (
             (item.thumbnail?.emoji ?? item.emoji)

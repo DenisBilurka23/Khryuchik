@@ -1,6 +1,7 @@
 "use client";
 
 import { Box, Grid, Paper } from "@mui/material";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 import { useProductGallery } from "@/hooks/useProductGallery";
@@ -8,7 +9,12 @@ import { useProductGallery } from "@/hooks/useProductGallery";
 import type { ProductGalleryProps } from "../types";
 import { ProductGalleryLightbox } from "./lightbox";
 
+const stageSizes = "(max-width: 899px) 100vw, 600px";
+
+const thumbSizes = "(max-width: 899px) 25vw, 150px";
+
 const stageSx = {
+  position: "relative",
   aspectRatio: "5 / 3",
   width: "100%",
   p: 0,
@@ -26,6 +32,7 @@ const stageSx = {
 } as const;
 
 const thumbSx = {
+  position: "relative",
   height: 96,
   borderRadius: "var(--radius-plate)",
   display: "flex",
@@ -65,11 +72,13 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
         }
       >
         {activeImage?.src ? (
-          <Box
-            component="img"
+          <Image
             src={activeImage.src}
             alt={activeImage.alt ?? activeImage.id}
-            sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+            fill
+            sizes={stageSizes}
+            preload
+            style={{ objectFit: "contain" }}
           />
         ) : (
           activeImage?.emoji
@@ -92,11 +101,12 @@ export const ProductGallery = ({ images }: ProductGalleryProps) => {
               }}
             >
               {image.src ? (
-                <Box
-                  component="img"
+                <Image
                   src={image.src}
                   alt={image.alt ?? image.id}
-                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  fill
+                  sizes={thumbSizes}
+                  style={{ objectFit: "cover" }}
                 />
               ) : (
                 image.emoji

@@ -4,11 +4,14 @@ import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { Box, Dialog, Stack } from "@mui/material";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 import { Pill } from "@/components/primitives";
 
 import type { ProductGalleryLightboxProps } from "../../types";
+
+const stageSizes = "(max-width: 1279px) 100vw, 1200px";
 
 const paperSx = {
   m: { xs: 2, md: 4 },
@@ -97,11 +100,12 @@ export const ProductGalleryLightbox = ({
         {...swipeHandlers}
       >
         {activeImage.src ? (
-          <Box
-            component="img"
+          <Image
             src={activeImage.src}
             alt={activeImage.alt ?? activeImage.id}
-            sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+            fill
+            sizes={stageSizes}
+            style={{ objectFit: "contain" }}
           />
         ) : (
           activeImage.emoji

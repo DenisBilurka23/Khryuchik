@@ -1,8 +1,12 @@
 import { Box } from "@mui/material";
+import Image from "next/image";
 
 import { ENTERTAINMENT_PLACEHOLDER_EMOJI } from "@/constants/entertainment";
 
 import type { EntertainmentPosterProps } from "../../types";
+
+const posterSizes =
+  "(max-width: 599px) 100vw, (max-width: 899px) 50vw, (max-width: 1279px) 33vw, 320px";
 
 const posterSx = {
   position: "relative",
@@ -29,11 +33,12 @@ export const EntertainmentPoster = ({
       }}
     >
       {poster?.src ? (
-        <Box
-          component="img"
+        <Image
           src={poster.src}
           alt={poster.alt ?? alt}
-          sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+          fill
+          sizes={posterSizes}
+          style={{ objectFit: "cover" }}
         />
       ) : (
         (poster?.emoji ?? ENTERTAINMENT_PLACEHOLDER_EMOJI[category])

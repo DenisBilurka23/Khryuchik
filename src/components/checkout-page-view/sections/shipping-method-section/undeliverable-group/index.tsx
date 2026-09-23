@@ -1,10 +1,14 @@
 import { Alert, Box, Button, Stack, Typography } from "@mui/material";
+import Image from "next/image";
 
 import type { UndeliverableGroupProps } from "./types";
 
 const THUMBNAIL_SIZE = 44;
 
+const thumbnailSizes = `${THUMBNAIL_SIZE}px`;
+
 const thumbnailSx = {
+  position: "relative",
   width: THUMBNAIL_SIZE,
   height: THUMBNAIL_SIZE,
   flexShrink: 0,
@@ -60,11 +64,12 @@ export const CheckoutUndeliverableGroup = ({
               }}
             >
               {item.thumbnail?.src ? (
-                <Box
-                  component="img"
+                <Image
                   src={item.thumbnail.src}
                   alt={item.thumbnail.alt ?? item.title}
-                  sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+                  fill
+                  sizes={thumbnailSizes}
+                  style={{ objectFit: "contain" }}
                 />
               ) : (
                 (item.thumbnail?.emoji ?? item.emoji)

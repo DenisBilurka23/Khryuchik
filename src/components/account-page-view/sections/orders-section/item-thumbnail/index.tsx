@@ -1,8 +1,8 @@
 "use client";
 
-import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import type { CSSObject } from "@mui/material/styles";
+import Image from "next/image";
 
 import type { OrderItemThumbnailProps, OrderItemThumbnailSize } from "./types";
 
@@ -11,9 +11,15 @@ const sizeStyles: Record<OrderItemThumbnailSize, CSSObject> = {
   md: { width: 52, height: 68, fontSize: 26 },
 };
 
+const imageSizes: Record<OrderItemThumbnailSize, string> = {
+  sm: "44px",
+  md: "52px",
+};
+
 const Tile = styled("span", {
   shouldForwardProp: (prop) => prop !== "size",
 })<{ size: OrderItemThumbnailSize }>(({ size }) => ({
+  position: "relative",
   display: "grid",
   placeItems: "center",
   flexShrink: 0,
@@ -23,12 +29,6 @@ const Tile = styled("span", {
   ...sizeStyles[size],
 }));
 
-const imageSx = {
-  width: "100%",
-  height: "100%",
-  objectFit: "contain",
-} as const;
-
 export const OrderItemThumbnail = ({
   src,
   alt,
@@ -37,7 +37,17 @@ export const OrderItemThumbnail = ({
   size = "sm",
 }: OrderItemThumbnailProps) => (
   <Tile size={size} style={background ? { background } : undefined}>
-    {src ? <Box component="img" src={src} alt={alt} sx={imageSx} /> : emoji}
+    {src ? (
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={imageSizes[size]}
+        style={{ objectFit: "contain" }}
+      />
+    ) : (
+      emoji
+    )}
   </Tile>
 );
 

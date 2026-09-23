@@ -3,6 +3,7 @@
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import { Box } from "@mui/material";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { type CSSProperties, useState } from "react";
 
 import { useEntertainmentView } from "@/hooks/useEntertainmentView";
@@ -34,11 +35,7 @@ const PlayerSurface = dynamic(
   { ssr: false, loading: () => <Box sx={frameSx} /> },
 );
 
-const posterSx = {
-  width: "100%",
-  height: "100%",
-  objectFit: "contain",
-} as const;
+const posterSizes = "(max-width: 1279px) 100vw, 1280px";
 
 const facadeSx = {
   position: "absolute",
@@ -107,7 +104,14 @@ export const EntertainmentPlayer = ({
   return (
     <Box sx={frameSx} style={aspectStyle}>
       {poster ? (
-        <Box component="img" src={poster} alt={title} sx={posterSx} />
+        <Image
+          src={poster}
+          alt={title}
+          fill
+          sizes={posterSizes}
+          preload
+          style={{ objectFit: "contain" }}
+        />
       ) : null}
 
       <Box

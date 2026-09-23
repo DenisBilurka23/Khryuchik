@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import Image from "next/image";
 import Link from "next/link";
 
 import { cardFrameSx, displayFont } from "@/theme/sx";
@@ -7,6 +8,9 @@ import { formatCurrency, isPurchasableAvailability } from "@/utils";
 import { ArrowLink } from "@/components/arrow-link";
 import { WishlistButton } from "./wishlist-button";
 import type { ProductCardProps } from "./types";
+
+const thumbnailSizes =
+  "(max-width: 599px) 100vw, (max-width: 899px) 50vw, 400px";
 
 const cardSx = {
   ...cardFrameSx,
@@ -34,6 +38,7 @@ const soldOutSx = {
 } as const;
 
 const thumbnailSx = {
+  position: "relative",
   aspectRatio: "16 / 9",
   display: "flex",
   alignItems: "center",
@@ -103,11 +108,12 @@ export const ProductCard = ({
             }}
           >
             {thumbnail?.src ? (
-              <Box
-                component="img"
+              <Image
                 src={thumbnail.src}
                 alt={thumbnail.alt ?? product.title}
-                sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+                fill
+                sizes={thumbnailSizes}
+                style={{ objectFit: "contain" }}
               />
             ) : (
               (thumbnail?.emoji ?? product.emoji)

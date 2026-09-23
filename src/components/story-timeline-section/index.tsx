@@ -2,6 +2,7 @@
 
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Box, Button, Container, Typography } from "@mui/material";
+import { getImageProps } from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -54,10 +55,16 @@ const subtitleSx = {
   color: "var(--color-text-secondary)",
 } as const;
 
+const COVER_MAX_WIDTH = 420;
+
+const COVER_MAX_HEIGHT = 360;
+
+const coverSizes = "(max-width: 899px) min(100vw, 360px), 420px";
+
 const coverSx = {
   width: "100%",
-  maxWidth: { xs: "min(100%, 360px)", md: 420 },
-  maxHeight: 360,
+  maxWidth: { xs: "min(100%, 360px)", md: COVER_MAX_WIDTH },
+  maxHeight: COVER_MAX_HEIGHT,
   objectFit: "contain",
   borderRadius: "var(--radius-card)",
   boxShadow: "var(--shadow-card)",
@@ -93,6 +100,16 @@ export const StoryTimelineSection = ({
   const metaLine = [active.storyLabel, active.ageRating]
     .filter(Boolean)
     .join(" · ");
+
+  const cover = active.thumbnail?.src
+    ? getImageProps({
+        src: active.thumbnail.src,
+        alt: active.thumbnail.alt ?? active.title,
+        width: COVER_MAX_WIDTH,
+        height: COVER_MAX_HEIGHT,
+        sizes: coverSizes,
+      }).props
+    : null;
 
   return (
     <Box component="section" sx={{ pt: 4 }}>
@@ -164,11 +181,15 @@ export const StoryTimelineSection = ({
                       alignSelf: "center",
                     }}
                   >
-                    {active.thumbnail?.src ? (
+                    {cover ? (
                       <Box
                         component="img"
-                        src={active.thumbnail.src}
-                        alt={active.thumbnail.alt ?? active.title}
+                        src={cover.src}
+                        srcSet={cover.srcSet}
+                        sizes={cover.sizes}
+                        loading={cover.loading}
+                        decoding={cover.decoding}
+                        alt={cover.alt}
                         sx={coverSx}
                       />
                     ) : (

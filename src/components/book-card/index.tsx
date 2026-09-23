@@ -1,4 +1,5 @@
 import { Box, CardContent, Typography } from "@mui/material";
+import Image from "next/image";
 import Link from "next/link";
 
 import { cardFrameSx } from "@/theme/sx";
@@ -6,6 +7,8 @@ import { cardFrameSx } from "@/theme/sx";
 import { ArrowLink } from "@/components/arrow-link";
 
 import type { BookCardProps } from "./types";
+
+const coverSizes = "(max-width: 599px) 100vw, (max-width: 1199px) 50vw, 400px";
 
 const cardSx = {
   ...cardFrameSx,
@@ -22,6 +25,7 @@ const contentSx = {
 } as const;
 
 const coverSx = {
+  position: "relative",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -50,11 +54,12 @@ export const BookCard = ({
             }}
           >
             {thumbnail?.src ? (
-              <Box
-                component="img"
+              <Image
                 src={thumbnail.src}
                 alt={thumbnail.alt ?? book.title}
-                sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                fill
+                sizes={coverSizes}
+                style={{ objectFit: "cover" }}
               />
             ) : (
               (thumbnail?.emoji ?? book.emoji)
