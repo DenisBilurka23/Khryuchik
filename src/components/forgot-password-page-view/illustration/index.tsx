@@ -19,7 +19,7 @@ export const ForgotPasswordIllustration = ({
     src={forgotPasswordImage}
     alt={alt}
     sizes="(max-width: 900px) 90vw, 520px"
-    priority
+    preload
     style={artImageStyle}
   />
 );

@@ -71,7 +71,7 @@ export const CartHero = ({ eyebrow, title, lead }: CartHeroProps) => {
           src={cartHeroImage}
           alt={title}
           sizes="(max-width: 900px) 80vw, 340px"
-          priority
+          preload
           style={artImageStyle}
         />
       </Box>

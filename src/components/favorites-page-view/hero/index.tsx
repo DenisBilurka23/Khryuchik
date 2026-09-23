@@ -159,7 +159,7 @@ export const FavoritesHero = ({
           src={favoritesHeroImage}
           alt={title}
           sizes="(max-width: 900px) 90vw, 500px"
-          priority
+          preload
           style={artImageStyle}
         />
       </Box>

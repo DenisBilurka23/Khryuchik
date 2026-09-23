@@ -6,7 +6,7 @@ export type LogoMarkProps = {
   size?: ResponsiveStyleValue<number | string>;
   radius?: number | string;
   sizes?: string;
-  priority?: boolean;
+  preload?: boolean;
   sx?: SxProps<Theme>;
 };
 

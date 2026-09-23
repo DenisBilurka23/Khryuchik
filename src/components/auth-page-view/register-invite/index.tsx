@@ -114,7 +114,7 @@ export const AuthRegisterInvite = ({
             src={receptionImage}
             alt={t("illustrationAlt")}
             sizes="(max-width: 900px) 90vw, 700px"
-            priority
+            preload
             style={artImageStyle}
           />
         </Box>

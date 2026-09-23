@@ -19,7 +19,7 @@ export const Logo = ({
         alt={title}
         size={markSize}
         sizes={`${markSize * 2}px`}
-        priority
+        preload
         sx={{ boxShadow: "var(--shadow-card)" }}
       />
       <Box sx={textSx}>

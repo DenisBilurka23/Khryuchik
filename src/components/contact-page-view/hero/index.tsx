@@ -68,7 +68,7 @@ export const ContactHero = ({
           alt=""
           aria-hidden
           sizes="(max-width: 767px) 100vw, 1280px"
-          priority
+          preload
           style={{ width: "100%", height: "auto" }}
         />
       </Box>

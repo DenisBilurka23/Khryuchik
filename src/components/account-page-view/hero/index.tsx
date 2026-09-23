@@ -73,7 +73,7 @@ export const AccountHero = ({ eyebrow, title, lead }: AccountHeroProps) => {
           src={accountHeroImage}
           alt={title}
           sizes="(max-width: 900px) 90vw, 440px"
-          priority
+          preload
           style={artImageStyle}
         />
       </Box>

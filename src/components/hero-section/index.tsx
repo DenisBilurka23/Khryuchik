@@ -124,7 +124,7 @@ export const HeroSection = async ({ locale }: HeroSectionProps) => {
                 src={heroImage}
                 alt={character.title}
                 sizes="(max-width: 900px) 100vw, 700px"
-                priority
+                preload
                 style={{ display: "block", width: "100%", height: "auto" }}
               />
 

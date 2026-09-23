@@ -17,7 +17,7 @@ export const RegisterIllustration = ({ alt }: RegisterIllustrationProps) => (
     src={signUpImage}
     alt={alt}
     sizes="(max-width: 900px) 90vw, 520px"
-    priority
+    preload
     style={artImageStyle}
   />
 );

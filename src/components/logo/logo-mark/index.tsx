@@ -11,7 +11,7 @@ export const LogoMark = ({
   size = BRAND_LOGO_MARK_SIZE,
   radius = "var(--radius-logo)",
   sizes = "128px",
-  priority = false,
+  preload = false,
   sx,
 }: LogoMarkProps) => {
   return (
@@ -33,7 +33,7 @@ export const LogoMark = ({
         alt={alt}
         fill
         sizes={sizes}
-        priority={priority}
+        preload={preload}
         style={{ objectFit: "cover" }}
       />
     </Box>

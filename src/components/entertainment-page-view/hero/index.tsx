@@ -73,7 +73,7 @@ export const EntertainmentHero = ({
           src={entertainmentHeroImage}
           alt={title}
           sizes="(max-width: 900px) 90vw, 520px"
-          priority
+          preload
           style={artImageStyle}
         />
       </Box>

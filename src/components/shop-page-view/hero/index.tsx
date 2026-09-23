@@ -77,7 +77,7 @@ export const ShopHero = ({ eyebrow, title, lead }: ShopHeroProps) => {
           alt={title}
           fill
           sizes="(max-width: 767px) 100vw, (max-width: 1023px) 55vw, 760px"
-          priority
+          preload
           style={{
             objectFit: "cover",
             objectPosition: "center 45%",
