@@ -12,8 +12,6 @@ import { useTranslations } from "next-intl";
 
 import { DownloadRow } from "@/components/download-row";
 import { Plate } from "@/components/primitives";
-import { customerOrderStatusColors } from "@/constants/order";
-import { formatDate } from "@/utils";
 import {
   getUserShippingAddressLines,
   getUserShippingAddressTitle,
@@ -21,10 +19,10 @@ import {
 
 import {
   accountBadgeSx,
-  accountOrderTotalSx,
   PersonalDetailsSection,
   SectionCard,
 } from "../../shared";
+import { OrderCard } from "../orders-section";
 
 import type { OverviewSectionProps } from "./types";
 
@@ -45,6 +43,8 @@ export const OverviewSection = ({
   locale,
   timeZone,
   orders,
+  orderProducts,
+  productReviews,
   downloads,
   addresses,
   selectedShippingAddressId,
@@ -56,7 +56,6 @@ export const OverviewSection = ({
   onShowAllBooks,
 }: OverviewSectionProps) => {
   const t = useTranslations("accountPage");
-  const tStatus = useTranslations("accountPage.orderStatuses");
 
   return (
     <Stack spacing={3}>
@@ -77,44 +76,14 @@ export const OverviewSection = ({
             </Plate>
           ) : (
             orders.map((order) => (
-              <Plate key={order.id} pad="sm">
-                <Stack
-                  direction={{ xs: "column", md: "row" }}
-                  justifyContent="space-between"
-                  spacing={2}
-                >
-                  <Box>
-                    <Typography sx={{ fontWeight: 800 }}>
-                      {order.number}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mt: 0.5 }}
-                    >
-                      {formatDate(order.createdAt, locale, timeZone)}
-                    </Typography>
-                    <Typography sx={{ mt: 1.25 }}>
-                      {order.itemsSummary}
-                    </Typography>
-                  </Box>
-                  <Stack
-                    alignItems={{ xs: "flex-start", md: "flex-end" }}
-                    spacing={1}
-                  >
-                    <Chip
-                      label={tStatus(order.status)}
-                      sx={{
-                        bgcolor: customerOrderStatusColors[order.status],
-                        fontWeight: 700,
-                      }}
-                    />
-                    <Typography sx={accountOrderTotalSx}>
-                      {order.total}
-                    </Typography>
-                  </Stack>
-                </Stack>
-              </Plate>
+              <OrderCard
+                key={order.id}
+                order={order}
+                locale={locale}
+                timeZone={timeZone}
+                orderProducts={orderProducts}
+                productReviews={productReviews}
+              />
             ))
           )}
         </Stack>

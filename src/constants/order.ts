@@ -12,6 +12,8 @@ export const customerOrderStatusColors: Record<CustomerOrderStatus, string> = {
 
 export const ORDER_REVIEW_CONFIRMATION_MS = 1800;
 
+export const ACCOUNT_RECENT_ORDERS_LIMIT = 3;
+
 export const orderStatusRank: Record<OrderStatus, number> = {
   new: 0,
   processing: 1,

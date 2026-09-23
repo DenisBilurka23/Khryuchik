@@ -32,6 +32,7 @@ import { AccountAvatarUploadField, SidebarItem } from "./shared";
 import { useProfileEditor } from "@/hooks/useProfileEditor";
 import { useShippingAddressSelection } from "@/hooks/useShippingAddressSelection";
 import { accountSectionKeys, accountSidebarConfig } from "@/constants/account";
+import { ACCOUNT_RECENT_ORDERS_LIMIT } from "@/constants/order";
 import { secondaryButtonSx } from "@/theme/sx";
 import { getCountryTimeZone } from "@/utils";
 import type { AccountPageViewProps, SectionKey } from "./types";
@@ -210,6 +211,7 @@ export const AccountPageView = ({
   });
 
   const timeZone = getCountryTimeZone(country);
+  const recentOrders = orders.slice(0, ACCOUNT_RECENT_ORDERS_LIMIT);
 
   const renderSection = () => {
     switch (activeSection) {
@@ -265,7 +267,9 @@ export const AccountPageView = ({
           <OverviewSection
             locale={locale}
             timeZone={timeZone}
-            orders={orders}
+            orders={recentOrders}
+            orderProducts={orderProducts}
+            productReviews={productReviews}
             downloads={downloads}
             addresses={overviewAddresses}
             selectedShippingAddressId={selectedShippingAddressId}

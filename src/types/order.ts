@@ -185,7 +185,6 @@ export type AccountOrder = {
   number: string;
   createdAt: string;
   locale: string;
-  itemsSummary: string;
   items: AccountOrderItem[];
   total: string;
   status: CustomerOrderStatus;

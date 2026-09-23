@@ -108,9 +108,6 @@ export const canConfirmOrderDelivery = (order: OrderDocument): boolean =>
   order.status !== "delivered" &&
   order.status !== "cancelled";
 
-const buildItemsSummary = (order: OrderDocument): string =>
-  order.items.map((item) => item.title).join(" + ");
-
 const toAccountOrderItem = (
   item: OrderDocument["items"][number],
 ): AccountOrderItem => ({
@@ -132,7 +129,6 @@ export const toAccountOrder = (
   number: formatOrderNumber(order.id) ?? order.id,
   createdAt: order.createdAt,
   locale: order.locale,
-  itemsSummary: buildItemsSummary(order),
   items: order.items.map(toAccountOrderItem),
   total: formatCurrency(order.total, locale, order.currency),
   status: getCustomerOrderStatus(order),
