@@ -2,6 +2,7 @@ import type { Locale } from "@/i18n/config";
 
 export enum NewsletterErrorCode {
   InvalidEmail = "invalid_email",
+  TooManyRequests = "too_many_requests",
   UnexpectedError = "unexpected_error",
 }
 

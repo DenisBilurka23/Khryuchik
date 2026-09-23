@@ -2,21 +2,17 @@ import "server-only";
 
 import { clientIpHeaderNames } from "@/constants/rate-limit";
 
-type CounterWindow = {
-  count: number;
-  resetAt: number;
-};
-
-const windows = new Map<string, CounterWindow>();
-
-const MAX_TRACKED_KEYS = 5_000;
+import {
+  deleteRateLimitCounter,
+  incrementRateLimitCounter,
+} from "./rate-limit.repository";
 
 export type RateLimitResult = {
   isAllowed: boolean;
   retryAfterSeconds: number;
 };
 
-export const consumeRateLimit = ({
+export const consumeRateLimit = async ({
   key,
   limit,
   windowMs,
@@ -24,34 +20,37 @@ export const consumeRateLimit = ({
   key: string;
   limit: number;
   windowMs: number;
-}): RateLimitResult => {
-  const now = Date.now();
-  const current = windows.get(key);
+}): Promise<RateLimitResult> => {
+  try {
+    const { count, resetAt } = await incrementRateLimitCounter({
+      key,
+      windowMs,
+    });
 
-  if (!current || now >= current.resetAt) {
-    if (windows.size >= MAX_TRACKED_KEYS) {
-      const oldestKey = windows.keys().next().value;
-
-      if (oldestKey !== undefined) {
-        windows.delete(oldestKey);
-      }
+    if (count <= limit) {
+      return { isAllowed: true, retryAfterSeconds: 0 };
     }
 
-    windows.set(key, { count: 1, resetAt: now + windowMs });
+    return {
+      isAllowed: false,
+      retryAfterSeconds: Math.max(
+        1,
+        Math.ceil((resetAt.getTime() - Date.now()) / 1000),
+      ),
+    };
+  } catch (error) {
+    console.error("Rate limit check failed", error);
 
     return { isAllowed: true, retryAfterSeconds: 0 };
   }
+};
 
-  if (current.count >= limit) {
-    return {
-      isAllowed: false,
-      retryAfterSeconds: Math.max(1, Math.ceil((current.resetAt - now) / 1000)),
-    };
+export const resetRateLimit = async (key: string): Promise<void> => {
+  try {
+    await deleteRateLimitCounter(key);
+  } catch (error) {
+    console.error("Rate limit reset failed", error);
   }
-
-  current.count += 1;
-
-  return { isAllowed: true, retryAfterSeconds: 0 };
 };
 
 export const getClientIpKey = (headers: Headers) => {

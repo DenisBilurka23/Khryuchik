@@ -17,4 +17,5 @@ export enum EmailVerificationErrorReason {
 export enum SignInErrorCode {
   InvalidCredentials = "invalid_credentials",
   EmailNotVerified = "email_not_verified",
+  TooManyRequests = "too_many_requests",
 }

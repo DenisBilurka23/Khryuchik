@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const rateLimit = consumeRateLimit({
+    const rateLimit = await consumeRateLimit({
       key: `password-reset:${getClientIpKey(request.headers)}`,
       ...AUTH_RATE_LIMIT,
     });

@@ -24,3 +24,28 @@ export const CONTACT_RATE_LIMIT = {
   limit: 5,
   windowMs: 60 * 60_000,
 } as const;
+
+export const LOGIN_RATE_LIMIT = {
+  limit: 10,
+  windowMs: 60 * 60_000,
+} as const;
+
+export const CHECKOUT_RATE_LIMIT = {
+  limit: 10,
+  windowMs: 60 * 60_000,
+} as const;
+
+export const PROMO_RATE_LIMIT = {
+  limit: 15,
+  windowMs: 60 * 60_000,
+} as const;
+
+export const REVIEW_RATE_LIMIT = {
+  limit: 10,
+  windowMs: 60 * 60_000,
+} as const;
+
+export const NEWSLETTER_RATE_LIMIT = {
+  limit: 5,
+  windowMs: 60 * 60_000,
+} as const;

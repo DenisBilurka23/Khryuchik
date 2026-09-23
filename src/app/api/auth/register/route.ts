@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const rateLimit = consumeRateLimit({
+    const rateLimit = await consumeRateLimit({
       key: `register:${getClientIpKey(request.headers)}`,
       ...AUTH_RATE_LIMIT,
     });

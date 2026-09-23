@@ -20,6 +20,11 @@ import { AuthSignInCard } from "./sign-in-card";
 
 import type { AuthPageViewProps } from "./types";
 
+const messageKeyBySignInError: Partial<Record<string, string>> = {
+  [SignInErrorCode.EmailNotVerified]: "emailNotVerified",
+  [SignInErrorCode.TooManyRequests]: "tooManyAttempts",
+};
+
 const panelSx = {
   display: "grid",
   gridTemplateColumns: {
@@ -79,12 +84,11 @@ export const AuthPageView = ({
     setIsCredentialsLoading(false);
 
     if (result?.error) {
-      const isUnverified = result.error === SignInErrorCode.EmailNotVerified;
+      const messageKey =
+        messageKeyBySignInError[result.error] ?? "invalidCredentials";
 
-      setIsEmailUnverified(isUnverified);
-      setErrorMessage(
-        isUnverified ? t("emailNotVerified") : t("invalidCredentials"),
-      );
+      setIsEmailUnverified(result.error === SignInErrorCode.EmailNotVerified);
+      setErrorMessage(t(messageKey));
       return;
     }
 

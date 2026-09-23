@@ -19,7 +19,7 @@ export const POST = async (
   request: NextRequest,
   { params }: EntertainmentViewRouteProps,
 ) => {
-  const rateLimit = consumeRateLimit({
+  const rateLimit = await consumeRateLimit({
     key: `entertainment-view:${getClientIpKey(request.headers)}`,
     ...ENTERTAINMENT_VIEW_RATE_LIMIT,
   });

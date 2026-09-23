@@ -2,7 +2,12 @@ import { getServerSession, type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
+import { LOGIN_RATE_LIMIT } from "@/constants/rate-limit";
 import { sendWelcomeEmail } from "@/server/email/welcome";
+import {
+  consumeRateLimit,
+  resetRateLimit,
+} from "@/server/rate-limit/rate-limit.service";
 import { SignInErrorCode } from "@/types/auth";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import { formatPersonName } from "@/utils";
@@ -32,9 +37,21 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
+        const rateLimitKey = `login:${email.toLowerCase()}`;
+        const rateLimit = await consumeRateLimit({
+          key: rateLimitKey,
+          ...LOGIN_RATE_LIMIT,
+        });
+
+        if (!rateLimit.isAllowed) {
+          throw new Error(SignInErrorCode.TooManyRequests);
+        }
+
         const result = await authenticateCredentialsUser(email, password);
 
         if (result.ok) {
+          await resetRateLimit(rateLimitKey);
+
           return result.user;
         }
 

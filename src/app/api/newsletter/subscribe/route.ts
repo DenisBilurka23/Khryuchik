@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { NEWSLETTER_RATE_LIMIT } from "@/constants/rate-limit";
+import {
+  consumeRateLimit,
+  getClientIpKey,
+} from "@/server/rate-limit/rate-limit.service";
+
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { subscribeToNewsletter } from "@/server/newsletter/services/newsletter.service";
 import { NewsletterErrorCode } from "@/types/newsletter";
@@ -17,6 +23,21 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: NewsletterErrorCode.InvalidEmail },
         { status: 400 },
+      );
+    }
+
+    const rateLimit = await consumeRateLimit({
+      key: `newsletter:${getClientIpKey(request.headers)}`,
+      ...NEWSLETTER_RATE_LIMIT,
+    });
+
+    if (!rateLimit.isAllowed) {
+      return NextResponse.json(
+        { error: NewsletterErrorCode.TooManyRequests },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+        },
       );
     }
 

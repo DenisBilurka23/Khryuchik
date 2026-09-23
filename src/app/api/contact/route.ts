@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const rateLimit = consumeRateLimit({
+    const rateLimit = await consumeRateLimit({
       key: `contact:${getClientIpKey(request.headers)}`,
       ...CONTACT_RATE_LIMIT,
     });

@@ -1058,6 +1058,7 @@
     "registerLinkLabel": "Create account",
     "illustrationAlt": "Khryuchik at the reception desk handing a visitor a pen",
     "invalidCredentials": "Incorrect email or password.",
+    "tooManyAttempts": "Too many sign-in attempts. Please try again later.",
     "emailNotVerified": "Confirm your email before signing in. We sent a link to your inbox.",
     "resendVerification": "Send the link again",
     "verificationSent": "Done — check your inbox for the confirmation link.",

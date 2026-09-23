@@ -1,6 +1,12 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { CHECKOUT_RATE_LIMIT } from "@/constants/rate-limit";
+import {
+  consumeRateLimit,
+  getClientIpKey,
+} from "@/server/rate-limit/rate-limit.service";
+
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestCountry } from "@/server/country/request-country";
@@ -120,6 +126,7 @@ type CheckoutErrorCode =
   | "invalid_payload"
   | "invalid_email"
   | "shop_closed"
+  | "too_many_requests"
   | "payment_failed"
   | "stripe_session_missing_url";
 
@@ -131,6 +138,21 @@ const validationErrorResponse = (code: CheckoutErrorCode, status = 400) =>
   NextResponse.json({ error: code }, { status });
 
 export const POST = async (request: NextRequest) => {
+  const rateLimit = await consumeRateLimit({
+    key: `checkout:${getClientIpKey(request.headers)}`,
+    ...CHECKOUT_RATE_LIMIT,
+  });
+
+  if (!rateLimit.isAllowed) {
+    return NextResponse.json(
+      { error: "too_many_requests" },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
+  }
+
   if (isShopClosed()) {
     return validationErrorResponse("shop_closed", 503);
   }

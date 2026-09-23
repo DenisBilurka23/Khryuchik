@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
+import { REVIEW_RATE_LIMIT } from "@/constants/rate-limit";
 import { requireAccountApiAccess } from "@/server/auth/page-context";
+import { consumeRateLimit } from "@/server/rate-limit/rate-limit.service";
 import {
   createReview,
   ReviewValidationError,
@@ -12,6 +14,21 @@ export const POST = async (request: Request) => {
 
   if (!access) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const rateLimit = await consumeRateLimit({
+    key: `review:${access.user.id}`,
+    ...REVIEW_RATE_LIMIT,
+  });
+
+  if (!rateLimit.isAllowed) {
+    return NextResponse.json(
+      { error: "too_many_requests" },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
   }
 
   const payload = (await request.json().catch(() => null)) as {

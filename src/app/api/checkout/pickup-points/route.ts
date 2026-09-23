@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
 export const POST = async (request: NextRequest) => {
-  const rateLimit = consumeRateLimit({
+  const rateLimit = await consumeRateLimit({
     key: `pickup-points:${getClientIpKey(request.headers)}`,
     ...SHIPPING_QUOTE_RATE_LIMIT,
   });
