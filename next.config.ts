@@ -3,11 +3,25 @@ import type { NextConfig } from "next";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
-const R2_PUBLIC_BASE_URL_FALLBACK = "https://cdn.khryuchik.com";
+const R2_PUBLIC_BASE_URL_DEV_FALLBACK = "https://cdn.khryuchik.com";
 
-const r2PublicBaseUrl = (
-  process.env.R2_PUBLIC_BASE_URL || R2_PUBLIC_BASE_URL_FALLBACK
-).replace(/\/$/, "");
+const resolveR2PublicBaseUrl = () => {
+  const configured = process.env.R2_PUBLIC_BASE_URL?.trim();
+
+  if (configured) {
+    return configured.replace(/\/$/, "");
+  }
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "R2_PUBLIC_BASE_URL is required to allow storefront images through the image optimizer",
+    );
+  }
+
+  return R2_PUBLIC_BASE_URL_DEV_FALLBACK;
+};
+
+const r2PublicBaseUrl = resolveR2PublicBaseUrl();
 
 const nextConfig: NextConfig = {
   experimental: {
