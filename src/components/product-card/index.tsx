@@ -84,6 +84,7 @@ export const ProductCard = ({
   outOfStock,
   viewProduct,
   detailsHref,
+  eager = false,
 }: ProductCardProps) => {
   const thumbnail = product.thumbnail;
   const isSoldOut = !isPurchasableAvailability(product.availability);
@@ -113,6 +114,7 @@ export const ProductCard = ({
                 alt={thumbnail.alt ?? product.title}
                 fill
                 sizes={thumbnailSizes}
+                loading={eager ? "eager" : "lazy"}
                 style={{ objectFit: "contain" }}
               />
             ) : (

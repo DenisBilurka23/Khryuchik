@@ -4,6 +4,8 @@ export const BOOKS_CATEGORY_KEY = "books";
 
 export const DEFAULT_BOOK_STOCK = 10;
 
+export const SHOP_EAGER_PRODUCT_CARDS = 3;
+
 export const DEFAULT_BOOK_AGE_RATING = "3+";
 
 export const BOOK_FORMAT = {

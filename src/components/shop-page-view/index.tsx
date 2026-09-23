@@ -5,7 +5,11 @@ import { getTranslations } from "next-intl/server";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CategoryTabs } from "@/components/category-tabs";
 import { SectionEyebrow } from "@/components/section-eyebrow";
-import { BOOK_SERIES, BOOKS_CATEGORY_KEY } from "@/constants/catalog";
+import {
+  BOOK_SERIES,
+  BOOKS_CATEGORY_KEY,
+  SHOP_EAGER_PRODUCT_CARDS,
+} from "@/constants/catalog";
 import { displayFont, leadSx } from "@/theme/sx";
 import { getLocalizedProductPath } from "@/utils";
 import {
@@ -161,9 +165,10 @@ export const ShopPageView = async ({
                   mt: 3,
                 }}
               >
-                {filteredProducts.map((product) => (
+                {filteredProducts.map((product, index) => (
                   <ProductCard
                     key={product.id}
+                    eager={index < SHOP_EAGER_PRODUCT_CARDS}
                     product={product}
                     locale={locale}
                     wishlistAriaLabel={tShopSection("wishlistAriaLabel")}

@@ -8,4 +8,5 @@ export type ProductCardProps = {
   outOfStock: string;
   viewProduct: string;
   detailsHref: string;
+  eager?: boolean;
 };
