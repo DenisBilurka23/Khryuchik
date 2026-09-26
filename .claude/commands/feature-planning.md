@@ -52,7 +52,7 @@ Plan
 
 ## Khryuchik-Specific Rules
 
-- Keep admin work under `src/app/(admin)/admin` and storefront localized routing under `src/app/[lang]` or `src/app/(default)`.
+- Keep admin work under `src/app/(admin)/admin` and storefront localized routing under `src/app/[lang]`.
 - Keep server-only logic in `src/server` and avoid pushing request-bound or data-access logic into client components or page UI.
 - Prefer existing folder-based component conventions in `src/components`.
 - Prefer existing dictionary-driven copy patterns, especially for admin UI.
