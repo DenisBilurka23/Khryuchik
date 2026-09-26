@@ -35,6 +35,7 @@ import type {
 import type { ShippingPickupPoint } from "@/types/shipping";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import {
+  calculateOrderTotal,
   calculatePromoDiscount,
   type CountryCode,
   isPaymentMethodAvailable,
@@ -299,7 +300,11 @@ export const createOrder = async (
 
   const shipping = shippingResult.shipping;
   const fulfillments = toOrderFulfillments(shippingResult.groups, pickupPoints);
-  const total = roundToCents(subtotal + shipping - promo.discount);
+  const total = calculateOrderTotal({
+    subtotal,
+    shipping,
+    discount: promo.discount,
+  });
 
   const order: OrderDocument = {
     id: randomUUID(),

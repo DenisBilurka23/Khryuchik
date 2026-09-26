@@ -66,6 +66,7 @@ export {
   getLocalizedProductPath,
 } from "./localized-path";
 export {
+  calculateOrderTotal,
   canConfirmOrderDelivery,
   formatCustomerName,
   formatOrderTracking,

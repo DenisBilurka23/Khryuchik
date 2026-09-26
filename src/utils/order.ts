@@ -17,9 +17,20 @@ import {
 import { formatCurrency } from "./format-currency";
 import { formatOrderNumber } from "./format-order-number";
 import { formatPersonName } from "./person-name";
+import { roundToCents } from "./price-conversion";
 
 export const normalizeOrderEmail = (email: string) =>
   email.trim().toLowerCase();
+
+export const calculateOrderTotal = ({
+  subtotal,
+  shipping,
+  discount,
+}: {
+  subtotal: number;
+  shipping: number;
+  discount: number;
+}) => roundToCents(subtotal + shipping - discount);
 
 export const formatCustomerName = (customer: OrderCustomer) =>
   formatPersonName(customer.firstName, customer.lastName);
