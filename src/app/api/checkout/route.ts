@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -148,6 +149,9 @@ export const POST = async (request: NextRequest) => {
         });
       } catch (stripeError) {
         console.error("Stripe session creation failed", stripeError);
+        Sentry.captureException(stripeError, {
+          tags: { operation: "create_stripe_checkout_session" },
+        });
         await updateOrderPayment(order.id, { status: "failed" });
         return validationErrorResponse("payment_failed", 502);
       }
@@ -155,6 +159,10 @@ export const POST = async (request: NextRequest) => {
       await updateOrderPayment(order.id, { stripeSessionId: session.id });
 
       if (!session.url) {
+        Sentry.captureException(
+          new Error("Stripe checkout session is missing a redirect URL"),
+          { tags: { operation: "create_stripe_checkout_session" } },
+        );
         await updateOrderPayment(order.id, { status: "failed" });
         return validationErrorResponse("stripe_session_missing_url", 500);
       }
@@ -169,6 +177,7 @@ export const POST = async (request: NextRequest) => {
     }
 
     console.error("Checkout failed", error);
+    Sentry.captureException(error, { tags: { operation: "checkout" } });
 
     return NextResponse.json({ error: "internal_error" }, { status: 500 });
   }

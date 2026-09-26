@@ -37,6 +37,7 @@
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
     "@mui/material-nextjs": "^7.3.9",
+    "@sentry/nextjs": "^11.0.0",
     "@types/nodemailer": "^8.0.1",
     "bcryptjs": "^3.0.3",
     "hls-video-element": "^1.5.11",

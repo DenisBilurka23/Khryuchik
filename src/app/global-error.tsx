@@ -1,5 +1,8 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
+import { useEffect } from "react";
+
 import { bodyFont, displayFont } from "./fonts";
 import "./globals.css";
 
@@ -10,7 +13,13 @@ const GlobalError = ({
   error: Error & { digest?: string };
   reset: () => void;
 }) => {
-  console.error("Global error boundary", error);
+  useEffect(() => {
+    console.error("Global error boundary", error);
+
+    if (!error.digest) {
+      Sentry.captureException(error);
+    }
+  }, [error]);
 
   return (
     <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>

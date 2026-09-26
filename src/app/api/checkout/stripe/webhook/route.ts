@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
@@ -151,6 +152,9 @@ export const POST = async (request: NextRequest) => {
     }
   } catch (error) {
     console.error(`Failed to process Stripe event ${event.type}`, error);
+    Sentry.captureException(error, {
+      tags: { operation: "stripe_webhook", event_type: event.type },
+    });
     return NextResponse.json({ error: "handler_failed" }, { status: 500 });
   }
 

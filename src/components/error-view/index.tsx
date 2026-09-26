@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/nextjs";
+import { useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { StatusScreen } from "@/components/status-screen";
@@ -7,7 +9,13 @@ import { getLocalizedPath } from "@/utils";
 import type { ErrorViewProps } from "./types";
 
 export const ErrorView = ({ error, onRetry }: ErrorViewProps) => {
-  console.error("Storefront route error boundary", error);
+  useEffect(() => {
+    console.error("Storefront route error boundary", error);
+
+    if (!error.digest) {
+      Sentry.captureException(error);
+    }
+  }, [error]);
 
   const t = useTranslations("storefront.errorPage");
   const locale = useLocale();

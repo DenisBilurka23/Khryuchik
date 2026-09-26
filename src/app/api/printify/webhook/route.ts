@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -62,6 +63,9 @@ export const POST = async (request: NextRequest) => {
     await handleEvent(event);
   } catch (error) {
     console.error(`Failed to process Printify event ${event.type}`, error);
+    Sentry.captureException(error, {
+      tags: { operation: "printify_webhook", event_type: event.type },
+    });
   }
 
   return NextResponse.json({ received: true });

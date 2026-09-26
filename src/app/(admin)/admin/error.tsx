@@ -1,6 +1,8 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { Alert, Button, Stack, Typography } from "@mui/material";
+import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 
 type AdminErrorPageProps = {
@@ -37,10 +39,18 @@ const isPayloadTooLargeError = (
 };
 
 const AdminErrorPage = ({ error, reset }: AdminErrorPageProps) => {
-  console.error("Admin route error boundary", error);
+  const isPayloadTooLarge = isPayloadTooLargeError(error);
+
+  useEffect(() => {
+    console.error("Admin route error boundary", error);
+
+    if (!error.digest && !isPayloadTooLarge) {
+      Sentry.captureException(error);
+    }
+  }, [error, isPayloadTooLarge]);
+
   const tError = useTranslations("adminPage.errorBoundary");
   const tActions = useTranslations("adminPage.shared.actions");
-  const isPayloadTooLarge = isPayloadTooLargeError(error);
   const errorMessage = isPayloadTooLarge
     ? tError("payloadTooLargeMessage")
     : tError("genericMessage");

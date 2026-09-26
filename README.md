@@ -148,6 +148,12 @@ That is everything needed to boot. Each integration above — payments, storage,
 
 One deployment note: `NEXT_PUBLIC_APP_URL` must be set in production. It is the base for canonical URLs, `hreflang` and e-mail links, and it falls back to `http://localhost:3000`.
 
+### Error monitoring
+
+Set `NEXT_PUBLIC_SENTRY_DSN` in the production build and runtime environment to send browser and server errors to Sentry. `SENTRY_DSN` can override the server DSN. Without a DSN, monitoring stays off. The integration sends errors only in production. It disables automatic collection of request bodies, headers, cookies, user identity, breadcrumbs, tracing, and session replay; removes device and server context; and redacts emails and token-like values in error messages. Sentry can still derive geographic data from the event's IP address during ingestion. If geographic data must not be stored, add `city`, `subdivision`, `region`, `country_code`, and `ip_address` as separate Additional Sensitive Fields under the Sentry project's Security & Privacy → Data Scrubbing settings.
+
+To upload source maps during a production build, also set `SENTRY_ORG`, `SENTRY_PROJECT`, and `SENTRY_AUTH_TOKEN` in the build environment. Keep the auth token out of the repository. Without all three, the build skips source map upload.
+
 ### Seeding
 
 `npm run seed:mongodb` fills the `products`, `productDetails`, `categories`, `locales` and `regions` collections from the seed data under `src/server`. `npm run seed:entertainment` does the same for cartoons.
