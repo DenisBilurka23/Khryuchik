@@ -1,9 +1,9 @@
-import { getCountryPaymentMethods } from "@/utils";
-import type { CountryCode } from "@/utils";
+import { getRegionPaymentMethods } from "@/utils";
+import type { RegionCode } from "@/utils";
 
 export type DeliveryPaymentVariant = "stripe" | "receipt";
 
 export const getDeliveryPaymentVariant = (
-  country: CountryCode,
+  region: RegionCode,
 ): DeliveryPaymentVariant =>
-  getCountryPaymentMethods(country).includes("stripe") ? "stripe" : "receipt";
+  getRegionPaymentMethods(region).includes("stripe") ? "stripe" : "receipt";

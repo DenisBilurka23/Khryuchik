@@ -1,8 +1,4 @@
-import {
-  SHIPPING_HUB_CODES,
-  EUROPE_HUB_COUNTRIES,
-  NORTH_AMERICA_HUB_COUNTRIES,
-} from "@/constants/shipping";
+import { SHIPPING_HUB_CODES } from "@/constants/shipping";
 import type { OrderFulfillment } from "@/types/order";
 import type {
   ShippingFulfillmentGroup,
@@ -10,7 +6,7 @@ import type {
   ShippingOption,
   ShippingPickupPoint,
 } from "@/types/shipping";
-import type { CountryCode } from "@/utils";
+import { type CountryCode, getRegionForCountry } from "@/utils";
 
 const CONVENIENCE_RANK = { address: 1, "pickup-point": 0 } as const;
 
@@ -33,17 +29,9 @@ export const dropDominatedOptions = (options: ShippingOption[]) =>
   );
 
 export const serviceableHubs = (country: CountryCode): ShippingHubCode[] => {
-  const code = country.toUpperCase();
+  const region = getRegionForCountry(country);
 
-  if (NORTH_AMERICA_HUB_COUNTRIES.includes(code)) {
-    return ["northAmerica"];
-  }
-
-  if (EUROPE_HUB_COUNTRIES.includes(code)) {
-    return ["europe"];
-  }
-
-  return [...SHIPPING_HUB_CODES];
+  return region ? [region] : [...SHIPPING_HUB_CODES];
 };
 
 export const chooseHubs = (

@@ -24,6 +24,7 @@ export const AdminProductPricingSection = ({
   onToggleAllRegionsAction,
 }: AdminProductPricingSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
+  const tShared = useTranslations("adminPage.shared");
   const currencyGroups = groupRegionsByCurrency(regions);
   const activeCount = regions.filter(
     (region) => activeRegions[region.code],
@@ -75,7 +76,7 @@ export const AdminProductPricingSection = ({
                     onChange={() => onToggleRegionAction(region.code)}
                   />
                 }
-                label={`${region.code} (${region.currency})`}
+                label={`${tShared(`regions.${region.code}`)} (${region.currency})`}
               />
             ))}
           </Box>
@@ -106,7 +107,9 @@ export const AdminProductPricingSection = ({
                 }}
               >
                 <Typography sx={{ fontWeight: 600 }}>
-                  {`${group.currency} — ${group.regionCodes.join(", ")}`}
+                  {`${group.currency} — ${group.regionCodes
+                    .map((code) => tShared(`regions.${code}`))
+                    .join(", ")}`}
                 </Typography>
                 <Box
                   sx={{

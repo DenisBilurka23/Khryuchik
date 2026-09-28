@@ -17,10 +17,10 @@ export const revalidate = 86400;
 
 const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
   const origin = getAppOrigin();
-  const country = await getSitemapRegionCode();
+  const region = await getSitemapRegionCode();
 
   const [productSlugs, entertainmentEntries] = await Promise.all([
-    getSitemapProductSlugs(country),
+    getSitemapProductSlugs(region),
     getSitemapEntertainmentEntries(),
   ]);
 

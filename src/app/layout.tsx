@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v16-appRouter";
 
 import { AuthSessionProvider } from "@/components/providers";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { getAppOrigin } from "@/server/email/transport";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
@@ -15,15 +15,15 @@ export const metadata: Metadata = {
 };
 
 const RootLayout = async ({ children }: { children: ReactNode }) => {
-  const [country, locale] = await Promise.all([
-    getRequestCountry(),
+  const [region, locale] = await Promise.all([
+    getRequestRegion(),
     resolveLocale("storefront"),
   ]);
 
   return (
     <html
       lang={locale}
-      data-country={country}
+      data-region={region}
       className={`${displayFont.variable} ${bodyFont.variable}`}
     >
       <body>

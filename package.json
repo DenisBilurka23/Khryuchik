@@ -18,6 +18,7 @@
     "seed:mongodb": "node --env-file=.env.local --import tsx ./scripts/seed-mongodb.ts",
     "seed:entertainment": "node --env-file=.env.local --import tsx ./scripts/seed-entertainment.ts",
     "books:physical": "node --env-file=.env.local --import tsx ./scripts/set-book-physical.ts",
+    "regions:migrate": "node --env-file=.env.local --import tsx ./scripts/migrate-regions.ts",
     "chitchats:quote": "node --env-file=.env.local --import tsx ./scripts/chitchats-quote.ts",
     "email:logo": "node --import tsx ./scripts/build-email-logo.ts",
     "printify:publish": "node --env-file=.env.local --import tsx ./scripts/printify-publish.ts",

@@ -8,7 +8,7 @@ import {
 } from "@/components/shop-page-view";
 import { getShopProducts } from "@/server/catalog/services/catalog.service";
 import { getShopCategoriesForRegion } from "@/server/catalog/services/categories.service";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import type { Locale } from "@/i18n/config";
@@ -31,16 +31,16 @@ const ShopCatalogData = async ({
   series,
   query,
 }: ShopCatalogDataProps) => {
-  const country = await getRequestCountry();
+  const region = await getRequestRegion();
   const [categories, products] = await Promise.all([
-    getShopCategoriesForRegion(locale, country),
-    getShopProducts(locale, country),
+    getShopCategoriesForRegion(locale, region),
+    getShopProducts(locale, region),
   ]);
 
   return (
     <ShopCatalog
       locale={locale}
-      country={country}
+      region={region}
       categories={categories}
       products={products}
       initialCategory={category}

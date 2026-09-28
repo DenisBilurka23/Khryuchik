@@ -63,7 +63,7 @@ export const AdminRegionCard = ({
 
   return (
     <AdminSectionCard
-      title={region.label}
+      title={tShared(`regions.${region.code}`)}
       description={`${region.code} • ${region.currency}`}
       action={
         <Stack direction="row" gap={1} flexWrap="wrap">

@@ -34,7 +34,7 @@ import { getInstagramHandle } from "./utils";
 
 export const ContactPageView = async ({
   locale,
-  country,
+  region,
 }: ContactPageViewProps) => {
   const t = await getTranslations({
     locale,
@@ -51,9 +51,9 @@ export const ContactPageView = async ({
   );
   const defaultEmail = session?.user?.email ?? "";
 
-  const instagramHref = getFooterItemHref("instagram", locale, country);
-  const facebookHref = getFooterItemHref("facebook", locale, country);
-  const emailHref = getFooterItemHref("email", locale, country);
+  const instagramHref = getFooterItemHref("instagram", locale, region);
+  const facebookHref = getFooterItemHref("facebook", locale, region);
+  const emailHref = getFooterItemHref("email", locale, region);
 
   const channelItems: ContactChannelItem[] = [
     {

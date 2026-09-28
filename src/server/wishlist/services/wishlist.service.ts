@@ -11,7 +11,7 @@ import {
 } from "@/server/users/repositories/users.repository";
 import type { LocalizedProductSummary } from "@/types/catalog";
 import type { WishlistEntryDocument } from "@/types/users";
-import type { CountryCode } from "@/utils";
+import type { RegionCode } from "@/utils";
 
 export type WishlistProductItem = {
   productId: string;
@@ -125,12 +125,12 @@ export const getWishlistIds = (wishlist: WishlistEntryDocument[]) =>
 export const getResolvedWishlistItems = async (
   userId: string,
   locale: Locale,
-  country: CountryCode,
+  region: RegionCode,
 ) => {
   const wishlist = await getWishlistEntries(userId);
   const summaries = await getProductSummariesByIds(
     locale,
-    country,
+    region,
     getWishlistIds(wishlist),
   );
   const summariesById = new Map(
@@ -156,7 +156,7 @@ export const getResolvedWishlistItems = async (
 
 export const resolveGuestWishlistItems = async (
   locale: string | null,
-  country: CountryCode,
+  region: RegionCode,
   items: Array<{ productId?: string; addedAt?: string }>,
 ) => {
   const nextLocale = locale && isLocale(locale) ? locale : defaultLocale;
@@ -172,7 +172,7 @@ export const resolveGuestWishlistItems = async (
     .filter((item) => item.productId);
   const summaries = await getProductSummariesByIds(
     nextLocale,
-    country,
+    region,
     normalizedItems.map((item) => item.productId),
   );
   const summariesById = new Map(

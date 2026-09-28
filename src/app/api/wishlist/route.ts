@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import {
   addProductToWishlist,
   getResolvedWishlistItems,
@@ -20,12 +20,8 @@ export const GET = async (request: Request) => {
   const localeParam = url.searchParams.get("locale");
   const locale =
     localeParam && isLocale(localeParam) ? localeParam : defaultLocale;
-  const country = await getRequestCountry();
-  const items = await getResolvedWishlistItems(
-    session.user.id,
-    locale,
-    country,
-  );
+  const region = await getRequestRegion();
+  const items = await getResolvedWishlistItems(session.user.id, locale, region);
 
   return NextResponse.json({ items, ids: items.map((item) => item.productId) });
 };

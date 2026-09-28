@@ -1,7 +1,7 @@
 import "server-only";
 
 import { getMongoDb } from "@/server/db/mongodb";
-import type { RegionDocument } from "@/types/localization";
+import type { RegionCode, RegionDocument } from "@/types/localization";
 
 export const findAllRegions = async () => {
   const db = await getMongoDb();
@@ -23,7 +23,7 @@ export const upsertRegion = async (region: RegionDocument) => {
   return region;
 };
 
-export const clearDefaultRegionExcept = async (code: string) => {
+export const clearDefaultRegionExcept = async (code: RegionCode) => {
   const db = await getMongoDb();
 
   await db
@@ -34,7 +34,7 @@ export const clearDefaultRegionExcept = async (code: string) => {
     );
 };
 
-export const deleteRegionByCode = async (code: string) => {
+export const deleteRegionByCode = async (code: RegionCode) => {
   const db = await getMongoDb();
 
   return db.collection<RegionDocument>("regions").deleteOne({ code });

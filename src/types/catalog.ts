@@ -1,5 +1,5 @@
 import type { Locale } from "@/i18n/config";
-import type { CurrencyCode } from "@/utils";
+import type { CurrencyCode, RegionCode } from "@/utils";
 
 import type {
   ProductFileAsset,
@@ -139,7 +139,7 @@ export type ProductDocument = {
   showInStory?: boolean;
   series?: BookSeries;
   pricing: Partial<Record<CurrencyCode, ProductCurrencyPricing>>;
-  availableRegions: string[];
+  availableRegions: RegionCode[];
   hasOptions?: boolean;
   printify?: ProductPrintifyLink;
   shipping?: ProductShipping;

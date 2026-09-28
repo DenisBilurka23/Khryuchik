@@ -32,7 +32,11 @@ import {
 import { SHIPPING_HUB_CODES } from "@/constants/shipping";
 import type { EntertainmentTranslation } from "@/types/entertainment";
 import type { ShippingManufacturer } from "@/types/shipping";
-import { isEntertainmentCategory, type CurrencyCode } from "@/utils";
+import {
+  isEntertainmentCategory,
+  isRegionCode,
+  type CurrencyCode,
+} from "@/utils";
 
 const parseString = (formData: FormData, key: string) => {
   const value = formData.get(key);
@@ -339,9 +343,9 @@ export const parseAdminProductFormData = (
       locale === defaultLocale || parseBoolean(formData, `${locale}.active`),
   );
 
-  const availableRegions = regionCodes.filter((region) =>
-    parseBoolean(formData, `region.${region}.active`),
-  );
+  const availableRegions = regionCodes
+    .filter(isRegionCode)
+    .filter((region) => parseBoolean(formData, `region.${region}.active`));
 
   const languages = parseJsonField<ProductOption[]>(
     formData,

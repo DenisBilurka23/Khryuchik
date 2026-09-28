@@ -1,7 +1,7 @@
 {
   "productPage": {
     "details": {
-      "shipping": "Shipping across the USA and internationally"
+      "shipping": "Shipping across the US and Canada"
     }
   },
   "deliveryPage": {
@@ -12,7 +12,7 @@
       "eyebrow": "How payment works",
       "title": "Pay online · Stripe",
       "short": "Secure card payment via Stripe",
-      "desc": "For US orders, payment is taken online at checkout — through the secure Stripe payment gateway. As soon as the payment succeeds, we prepare your parcel for dispatch.",
+      "desc": "For orders in the US and Canada, payment is taken online at checkout — through the secure Stripe payment gateway. As soon as the payment succeeds, we prepare your parcel for dispatch.",
       "badge": "Stripe · Visa · Mastercard · Apple Pay",
       "stripe": {
         "secureLabel": "Secure",
@@ -35,7 +35,7 @@
           "name": "Tracked shipping",
           "meta": "Set by the carrier",
           "price": "Shown at checkout",
-          "note": "Tracked delivery to any US address, including Alaska and Hawaii. The rate and the transit time come from the carrier once you enter the address."
+          "note": "Tracked delivery to any address in the US, including Alaska and Hawaii, and in Canada. The rate and the transit time come from the carrier once you enter the address."
         },
         {
           "icon": "courier",
@@ -61,7 +61,7 @@
         },
         {
           "title": "Enter shipping address",
-          "desc": "We ship to all 50 states, including Alaska & Hawaii — the rate is quoted for your exact address."
+          "desc": "We ship to all 50 states, including Alaska & Hawaii, and across Canada — the rate is quoted for your exact address."
         },
         {
           "title": "Pay online",
@@ -74,7 +74,7 @@
       ]
     },
     "finalCta": {
-      "titleSuffix": "and heading to you in the United States.",
+      "titleSuffix": "and heading to you in North America.",
       "sub": "Secure checkout with Stripe"
     }
   }

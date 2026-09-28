@@ -6,7 +6,7 @@ import {
   getBookCountsBySeries,
   getStoryTimelineBooks,
 } from "@/server/catalog/services/catalog.service";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
@@ -42,9 +42,9 @@ const LocalizedStoryPage = async ({ params }: LocalizedStoryPageProps) => {
 
   await requireActiveLocale(lang);
 
-  const country = await getRequestCountry();
-  const timelineBooks = getStoryTimelineBooks(lang, country);
-  const seriesCounts = getBookCountsBySeries(country);
+  const region = await getRequestRegion();
+  const timelineBooks = getStoryTimelineBooks(lang, region);
+  const seriesCounts = getBookCountsBySeries(region);
 
   return (
     <StoryPageView

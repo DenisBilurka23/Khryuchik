@@ -19,8 +19,8 @@ import { useResolvedCart } from "@/hooks/useResolvedCart";
 import { useShippingQuote } from "@/hooks/useShippingQuote";
 import {
   getAllCountriesSorted,
-  getCountryPaymentMethods,
   getLocalizedPath,
+  getRegionPaymentMethods,
   isIsoCountryCode,
   isPurchasableAvailability,
   isQuotableShippingAddress,
@@ -49,7 +49,7 @@ import {
 
 export const CheckoutPageView = ({
   locale,
-  country,
+  region,
   currency,
   initialCustomer,
   initialShippingAddresses,
@@ -67,14 +67,14 @@ export const CheckoutPageView = ({
     isPricingUnavailable,
     regionBlockedCount,
     hasStoredItems,
-  } = useResolvedCart(locale, country, buyNowItems ?? undefined);
+  } = useResolvedCart(locale, region, buyNowItems ?? undefined);
   const hasUnavailableItems = items.some(
     (item) => !isPurchasableAvailability(item.availability),
   );
 
   const availableMethods = useMemo(
-    () => getCountryPaymentMethods(country),
-    [country],
+    () => getRegionPaymentMethods(region),
+    [region],
   );
   const allCountries = useMemo(() => getAllCountriesSorted(locale), [locale]);
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(

@@ -1,6 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import type { ReactNode } from "react";
-import type { CountryCode } from "@/utils";
+import type { RegionCode } from "@/utils";
 import type {
   BookSeries,
   LocalizedCategory,
@@ -18,7 +18,7 @@ export type ShopPageViewProps = {
 
 export type ShopCatalogProps = {
   locale: Locale;
-  country: CountryCode;
+  region: RegionCode;
   categories: LocalizedCategory[];
   products: LocalizedProductSummary[];
   initialCategory?: string;
@@ -28,7 +28,7 @@ export type ShopCatalogProps = {
 
 export type CreateShopPageViewModelParams = {
   locale: Locale;
-  country: CountryCode;
+  region: RegionCode;
   allFilterLabel: string;
   categories: LocalizedCategory[];
   products: LocalizedProductSummary[];

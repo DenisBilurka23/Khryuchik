@@ -18,7 +18,7 @@ export const isBookSeries = (value: string | null): value is BookSeries =>
 
 export const createShopPageViewModel = ({
   locale,
-  country,
+  region,
   allFilterLabel,
   categories,
   products,
@@ -27,7 +27,7 @@ export const createShopPageViewModel = ({
   seriesLabels,
   search,
 }: CreateShopPageViewModelParams) => {
-  void country;
+  void region;
 
   const filters = [
     {

@@ -10,7 +10,17 @@
       "shortLabel": "Khryuchik"
     },
     "localeSwitcherLabel": "Language switcher",
-    "countrySwitcherLabel": "Country switcher",
+    "regionSwitcherLabel": "Region",
+    "regions": {
+      "northAmerica": {
+        "label": "North America",
+        "short": "NA"
+      },
+      "europe": {
+        "label": "Europe",
+        "short": "EU"
+      }
+    },
     "cartLabel": "Cart",
     "cartToast": {
       "addedToCart": "Added to cart",
@@ -416,18 +426,6 @@
           "E-books right after payment"
         ],
         "toggleAriaLabel": "Region selection",
-        "options": {
-          "BY": {
-            "flag": "🇧🇾",
-            "country": "Belarus",
-            "subtitle": "Pay online · Stripe"
-          },
-          "US": {
-            "flag": "🇺🇸",
-            "country": "United States",
-            "subtitle": "Pay online · Stripe"
-          }
-        },
         "mapBadgeLabel": "Now selected:",
         "mapCity": ""
       },
@@ -453,7 +451,7 @@
       },
       "methods": {
         "eyebrow": "Delivery options",
-        "titlePrefix": "{country}:",
+        "titlePrefix": "{region}:",
         "titleAccent": "how it ships",
         "sub": "Rates and timeframes come from the carrier at checkout, for your exact address. We pack books within 1–2 business days; merch is printed to order.",
         "items": [
@@ -1377,6 +1375,10 @@
           "google": "Google",
           "credentials": "Email"
         }
+      },
+      "regions": {
+        "northAmerica": "North America",
+        "europe": "Europe"
       }
     },
     "dashboard": {
@@ -1657,16 +1659,16 @@
       "invalidCurrencyMessage": "Enter a valid currency code.",
       "currencyPlaceholder": "Search currency",
       "currencyNoOptions": "No currencies found",
-      "countryPlaceholder": "Search country",
-      "countryNoOptions": "No countries found",
+      "regionPlaceholder": "Choose a region",
+      "regionNoOptions": "All regions are already added",
       "languagesTitle": "Languages",
       "languagesDescription": "Languages available when filling in product translations.",
       "newLanguageTitle": "Add language",
       "newLanguageDescription": "Use an ISO language code such as ru, en or pl.",
       "regionsTitle": "Regions",
-      "regionsDescription": "Sales regions used for product pricing and the storefront country selector.",
+      "regionsDescription": "Sales regions used for product pricing and the storefront region selector.",
       "newRegionTitle": "Add region",
-      "newRegionDescription": "Pick a country and its currency for the new sales region.",
+      "newRegionDescription": "Pick a sales region and its currency.",
       "saveButton": "Save",
       "savingButton": "Saving...",
       "updateButton": "Update",
@@ -1681,7 +1683,7 @@
         "code": "Language code",
         "codePlaceholder": "Start typing a language",
         "codeNoOptions": "No such language in the list",
-        "regionCode": "Country code",
+        "regionCode": "Region",
         "currency": "Currency",
         "sortOrder": "Sort order"
       },
@@ -1803,7 +1805,7 @@
         "order": "Order",
         "createdAt": "Date",
         "customer": "Customer",
-        "country": "Country",
+        "region": "Region",
         "total": "Total",
         "payment": "Payment",
         "status": "Status"

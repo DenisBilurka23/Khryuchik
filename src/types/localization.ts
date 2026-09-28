@@ -1,4 +1,7 @@
+import type { ShippingHubCode } from "@/types/shipping";
 import type { CurrencyCode } from "@/utils";
+
+export type RegionCode = ShippingHubCode;
 
 export type LocaleDocument = {
   code: string;
@@ -8,7 +11,7 @@ export type LocaleDocument = {
 };
 
 export type RegionDocument = {
-  code: string;
+  code: RegionCode;
   currency: CurrencyCode;
   isActive: boolean;
   isDefault: boolean;

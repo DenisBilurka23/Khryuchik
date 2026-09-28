@@ -1,15 +1,15 @@
 import type { Locale } from "@/i18n/config";
-import type { CountryCode } from "@/utils";
+import type { RegionCode } from "@/utils";
 
 import type { StorefrontNavigationPaths } from "./navigation";
 
 export type StorefrontHeaderProps = {
   locale: Locale;
-  country: CountryCode;
+  region: RegionCode;
   homeHref: string;
   localizedPaths: Record<Locale, string>;
   availableLocales: string[];
-  availableCountries: CountryCode[];
+  availableRegions: RegionCode[];
   navigationPaths?: StorefrontNavigationPaths;
 };
 

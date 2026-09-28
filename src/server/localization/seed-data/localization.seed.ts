@@ -21,15 +21,15 @@ export const localeSeedDocuments: LocaleDocument[] = [
 
 export const regionSeedDocuments: RegionDocument[] = [
   {
-    code: "US",
+    code: "northAmerica",
     currency: "USD",
     isActive: true,
     isDefault: true,
     sortOrder: 1,
   },
   {
-    code: "BY",
-    currency: "USD",
+    code: "europe",
+    currency: "EUR",
     isActive: true,
     isDefault: false,
     sortOrder: 2,

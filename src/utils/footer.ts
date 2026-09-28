@@ -1,6 +1,6 @@
 import { CONTACT_EMAIL, SOCIAL_LINKS } from "@/constants/contact";
 import type { Locale } from "@/i18n/config";
-import { getLocalizedPath, type CountryCode } from "@/utils";
+import { getLocalizedPath, type RegionCode } from "@/utils";
 
 const internalPathsByKey: Record<string, string> = {
   books: "/shop?category=books",
@@ -16,13 +16,10 @@ const internalPathsByKey: Record<string, string> = {
 export const getFooterItemHref = (
   key: string,
   locale: Locale,
-  country: CountryCode,
+  region: RegionCode,
 ): string => {
   if (key === "instagram") {
-    const instagramLinks: Record<string, string> =
-      SOCIAL_LINKS.instagramByCountry;
-
-    return instagramLinks[country] ?? SOCIAL_LINKS.instagramByCountry.US;
+    return SOCIAL_LINKS.instagramByRegion[region];
   }
 
   if (key === "facebook") {

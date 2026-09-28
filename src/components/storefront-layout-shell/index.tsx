@@ -9,9 +9,9 @@ import { StorefrontHeader } from "@/components/storefront-header";
 import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
 import { defaultLocale } from "@/i18n/config";
 import {
-  getRequestCountry,
+  getRequestRegion,
   getRequestTimeZone,
-} from "@/server/country/request-country";
+} from "@/server/region/request-region";
 import { resolveLocale } from "@/server/i18n/request-locale";
 import {
   getActiveLocaleCodes,
@@ -25,9 +25,9 @@ export const StorefrontLayoutShell = async ({
   locale: localeProp,
 }: StorefrontLayoutShellProps) => {
   const locale = localeProp ?? (await resolveLocale("storefront"));
-  const [country, timeZone, messages, availableLocales, availableCountries] =
+  const [region, timeZone, messages, availableLocales, availableRegions] =
     await Promise.all([
-      getRequestCountry(),
+      getRequestRegion(),
       getRequestTimeZone(),
       getMessages({ locale }),
       getActiveLocaleCodes(),
@@ -43,15 +43,15 @@ export const StorefrontLayoutShell = async ({
       <StorefrontThemeProvider>
         <StorefrontHeader
           locale={locale}
-          country={country}
+          region={region}
           homeHref={locale === defaultLocale ? "/" : `/${locale}`}
           localizedPaths={localizedPaths}
           availableLocales={availableLocales}
-          availableCountries={availableCountries}
+          availableRegions={availableRegions}
           navigationPaths={navigationPaths}
         />
         {children}
-        <FooterSection locale={locale} country={country} />
+        <FooterSection locale={locale} region={region} />
       </StorefrontThemeProvider>
     </IntlClientProvider>
   );

@@ -14,7 +14,7 @@ import {
   getActiveRegionCodes,
 } from "@/server/localization/localization.service";
 import { requireAccountPageContext } from "@/server/auth/page-context";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { getUserPurchasedDownloads } from "@/server/downloads/downloads.service";
 import { findOrdersForUser } from "@/server/orders/repositories/orders.repository";
 import { getUserReviewsByProduct } from "@/server/reviews/services/reviews.service";
@@ -33,15 +33,15 @@ type AccountPageDataProps = {
 
 const AccountPageData = async ({ locale, user }: AccountPageDataProps) => {
   const [
-    country,
+    region,
     rawOrders,
     downloads,
     categories,
     availableLocales,
-    availableCountries,
+    availableRegions,
     productReviews,
   ] = await Promise.all([
-    getRequestCountry(),
+    getRequestRegion(),
     findOrdersForUser(user.id, user.email),
     getUserPurchasedDownloads(user.id, user.email),
     getShopCategories(locale),
@@ -59,9 +59,9 @@ const AccountPageData = async ({ locale, user }: AccountPageDataProps) => {
   return (
     <AccountPageView
       locale={locale}
-      country={country}
+      region={region}
       availableLocales={availableLocales}
-      availableCountries={availableCountries}
+      availableRegions={availableRegions}
       homeHref={locale === defaultLocale ? "/" : `/${locale}`}
       favoriteCategoryLabels={Object.fromEntries(
         categories.map((category) => [category.key, category.label]),

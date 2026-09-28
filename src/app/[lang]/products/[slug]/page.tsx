@@ -10,7 +10,7 @@ import {
   getProductSummariesByIds,
 } from "@/server/catalog/services/catalog.service";
 import { getServerAuthSession } from "@/server/auth/config";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { getProductPurchaseContext } from "@/server/downloads/downloads.service";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
@@ -29,8 +29,8 @@ export const generateMetadata = async ({
 
   await requireActiveLocale(lang);
 
-  const country = await getRequestCountry();
-  const result = await getProductDetails(lang, country, slug);
+  const region = await getRequestRegion();
+  const result = await getProductDetails(lang, region, slug);
 
   if (result.status === "not-found") {
     notFound();
@@ -59,8 +59,8 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
 
   await requireActiveLocale(lang);
 
-  const country = await getRequestCountry();
-  const result = await getProductDetails(lang, country, slug);
+  const region = await getRequestRegion();
+  const result = await getProductDetails(lang, region, slug);
 
   if (result.status === "not-found") {
     notFound();
@@ -74,12 +74,12 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
   const session = getServerAuthSession();
   const relatedProducts = getProductSummariesByIds(
     lang,
-    country,
+    region,
     product.relatedIds,
   );
   const storyProducts = getProductSummariesByIds(
     lang,
-    country,
+    region,
     product.storyProductId ? [product.storyProductId] : [],
   );
   const purchaseContext = session.then(

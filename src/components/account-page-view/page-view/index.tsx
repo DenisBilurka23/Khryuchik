@@ -13,7 +13,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useTranslations } from "next-intl";
+import { useTimeZone, useTranslations } from "next-intl";
 import { usePathname, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
 import type { UserShippingAddress } from "@/types/users";
@@ -34,7 +34,7 @@ import { useShippingAddressSelection } from "@/hooks/useShippingAddressSelection
 import { accountSectionKeys, accountSidebarConfig } from "@/constants/account";
 import { ACCOUNT_RECENT_ORDERS_LIMIT } from "@/constants/order";
 import { secondaryButtonSx } from "@/theme/sx";
-import { getCountryTimeZone } from "@/utils";
+import { FALLBACK_TIME_ZONE } from "@/utils";
 import type { AccountPageViewProps, SectionKey } from "../types";
 
 const asideCardSx = {
@@ -79,9 +79,9 @@ const getActiveSection = (searchParams: {
 
 export const AccountPageView = ({
   locale,
-  country,
+  region,
   availableLocales,
-  availableCountries,
+  availableRegions,
   homeHref,
   favoriteCategoryLabels,
   user,
@@ -213,7 +213,7 @@ export const AccountPageView = ({
     onAddressesChange: handleAddressesChange,
   });
 
-  const timeZone = getCountryTimeZone(country);
+  const timeZone = useTimeZone() ?? FALLBACK_TIME_ZONE;
   const recentOrders = orders.slice(0, ACCOUNT_RECENT_ORDERS_LIMIT);
 
   const renderSection = () => {
@@ -251,9 +251,9 @@ export const AccountPageView = ({
         return (
           <SettingsSection
             locale={locale}
-            country={country}
+            region={region}
             availableLocales={availableLocales}
-            availableCountries={availableCountries}
+            availableRegions={availableRegions}
             profileEditor={profileEditorState}
             authProviders={user.authProviders ?? []}
             userEmail={user.email ?? ""}

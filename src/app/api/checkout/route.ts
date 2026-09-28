@@ -10,7 +10,7 @@ import {
 
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { createStripeCheckoutSession } from "@/server/payments/stripe";
 import { isShopClosed } from "@/server/shop/maintenance.service";
 import {
@@ -22,8 +22,8 @@ import { isStoredCartItem } from "@/types/cart-guards";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import {
   asOptionalString,
-  getCountryPaymentMethods,
   getLocalizedPath,
+  getRegionPaymentMethods,
 } from "@/utils";
 
 import {
@@ -82,8 +82,8 @@ export const POST = async (request: NextRequest) => {
     typeof payload.locale === "string" && isLocale(payload.locale)
       ? payload.locale
       : defaultLocale;
-  const [country, session] = await Promise.all([
-    getRequestCountry(),
+  const [region, session] = await Promise.all([
+    getRequestRegion(),
     getServerAuthSession(),
   ]);
   const userId = session?.user?.id || undefined;
@@ -108,7 +108,7 @@ export const POST = async (request: NextRequest) => {
     return validationErrorResponse("invalid_payload");
   }
 
-  if (!getCountryPaymentMethods(country).includes(paymentMethod)) {
+  if (!getRegionPaymentMethods(region).includes(paymentMethod)) {
     return validationErrorResponse("unsupported_payment_method");
   }
 
@@ -119,7 +119,7 @@ export const POST = async (request: NextRequest) => {
   try {
     const order = await createOrder({
       locale,
-      country,
+      region,
       items,
       customer,
       shippingAddress: shippingAddress ?? undefined,

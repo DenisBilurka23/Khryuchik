@@ -4,7 +4,7 @@ import type { ProductPreview } from "@/types/catalog";
 import type { AccountDownload } from "@/types/download";
 import type { UserReviewSummary } from "@/types/reviews";
 import type { AuthProvider, UserShippingAddress } from "@/types/users";
-import type { CountryCode } from "@/utils";
+import type { RegionCode } from "@/utils";
 
 export type AccountPageUser = {
   id?: string;
@@ -20,9 +20,9 @@ export type AccountPageUser = {
 
 export type AccountPageViewProps = {
   locale: Locale;
-  country: CountryCode;
+  region: RegionCode;
   availableLocales: string[];
-  availableCountries: CountryCode[];
+  availableRegions: RegionCode[];
   homeHref: string;
   favoriteCategoryLabels: Record<string, string>;
   user: AccountPageUser;

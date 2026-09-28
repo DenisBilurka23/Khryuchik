@@ -19,16 +19,12 @@ import type {
 } from "@/types/admin";
 import type {
   LocaleDocument,
+  RegionCode,
   RegionDocument,
   RegionPricing,
 } from "@/types/localization";
 import type { CurrencyCode } from "@/utils";
-import {
-  defaultCountry,
-  getCountryDisplayName,
-  getLocaleDisplayName,
-  isIsoCountryCode,
-} from "@/utils";
+import { DEFAULT_REGION, getLocaleDisplayName, isRegionCode } from "@/utils";
 
 import { BASE_CURRENCY, getUsdRate } from "./exchange-rates.service";
 import {
@@ -69,7 +65,7 @@ const normalizeLocaleCode = (value: string) =>
     .toLowerCase()
     .replace(/[^a-z-]/g, "");
 
-const normalizeRegionCode = (value: string) => value.trim().toUpperCase();
+const normalizeRegionCode = (value: string) => value.trim();
 
 const normalizeCurrencyCode = (value: string) =>
   value
@@ -121,26 +117,26 @@ export const getActiveLocaleCodes = async (): Promise<string[]> =>
 export const isActiveLocale = async (value: string): Promise<boolean> =>
   (await getActiveLocales()).some((locale) => locale.code === value);
 
-export const getActiveRegionCodes = async (): Promise<string[]> =>
+export const getActiveRegionCodes = async (): Promise<RegionCode[]> =>
   (await getActiveRegions()).map((region) => region.code);
 
-export const getDefaultRegionCode = async (): Promise<string> => {
+export const getDefaultRegionCode = async (): Promise<RegionCode> => {
   const regions = await getActiveRegions();
 
-  return regions.find((region) => region.isDefault)?.code ?? defaultCountry;
+  return regions.find((region) => region.isDefault)?.code ?? DEFAULT_REGION;
 };
 
-export const getSitemapRegionCode = async (): Promise<string> => {
+export const getSitemapRegionCode = async (): Promise<RegionCode> => {
   const [activeCodes, defaultRegion] = await Promise.all([
     getActiveRegionCodes(),
     getDefaultRegionCode(),
   ]);
 
-  return activeCodes.includes(defaultCountry) ? defaultCountry : defaultRegion;
+  return activeCodes.includes(DEFAULT_REGION) ? DEFAULT_REGION : defaultRegion;
 };
 
 export const getRegionCurrency = async (
-  code: string,
+  code: RegionCode,
 ): Promise<CurrencyCode> => {
   const region = (await getActiveRegions()).find(
     (candidate) => candidate.code === code,
@@ -150,7 +146,7 @@ export const getRegionCurrency = async (
 };
 
 export const getRegionPricing = cache(
-  async (code: string): Promise<RegionPricing> => {
+  async (code: RegionCode): Promise<RegionPricing> => {
     const currency = await getRegionCurrency(code);
 
     if (currency === BASE_CURRENCY) {
@@ -182,12 +178,8 @@ const mapLocaleToAdminItem = (
   sortOrder: locale.sortOrder,
 });
 
-const mapRegionToAdminItem = (
-  region: RegionDocument,
-  locale: Locale,
-): AdminRegionListItem => ({
+const mapRegionToAdminItem = (region: RegionDocument): AdminRegionListItem => ({
   code: region.code,
-  label: getCountryDisplayName(locale, region.code),
   currency: region.currency,
   isActive: region.isActive,
   isDefault: region.isDefault,
@@ -207,7 +199,7 @@ export const getAdminLocalizationData = async (
 
   return {
     locales: localeItems.map((item) => mapLocaleToAdminItem(item, locale)),
-    regions: regionItems.map((region) => mapRegionToAdminItem(region, locale)),
+    regions: regionItems.map(mapRegionToAdminItem),
   };
 };
 
@@ -255,7 +247,7 @@ export const saveAdminRegion = async (input: AdminRegionUpsertInput) => {
   const code = normalizeRegionCode(input.code);
   const currency = normalizeCurrencyCode(input.currency);
 
-  if (!code || !isIsoCountryCode(code)) {
+  if (!isRegionCode(code)) {
     throw new LocalizationError(localizationErrorCodes.InvalidCode);
   }
 
@@ -283,7 +275,7 @@ export const saveAdminRegion = async (input: AdminRegionUpsertInput) => {
 export const deleteAdminRegion = async (code: string) => {
   const normalizedCode = normalizeRegionCode(code);
 
-  if (!normalizedCode) {
+  if (!isRegionCode(normalizedCode)) {
     throw new LocalizationError(localizationErrorCodes.InvalidCode);
   }
 

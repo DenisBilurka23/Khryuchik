@@ -1,25 +1,32 @@
 export { clampCartItemQuantity, isCartItemQuantity } from "./cart";
 export { isLocalizedCategory, localizeCategory } from "./category";
 export {
-  COUNTRY_COOKIE_NAME,
   COUNTRY_HEADER,
   defaultCountry,
   geoCountryHeaderNames,
   getCountryDisplayName,
   getCountryFromGeoCode,
   getCountryFromGeoHeaders,
-  getCountryPaymentMethods,
   getCountryTimeZone,
   getAllCountriesSorted,
   isIsoCountryCode,
   isRegionRequired,
   mayIncurImportCharges,
   regionFieldKey,
-  isPaymentMethodAvailable,
-  readCountryCookie,
   FALLBACK_TIME_ZONE,
 } from "./country";
 export type { CountryCode, CurrencyCode, PaymentMethod } from "./country";
+export {
+  DEFAULT_REGION,
+  REGION_CODES,
+  REGION_COOKIE_NAME,
+  getRegionForCountry,
+  getRegionPaymentMethods,
+  isPaymentMethodAvailable,
+  isRegionCode,
+  readRegionCookie,
+} from "./region";
+export type { RegionCode } from "./region";
 export { getCurrencyForCountry } from "./country-currency";
 export {
   formatDate,

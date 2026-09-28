@@ -16,7 +16,7 @@ import { BOOK_FORMAT } from "@/constants/catalog";
 import type { ProductDocument } from "@/types/catalog";
 import type { OrderDocument, OrderPrintedStockMovement } from "@/types/order";
 import type { ShippingHubCode } from "@/types/shipping";
-import type { CountryCode } from "@/utils";
+import type { CountryCode, RegionCode } from "@/utils";
 import {
   getPrintedStockCount,
   getStockedHubs,
@@ -48,13 +48,11 @@ const shippingHubsFor = (
 const sellableHubsFor = (
   product: ProductDocument,
   language: string,
-  destinationCountry: CountryCode,
+  serviceable: ShippingHubCode[],
 ) => {
   const stocked = getStockedHubs(product.shipping?.stockByLanguage, language);
 
-  return serviceableHubs(destinationCountry).filter((hub) =>
-    stocked.includes(hub),
-  );
+  return serviceable.filter((hub) => stocked.includes(hub));
 };
 
 const isShelfLine = (line: PrintedStockLine, product?: ProductDocument) =>
@@ -105,7 +103,7 @@ const loadProducts = async (lines: PrintedStockLine[]) => {
 
 export const getPrintedStockAvailability = async (
   lines: PrintedStockLine[],
-  destinationCountry: CountryCode,
+  region: RegionCode,
 ): Promise<Map<string, number>> => {
   const candidates = lines.filter((line) => !line.isDigital);
   const availability = new Map<string, number>();
@@ -124,7 +122,7 @@ export const getPrintedStockAvailability = async (
       continue;
     }
 
-    const hubs = sellableHubsFor(product, group.language, destinationCountry);
+    const hubs = sellableHubsFor(product, group.language, [region]);
     const available = getPrintedStockCount(stock, group.language, hubs);
 
     for (const lineId of group.lineIds) {
@@ -155,7 +153,11 @@ export const findUnstockedPrintedLines = async (
       continue;
     }
 
-    const hubs = sellableHubsFor(product, group.language, destinationCountry);
+    const hubs = sellableHubsFor(
+      product,
+      group.language,
+      serviceableHubs(destinationCountry),
+    );
 
     if (
       !hasPrintedStock(
@@ -218,8 +220,7 @@ export const applyOrderPrintedStock = async (order: OrderDocument) => {
     return;
   }
 
-  const destinationCountry = (order.shippingAddress?.country ??
-    order.country) as CountryCode;
+  const destinationCountry = order.shippingAddress?.country ?? "";
   const applied: OrderPrintedStockMovement[] = [];
 
   for (const group of groups) {

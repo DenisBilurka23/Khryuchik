@@ -1,9 +1,9 @@
 import type { Locale } from "@/i18n/config";
-import type { CountryCode, CurrencyCode } from "@/utils";
+import type { CurrencyCode, RegionCode } from "@/utils";
 
 export type CartPageViewProps = {
   locale: Locale;
-  country: CountryCode;
+  region: RegionCode;
   currency: CurrencyCode;
   isShopClosed?: boolean;
 };

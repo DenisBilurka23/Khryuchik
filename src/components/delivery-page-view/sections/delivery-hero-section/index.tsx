@@ -3,7 +3,6 @@ import { Box, Container, Typography } from "@mui/material";
 import { HeroPanel } from "@/components/primitives";
 import { SectionEyebrow } from "@/components/section-eyebrow";
 import { accentSx } from "@/theme/sx";
-import { getCountryDisplayName } from "@/utils";
 
 import { RegionMap } from "./region-map";
 import type { DeliveryHeroSectionProps } from "./types";
@@ -63,15 +62,11 @@ export const DeliveryHeroSection = ({
   title,
   lede,
   highlights,
-  options,
   mapBadgeLabel,
   mapCity,
-  locale,
-  country,
+  region,
+  regionLabel,
 }: DeliveryHeroSectionProps) => {
-  const activeCountryLabel =
-    options[country]?.country ?? getCountryDisplayName(locale, country);
-
   return (
     <Box component="section" sx={{ pt: { xs: 3, md: 6 } }}>
       <Container maxWidth="lg">
@@ -110,7 +105,7 @@ export const DeliveryHeroSection = ({
           </Box>
 
           <Box sx={mapFrameSx}>
-            <RegionMap country={country} city={mapCity} />
+            <RegionMap region={region} city={mapCity} />
 
             <Box
               sx={{
@@ -131,7 +126,7 @@ export const DeliveryHeroSection = ({
                 component="strong"
                 sx={{ fontWeight: 600, color: "var(--color-text)" }}
               >
-                {activeCountryLabel}
+                {regionLabel}
               </Box>
             </Box>
           </Box>

@@ -5,7 +5,7 @@ import { CheckoutPageView } from "@/components/checkout-page-view";
 import type { CheckoutInitialCustomer } from "@/components/checkout-page-view/types";
 import { getRegionCurrency } from "@/server/localization/localization.service";
 import { getServerAuthSession } from "@/server/auth/config";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { isShopClosed } from "@/server/shop/maintenance.service";
 import { ShopMaintenanceView } from "@/components/shop-maintenance-view";
 import { NOINDEX_ROBOTS } from "@/constants/seo";
@@ -60,16 +60,16 @@ const LocalizedCheckoutPage = async ({
     return <ShopMaintenanceView />;
   }
 
-  const [country, session] = await Promise.all([
-    getRequestCountry(),
+  const [region, session] = await Promise.all([
+    getRequestRegion(),
     getServerAuthSession(),
   ]);
-  const currency = await getRegionCurrency(country);
+  const currency = await getRegionCurrency(region);
 
   return (
     <CheckoutPageView
       locale={lang}
-      country={country}
+      region={region}
       currency={currency}
       initialCustomer={initialCustomerFromSession(session)}
       initialShippingAddresses={session?.user?.shippingAddresses ?? []}

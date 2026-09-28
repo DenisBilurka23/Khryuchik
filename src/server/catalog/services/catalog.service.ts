@@ -5,7 +5,7 @@ import { cache } from "react";
 
 import { defaultLocale, type Locale } from "@/i18n/config";
 import {
-  type CountryCode,
+  type RegionCode,
   getLocalizedProductPath,
   isLocalizedProductSummary,
   localizeProductOptionGroups,
@@ -43,19 +43,19 @@ import { getApprovedReviewsForProduct } from "@/server/reviews/services/reviews.
 const localizeProductSummaries = (
   products: ProductDocument[],
   locale: Locale,
-  country: CountryCode,
+  region: RegionCode,
   regionPricing: RegionPricing,
 ) =>
   products
     .map((product) =>
-      localizeProductSummary(product, locale, country, regionPricing),
+      localizeProductSummary(product, locale, region, regionPricing),
     )
     .filter(isLocalizedProductSummary);
 
 export const getProductsForPlacement = cache(
   async (
     locale: Locale,
-    country: CountryCode,
+    region: RegionCode,
     placement: ProductPlacement,
     options?: {
       category?: string;
@@ -63,40 +63,37 @@ export const getProductsForPlacement = cache(
     },
   ) => {
     const [products, regionPricing] = await Promise.all([
-      findProductsForPlacement(placement, country, options),
-      getRegionPricing(country),
+      findProductsForPlacement(placement, region, options),
+      getRegionPricing(region),
     ]);
 
-    return localizeProductSummaries(products, locale, country, regionPricing);
+    return localizeProductSummaries(products, locale, region, regionPricing);
   },
 );
 
 export const getShopProducts = cache(
   async (
     locale: Locale,
-    country: CountryCode,
+    region: RegionCode,
     options?: {
       category?: string;
       limit?: number;
     },
   ) => {
     const [products, regionPricing] = await Promise.all([
-      findShopVisibleProducts(country, options),
-      getRegionPricing(country),
+      findShopVisibleProducts(region, options),
+      getRegionPricing(region),
     ]);
 
-    return localizeProductSummaries(products, locale, country, regionPricing);
+    return localizeProductSummaries(products, locale, region, regionPricing);
   },
 );
 
 export const getStoryTimelineBooks = cache(
-  async (
-    locale: Locale,
-    country: CountryCode,
-  ): Promise<StoryTimelineBook[]> => {
+  async (locale: Locale, region: RegionCode): Promise<StoryTimelineBook[]> => {
     const [products, regionPricing] = await Promise.all([
-      findShopVisibleProducts(country),
-      getRegionPricing(country),
+      findShopVisibleProducts(region),
+      getRegionPricing(region),
     ]);
     const books = localizeProductSummaries(
       products.filter(
@@ -105,7 +102,7 @@ export const getStoryTimelineBooks = cache(
           product.showInStory === true,
       ),
       locale,
-      country,
+      region,
       regionPricing,
     );
 
@@ -141,8 +138,8 @@ export const getStoryTimelineBooks = cache(
 );
 
 export const getBookCountsBySeries = cache(
-  async (country: CountryCode): Promise<Record<BookSeries, number>> => {
-    const products = await findShopVisibleProducts(country);
+  async (region: RegionCode): Promise<Record<BookSeries, number>> => {
+    const products = await findShopVisibleProducts(region);
     const counts = Object.fromEntries(
       BOOK_SERIES_VALUES.map((series) => [series, 0]),
     ) as Record<BookSeries, number>;
@@ -163,17 +160,17 @@ export const getBookCountsBySeries = cache(
 
 export const getProductSummariesByIds = async (
   locale: Locale,
-  country: CountryCode,
+  region: RegionCode,
   productIds: string[],
 ) => {
   const [products, regionPricing] = await Promise.all([
     findActiveProductsByIds(productIds),
-    getRegionPricing(country),
+    getRegionPricing(region),
   ]);
   const summaries = localizeProductSummaries(
     products,
     locale,
-    country,
+    region,
     regionPricing,
   );
   const productsById = new Map(
@@ -218,14 +215,14 @@ export type ProductDetailsResult =
   | { status: "pricing-unavailable"; title: string };
 
 export const getSitemapProductSlugs = cache(
-  async (country: CountryCode): Promise<string[]> =>
-    findSitemapProductSlugs(country),
+  async (region: RegionCode): Promise<string[]> =>
+    findSitemapProductSlugs(region),
 );
 
 export const getProductDetails = cache(
   async (
     locale: Locale,
-    country: CountryCode,
+    region: RegionCode,
     slug: string,
   ): Promise<ProductDetailsResult> => {
     const product = await findActiveProductBySlug(locale, slug);
@@ -234,18 +231,18 @@ export const getProductDetails = cache(
       return { status: "not-found" };
     }
 
-    const regionPricing = await getRegionPricing(country);
+    const regionPricing = await getRegionPricing(region);
     const summary = localizeProductSummary(
       product,
       locale,
-      country,
+      region,
       regionPricing,
     );
 
     if (!summary) {
       const isPriceable =
         regionPricing.status === "unavailable" &&
-        product.availableRegions?.includes(country) &&
+        product.availableRegions?.includes(region) &&
         !product.pricing[regionPricing.currency];
 
       if (!isPriceable) {
@@ -272,7 +269,6 @@ export const getProductDetails = cache(
       detailsDocument,
       product.printify?.variants,
       locale,
-      country,
       regionPricing,
       product.shipping?.stockByLanguage,
     );
@@ -344,19 +340,19 @@ export type ResolvedCart = {
 
 export const resolveCartItems = async (
   locale: Locale,
-  country: CountryCode,
+  region: RegionCode,
   items: StoredCartItem[],
 ): Promise<ResolvedCart> => {
   const productIds = Array.from(new Set(items.map((item) => item.productId)));
   const [products, regionPricing] = await Promise.all([
     findActiveProductsByIds(productIds),
-    getRegionPricing(country),
+    getRegionPricing(region),
   ]);
   const catalogProductIds = new Set(
     products.map((product) => product.productId),
   );
   const summaryById = new Map(
-    localizeProductSummaries(products, locale, country, regionPricing).map(
+    localizeProductSummaries(products, locale, region, regionPricing).map(
       (summary) => [summary.id, summary],
     ),
   );
@@ -375,7 +371,7 @@ export const resolveCartItems = async (
       isDigital: item.selections?.format === BOOK_FORMAT.digital,
       language: item.selections?.language,
     })),
-    country,
+    region,
   );
 
   const resolvedItems = items.flatMap((item) => {

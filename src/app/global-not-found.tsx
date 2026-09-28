@@ -5,18 +5,18 @@ import { NotFoundView } from "@/components/not-found-view";
 import { AuthSessionProvider } from "@/components/providers";
 import { StorefrontLayoutShell } from "@/components/storefront-layout-shell";
 import { getDictionary } from "@/i18n/dictionaries";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { resolveLocale } from "@/server/i18n/request-locale";
 
 import { bodyFont, displayFont } from "./fonts";
 import "./globals.css";
 
 export const generateMetadata = async (): Promise<Metadata> => {
-  const [locale, country] = await Promise.all([
+  const [locale, region] = await Promise.all([
     resolveLocale("storefront"),
-    getRequestCountry(),
+    getRequestRegion(),
   ]);
-  const { brand, notFoundPage } = (await getDictionary(locale, country))
+  const { brand, notFoundPage } = (await getDictionary(locale, region))
     .storefront;
 
   return {

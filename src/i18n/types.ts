@@ -4,7 +4,6 @@ import type {
 } from "@/constants/delivery";
 import type { EntertainmentCategoryKey } from "@/types/entertainment";
 import type { OrderFulfillmentSource } from "@/types/order";
-import type { CountryCode } from "@/utils/country";
 
 import type enMessages from "./messages/en.json";
 
@@ -31,9 +30,6 @@ export type LegalPageLabels = RawStorefront["termsPage"];
 
 export type ContactPageLabels = RawStorefront["contactPage"];
 
-export type DeliveryRegionOptionLabels =
-  RawDeliveryPage["hero"]["options"]["BY"];
-
 export type DeliveryReceiptCardLabels = {
   type: string;
   num: string;
@@ -52,10 +48,7 @@ export type DeliveryMethodIcon = (typeof DELIVERY_METHOD_ICONS)[number];
 
 export type DeliveryReturnsIcon = (typeof DELIVERY_RETURNS_ICONS)[number];
 
-export type DeliveryPageLabels = Omit<RawDeliveryPage, "hero" | "payment"> & {
-  hero: Omit<RawDeliveryPage["hero"], "options"> & {
-    options: Record<CountryCode, DeliveryRegionOptionLabels>;
-  };
+export type DeliveryPageLabels = Omit<RawDeliveryPage, "payment"> & {
   payment: RawDeliveryPage["payment"] & {
     receipt?: DeliveryReceiptCardLabels;
   };

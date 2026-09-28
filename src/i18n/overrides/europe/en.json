@@ -1,12 +1,12 @@
 {
   "productPage": {
     "details": {
-      "shipping": "Shipping across Belarus and internationally"
+      "shipping": "Shipping across Europe from our hub in Belgium"
     }
   },
   "deliveryPage": {
     "hero": {
-      "mapCity": "Minsk"
+      "mapCity": "Liège"
     },
     "methods": {
       "titleAccent": "how it arrives",
@@ -19,18 +19,18 @@
           "note": "Books leave our European hub in Belgium and travel to your address with tracking all the way."
         },
         {
+          "icon": "courier",
+          "name": "Made-to-order merch",
+          "meta": "Printed on demand",
+          "price": "Shown at checkout",
+          "note": "Merch is printed and shipped by our print partner in its own parcel. It does not reach every country — Belarus, for one — and checkout tells you if yours is an exception."
+        },
+        {
           "icon": "card",
           "name": "Digital editions",
           "meta": "Instantly",
           "price": "Free",
           "note": "E-books are emailed right after payment — nothing is shipped."
-        },
-        {
-          "icon": "courier",
-          "name": "Made-to-order merch",
-          "meta": "Not to Belarus",
-          "price": "Unavailable",
-          "note": "Our print partner does not ship made-to-order items to Belarus, so only books can be delivered here."
         }
       ]
     },
@@ -42,7 +42,7 @@
         },
         {
           "title": "Enter the address",
-          "desc": "We deliver to any address in Belarus — the rate is quoted for yours at checkout."
+          "desc": "We deliver across Europe — the rate is quoted for your exact address at checkout."
         },
         {
           "title": "Pay online",
@@ -61,20 +61,20 @@
           "a": "Yes. All payments are processed by Stripe, a PCI-DSS Level 1 certified provider. We never see or store your card details."
         },
         {
-          "q": "Will a Belarusian card work?",
-          "a": "Payment goes through Stripe, and some cards issued in Belarus are declined by the bank rather than by us. If yours does not go through, write to us and we will agree on another way."
-        },
-        {
           "q": "How long does the parcel take?",
           "a": "Usually 2–10 business days after dispatch, counted from our European hub. We email the tracking number as soon as the parcel ships."
         },
         {
           "q": "Will I owe customs duty?",
-          "a": "The parcel comes from Belgium, so it crosses a customs border. Belarusian customs may add duty or VAT when it arrives, under their own rules and limits. We do not collect that payment and cannot influence it — only customs can tell you the exact amount."
+          "a": "Not within the EU: the parcel ships from Belgium, so the price at checkout is final. Outside the EU — the UK, Switzerland, Norway, Belarus and others — the parcel crosses a customs border, and local customs may add duty or VAT under their own rules. We do not collect that payment and cannot influence it."
         },
         {
-          "q": "Can I order merch?",
-          "a": "Not to Belarus — our print partner does not ship made-to-order items here, so the shop offers books only."
+          "q": "Can I collect the order from a parcel point?",
+          "a": "In Belgium, France and the Netherlands you can pick a bpost parcel point at checkout. Everywhere else we deliver to your address."
+        },
+        {
+          "q": "Will a Belarusian card work?",
+          "a": "Payment goes through Stripe, and some cards issued in Belarus are declined by the bank rather than by us. If yours does not go through, write to us and we will agree on another way."
         },
         {
           "q": "What about returns?",
@@ -83,7 +83,7 @@
       ]
     },
     "finalCta": {
-      "titleSuffix": "and heading to you in Belarus."
+      "titleSuffix": "and heading to you in Europe."
     }
   }
 }

@@ -9,13 +9,13 @@ import type {
   CartResolveResponse,
   StoredCartItem,
 } from "@/types/cart";
-import type { CountryCode } from "@/utils";
+import type { RegionCode } from "@/utils";
 
 import { removeCartItems, useCart } from "@/stores/cart";
 
 export const useResolvedCart = (
   locale: Locale,
-  country: CountryCode,
+  region: RegionCode,
   itemsOverride?: StoredCartItem[],
 ) => {
   const cart = useCart();
@@ -95,7 +95,7 @@ export const useResolvedCart = (
     return () => {
       abortController.abort();
     };
-  }, [storedItems, country, locale, itemsOverride]);
+  }, [storedItems, region, locale, itemsOverride]);
 
   const subtotal = useMemo(
     () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),

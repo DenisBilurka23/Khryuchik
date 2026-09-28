@@ -20,7 +20,7 @@ const noticeSx = { mt: 3, borderRadius: "var(--radius-field)" };
 
 export const CartPageView = ({
   locale,
-  country,
+  region,
   currency,
   isShopClosed = false,
 }: CartPageViewProps) => {
@@ -46,7 +46,7 @@ export const CartPageView = ({
     isLoading,
     isPricingUnavailable,
     regionBlockedCount,
-  } = useResolvedCart(locale, country);
+  } = useResolvedCart(locale, region);
 
   const {
     code: promoCodeValue,

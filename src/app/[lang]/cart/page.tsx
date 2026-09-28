@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { CartPageView } from "@/components/cart-page-view";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { getRegionCurrency } from "@/server/localization/localization.service";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
@@ -38,13 +38,13 @@ const LocalizedCartPage = async ({ params }: LocalizedCartPageProps) => {
 
   await requireActiveLocale(lang);
 
-  const country = await getRequestCountry();
-  const currency = await getRegionCurrency(country);
+  const region = await getRequestRegion();
+  const currency = await getRegionCurrency(region);
 
   return (
     <CartPageView
       locale={lang}
-      country={country}
+      region={region}
       currency={currency}
       isShopClosed={isShopClosed()}
     />

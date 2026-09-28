@@ -30,7 +30,7 @@ import { getLocalizedPath } from "@/utils";
 import { isNavItemActive } from "@/utils/active-nav";
 
 import { Logo } from "@/components/logo";
-import { CountrySwitcher } from "../country-switcher";
+import { RegionSwitcher } from "../region-switcher";
 import { LocaleSwitcher } from "../locale-switcher";
 
 import type { MobileMenuItem, MobileMenuProps } from "./types";
@@ -46,10 +46,7 @@ const menuItemSx = (active: boolean) =>
     py: 1.5,
   }) as const;
 
-const iconByKey: Record<
-  MobileMenuItem["key"],
-  ComponentType<SvgIconProps>
-> = {
+const iconByKey: Record<MobileMenuItem["key"], ComponentType<SvgIconProps>> = {
   ...navIconByKey,
   account: PersonOutlineIcon,
   favorites: FavoriteBorderIcon,
@@ -57,10 +54,10 @@ const iconByKey: Record<
 
 export const MobileMenu = ({
   locale,
-  country,
+  region,
   localizedPaths,
   availableLocales,
-  availableCountries,
+  availableRegions,
   navItems,
   cartHref,
   homeHref,
@@ -143,19 +140,18 @@ export const MobileMenu = ({
           </Stack>
 
           <Box sx={{ display: "flex", gap: 1, mt: 3 }}>
-            {availableCountries.length > 1 && (
+            {availableRegions.length > 1 && (
               <Box sx={{ flex: 1 }}>
                 <Typography
                   variant="caption"
                   color="text.secondary"
                   sx={{ display: "block", mb: 0.75 }}
                 >
-                  {t("countrySwitcherLabel")}
+                  {t("regionSwitcherLabel")}
                 </Typography>
-                <CountrySwitcher
-                  country={country}
-                  locale={locale}
-                  availableCountries={availableCountries}
+                <RegionSwitcher
+                  region={region}
+                  availableRegions={availableRegions}
                   sx={{ minWidth: 0, width: "100%" }}
                 />
               </Box>

@@ -56,16 +56,18 @@ Two UI locales have shipped dictionaries so far: `en` (default) and `ru`. The de
 There is a single route tree, `src/app/[lang]`. Unprefixed URLs reach it through a rewrite in [`src/proxy.ts`](src/proxy.ts), which also:
 
 - redirects an explicit `/en/...` prefix to its unprefixed form, so each page has one address;
-- resolves the visitor's country from cookie, then geo headers, then the default region;
-- passes locale and country on as request headers, which `resolveLocale` and `getRequestCountry` read.
+- resolves the visitor's country from geo headers, falling back to the US;
+- passes locale and country on as request headers, which `resolveLocale` and `getRequestRegion` read.
 
-**Dictionaries are JSON in the repository, not in the database.** A base file per locale in `src/i18n/messages` is layered at request time with per-country overrides from `src/i18n/overrides/<COUNTRY>/<locale>.json`. The base carries region-neutral copy and a country overrides only the lines that differ, so most regions need no file at all.
+The storefront sells to two regions, `northAmerica` and `europe` — the same split as the shipping hubs. `getRequestRegion` takes the region from its cookie, then maps the visitor's country onto a region, then falls back to the default region. The region decides currency, which products are listed, stock and payment methods; the country in the shipping address is chosen separately at checkout.
+
+**Dictionaries are JSON in the repository, not in the database.** A base file per locale in `src/i18n/messages` is layered at request time with per-region overrides from `src/i18n/overrides/<region>/<locale>.json`. The base carries region-neutral copy and a region overrides only the lines that differ.
 
 Which locales are _active_ does live in MongoDB and is managed from the admin. The two halves are independent, which has consequences worth knowing: activating a locale without shipping a dictionary leaves the UI in English, and the URL prefixes the proxy recognises come from the built-in list in `src/i18n/config.ts`, so a new locale serves content but gets no prefixed route until it is added there too.
 
 Page metadata — title, description, canonical, `hreflang` alternates, Open Graph — is built by `createStorefrontMetadata` in [`src/server/i18n/metadata.ts`](src/server/i18n/metadata.ts), so the canonical rule lives in one place instead of in every page.
 
-Time zones follow the visitor's region, mapped in `src/constants/country-timezone.ts`. The admin is different: there is no single shop time zone, so each admin's own zone is detected in the browser, kept in a cookie and re-checked on every load — a move to another country corrects itself.
+Time zones follow the visitor's country, mapped in `src/constants/country-timezone.ts`. The admin is different: there is no single shop time zone, so each admin's own zone is detected in the browser, kept in a cookie and re-checked on every load — a move to another country corrects itself.
 
 Admin routes sit outside all of this under `src/app/(admin)/admin` and keep their own locale in a cookie.
 
@@ -91,7 +93,7 @@ Digital-only orders skip shipping entirely.
 
 ## Payments and orders
 
-Stripe Checkout is the card path; which methods a country gets comes from `getCountryPaymentMethods`, and cash on delivery and bank transfer exist for some regions.
+Stripe Checkout is the card path; which methods a region gets comes from `getRegionPaymentMethods`, and cash on delivery and bank transfer exist for some regions.
 
 The order lifecycle is driven by the Stripe webhook (`/api/checkout/stripe/webhook`), with a fallback on the success page for when the webhook is late. Confirmation, shipping and delivery e-mails go out over SMTP from `src/server/email`.
 
@@ -172,6 +174,7 @@ To upload source maps during a production build, also set `SENTRY_ORG`, `SENTRY_
 | `npm run seed:entertainment`      | Seed cartoons                               |
 | `npm run admin:grant -- <email>`  | Grant admin rights                          |
 | `npm run books:physical`          | Mark books as physical products             |
+| `npm run regions:migrate`         | Move country regions onto the two markets   |
 | `npm run printify:publish`        | Publish products to the fulfilment provider |
 | `npm run printify:webhooks`       | Register fulfilment webhooks                |
 | `npm run chitchats:quote`         | Probe carrier rates from the command line   |

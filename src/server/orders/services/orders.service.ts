@@ -129,22 +129,22 @@ const resolveOrderPromo = async (
 export const createOrder = async (
   input: CreateOrderInput,
 ): Promise<OrderDocument> => {
-  const { locale, country, items, paymentMethod } = input;
+  const { locale, region, items, paymentMethod } = input;
 
   if (items.length === 0) {
     throw new OrderValidationError("Cart is empty", "empty_cart");
   }
 
-  if (!isPaymentMethodAvailable(country, paymentMethod)) {
+  if (!isPaymentMethodAvailable(region, paymentMethod)) {
     throw new OrderValidationError(
-      `Payment method '${paymentMethod}' is not available for ${country}`,
+      `Payment method '${paymentMethod}' is not available for ${region}`,
       "unsupported_payment_method",
     );
   }
 
   const { items: resolved, isPricingUnavailable } = await resolveCartItems(
     locale,
-    country,
+    region,
     items,
   );
 
@@ -190,7 +190,7 @@ export const createOrder = async (
       isDigital: item.isDigital,
       language: item.selections?.language,
     })),
-    (input.shippingAddress?.country ?? country) as CountryCode,
+    input.shippingAddress?.country ?? "",
   );
 
   if (unstockedLineIds.size > 0) {
@@ -241,7 +241,7 @@ export const createOrder = async (
   );
 
   const shippingResult = await calculateOrderShipping({
-    country,
+    region,
     items: lineItems,
     subtotal,
     selectedOptionIds: input.selectedShippingOptionIds,
@@ -311,8 +311,8 @@ export const createOrder = async (
     createdAt: new Date().toISOString(),
     userId: input.userId,
     locale,
-    country,
-    currency: await getRegionCurrency(country),
+    region,
+    currency: await getRegionCurrency(region),
     items: orderItems,
     subtotal,
     shipping,

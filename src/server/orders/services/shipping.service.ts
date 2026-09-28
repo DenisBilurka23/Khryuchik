@@ -19,7 +19,7 @@ import type {
   ShippingQuote,
   ShippingQuoteGroup,
 } from "@/types/shipping";
-import type { CountryCode, CurrencyCode } from "@/utils";
+import type { CurrencyCode, RegionCode } from "@/utils";
 import { convertShippingAmount } from "@/utils";
 
 const PRINTIFY_QUOTE_CURRENCY: CurrencyCode = "USD";
@@ -46,7 +46,7 @@ export const toShippingQuoteGroups = (
   );
 
 export type OrderShippingInput = {
-  country: CountryCode;
+  region: RegionCode;
   items: OrderShippingItem[];
   subtotal: number;
   address?: ShippingQuoteAddress;
@@ -116,19 +116,19 @@ const pickOption = (
   null;
 
 export const calculateOrderShipping = async ({
-  country,
+  region,
   items,
   subtotal,
   address,
   selectedOptionIds,
 }: OrderShippingInput): Promise<OrderShippingResult> => {
-  const currency = await getRegionCurrency(country);
+  const currency = await getRegionCurrency(region);
 
   if (subtotal === 0) {
     return { status: "ok", currency, groups: [], shipping: 0 };
   }
 
-  const destinationCountry = address?.country ?? country;
+  const destinationCountry = address?.country ?? "";
   const grouping = await buildShipmentGroups(
     items.map((item) => ({ ...item, language: item.selections?.language })),
     destinationCountry,

@@ -65,10 +65,10 @@ const AdminOrdersContent = async () => {
     resolveLocale("admin"),
     resolveAdminTimeZone(),
   ]);
-  const tOrders = await getTranslations({
-    locale,
-    namespace: "adminPage.orders",
-  });
+  const [tOrders, tShared] = await Promise.all([
+    getTranslations({ locale, namespace: "adminPage.orders" }),
+    getTranslations({ locale, namespace: "adminPage.shared" }),
+  ]);
   const orders = await findOrders();
 
   const columns = tOrders.raw("columns") as OrderColumns;
@@ -111,7 +111,7 @@ const AdminOrdersContent = async () => {
                   <TableCell>{columns.order}</TableCell>
                   <TableCell>{columns.createdAt}</TableCell>
                   <TableCell>{columns.customer}</TableCell>
-                  <TableCell>{columns.country}</TableCell>
+                  <TableCell>{columns.region}</TableCell>
                   <TableCell align="right">{columns.total}</TableCell>
                   <TableCell>{columns.payment}</TableCell>
                   <TableCell>{columns.status}</TableCell>
@@ -146,7 +146,7 @@ const AdminOrdersContent = async () => {
                         </Typography>
                       </Stack>
                     </TableCell>
-                    <TableCell>{order.country}</TableCell>
+                    <TableCell>{tShared(`regions.${order.region}`)}</TableCell>
                     <TableCell align="right">
                       {formatCurrency(order.total, locale, order.currency)}
                     </TableCell>

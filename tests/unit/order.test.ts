@@ -23,7 +23,7 @@ const orderDocument = (
   id: "order-1",
   createdAt: "2026-09-25T00:00:00.000Z",
   locale: "en",
-  country: "US",
+  region: "northAmerica",
   currency: "USD",
   items: [],
   subtotal: 0,

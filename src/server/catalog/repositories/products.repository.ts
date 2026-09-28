@@ -6,7 +6,7 @@ import type { Locale } from "@/i18n/config";
 import { getMongoDb } from "@/server/db/mongodb";
 import type { ProductDocument, ProductPlacement } from "@/types/catalog";
 import type { ShippingHubCode } from "@/types/shipping";
-import type { CountryCode } from "@/utils";
+import type { RegionCode } from "@/utils";
 
 const collectionName = "products";
 
@@ -76,7 +76,7 @@ export const findActiveProductBySlug = async (
 
 export const findProductsForPlacement = async (
   placement: ProductPlacement,
-  country: CountryCode,
+  region: RegionCode,
   options?: ProductPlacementQueryOptions,
 ) => {
   const collection = await getProductsCollection();
@@ -87,7 +87,7 @@ export const findProductsForPlacement = async (
     .find(
       {
         "status.isActive": true,
-        availableRegions: country,
+        availableRegions: region,
         ...(placement === "shop"
           ? { "status.visibleInShop": true }
           : {
@@ -109,7 +109,7 @@ export const findProductsForPlacement = async (
 };
 
 export const findShopVisibleProducts = async (
-  country: CountryCode,
+  region: RegionCode,
   options?: ShopProductsQueryOptions,
 ) => {
   const collection = await getProductsCollection();
@@ -121,7 +121,7 @@ export const findShopVisibleProducts = async (
       {
         "status.isActive": true,
         "status.visibleInShop": true,
-        availableRegions: country,
+        availableRegions: region,
         ...(category ? { "classification.category": category } : {}),
       },
       { projection: { _id: 0 } },
@@ -135,14 +135,14 @@ export const findShopVisibleProducts = async (
   return cursor.toArray();
 };
 
-export const findSitemapProductSlugs = async (country: CountryCode) => {
+export const findSitemapProductSlugs = async (region: RegionCode) => {
   const collection = await getProductsCollection();
   const products = await collection
     .find(
       {
         "status.isActive": true,
         "status.visibleInShop": true,
-        availableRegions: country,
+        availableRegions: region,
       },
       { projection: { _id: 0, slug: 1 } },
     )
@@ -158,7 +158,7 @@ export const findSitemapProductSlugs = async (country: CountryCode) => {
   );
 };
 
-export const findCategoryKeysWithProducts = async (country: CountryCode) => {
+export const findCategoryKeysWithProducts = async (region: RegionCode) => {
   const collection = await getProductsCollection();
 
   const categoryGroups = await collection
@@ -167,7 +167,7 @@ export const findCategoryKeysWithProducts = async (country: CountryCode) => {
         $match: {
           "status.isActive": true,
           "status.visibleInShop": true,
-          availableRegions: country,
+          availableRegions: region,
         },
       },
       { $group: { _id: "$classification.category" } },

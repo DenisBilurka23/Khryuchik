@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { ContactPageView } from "@/components/contact-page-view";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
@@ -38,9 +38,9 @@ const LocalizedContactPage = async ({ params }: LocalizedContactPageProps) => {
 
   await requireActiveLocale(lang);
 
-  const country = await getRequestCountry();
+  const region = await getRequestRegion();
 
-  return <ContactPageView locale={lang} country={country} />;
+  return <ContactPageView locale={lang} region={region} />;
 };
 
 export default LocalizedContactPage;

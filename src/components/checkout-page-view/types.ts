@@ -5,7 +5,7 @@ import type { CheckoutPageLabels } from "@/i18n/types";
 import type { StoredCartItem } from "@/types/cart";
 import type { ShippingQuoteGroup } from "@/types/shipping";
 import type { UserShippingAddress } from "@/types/users";
-import type { CountryCode, CurrencyCode, PaymentMethod } from "@/utils";
+import type { CurrencyCode, PaymentMethod, RegionCode } from "@/utils";
 
 export type CheckoutInitialCustomer = {
   firstName?: string;
@@ -16,7 +16,7 @@ export type CheckoutInitialCustomer = {
 
 export type CheckoutPageViewProps = {
   locale: Locale;
-  country: CountryCode;
+  region: RegionCode;
   currency: CurrencyCode;
   initialCustomer?: CheckoutInitialCustomer;
   initialShippingAddresses?: UserShippingAddress[];

@@ -4,21 +4,21 @@ import { getTranslations } from "next-intl/server";
 
 import { Logo } from "@/components/logo";
 import { CartButton } from "./cart-button";
-import { CountrySwitcher } from "./country-switcher";
 import { FavoritesButton } from "./favorites-button";
 import { LocaleSwitcher } from "./locale-switcher";
 import { MobileMenu } from "./mobile-menu";
 import { HeaderNavLinks } from "./nav-links";
+import { RegionSwitcher } from "./region-switcher";
 import type { StorefrontHeaderProps, StorefrontNavItem } from "./types";
 import { UserButton } from "./user-button";
 
 export const StorefrontHeader = async ({
   locale,
-  country,
+  region,
   homeHref,
   localizedPaths,
   availableLocales,
-  availableCountries,
+  availableRegions,
   navigationPaths,
 }: StorefrontHeaderProps) => {
   const t = await getTranslations({ locale, namespace: "storefront" });
@@ -107,10 +107,9 @@ export const StorefrontHeader = async ({
                   gap: 1,
                 }}
               >
-                <CountrySwitcher
-                  country={country}
-                  locale={locale}
-                  availableCountries={availableCountries}
+                <RegionSwitcher
+                  region={region}
+                  availableRegions={availableRegions}
                   sx={{ minWidth: 64 }}
                 />
 
@@ -124,10 +123,10 @@ export const StorefrontHeader = async ({
 
               <MobileMenu
                 locale={locale}
-                country={country}
+                region={region}
                 localizedPaths={localizedPaths}
                 availableLocales={availableLocales}
-                availableCountries={availableCountries}
+                availableRegions={availableRegions}
                 navItems={navItems}
                 cartHref={navigationPaths?.cart ?? "/cart"}
                 homeHref={homeHref}

@@ -55,7 +55,7 @@ const emptyStateSx = {
 
 export const ShopCatalog = async ({
   locale,
-  country,
+  region,
   categories,
   products,
   initialCategory,
@@ -89,7 +89,7 @@ export const ShopCatalog = async ({
   const { shopHref, filters, seriesFilters, filteredProducts } =
     createShopPageViewModel({
       locale,
-      country,
+      region,
       allFilterLabel: tShopPage("filters.all"),
       categories,
       products,

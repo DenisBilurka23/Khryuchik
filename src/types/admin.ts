@@ -13,7 +13,11 @@ import type {
   EntertainmentTranslation,
   EntertainmentVideoStatus,
 } from "@/types/entertainment";
-import type { LocaleDocument, RegionDocument } from "@/types/localization";
+import type {
+  LocaleDocument,
+  RegionCode,
+  RegionDocument,
+} from "@/types/localization";
 import type { OrderPaymentStatus, OrderStatus } from "@/types/order";
 import type { AuthProvider } from "@/types/users";
 
@@ -162,8 +166,7 @@ export type AdminLocaleListItem = {
 };
 
 export type AdminRegionListItem = {
-  code: string;
-  label: string;
+  code: RegionCode;
   currency: string;
   isActive: boolean;
   isDefault: boolean;

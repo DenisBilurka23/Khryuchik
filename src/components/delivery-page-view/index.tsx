@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import type { DeliveryPageLabels } from "@/i18n/types";
-import { getCountryDisplayName, getLocalizedPath } from "@/utils";
+import { getLocalizedPath } from "@/utils";
 
 import { PageShell } from "@/components/page-shell";
 import {
@@ -18,12 +18,12 @@ import type { DeliveryPageViewProps } from "./types";
 
 export const DeliveryPageView = async ({
   locale,
-  country,
+  region,
 }: DeliveryPageViewProps) => {
-  const t = await getTranslations({
-    locale,
-    namespace: "storefront.deliveryPage",
-  });
+  const [t, tRegions] = await Promise.all([
+    getTranslations({ locale, namespace: "storefront.deliveryPage" }),
+    getTranslations({ locale, namespace: "storefront.regions" }),
+  ]);
   const hero = t.raw("hero") as DeliveryPageLabels["hero"];
   const payment = t.raw("payment") as DeliveryPageLabels["payment"];
   const methods = t.raw("methods") as DeliveryPageLabels["methods"];
@@ -32,15 +32,18 @@ export const DeliveryPageView = async ({
   const returns = t.raw("returns") as DeliveryPageLabels["returns"];
   const finalCta = t.raw("finalCta") as DeliveryPageLabels["finalCta"];
 
-  const paymentVariant = getDeliveryPaymentVariant(country);
+  const paymentVariant = getDeliveryPaymentVariant(region);
+  const regionLabel = tRegions(`${region}.label`);
   const shopHref = getLocalizedPath(locale, "/shop");
-  const methodsTitlePrefix = t("methods.titlePrefix", {
-    country: getCountryDisplayName(locale, country),
-  });
+  const methodsTitlePrefix = t("methods.titlePrefix", { region: regionLabel });
 
   return (
     <PageShell>
-      <DeliveryHeroSection {...hero} locale={locale} country={country} />
+      <DeliveryHeroSection
+        {...hero}
+        region={region}
+        regionLabel={regionLabel}
+      />
       <DeliveryPaymentSection {...payment} paymentVariant={paymentVariant} />
       <DeliveryMethodsSection {...methods} titlePrefix={methodsTitlePrefix} />
       <DeliveryStepsSection {...steps} />

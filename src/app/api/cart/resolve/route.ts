@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 import { defaultLocale, isLocale } from "@/i18n/config";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
 import { isStoredCartItem } from "@/types/cart-guards";
 
@@ -20,8 +20,8 @@ export const POST = async (request: NextRequest) => {
   const items = Array.isArray(payload?.items)
     ? payload.items.filter(isStoredCartItem)
     : [];
-  const country = await getRequestCountry();
-  const resolvedCart = await resolveCartItems(locale, country, items);
+  const region = await getRequestRegion();
+  const resolvedCart = await resolveCartItems(locale, region, items);
   const response = NextResponse.json(resolvedCart);
 
   response.headers.set("Cache-Control", "no-store, max-age=0");

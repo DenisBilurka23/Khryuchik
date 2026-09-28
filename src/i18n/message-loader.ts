@@ -1,4 +1,4 @@
-import type { CountryCode } from "@/utils";
+import type { RegionCode } from "@/utils";
 
 import { defaultLocale, type Locale } from "./config";
 import enDictionary from "./messages/en.json";
@@ -25,27 +25,27 @@ export const dictionariesByLocale: Record<Locale, Dictionary> = {
 // specifics on top.
 const storefrontOverrideLoaders: Partial<
   Record<
-    CountryCode,
+    RegionCode,
     Partial<Record<Locale, () => Promise<StorefrontDictionaryOverride>>>
   >
 > = {
-  BY: {
+  europe: {
     en: () =>
-      import("./overrides/BY/en.json").then(
+      import("./overrides/europe/en.json").then(
         (module) => module.default as StorefrontDictionaryOverride,
       ),
     ru: () =>
-      import("./overrides/BY/ru.json").then(
+      import("./overrides/europe/ru.json").then(
         (module) => module.default as StorefrontDictionaryOverride,
       ),
   },
-  US: {
+  northAmerica: {
     en: () =>
-      import("./overrides/US/en.json").then(
+      import("./overrides/northAmerica/en.json").then(
         (module) => module.default as StorefrontDictionaryOverride,
       ),
     ru: () =>
-      import("./overrides/US/ru.json").then(
+      import("./overrides/northAmerica/ru.json").then(
         (module) => module.default as StorefrontDictionaryOverride,
       ),
   },
@@ -89,9 +89,9 @@ const mergeDeep = <T extends Record<string, unknown>>(
 const buildStorefrontDictionary = async (
   locale: Locale,
   dictionary: Dictionary,
-  country: CountryCode,
+  region: RegionCode,
 ): Promise<StorefrontDictionary> => {
-  const overrideLoader = storefrontOverrideLoaders[country]?.[locale];
+  const overrideLoader = storefrontOverrideLoaders[region]?.[locale];
   const override = overrideLoader ? await overrideLoader() : undefined;
 
   return mergeDeep(dictionary.storefront, override);
@@ -99,7 +99,7 @@ const buildStorefrontDictionary = async (
 
 export const loadMessages = async (
   locale: Locale,
-  country: CountryCode,
+  region: RegionCode,
 ): Promise<Dictionary> => {
   // Admin-managed locales may not ship a UI dictionary yet; fall back to the
   // default-locale (English) copy until a translation file is added in code.
@@ -108,7 +108,7 @@ export const loadMessages = async (
 
   return {
     metadata: dictionary.metadata,
-    storefront: await buildStorefrontDictionary(locale, dictionary, country),
+    storefront: await buildStorefrontDictionary(locale, dictionary, region),
     authPage: dictionary.authPage,
     registerPage: dictionary.registerPage,
     forgotPasswordPage: dictionary.forgotPasswordPage,

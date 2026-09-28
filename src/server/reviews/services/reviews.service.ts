@@ -15,7 +15,7 @@ import {
   insertReview,
 } from "@/server/reviews/repositories/reviews.repository";
 import type { ProductReview } from "@/types/product-details";
-import { getRequestTimeZone } from "@/server/country/request-country";
+import { getRequestTimeZone } from "@/server/region/request-region";
 import { isReviewableOrder } from "@/utils";
 import type {
   AdminReviewListItem,

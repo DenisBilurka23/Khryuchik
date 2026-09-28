@@ -3,7 +3,12 @@ import "server-only";
 import type { ContactMessageInput } from "@/types/contact";
 import type { OrderDocument } from "@/types/order";
 import type { ReviewDocument } from "@/types/reviews";
-import { formatCustomerName, hasLivePrintifyOrder } from "@/utils";
+import {
+  formatCustomerName,
+  getCountryDisplayName,
+  hasLivePrintifyOrder,
+  type RegionCode,
+} from "@/utils";
 
 const TELEGRAM_API = "https://api.telegram.org";
 const TELEGRAM_TIMEOUT_MS = 5_000;
@@ -12,6 +17,11 @@ const paymentMethodLabels: Record<string, string> = {
   stripe: "Карта · Stripe",
   cod: "Наложенный платёж",
   telegram_transfer: "Перевод на карту",
+};
+
+const regionLabels: Record<RegionCode, string> = {
+  northAmerica: "Северная Америка",
+  europe: "Европа",
 };
 
 const paymentStatusLabels: Record<string, string> = {
@@ -44,6 +54,16 @@ const formatAddress = (order: OrderDocument): string => {
     .filter((part) => part && part.length > 0)
     .join(", ");
 };
+
+const formatDestination = (order: OrderDocument): string =>
+  [
+    order.shippingAddress &&
+      getCountryDisplayName("ru", order.shippingAddress.country),
+    regionLabels[order.region],
+    order.currency,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
 const formatContact = (order: OrderDocument): string => {
   const parts: string[] = [];
@@ -78,7 +98,7 @@ const buildNewOrderMessage = (order: OrderDocument): string => {
     "",
     `👤 ${formatCustomerName(order.customer)}`,
     `📞 ${formatContact(order)}`,
-    `🌍 ${order.country} · ${order.currency}`,
+    `🌍 ${formatDestination(order)}`,
     `💳 ${payment} (${status})`,
     "",
     "📦 Товары:",

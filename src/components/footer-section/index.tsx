@@ -5,17 +5,17 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import type { Locale } from "@/i18n/config";
 import type { StorefrontFooterSection } from "@/i18n/types";
-import type { CountryCode } from "@/utils";
+import type { RegionCode } from "@/utils";
 import { getFooterItemHref } from "@/utils/footer";
 
 import { FooterSocialLinks } from "./social-links";
 
 export const FooterSection = async ({
   locale,
-  country,
+  region,
 }: {
   locale: Locale;
-  country: CountryCode;
+  region: RegionCode;
 }) => {
   const [tStorefront, tFooter] = await Promise.all([
     getTranslations({ locale, namespace: "storefront" }),
@@ -70,7 +70,7 @@ export const FooterSection = async ({
                     items={section.items.map((item) => ({
                       key: item.key,
                       label: item.label,
-                      href: getFooterItemHref(item.key, locale, country),
+                      href: getFooterItemHref(item.key, locale, region),
                     }))}
                   />
                 </Box>
@@ -86,7 +86,7 @@ export const FooterSection = async ({
                   }}
                 >
                   {section.items.map((item) => {
-                    const href = getFooterItemHref(item.key, locale, country);
+                    const href = getFooterItemHref(item.key, locale, region);
 
                     return (
                       <Link

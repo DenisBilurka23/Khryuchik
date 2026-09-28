@@ -17,7 +17,8 @@ import type {
   ProductOptionGroups,
 } from "@/types/product-details";
 
-import type { CountryCode, CurrencyCode } from "./country";
+import type { CurrencyCode } from "./country";
+import type { RegionCode } from "./region";
 import { convertFromUsd } from "./price-conversion";
 import { toPrintedLanguages } from "./printed-stock";
 import {
@@ -32,39 +33,6 @@ const nativePricing: RegionPricing = {
 
 export const isPurchasableAvailability = (availability: ProductAvailability) =>
   availability !== "out_of_stock";
-
-const localizeDeliveryCopy = (
-  delivery: string[],
-  locale: Locale,
-  country: CountryCode,
-) => {
-  if (country === "BY") {
-    return delivery;
-  }
-
-  return delivery.map((item) => {
-    if (locale === "ru") {
-      return item
-        .replaceAll("по Беларуси", "по США")
-        .replaceAll("по Беларуси и в другие страны", "по США и в другие страны")
-        .replaceAll("Международная доставка", "Доставка в другие страны")
-        .replaceAll("Международная", "Международная");
-    }
-
-    return item
-      .replaceAll("across Belarus", "across the USA")
-      .replaceAll(
-        "across Belarus and internationally",
-        "across the USA and internationally",
-      )
-      .replaceAll("ships across Belarus", "ships across the USA")
-      .replaceAll("Shipping across Belarus", "Shipping across the USA")
-      .replaceAll(
-        "Printed edition ships across Belarus",
-        "Printed edition ships across the USA",
-      );
-  });
-};
 
 const resolveCurrencyPricing = (
   product: ProductDocument,
@@ -98,10 +66,10 @@ const resolveCurrencyPricing = (
 export const localizeProductSummary = (
   product: ProductDocument,
   locale: Locale,
-  country: CountryCode,
+  region: RegionCode,
   regionPricing: RegionPricing = nativePricing,
 ): LocalizedProductSummary | null => {
-  if (!product.availableRegions?.includes(country)) {
+  if (!product.availableRegions?.includes(region)) {
     return null;
   }
   const translation =
@@ -225,7 +193,6 @@ export const toProductDetails = (
   detailsDocument: ProductDetailDocument,
   printifyVariants: PrintifyVariantLink[] | undefined,
   locale: Locale,
-  country: CountryCode,
   regionPricing: RegionPricing = nativePricing,
   printedStock?: ProductPrintedStock,
 ): ProductDetails | null => {
@@ -264,7 +231,7 @@ export const toProductDetails = (
     variantMatrix,
     printedLanguages: toPrintedLanguages(printedStock),
     specs: translation.specs,
-    delivery: localizeDeliveryCopy(translation.delivery, locale, country),
+    delivery: translation.delivery,
     reviews: translation.reviews,
     digitalAssets: translation.digitalAssets,
     relatedIds: detailsDocument.relatedProductIds,

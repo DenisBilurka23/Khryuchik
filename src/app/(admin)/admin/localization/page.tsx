@@ -23,6 +23,7 @@ import {
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { getAdminLocalizationData } from "@/server/localization/localization.service";
 import { resolveLocale } from "@/server/i18n/request-locale";
+import { REGION_CODES } from "@/utils";
 
 type AdminLocalizationPageProps = {
   searchParams: Promise<{ deleted?: string; error?: string; saved?: string }>;
@@ -51,6 +52,9 @@ const AdminLocalizationPage = async ({
     getAdminLocalizationData(locale),
     getTranslations({ locale, namespace: "adminPage.localization" }),
   ]);
+  const missingRegionCodes = REGION_CODES.filter(
+    (code) => !data.regions.some((region) => region.code === code),
+  );
   const labels = {
     eyebrow: tLocalization("eyebrow"),
     title: tLocalization("title"),
@@ -194,53 +198,55 @@ const AdminLocalizationPage = async ({
         </Stack>
       </AdminSectionCard>
 
-      <AdminSectionCard
-        title={labels.newRegionTitle}
-        description={labels.newRegionDescription}
-      >
-        <form action={saveAdminRegionAction}>
-          <Stack gap={2}>
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  md: "repeat(3, minmax(0, 1fr))",
-                },
-                gap: 2,
-              }}
-            >
-              <NewRegionFields
-                locale={locale}
-                excludeCodes={data.regions.map((region) => region.code)}
-              />
-              <TextField
-                label={labels.fields.sortOrder}
-                name="sortOrder"
-                type="number"
-                defaultValue={100}
-              />
-            </Box>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-              <AdminCheckboxField
-                control={<Checkbox name="isActive" defaultChecked />}
-                label={labels.toggles.isActive}
-              />
-              <AdminCheckboxField
-                control={<Checkbox name="isDefault" />}
-                label={labels.toggles.isDefault}
-              />
-            </Box>
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <AdminConfirmSubmitButton
-                variant="contained"
-                label={labels.saveButton}
-                pendingLabel={labels.savingButton}
-              />
-            </Box>
-          </Stack>
-        </form>
-      </AdminSectionCard>
+      {missingRegionCodes.length > 0 ? (
+        <AdminSectionCard
+          title={labels.newRegionTitle}
+          description={labels.newRegionDescription}
+        >
+          <form action={saveAdminRegionAction}>
+            <Stack gap={2}>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    md: "repeat(3, minmax(0, 1fr))",
+                  },
+                  gap: 2,
+                }}
+              >
+                <NewRegionFields
+                  locale={locale}
+                  regionCodes={missingRegionCodes}
+                />
+                <TextField
+                  label={labels.fields.sortOrder}
+                  name="sortOrder"
+                  type="number"
+                  defaultValue={100}
+                />
+              </Box>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                <AdminCheckboxField
+                  control={<Checkbox name="isActive" defaultChecked />}
+                  label={labels.toggles.isActive}
+                />
+                <AdminCheckboxField
+                  control={<Checkbox name="isDefault" />}
+                  label={labels.toggles.isDefault}
+                />
+              </Box>
+              <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <AdminConfirmSubmitButton
+                  variant="contained"
+                  label={labels.saveButton}
+                  pendingLabel={labels.savingButton}
+                />
+              </Box>
+            </Stack>
+          </form>
+        </AdminSectionCard>
+      ) : null}
     </Stack>
   );
 };

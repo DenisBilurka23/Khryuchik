@@ -7,7 +7,8 @@ import type {
   ShippingProviderCode,
   ShippingQuoteGroup,
 } from "@/types/shipping";
-import type { CountryCode, CurrencyCode, PaymentMethod } from "@/utils/country";
+import type { CurrencyCode, PaymentMethod } from "@/utils/country";
+import type { RegionCode } from "@/utils/region";
 
 export type OrderItemPrintifyLink = {
   printifyProductId: string;
@@ -140,7 +141,7 @@ export type OrderDocument = {
   createdAt: string;
   userId?: string;
   locale: Locale;
-  country: CountryCode;
+  region: RegionCode;
   currency: CurrencyCode;
   items: OrderItem[];
   subtotal: number;
@@ -195,7 +196,7 @@ export type AccountOrder = {
 
 export type CreateOrderInput = {
   locale: Locale;
-  country: CountryCode;
+  region: RegionCode;
   items: StoredCartItem[];
   customer: OrderCustomer;
   shippingAddress?: OrderShippingAddress;

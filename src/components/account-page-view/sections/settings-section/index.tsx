@@ -23,16 +23,16 @@ import {
   PersonalDetailsSection,
   SectionCard,
 } from "../../shared";
-import { CountrySwitcher } from "@/components/storefront-header/country-switcher";
+import { RegionSwitcher } from "@/components/storefront-header/region-switcher";
 import { LocaleSwitcher } from "@/components/storefront-header/locale-switcher";
 
 import type { SettingsSectionProps } from "./types";
 
 export const SettingsSection = ({
   locale,
-  country,
+  region,
   availableLocales,
-  availableCountries,
+  availableRegions,
   profileEditor,
   authProviders,
   userEmail,
@@ -58,17 +58,16 @@ export const SettingsSection = ({
 
       <SectionCard title={t("languageRegion")}>
         <Grid container spacing={2}>
-          {availableCountries.length > 1 && (
+          {availableRegions.length > 1 && (
             <Grid size={{ xs: 12, md: 6 }}>
-              <CountrySwitcher
-                country={country}
-                locale={locale}
-                availableCountries={availableCountries}
+              <RegionSwitcher
+                region={region}
+                availableRegions={availableRegions}
                 sx={{ width: "100%", minWidth: 0 }}
               />
             </Grid>
           )}
-          <Grid size={{ xs: 12, md: availableCountries.length > 1 ? 6 : 12 }}>
+          <Grid size={{ xs: 12, md: availableRegions.length > 1 ? 6 : 12 }}>
             <LocaleSwitcher
               locale={locale}
               localizedPaths={localizedAccountPaths}

@@ -1,5 +1,4 @@
 import {
-  COUNTRY_COOKIE_NAME,
   COUNTRY_HEADER,
   defaultCountry,
   geoCountryHeaderNames,
@@ -19,7 +18,6 @@ export type CurrencyCode = string;
 export type PaymentMethod = "stripe" | "cod" | "telegram_transfer";
 
 export {
-  COUNTRY_COOKIE_NAME,
   COUNTRY_HEADER,
   defaultCountry,
   FALLBACK_TIME_ZONE,
@@ -67,21 +65,6 @@ export const getAllCountriesSorted = (
     label: getCountryDisplayName(locale, code),
   })).sort((a, b) => a.label.localeCompare(b.label, locale));
 
-const defaultPaymentMethods: PaymentMethod[] = ["stripe"];
-
-// Countries that pay by something other than a card. Empty since Belarus
-// moved to Stripe - kept as the hook a region needs when it cannot.
-const countryPaymentMethods: Partial<Record<CountryCode, PaymentMethod[]>> = {};
-
-export const getCountryPaymentMethods = (
-  country: CountryCode,
-): PaymentMethod[] => countryPaymentMethods[country] ?? defaultPaymentMethods;
-
-export const isPaymentMethodAvailable = (
-  country: CountryCode,
-  method: PaymentMethod,
-): boolean => getCountryPaymentMethods(country).includes(method);
-
 export const getCountryFromGeoCode = (value: string | null | undefined) => {
   if (!value) {
     return null;
@@ -98,20 +81,4 @@ export const getCountryFromGeoHeaders = (headers: Headers) => {
     .find(Boolean);
 
   return getCountryFromGeoCode(headerValue);
-};
-
-export const readCountryCookie = (
-  cookieHeader: string | null,
-): string | null => {
-  if (!cookieHeader) {
-    return null;
-  }
-
-  return (
-    cookieHeader
-      .split(";")
-      .map((part) => part.trim())
-      .find((part) => part.startsWith(`${COUNTRY_COOKIE_NAME}=`))
-      ?.split("=")[1] ?? null
-  );
 };

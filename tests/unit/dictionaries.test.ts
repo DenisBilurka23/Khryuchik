@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import byEn from "@/i18n/overrides/BY/en.json";
-import byRu from "@/i18n/overrides/BY/ru.json";
-import usEn from "@/i18n/overrides/US/en.json";
-import usRu from "@/i18n/overrides/US/ru.json";
+import europeEn from "@/i18n/overrides/europe/en.json";
+import europeRu from "@/i18n/overrides/europe/ru.json";
+import northAmericaEn from "@/i18n/overrides/northAmerica/en.json";
+import northAmericaRu from "@/i18n/overrides/northAmerica/ru.json";
 import en from "@/i18n/messages/en.json";
 import ru from "@/i18n/messages/ru.json";
 
@@ -43,20 +43,20 @@ describe("dictionaries", () => {
   });
 
   it.each([
-    ["BY", byEn, byRu],
-    ["US", usEn, usRu],
+    ["europe", europeEn, europeRu],
+    ["northAmerica", northAmericaEn, northAmericaRu],
   ])(
     "keeps the %s override shapes aligned across locales",
-    (_country, enOverride, ruOverride) => {
+    (_region, enOverride, ruOverride) => {
       expect(sortedPaths(ruOverride)).toEqual(sortedPaths(enOverride));
     },
   );
 
   it.each([
-    ["BY/en", byEn],
-    ["BY/ru", byRu],
-    ["US/en", usEn],
-    ["US/ru", usRu],
+    ["europe/en", europeEn],
+    ["europe/ru", europeRu],
+    ["northAmerica/en", northAmericaEn],
+    ["northAmerica/ru", northAmericaRu],
   ])("only overrides existing storefront keys in %s", (label, override) => {
     const basePaths = new Set(sortedPaths(en.storefront));
 

@@ -5,7 +5,7 @@ import { cache } from "react";
 import type { Locale } from "@/i18n/config";
 import type { LocalizedCategory } from "@/types/catalog";
 import {
-  type CountryCode,
+  type RegionCode,
   isLocalizedCategory,
   localizeCategory,
 } from "@/utils";
@@ -17,9 +17,9 @@ import { findCategoryKeysWithProducts } from "../repositories/products.repositor
 
 const keepCategoriesSoldIn = async (
   categories: LocalizedCategory[],
-  country: CountryCode,
+  region: RegionCode,
 ) => {
-  const categoryKeys = new Set(await findCategoryKeysWithProducts(country));
+  const categoryKeys = new Set(await findCategoryKeysWithProducts(region));
 
   return categories.filter((category) => categoryKeys.has(category.key));
 };
@@ -33,17 +33,17 @@ export const getShopCategories = cache(async (locale: Locale) => {
 });
 
 export const getShopCategoriesForRegion = cache(
-  async (locale: Locale, country: CountryCode) =>
-    keepCategoriesSoldIn(await getShopCategories(locale), country),
+  async (locale: Locale, region: RegionCode) =>
+    keepCategoriesSoldIn(await getShopCategories(locale), region),
 );
 
 export const getHomeTabCategories = cache(
-  async (locale: Locale, country: CountryCode) => {
+  async (locale: Locale, region: RegionCode) => {
     const categories = await findHomeTabCategories();
     const localizedCategories = categories
       .map((category) => localizeCategory(category, locale))
       .filter(isLocalizedCategory);
 
-    return keepCategoriesSoldIn(localizedCategories, country);
+    return keepCategoriesSoldIn(localizedCategories, region);
   },
 );

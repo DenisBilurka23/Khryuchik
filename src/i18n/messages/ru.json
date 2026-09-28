@@ -10,7 +10,17 @@
       "shortLabel": "Хрючик"
     },
     "localeSwitcherLabel": "Выбор языка",
-    "countrySwitcherLabel": "Выбор страны",
+    "regionSwitcherLabel": "Регион",
+    "regions": {
+      "northAmerica": {
+        "label": "Северная Америка",
+        "short": "NA"
+      },
+      "europe": {
+        "label": "Европа",
+        "short": "EU"
+      }
+    },
     "cartLabel": "Корзина",
     "cartToast": {
       "addedToCart": "Добавлено в корзину",
@@ -416,18 +426,6 @@
           "Электронные книги — сразу после оплаты"
         ],
         "toggleAriaLabel": "Выбор региона",
-        "options": {
-          "BY": {
-            "flag": "🇧🇾",
-            "country": "Беларусь",
-            "subtitle": "Оплата онлайн · Stripe"
-          },
-          "US": {
-            "flag": "🇺🇸",
-            "country": "США",
-            "subtitle": "Оплата онлайн · Stripe"
-          }
-        },
         "mapBadgeLabel": "Сейчас выбрано:",
         "mapCity": ""
       },
@@ -453,7 +451,7 @@
       },
       "methods": {
         "eyebrow": "Способы доставки",
-        "titlePrefix": "{country}:",
+        "titlePrefix": "{region}:",
         "titleAccent": "как доставить",
         "sub": "Стоимость и сроки считает перевозчик при оформлении заказа — по вашему адресу. Книги собираем за 1–2 рабочих дня, мерч печатается под заказ.",
         "items": [
@@ -1377,6 +1375,10 @@
           "google": "Google",
           "credentials": "Email"
         }
+      },
+      "regions": {
+        "northAmerica": "Северная Америка",
+        "europe": "Европа"
       }
     },
     "dashboard": {
@@ -1677,16 +1679,16 @@
       "invalidCurrencyMessage": "Введите корректный код валюты.",
       "currencyPlaceholder": "Поиск валюты",
       "currencyNoOptions": "Валюта не найдена",
-      "countryPlaceholder": "Поиск страны",
-      "countryNoOptions": "Страна не найдена",
+      "regionPlaceholder": "Выберите регион",
+      "regionNoOptions": "Все регионы уже добавлены",
       "languagesTitle": "Языки",
       "languagesDescription": "Языки, доступные при заполнении переводов товара.",
       "newLanguageTitle": "Добавить язык",
       "newLanguageDescription": "Используйте код языка ISO, например ru, en или pl.",
       "regionsTitle": "Регионы",
-      "regionsDescription": "Регионы продаж для цен товаров и выбора страны в магазине.",
+      "regionsDescription": "Регионы продаж для цен товаров и выбора региона в магазине.",
       "newRegionTitle": "Добавить регион",
-      "newRegionDescription": "Выберите страну и валюту для нового региона продаж.",
+      "newRegionDescription": "Выберите регион продаж и его валюту.",
       "saveButton": "Сохранить",
       "savingButton": "Сохранение...",
       "updateButton": "Обновить",
@@ -1701,7 +1703,7 @@
         "code": "Код языка",
         "codePlaceholder": "Начните вводить язык",
         "codeNoOptions": "Такого языка нет в списке",
-        "regionCode": "Код страны",
+        "regionCode": "Регион",
         "currency": "Валюта",
         "sortOrder": "Порядок"
       },
@@ -1823,7 +1825,7 @@
         "order": "Заказ",
         "createdAt": "Дата",
         "customer": "Покупатель",
-        "country": "Страна",
+        "region": "Регион",
         "total": "Сумма",
         "payment": "Оплата",
         "status": "Статус"

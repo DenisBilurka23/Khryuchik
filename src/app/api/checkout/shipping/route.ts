@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { SHIPPING_QUOTE_RATE_LIMIT } from "@/constants/rate-limit";
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import {
   consumeRateLimit,
   getClientIpKey,
@@ -54,7 +54,7 @@ export const POST = async (request: NextRequest) => {
     ? payload.items.filter(isStoredCartItem)
     : [];
   const addressCountry = asOptionalString(payload?.address?.country);
-  const country = await getRequestCountry();
+  const region = await getRequestRegion();
 
   const respond = (body: ShippingQuoteResponse) => {
     const response = NextResponse.json(body);
@@ -74,7 +74,7 @@ export const POST = async (request: NextRequest) => {
 
   const { items: resolved, isPricingUnavailable } = await resolveCartItems(
     locale,
-    country,
+    region,
     items,
   );
 
@@ -91,7 +91,7 @@ export const POST = async (request: NextRequest) => {
   );
 
   const result = await calculateOrderShipping({
-    country,
+    region,
     items: resolved.map((item) => ({
       id: item.id,
       productId: item.productId,

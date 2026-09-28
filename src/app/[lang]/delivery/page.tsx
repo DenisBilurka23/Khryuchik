@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { DeliveryPageView } from "@/components/delivery-page-view";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
@@ -39,9 +39,9 @@ const LocalizedDeliveryPage = async ({
 
   await requireActiveLocale(lang);
 
-  const country = await getRequestCountry();
+  const region = await getRequestRegion();
 
-  return <DeliveryPageView locale={lang} country={country} />;
+  return <DeliveryPageView locale={lang} region={region} />;
 };
 
 export default LocalizedDeliveryPage;

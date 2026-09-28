@@ -9,25 +9,16 @@ import {
   locales,
 } from "@/i18n/config";
 import {
-  COUNTRY_COOKIE_NAME,
   COUNTRY_HEADER,
   defaultCountry,
   getCountryFromGeoHeaders,
-  isIsoCountryCode,
 } from "@/utils";
 
 const isAdminPath = (pathname: string) =>
   pathname === "/admin" || pathname.startsWith("/admin/");
 
-const getPreferredCountry = (request: NextRequest) => {
-  const cookieCountry = request.cookies.get(COUNTRY_COOKIE_NAME)?.value;
-
-  if (isIsoCountryCode(cookieCountry)) {
-    return cookieCountry;
-  }
-
-  return getCountryFromGeoHeaders(request.headers) ?? defaultCountry;
-};
+const getVisitorCountry = (request: NextRequest) =>
+  getCountryFromGeoHeaders(request.headers) ?? defaultCountry;
 
 const getAdminCookieLocale = (request: NextRequest) => {
   const locale = request.cookies.get(ADMIN_LOCALE_COOKIE_NAME)?.value;
@@ -73,7 +64,7 @@ const withRequestContextHeaders = (
 
 export const proxy = (request: NextRequest) => {
   const { pathname } = request.nextUrl;
-  const country = getPreferredCountry(request);
+  const country = getVisitorCountry(request);
 
   if (isAdminPath(pathname)) {
     return withRequestContextHeaders(

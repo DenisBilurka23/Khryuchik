@@ -1,9 +1,10 @@
 import type { AdminProductPayload } from "@/types/admin";
+import type { RegionCode } from "@/types/localization";
 
 export type UseProductPublishTogglesArgs = {
   payload: AdminProductPayload;
   localeCodes: string[];
-  regionCodes: string[];
+  regionCodes: RegionCode[];
   defaultLocale: string;
   isNew: boolean;
 };

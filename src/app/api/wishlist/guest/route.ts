@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { resolveGuestWishlistItems } from "@/server/wishlist/services/wishlist.service";
 
 export const POST = async (request: Request) => {
@@ -8,10 +8,10 @@ export const POST = async (request: Request) => {
     locale?: string;
     items?: Array<{ productId?: string; addedAt?: string }>;
   } | null;
-  const country = await getRequestCountry();
+  const region = await getRequestRegion();
   const items = await resolveGuestWishlistItems(
     payload?.locale ?? null,
-    country,
+    region,
     Array.isArray(payload?.items) ? payload.items : [],
   );
 

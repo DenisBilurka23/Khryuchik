@@ -11,7 +11,7 @@ import {
 } from "@/server/catalog/services/catalog.service";
 import { getHomeTabCategories } from "@/server/catalog/services/categories.service";
 import { getHomeEntertainmentView } from "@/server/entertainment/services/entertainment.service";
-import { getRequestCountry } from "@/server/country/request-country";
+import { getRequestRegion } from "@/server/region/request-region";
 import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
 import { isEntertainmentCategory } from "@/utils";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
@@ -20,13 +20,13 @@ import type { Locale } from "@/i18n/config";
 
 type HomeDataProps = {
   locale: Locale;
-  country: ReturnType<typeof getRequestCountry>;
+  region: ReturnType<typeof getRequestRegion>;
 };
 
-const HomeBooks = async ({ locale, country }: HomeDataProps) => {
+const HomeBooks = async ({ locale, region }: HomeDataProps) => {
   const books = await getProductsForPlacement(
     locale,
-    await country,
+    await region,
     "home-books",
   );
 
@@ -39,15 +39,15 @@ type HomeShopProps = HomeDataProps & {
   category?: string;
 };
 
-const HomeShop = async ({ locale, country, category }: HomeShopProps) => {
-  const resolvedCountry = await country;
-  const shopCategories = await getHomeTabCategories(locale, resolvedCountry);
+const HomeShop = async ({ locale, region, category }: HomeShopProps) => {
+  const resolvedRegion = await region;
+  const shopCategories = await getHomeTabCategories(locale, resolvedRegion);
   const defaultShopCategory = shopCategories[0]?.key ?? "all";
   const selectedShopCategory =
     category && shopCategories.some((item) => item.key === category)
       ? category
       : defaultShopCategory;
-  const shopProducts = await getShopProducts(locale, resolvedCountry, {
+  const shopProducts = await getShopProducts(locale, resolvedRegion, {
     category: selectedShopCategory === "all" ? undefined : selectedShopCategory,
     limit: 4,
   });
@@ -111,19 +111,19 @@ const LocalizedHome = async ({ params, searchParams }: LocalizedPageProps) => {
   const { category, entertainment } = await searchParams;
 
   const locale = await requireActiveLocale(lang);
-  const country = getRequestCountry();
+  const region = getRequestRegion();
 
   return (
     <HomePageView
       locale={locale}
       books={
         <Suspense fallback={<HomeSectionSkeleton kind="books" />}>
-          <HomeBooks locale={locale} country={country} />
+          <HomeBooks locale={locale} region={region} />
         </Suspense>
       }
       shop={
         <Suspense fallback={<HomeSectionSkeleton kind="shop" />}>
-          <HomeShop locale={locale} country={country} category={category} />
+          <HomeShop locale={locale} region={region} category={category} />
         </Suspense>
       }
       entertainment={
