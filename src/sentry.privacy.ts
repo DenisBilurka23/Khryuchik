@@ -14,11 +14,13 @@ export const sentryDataCollection: NonNullable<
   stackFrameVariables: false,
 };
 
+const urlCredentialsPattern = /\b([a-z][a-z0-9+.-]*:\/\/)[^\s/@]+@/gi;
 const emailPattern = /[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/g;
 const secretPattern = /\b(?:sk|rk|whsec|cs|pi|ch)_[A-Za-z0-9_]+\b/g;
 
 const redactErrorText = (value: string) =>
   value
+    .replace(urlCredentialsPattern, "$1[redacted credentials]@")
     .replace(emailPattern, "[redacted email]")
     .replace(secretPattern, "[redacted token]");
 

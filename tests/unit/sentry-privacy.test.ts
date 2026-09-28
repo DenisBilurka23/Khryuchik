@@ -47,4 +47,35 @@ describe("scrubSentryError", () => {
       tags: { operation: "checkout" },
     });
   });
+
+  it("redacts credentials embedded in connection strings", () => {
+    const event: ErrorEvent = {
+      type: undefined,
+      message:
+        "connect failed: mongodb+srv://admin:s3cret@cluster0.example.net/shop",
+      exception: {
+        values: [
+          {
+            type: "Error",
+            value: "fetch https://user:pass@api.example.com/v1 failed",
+          },
+        ],
+      },
+    };
+
+    expect(scrubSentryError(event)).toEqual({
+      type: undefined,
+      message:
+        "connect failed: mongodb+srv://[redacted credentials]@cluster0.example.net/shop",
+      exception: {
+        values: [
+          {
+            type: "Error",
+            value:
+              "fetch https://[redacted credentials]@api.example.com/v1 failed",
+          },
+        ],
+      },
+    });
+  });
 });

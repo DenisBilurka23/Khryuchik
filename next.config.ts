@@ -49,6 +49,8 @@ export default withSentryConfig(withNextIntl(nextConfig), {
       process.env.SENTRY_AUTH_TOKEN
     ),
   },
+  tunnelRoute: "/monitoring",
+  suppressOnRouterTransitionStartWarning: true,
   telemetry: false,
   silent: !process.env.CI,
 });
