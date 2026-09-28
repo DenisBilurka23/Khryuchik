@@ -1,15 +1,53 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { ShopPageView } from "@/components/shop-page-view";
+import { Suspense } from "react";
+import {
+  ShopCatalog,
+  ShopCatalogSkeleton,
+  ShopPageView,
+} from "@/components/shop-page-view";
 import { getShopProducts } from "@/server/catalog/services/catalog.service";
 import { getShopCategoriesForRegion } from "@/server/catalog/services/categories.service";
 import { getRequestCountry } from "@/server/country/request-country";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
+import type { Locale } from "@/i18n/config";
 
 type LocalizedShopPageProps = {
   params: Promise<{ lang: string }>;
   searchParams: Promise<{ category?: string; series?: string; q?: string }>;
+};
+
+type ShopCatalogDataProps = {
+  locale: Locale;
+  category?: string;
+  series?: string;
+  query?: string;
+};
+
+const ShopCatalogData = async ({
+  locale,
+  category,
+  series,
+  query,
+}: ShopCatalogDataProps) => {
+  const country = await getRequestCountry();
+  const [categories, products] = await Promise.all([
+    getShopCategoriesForRegion(locale, country),
+    getShopProducts(locale, country),
+  ]);
+
+  return (
+    <ShopCatalog
+      locale={locale}
+      country={country}
+      categories={categories}
+      products={products}
+      initialCategory={category}
+      initialSeries={series}
+      initialQuery={query}
+    />
+  );
 };
 
 export const generateMetadata = async ({
@@ -39,24 +77,19 @@ const LocalizedShopPage = async ({
   const { lang } = await params;
   const { category, series, q } = await searchParams;
 
-  await requireActiveLocale(lang);
-
-  const country = await getRequestCountry();
-  const [categories, products] = await Promise.all([
-    getShopCategoriesForRegion(lang, country),
-    getShopProducts(lang, country),
-  ]);
+  const locale = await requireActiveLocale(lang);
 
   return (
-    <ShopPageView
-      locale={lang}
-      country={country}
-      categories={categories}
-      products={products}
-      initialCategory={category}
-      initialSeries={series}
-      initialQuery={q}
-    />
+    <ShopPageView locale={locale}>
+      <Suspense fallback={<ShopCatalogSkeleton />}>
+        <ShopCatalogData
+          locale={locale}
+          category={category}
+          series={series}
+          query={q}
+        />
+      </Suspense>
+    </ShopPageView>
   );
 };
 

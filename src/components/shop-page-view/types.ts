@@ -1,4 +1,5 @@
 import type { Locale } from "@/i18n/config";
+import type { ReactNode } from "react";
 import type { CountryCode } from "@/utils";
 import type {
   BookSeries,
@@ -11,6 +12,11 @@ export type ShopFilterValue = "all" | string;
 export type ShopSeriesFilterValue = "all" | BookSeries;
 
 export type ShopPageViewProps = {
+  locale: Locale;
+  children: ReactNode;
+};
+
+export type ShopCatalogProps = {
   locale: Locale;
   country: CountryCode;
   categories: LocalizedCategory[];

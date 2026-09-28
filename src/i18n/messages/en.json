@@ -94,6 +94,7 @@
     },
     "favoritesLabel": "Favorites",
     "favoritesPage": {
+      "loading": "Loading favorites",
       "eyebrow": "Guest wishlist",
       "title": "Your favorites already work without an account",
       "lead": "Your saved products are already here. Keep shopping freely, and when you're ready, sign in to keep the list safe and available on other devices.",
@@ -700,6 +701,7 @@
       ]
     },
     "cartPage": {
+      "loading": "Loading cart",
       "eyebrow": "Cart",
       "title": "Your order",
       "lead": "Review the selected books and products, adjust quantities, and continue to the next checkout step.",
@@ -863,6 +865,14 @@
       }
     },
     "checkoutResult": {
+      "loadingPayment": {
+        "title": "Checking your payment",
+        "text": "We're confirming the payment and preparing your order details. This may take a moment."
+      },
+      "loadingOrder": {
+        "title": "Loading your order",
+        "text": "We're retrieving your order details. This may take a moment."
+      },
       "success": {
         "title": "Payment received",
         "text": "Thank you! We've started preparing your parcel and will email tracking details once it ships.",
@@ -1146,6 +1156,10 @@
     "loginLinkLabel": "Go to sign in"
   },
   "downloadsPage": {
+    "loading": {
+      "title": "Checking your download link",
+      "text": "We're looking up your books and files. This may take a moment."
+    },
     "title": "Your books are ready",
     "orderLabel": "Order",
     "lead": "Download the files below. This link stays active for 90 days, and a copy of it is in your confirmation email.",

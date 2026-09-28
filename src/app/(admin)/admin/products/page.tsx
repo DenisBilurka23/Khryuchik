@@ -13,10 +13,12 @@ import {
   Typography,
 } from "@mui/material";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
 import { DeleteProductButton } from "@/components/admin-products-page-view";
 import {
   AdminEditLinkButton,
+  AdminPageLoading,
   AdminPageHero,
   AdminSectionCard,
   AdminStatusChip,
@@ -48,7 +50,7 @@ type AdminProductsPageProps = {
   searchParams: Promise<{ deleted?: string }>;
 };
 
-const AdminProductsPage = async ({ searchParams }: AdminProductsPageProps) => {
+const AdminProductsContent = async ({ searchParams }: AdminProductsPageProps) => {
   const { deleted } = await searchParams;
   const locale = await resolveLocale("admin");
   const [products, tProducts, tShared] = await Promise.all([
@@ -185,5 +187,11 @@ const AdminProductsPage = async ({ searchParams }: AdminProductsPageProps) => {
     </Stack>
   );
 };
+
+const AdminProductsPage = ({ searchParams }: AdminProductsPageProps) => (
+  <Suspense fallback={<AdminPageLoading />}>
+    <AdminProductsContent searchParams={searchParams} />
+  </Suspense>
+);
 
 export default AdminProductsPage;

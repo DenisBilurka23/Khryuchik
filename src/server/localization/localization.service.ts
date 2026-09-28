@@ -1,6 +1,12 @@
 import "server-only";
 
+import { unstable_cache } from "next/cache";
 import { cache } from "react";
+
+import {
+  LOCALIZATION_CACHE_TAG,
+  LOCALIZATION_CACHE_TTL_SECONDS,
+} from "@/constants/localization";
 
 import type { Locale } from "@/i18n/config";
 import { defaultLocale } from "@/i18n/config";
@@ -80,17 +86,34 @@ const sortByOrder = <T extends { code: string; sortOrder: number }>(
     (a, b) => a.sortOrder - b.sortOrder || a.code.localeCompare(b.code),
   );
 
-export const getActiveLocales = cache(async (): Promise<LocaleDocument[]> => {
-  const locales = await findAllLocales();
+const cacheOptions = {
+  tags: [LOCALIZATION_CACHE_TAG],
+  revalidate: LOCALIZATION_CACHE_TTL_SECONDS,
+};
 
-  return sortByOrder(locales.filter((locale) => locale.isActive));
-});
+const loadActiveLocales = unstable_cache(
+  async (): Promise<LocaleDocument[]> => {
+    const locales = await findAllLocales();
 
-export const getActiveRegions = cache(async (): Promise<RegionDocument[]> => {
-  const regions = await findAllRegions();
+    return sortByOrder(locales.filter((locale) => locale.isActive));
+  },
+  ["active-locales"],
+  cacheOptions,
+);
 
-  return sortByOrder(regions.filter((region) => region.isActive));
-});
+const loadActiveRegions = unstable_cache(
+  async (): Promise<RegionDocument[]> => {
+    const regions = await findAllRegions();
+
+    return sortByOrder(regions.filter((region) => region.isActive));
+  },
+  ["active-regions"],
+  cacheOptions,
+);
+
+export const getActiveLocales = cache(loadActiveLocales);
+
+export const getActiveRegions = cache(loadActiveRegions);
 
 export const getActiveLocaleCodes = async (): Promise<string[]> =>
   (await getActiveLocales()).map((locale) => locale.code);

@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { Container } from "@mui/material";
-import { AccountPageView } from "@/components/account-page-view";
+import { Suspense } from "react";
+import {
+  AccountPageSkeleton,
+  AccountPageView,
+} from "@/components/account-page-view";
 import { defaultLocale } from "@/i18n/config";
+import type { Locale } from "@/i18n/config";
 import { PageShell } from "@/components/page-shell";
 import { getShopCategories } from "@/server/catalog/services/categories.service";
 import {
@@ -21,18 +26,12 @@ import { NOINDEX_ROBOTS } from "@/constants/seo";
 
 export const metadata: Metadata = { robots: NOINDEX_ROBOTS };
 
-const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
-  const { lang } = await params;
+type AccountPageDataProps = {
+  locale: Locale;
+  user: Awaited<ReturnType<typeof requireAccountPageContext>>["user"];
+};
 
-  await requireActiveLocale(lang);
-
-  const { user } = await requireAccountPageContext(
-    getLocalizedPath(
-      lang,
-      `/login?callbackUrl=${encodeURIComponent(getLocalizedPath(lang, "/account"))}`,
-    ),
-  );
-
+const AccountPageData = async ({ locale, user }: AccountPageDataProps) => {
   const [
     country,
     rawOrders,
@@ -45,36 +44,54 @@ const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
     getRequestCountry(),
     findOrdersForUser(user.id, user.email),
     getUserPurchasedDownloads(user.id, user.email),
-    getShopCategories(lang),
+    getShopCategories(locale),
     getActiveLocaleCodes(),
     getActiveRegionCodes(),
-    getUserReviewsByProduct(user.id, lang),
+    getUserReviewsByProduct(user.id, locale),
   ]);
-  const orders = rawOrders.map((order) => toAccountOrder(order, lang));
-  const orderProducts = await getProductPreviewsByIds(lang, [
+  const orders = rawOrders.map((order) => toAccountOrder(order, locale));
+  const orderProducts = await getProductPreviewsByIds(locale, [
     ...new Set(
       rawOrders.flatMap((order) => order.items.map((item) => item.productId)),
     ),
   ]);
 
   return (
+    <AccountPageView
+      locale={locale}
+      country={country}
+      availableLocales={availableLocales}
+      availableCountries={availableCountries}
+      homeHref={locale === defaultLocale ? "/" : `/${locale}`}
+      favoriteCategoryLabels={Object.fromEntries(
+        categories.map((category) => [category.key, category.label]),
+      )}
+      user={user}
+      orders={orders}
+      orderProducts={orderProducts}
+      productReviews={productReviews}
+      downloads={downloads}
+    />
+  );
+};
+
+const LocalizedAccountPage = async ({ params }: LocalizedAccountPageProps) => {
+  const { lang } = await params;
+  const locale = await requireActiveLocale(lang);
+
+  const { user } = await requireAccountPageContext(
+    getLocalizedPath(
+      locale,
+      `/login?callbackUrl=${encodeURIComponent(getLocalizedPath(locale, "/account"))}`,
+    ),
+  );
+
+  return (
     <PageShell>
       <Container maxWidth="lg">
-        <AccountPageView
-          locale={lang}
-          country={country}
-          availableLocales={availableLocales}
-          availableCountries={availableCountries}
-          homeHref={lang === defaultLocale ? "/" : `/${lang}`}
-          favoriteCategoryLabels={Object.fromEntries(
-            categories.map((category) => [category.key, category.label]),
-          )}
-          user={user}
-          orders={orders}
-          orderProducts={orderProducts}
-          productReviews={productReviews}
-          downloads={downloads}
-        />
+        <Suspense fallback={<AccountPageSkeleton />}>
+          <AccountPageData locale={locale} user={user} />
+        </Suspense>
       </Container>
     </PageShell>
   );

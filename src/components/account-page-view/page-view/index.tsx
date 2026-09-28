@@ -14,11 +14,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { signOut } from "next-auth/react";
 import type { UserShippingAddress } from "@/types/users";
 
-import { AccountHero } from "./hero";
+import { AccountHero } from "../hero";
 import {
   AddressesSection,
   BooksSection,
@@ -27,15 +27,15 @@ import {
   OrdersSection,
   OverviewSection,
   SettingsSection,
-} from "./sections";
-import { AccountAvatarUploadField, SidebarItem } from "./shared";
+} from "../sections";
+import { AccountAvatarUploadField, SidebarItem } from "../shared";
 import { useProfileEditor } from "@/hooks/useProfileEditor";
 import { useShippingAddressSelection } from "@/hooks/useShippingAddressSelection";
 import { accountSectionKeys, accountSidebarConfig } from "@/constants/account";
 import { ACCOUNT_RECENT_ORDERS_LIMIT } from "@/constants/order";
 import { secondaryButtonSx } from "@/theme/sx";
 import { getCountryTimeZone } from "@/utils";
-import type { AccountPageViewProps, SectionKey } from "./types";
+import type { AccountPageViewProps, SectionKey } from "../types";
 
 const asideCardSx = {
   width: "100%",
@@ -92,7 +92,6 @@ export const AccountPageView = ({
 }: AccountPageViewProps) => {
   const t = useTranslations("accountPage");
   const tabs = t.raw("tabs") as string[];
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -151,9 +150,11 @@ export const AccountPageView = ({
 
     const nextSearch = nextSearchParams.toString();
 
-    router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, {
-      scroll: false,
-    });
+    window.history.replaceState(
+      null,
+      "",
+      nextSearch ? `${pathname}?${nextSearch}` : pathname,
+    );
   };
 
   const openProfileSettings = () => {
@@ -193,10 +194,12 @@ export const AccountPageView = ({
     nextSearchParams.delete("action");
     const nextSearch = nextSearchParams.toString();
 
-    router.replace(nextSearch ? `${pathname}?${nextSearch}` : pathname, {
-      scroll: false,
-    });
-  }, [searchParams, pathname, router]);
+    window.history.replaceState(
+      null,
+      "",
+      nextSearch ? `${pathname}?${nextSearch}` : pathname,
+    );
+  }, [searchParams, pathname]);
 
   const handleAddressesChange = (
     addresses: UserShippingAddress[],

@@ -15,10 +15,16 @@ export type EntertainmentMediaLabels = {
   download: string;
 };
 
+export type AdminViewBadgeProps = {
+  isAdmin: Promise<boolean>;
+  label: string;
+  hasDuration: boolean;
+};
+
 export type EntertainmentItemPageViewProps = {
   locale: Locale;
   item: LocalizedEntertainmentItem;
-  isAdmin: boolean;
+  isAdmin: Promise<boolean>;
 };
 
 export type EntertainmentMediaBlockProps = {

@@ -4,6 +4,7 @@ import type { ProductGallerySwipeHandlers } from "@/hooks/useProductGallery.type
 import type { Locale } from "@/i18n/config";
 import type { ProductPageLabels } from "@/i18n/types";
 import type { LocalizedProductSummary } from "@/types/catalog";
+import type { ProductPurchaseContext } from "@/types/download";
 import type {
   ProductDetails,
   ProductImage,
@@ -52,6 +53,11 @@ export type ProductInfoProps = {
   ownedLanguages?: string[];
 };
 
+export type ProductInfoSkeletonProps = {
+  locale: Locale;
+  product: ProductDetails;
+};
+
 export type ReviewFormViewModel = {
   isAuthenticated: boolean;
   hasDelivered: boolean;
@@ -86,12 +92,11 @@ export type RelatedProductsProps = {
 export type ProductPageViewProps = {
   locale: Locale;
   product: ProductDetails;
-  relatedProducts: LocalizedProductSummary[];
-  storyProduct?: LocalizedProductSummary | null;
-  ownedLanguages?: string[];
-  isAuthenticated: boolean;
-  hasDelivered: boolean;
-  userReview: UserReviewSummary | null;
+  relatedProducts: Promise<LocalizedProductSummary[]>;
+  storyProducts: Promise<LocalizedProductSummary[]>;
+  purchaseContext: Promise<ProductPurchaseContext>;
+  isAuthenticated: Promise<boolean>;
+  userReview: Promise<UserReviewSummary | null>;
 };
 
 export type TabItem = {

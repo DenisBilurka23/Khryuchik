@@ -50,17 +50,18 @@ const LocalizedEntertainmentItemPage = async ({
 
   await requireActiveLocale(lang);
 
-  const [item, isAdmin] = await Promise.all([
-    getEntertainmentItem(lang, slug),
-    hasAdminAccess(),
-  ]);
+  const item = await getEntertainmentItem(lang, slug);
 
   if (!item) {
     notFound();
   }
 
   return (
-    <EntertainmentItemPageView locale={lang} item={item} isAdmin={isAdmin} />
+    <EntertainmentItemPageView
+      locale={lang}
+      item={item}
+      isAdmin={hasAdminAccess()}
+    />
   );
 };
 

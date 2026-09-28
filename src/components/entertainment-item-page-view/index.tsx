@@ -1,5 +1,6 @@
 import { Box, Container, Stack, Typography } from "@mui/material";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Pill } from "@/components/primitives";
@@ -10,7 +11,10 @@ import { NewsletterSection } from "@/components/newsletter-section";
 import { PageShell } from "@/components/page-shell";
 
 import { EntertainmentMediaBlock } from "./media-block";
-import type { EntertainmentItemPageViewProps } from "./types";
+import type {
+  AdminViewBadgeProps,
+  EntertainmentItemPageViewProps,
+} from "./types";
 import { createVideoStructuredData } from "./utils";
 
 const titleSx = {
@@ -27,6 +31,17 @@ const metaSx = {
   fontSize: 14,
   color: "var(--color-text-muted)",
 } as const;
+
+const AdminViewBadge = async ({
+  isAdmin,
+  label,
+  hasDuration,
+}: AdminViewBadgeProps) =>
+  (await isAdmin) ? (
+    <Pill tone="cream" sx={{ mt: hasDuration ? 0 : 1 }}>
+      {label}
+    </Pill>
+  ) : null;
 
 export const EntertainmentItemPageView = async ({
   locale,
@@ -89,27 +104,27 @@ export const EntertainmentItemPageView = async ({
               {item.title}
             </Typography>
 
-            {durationSeconds || isAdmin ? (
-              <Stack
-                direction="row"
-                alignItems="center"
-                gap={1.5}
-                flexWrap="wrap"
-                sx={{ mt: 1 }}
-              >
-                {durationSeconds ? (
-                  <Typography component="p" sx={metaSx}>
-                    {formatVideoDuration(durationSeconds)}
-                  </Typography>
-                ) : null}
+            <Stack
+              direction="row"
+              alignItems="center"
+              gap={1.5}
+              flexWrap="wrap"
+              sx={{ mt: durationSeconds ? 1 : 0 }}
+            >
+              {durationSeconds ? (
+                <Typography component="p" sx={metaSx}>
+                  {formatVideoDuration(durationSeconds)}
+                </Typography>
+              ) : null}
 
-                {isAdmin ? (
-                  <Pill tone="cream">
-                    {tPage("viewsBadge", { count: item.viewCount })}
-                  </Pill>
-                ) : null}
-              </Stack>
-            ) : null}
+              <Suspense fallback={null}>
+                <AdminViewBadge
+                  isAdmin={isAdmin}
+                  label={tPage("viewsBadge", { count: item.viewCount })}
+                  hasDuration={Boolean(durationSeconds)}
+                />
+              </Suspense>
+            </Stack>
 
             {item.description ? (
               <Typography component="p" sx={{ ...leadSx, mt: 2.5 }}>
@@ -120,7 +135,9 @@ export const EntertainmentItemPageView = async ({
         </Container>
       </Box>
 
-      <NewsletterSection locale={locale} />
+      <Suspense fallback={null}>
+        <NewsletterSection locale={locale} />
+      </Suspense>
     </PageShell>
   );
 };

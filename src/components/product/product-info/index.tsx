@@ -39,6 +39,13 @@ import { showCartToast } from "@/stores/cart-toast";
 import { useCart } from "@/stores/cart";
 import { setBuyNowItem } from "@/stores/buy-now";
 import type { ProductInfoProps } from "../types";
+import {
+  productPriceRowSx,
+  productPriceSx,
+  productSubtitleSx,
+  productTitleRowSx,
+  productTitleSx,
+} from "./styles";
 
 export const ProductInfo = ({
   locale,
@@ -117,12 +124,9 @@ export const ProductInfo = ({
         direction="row"
         spacing={1.5}
         alignItems="flex-start"
-        sx={{ mt: 2 }}
+        sx={productTitleRowSx}
       >
-        <Typography
-          variant="h3"
-          sx={{ flex: 1, fontSize: { xs: 32, md: 40 }, fontWeight: 800 }}
-        >
+        <Typography variant="h3" sx={productTitleSx}>
           {product.title}
         </Typography>
         <IconButton
@@ -145,17 +149,17 @@ export const ProductInfo = ({
         </IconButton>
       </Stack>
 
-      <Typography
-        color="text.secondary"
-        sx={{ mt: 1, fontSize: 18, lineHeight: 1.7 }}
-      >
+      <Typography color="text.secondary" sx={productSubtitleSx}>
         {product.subtitle}
       </Typography>
 
-      <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 3 }}>
-        <Typography
-          sx={{ fontSize: 32, fontWeight: 800, color: "primary.main" }}
-        >
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        sx={productPriceRowSx}
+      >
+        <Typography sx={productPriceSx}>
           {formatCurrency(price, locale, product.currency)}
         </Typography>
         {oldPrice ? (

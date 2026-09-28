@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import {
   Button,
   Stack,
@@ -27,6 +28,7 @@ import {
 } from "@/components/admin-orders-page-view";
 import {
   AdminEmptyState,
+  AdminPageLoading,
   AdminPageHero,
   AdminSectionCard,
 } from "@/components/admin-page-shared";
@@ -58,7 +60,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   return createAdminMetadata(tOrders("title"), tOrders("description"), locale);
 };
 
-const AdminOrdersPage = async () => {
+const AdminOrdersContent = async () => {
   const [locale, timeZone] = await Promise.all([
     resolveLocale("admin"),
     resolveAdminTimeZone(),
@@ -264,5 +266,11 @@ const AdminOrdersPage = async () => {
     </Stack>
   );
 };
+
+const AdminOrdersPage = () => (
+  <Suspense fallback={<AdminPageLoading />}>
+    <AdminOrdersContent />
+  </Suspense>
+);
 
 export default AdminOrdersPage;

@@ -71,44 +71,50 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
   }
 
   const product = result.product;
-  const session = await getServerAuthSession();
-
-  const [relatedProducts, storyProducts, purchaseContext, userReview] =
-    await Promise.all([
-      getProductSummariesByIds(lang, country, product.relatedIds),
-      getProductSummariesByIds(
-        lang,
-        country,
-        product.storyProductId ? [product.storyProductId] : [],
-      ),
-      session?.user
+  const session = getServerAuthSession();
+  const relatedProducts = getProductSummariesByIds(
+    lang,
+    country,
+    product.relatedIds,
+  );
+  const storyProducts = getProductSummariesByIds(
+    lang,
+    country,
+    product.storyProductId ? [product.storyProductId] : [],
+  );
+  const purchaseContext = session.then(
+    (value): Promise<ProductPurchaseContext> =>
+      value?.user
         ? getProductPurchaseContext(
-            session.user.id || undefined,
-            session.user.email ?? undefined,
+            value.user.id || undefined,
+            value.user.email ?? undefined,
             product.productId,
           )
-        : Promise.resolve<ProductPurchaseContext>({
+        : Promise.resolve({
             ownedLanguages: [],
             hasDeliveredPurchase: false,
           }),
-      session?.user
+  );
+  const userReview = session.then(
+    (value): Promise<UserReviewSummary | null> =>
+      value?.user
         ? getUserReviewForProduct(
-            session.user.id || undefined,
+            value.user.id || undefined,
             product.productId,
             lang,
           )
-        : Promise.resolve<UserReviewSummary | null>(null),
-    ]);
+        : Promise.resolve(null),
+  );
+  const isAuthenticated = session.then((value) => Boolean(value?.user));
 
   return (
     <ProductPageView
       locale={lang}
       product={product}
       relatedProducts={relatedProducts}
-      storyProduct={storyProducts[0] ?? null}
-      ownedLanguages={purchaseContext.ownedLanguages}
-      isAuthenticated={Boolean(session?.user)}
-      hasDelivered={purchaseContext.hasDeliveredPurchase}
+      storyProducts={storyProducts}
+      purchaseContext={purchaseContext}
+      isAuthenticated={isAuthenticated}
       userReview={userReview}
     />
   );

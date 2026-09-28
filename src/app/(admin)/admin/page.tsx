@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
 import { AdminDashboardView } from "@/components/admin-dashboard-view";
+import { AdminPageLoading } from "@/components/admin-page-shared";
 import { getAdminSummaryData } from "@/server/admin/catalog.service";
 import { createAdminMetadata } from "@/server/admin/metadata";
 import { resolveAdminTimeZone } from "@/server/i18n/admin-time-zone";
@@ -21,7 +23,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   );
 };
 
-const AdminDashboardPage = async () => {
+const AdminDashboardContent = async () => {
   const [locale, timeZone] = await Promise.all([
     resolveLocale("admin"),
     resolveAdminTimeZone(),
@@ -32,5 +34,11 @@ const AdminDashboardPage = async () => {
     <AdminDashboardView summary={summary} locale={locale} timeZone={timeZone} />
   );
 };
+
+const AdminDashboardPage = () => (
+  <Suspense fallback={<AdminPageLoading variant="dashboard" />}>
+    <AdminDashboardContent />
+  </Suspense>
+);
 
 export default AdminDashboardPage;

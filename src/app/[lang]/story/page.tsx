@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { StoryPageView } from "@/components/story-page-view";
-import { getStoryTimelineBooks } from "@/server/catalog/services/catalog.service";
+import {
+  getBookCountsBySeries,
+  getStoryTimelineBooks,
+} from "@/server/catalog/services/catalog.service";
 import { getRequestCountry } from "@/server/country/request-country";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
@@ -40,13 +43,14 @@ const LocalizedStoryPage = async ({ params }: LocalizedStoryPageProps) => {
   await requireActiveLocale(lang);
 
   const country = await getRequestCountry();
-  const timelineBooks = await getStoryTimelineBooks(lang, country);
+  const timelineBooks = getStoryTimelineBooks(lang, country);
+  const seriesCounts = getBookCountsBySeries(country);
 
   return (
     <StoryPageView
       locale={lang}
-      country={country}
       timelineBooks={timelineBooks}
+      seriesCounts={seriesCounts}
     />
   );
 };

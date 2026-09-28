@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
 import { deleteAdminCustomerAction } from "@/app/(admin)/admin/actions";
 import {
@@ -21,6 +22,7 @@ import {
 } from "@/components/admin-customers-page-view";
 import {
   AdminPageHero,
+  AdminPageLoading,
   AdminSectionCard,
   AdminStatusChip,
 } from "@/components/admin-page-shared";
@@ -51,7 +53,7 @@ type AdminCustomersPageProps = {
   searchParams: Promise<{ deleted?: string; error?: string }>;
 };
 
-const AdminCustomersPage = async ({
+const AdminCustomersContent = async ({
   searchParams,
 }: AdminCustomersPageProps) => {
   const [{ deleted, error }, locale, timeZone] = await Promise.all([
@@ -185,5 +187,11 @@ const AdminCustomersPage = async ({
     </Stack>
   );
 };
+
+const AdminCustomersPage = ({ searchParams }: AdminCustomersPageProps) => (
+  <Suspense fallback={<AdminPageLoading />}>
+    <AdminCustomersContent searchParams={searchParams} />
+  </Suspense>
+);
 
 export default AdminCustomersPage;

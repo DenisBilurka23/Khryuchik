@@ -1,12 +1,12 @@
-import type { CountryCode } from "@/utils";
 import type { Locale } from "@/i18n/config";
 import type { StorefrontDictionary } from "@/i18n/types";
+import type { BookSeries } from "@/types/catalog";
 import type { StoryTimelineBook } from "@/types/story";
 
 export type StoryPageViewProps = {
   locale: Locale;
-  country: CountryCode;
-  timelineBooks: StoryTimelineBook[];
+  timelineBooks: Promise<StoryTimelineBook[]>;
+  seriesCounts: Promise<Record<BookSeries, number>>;
 };
 
 export type StoryPageDictionary = StorefrontDictionary["storyPage"];

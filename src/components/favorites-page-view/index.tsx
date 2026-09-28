@@ -4,7 +4,6 @@ import { Box, Container } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { Plate } from "@/components/primitives";
 import { useWishlist } from "@/hooks/useWishlist";
 import { getLocalizedPath, isPurchasableAvailability } from "@/utils";
 
@@ -13,6 +12,7 @@ import { useCart } from "@/stores/cart";
 import { FavoritesCompactEmptyState } from "./compact-empty-state";
 import { FavoritesEmptyState } from "./empty-state";
 import { FavoritesHero } from "./hero";
+import { FavoritesLoading } from "./loading";
 import { FavoritesSummaryCard } from "./summary-card";
 import type { FavoritesPageViewProps } from "./types";
 import { FavoritesWishlistGrid } from "./wishlist-grid";
@@ -83,15 +83,11 @@ export const FavoritesPageView = ({
 
       <Box sx={{ mt: 3 }}>
         {isLoading ? (
-          <Plate
-            pad="lg"
-            sx={{
-              fontSize: 15,
-              color: "var(--color-text-secondary)",
-            }}
-          >
-            {locale === "ru" ? "Загружаем избранное..." : "Loading wishlist..."}
-          </Plate>
+          <FavoritesLoading
+            title={authState ? tAccount("favoritesListTitle") : t("listTitle")}
+            lead={authState ? undefined : t("guestListText")}
+            status={t("loading")}
+          />
         ) : resolvedItems.length === 0 ? (
           emptyState
         ) : (

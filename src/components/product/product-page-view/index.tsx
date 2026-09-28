@@ -3,108 +3,181 @@ import {
   Container,
   Divider,
   Grid,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
 import { getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { StoryConnectionCard } from "@/components/product";
-import type { Locale } from "@/i18n/config";
-import { getAppOrigin } from "@/server/email/transport";
+import { PageShell } from "@/components/page-shell";
 import type { ProductPageLabels } from "@/i18n/types";
+import { getAppOrigin } from "@/server/email/transport";
 import {
   formatCurrency,
   getLocalizedPath,
   getLocalizedProductPath,
 } from "@/utils";
 
-import { PageShell } from "@/components/page-shell";
 import { ProductGallery } from "../product-gallery";
 import { ProductInfo } from "../product-info";
+import { ProductInfoSkeleton } from "../product-info-skeleton";
 import { ProductTabs } from "../product-tabs";
 import { RelatedProducts } from "../related-products";
+import { StoryConnectionCard } from "../story-connection-card";
 import type { ProductPageViewProps } from "../types";
 import { createProductStructuredData } from "./utils";
 
-const createProductPageViewModel = ({
+const storySkeletonSx = {
+  mt: 6,
+  borderRadius: "var(--radius-hero)",
+} as const;
+
+const tabsSkeletonSx = {
+  mt: 6,
+  borderRadius: "var(--radius-panel)",
+} as const;
+
+const ProductInfoContent = async ({
   locale,
-  relatedProducts,
-  storyProduct,
-}: {
-  locale: Locale;
-  relatedProducts: ProductPageViewProps["relatedProducts"];
-  storyProduct: ProductPageViewProps["storyProduct"];
-}) => ({
-  homeHref: getLocalizedPath(locale, "/"),
-  shopHref: getLocalizedPath(locale, "/shop"),
-  relatedProductCards: relatedProducts.map((relatedProduct) => ({
-    id: relatedProduct.id,
-    href: getLocalizedProductPath(locale, relatedProduct.slug),
-    title: relatedProduct.title,
-    emoji: relatedProduct.emoji,
-    thumbnailBackgroundColor:
-      relatedProduct.thumbnailBackgroundColor ?? "var(--color-cream)",
-    formattedPrice: formatCurrency(
-      relatedProduct.price,
-      locale,
-      relatedProduct.currency,
-    ),
-  })),
-  storyProductCard: storyProduct
-    ? {
+  product,
+  purchaseContext,
+}: Pick<ProductPageViewProps, "locale" | "product" | "purchaseContext">) => {
+  const { ownedLanguages } = await purchaseContext;
+
+  return (
+    <ProductInfo
+      locale={locale}
+      product={product}
+      ownedLanguages={ownedLanguages}
+    />
+  );
+};
+
+const ProductStoryContent = async ({
+  locale,
+  storyProducts,
+}: Pick<ProductPageViewProps, "locale" | "storyProducts">) => {
+  const storyProduct = (await storyProducts)[0];
+
+  if (!storyProduct) {
+    return null;
+  }
+
+  const tProductPage = await getTranslations({
+    locale,
+    namespace: "storefront.productPage",
+  });
+
+  return (
+    <StoryConnectionCard
+      product={{
         href: getLocalizedProductPath(locale, storyProduct.slug),
         title: storyProduct.title,
         emoji: storyProduct.emoji,
         thumbnailBackgroundColor: storyProduct.thumbnailBackgroundColor,
-      }
-    : null,
-});
+      }}
+      titleTemplate={tProductPage("storyConnection.title", {
+        storyTitle: storyProduct.title,
+      })}
+      description={tProductPage("storyConnection.description")}
+      actionLabel={tProductPage("actions.viewBook")}
+    />
+  );
+};
+
+const ProductTabsContent = async ({
+  locale,
+  product,
+  purchaseContext,
+  isAuthenticated,
+  userReview,
+}: Pick<
+  ProductPageViewProps,
+  "locale" | "product" | "purchaseContext" | "isAuthenticated" | "userReview"
+>) => {
+  const [purchase, authenticated, review, tProductPage] = await Promise.all([
+    purchaseContext,
+    isAuthenticated,
+    userReview,
+    getTranslations({ locale, namespace: "storefront.productPage" }),
+  ]);
+  const reviewFormLabels = tProductPage.raw(
+    "reviewForm",
+  ) as ProductPageLabels["reviewForm"];
+
+  return (
+    <ProductTabs
+      labels={{
+        description: tProductPage("tabs.description"),
+        specs: tProductPage("tabs.specs"),
+        delivery: tProductPage("tabs.delivery"),
+        reviews: tProductPage("tabs.reviews"),
+      }}
+      product={product}
+      ownPendingReview={review?.status === "pending" ? review : null}
+      reviewForm={{
+        isAuthenticated: authenticated,
+        hasDelivered: purchase.hasDeliveredPurchase,
+        existingStatus: review?.status ?? null,
+        productId: product.productId,
+        productSlug: product.slug,
+        loginHref: getLocalizedPath(locale, "/login"),
+        labels: reviewFormLabels,
+      }}
+    />
+  );
+};
+
+const ProductRelatedContent = async ({
+  locale,
+  relatedProducts,
+}: Pick<ProductPageViewProps, "locale" | "relatedProducts">) => {
+  const products = await relatedProducts;
+
+  if (products.length === 0) {
+    return null;
+  }
+
+  const tProductPage = await getTranslations({
+    locale,
+    namespace: "storefront.productPage",
+  });
+
+  return (
+    <RelatedProducts
+      title={tProductPage("relatedTitle")}
+      relatedProducts={products.map((relatedProduct) => ({
+        id: relatedProduct.id,
+        href: getLocalizedProductPath(locale, relatedProduct.slug),
+        title: relatedProduct.title,
+        emoji: relatedProduct.emoji,
+        thumbnailBackgroundColor:
+          relatedProduct.thumbnailBackgroundColor ?? "var(--color-cream)",
+        formattedPrice: formatCurrency(
+          relatedProduct.price,
+          locale,
+          relatedProduct.currency,
+        ),
+      }))}
+    />
+  );
+};
 
 export const ProductPageView = async ({
   locale,
   product,
   relatedProducts,
-  storyProduct,
-  ownedLanguages,
+  storyProducts,
+  purchaseContext,
   isAuthenticated,
-  hasDelivered,
   userReview,
 }: ProductPageViewProps) => {
   const tProductPage = await getTranslations({
     locale,
     namespace: "storefront.productPage",
   });
-  const reviewFormLabels = tProductPage.raw(
-    "reviewForm",
-  ) as ProductPageLabels["reviewForm"];
-  const labels = {
-    breadcrumbs: {
-      home: tProductPage("breadcrumbs.home"),
-      shop: tProductPage("breadcrumbs.shop"),
-    },
-    tabs: {
-      description: tProductPage("tabs.description"),
-      specs: tProductPage("tabs.specs"),
-      delivery: tProductPage("tabs.delivery"),
-      reviews: tProductPage("tabs.reviews"),
-    },
-    relatedTitle: tProductPage("relatedTitle"),
-    storyConnection: {
-      title: tProductPage("storyConnection.title", {
-        storyTitle: storyProduct?.title ?? "",
-      }),
-      description: tProductPage("storyConnection.description"),
-    },
-  };
-
-  const { homeHref, shopHref, relatedProductCards, storyProductCard } =
-    createProductPageViewModel({
-      locale,
-      relatedProducts,
-      storyProduct,
-    });
-
   const structuredData = createProductStructuredData(
     product,
     locale,
@@ -121,8 +194,14 @@ export const ProductPageView = async ({
         <Container maxWidth="lg">
           <Breadcrumbs
             items={[
-              { label: labels.breadcrumbs.home, href: homeHref },
-              { label: labels.breadcrumbs.shop, href: shopHref },
+              {
+                label: tProductPage("breadcrumbs.home"),
+                href: getLocalizedPath(locale, "/"),
+              },
+              {
+                label: tProductPage("breadcrumbs.shop"),
+                href: getLocalizedPath(locale, "/shop"),
+              },
               { label: product.title },
             ]}
           />
@@ -145,7 +224,7 @@ export const ProductPageView = async ({
                   <Typography variant="body2" color="text.secondary">
                     {tProductPage("details.languageSupportLabel", {
                       langs: product.languages
-                        .map((l) => l.value.toUpperCase())
+                        .map((language) => language.value.toUpperCase())
                         .join(" / "),
                     })}
                   </Typography>
@@ -154,44 +233,51 @@ export const ProductPageView = async ({
             </Grid>
 
             <Grid size={{ xs: 12, md: 6 }}>
-              <ProductInfo
-                locale={locale}
-                product={product}
-                ownedLanguages={ownedLanguages}
-              />
+              <Suspense
+                fallback={
+                  <ProductInfoSkeleton locale={locale} product={product} />
+                }
+              >
+                <ProductInfoContent
+                  locale={locale}
+                  product={product}
+                  purchaseContext={purchaseContext}
+                />
+              </Suspense>
             </Grid>
           </Grid>
 
-          {storyProductCard ? (
-            <StoryConnectionCard
-              product={storyProductCard}
-              titleTemplate={labels.storyConnection.title}
-              description={labels.storyConnection.description}
-              actionLabel={tProductPage("actions.viewBook")}
-            />
-          ) : null}
-          <ProductTabs
-            labels={labels.tabs}
-            product={product}
-            ownPendingReview={
-              userReview?.status === "pending" ? userReview : null
+          <Suspense
+            fallback={
+              product.storyProductId ? (
+                <Skeleton variant="rounded" height={180} sx={storySkeletonSx} />
+              ) : null
             }
-            reviewForm={{
-              isAuthenticated,
-              hasDelivered,
-              existingStatus: userReview?.status ?? null,
-              productId: product.productId,
-              productSlug: product.slug,
-              loginHref: getLocalizedPath(locale, "/login"),
-              labels: reviewFormLabels,
-            }}
-          />
-          {relatedProductCards.length > 0 ? (
-            <RelatedProducts
-              title={labels.relatedTitle}
-              relatedProducts={relatedProductCards}
+          >
+            <ProductStoryContent
+              locale={locale}
+              storyProducts={storyProducts}
             />
-          ) : null}
+          </Suspense>
+          <Suspense
+            fallback={
+              <Skeleton variant="rounded" height={240} sx={tabsSkeletonSx} />
+            }
+          >
+            <ProductTabsContent
+              locale={locale}
+              product={product}
+              purchaseContext={purchaseContext}
+              isAuthenticated={isAuthenticated}
+              userReview={userReview}
+            />
+          </Suspense>
+          <Suspense fallback={null}>
+            <ProductRelatedContent
+              locale={locale}
+              relatedProducts={relatedProducts}
+            />
+          </Suspense>
         </Container>
       </Box>
     </PageShell>

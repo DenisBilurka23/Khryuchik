@@ -1,16 +1,14 @@
 import type { Locale } from "@/i18n/config";
-import type {
-  LocalizedCategory,
-  LocalizedProductSummary,
-} from "@/types/catalog";
-import type { EntertainmentCategoryView } from "@/types/entertainment";
-import type { HomeShopFilterValue } from "@/components/shop-section/types";
+import type { ReactNode } from "react";
+import type { HOME_SKELETON_CONFIG } from "@/constants/loading";
 
 export type HomePageViewProps = {
   locale: Locale;
-  shopCategories: LocalizedCategory[];
-  books: LocalizedProductSummary[];
-  shopProducts: LocalizedProductSummary[];
-  selectedShopCategory: HomeShopFilterValue;
-  entertainment: EntertainmentCategoryView;
+  books: ReactNode;
+  shop: ReactNode;
+  entertainment: ReactNode;
+};
+
+export type HomeSectionSkeletonProps = {
+  kind: keyof typeof HOME_SKELETON_CONFIG;
 };

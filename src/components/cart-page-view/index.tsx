@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Box, Container, Typography } from "@mui/material";
+import { Alert, Box, Container } from "@mui/material";
 import { useTranslations } from "next-intl";
 
 import { Breadcrumbs } from "@/components/breadcrumbs";
@@ -13,6 +13,7 @@ import { CartItemCard, OrderSummaryCard } from "@/components/cart";
 import { PageShell } from "@/components/page-shell";
 import { CartEmptyState } from "./empty-state";
 import { CartHero } from "./hero";
+import { CartLoading } from "./loading";
 import type { CartPageViewProps } from "./types";
 
 const noticeSx = { mt: 3, borderRadius: "var(--radius-field)" };
@@ -138,19 +139,7 @@ export const CartPageView = ({
           ) : null}
 
           {isLoading ? (
-            <Box
-              sx={{
-                mt: 4,
-                p: 4,
-                border: "1px solid var(--color-border)",
-                borderRadius: "var(--radius-panel)",
-                fontSize: 15,
-                color: "var(--color-text-secondary)",
-                background: "var(--color-card)",
-              }}
-            >
-              <Typography color="text.secondary">Loading cart...</Typography>
-            </Box>
+            <CartLoading status={t("loading")} />
           ) : items.length === 0 ? (
             <Box sx={{ mt: 4 }}>
               <CartEmptyState
