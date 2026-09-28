@@ -1,6 +1,7 @@
 "use client";
 
 import { Alert, Box, Container, Grid, Stack, Typography } from "@mui/material";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
 import { submitCheckoutClient } from "@/client-api/checkout";
@@ -12,6 +13,7 @@ import { PageShell } from "@/components/page-shell";
 import { useBuyNowCheckoutItems } from "@/hooks/useBuyNowCheckoutItems";
 import { useCheckoutForm } from "@/hooks/useCheckoutForm";
 import { useCheckoutLabels } from "@/hooks/useCheckoutLabels";
+import { useCheckoutRegionSync } from "@/hooks/useCheckoutRegionSync";
 import { useCheckoutShippingSelection } from "@/hooks/useCheckoutShippingSelection";
 import { usePickupPoints } from "@/hooks/usePickupPoints";
 import { usePromoCode } from "@/hooks/usePromoCode";
@@ -50,12 +52,14 @@ import {
 export const CheckoutPageView = ({
   locale,
   region,
+  availableRegions,
   currency,
   initialCustomer,
   initialShippingAddresses,
   initialSelectedAddressId,
 }: CheckoutPageViewProps) => {
   const labels = useCheckoutLabels();
+  const tRegions = useTranslations("storefront.regions");
 
   const cart = useCart();
   const buyNowItems = useBuyNowCheckoutItems();
@@ -115,6 +119,11 @@ export const CheckoutPageView = ({
     items.length > 0 && items.every((item) => item.isDigital);
 
   const checkoutItems = buyNowItems ?? cart.items;
+  const regionSync = useCheckoutRegionSync({
+    region,
+    country: items.length > 0 && !isDigitalOnly ? form.country : "",
+    availableRegions,
+  });
   const quoteAddress = isIsoCountryCode(form.country)
     ? {
         country: form.country,
@@ -130,9 +139,11 @@ export const CheckoutPageView = ({
     !isQuotableShippingAddress(quoteAddress);
   const shippingQuote = useShippingQuote({
     locale,
+    currency,
     items: checkoutItems,
     address: quoteAddress,
-    isEnabled: !isDigitalOnly && checkoutItems.length > 0,
+    isEnabled:
+      !isDigitalOnly && checkoutItems.length > 0 && !regionSync.isSwitching,
     isLocationFieldFocused,
   });
 
@@ -190,6 +201,10 @@ export const CheckoutPageView = ({
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
+
+    if (regionSync.isSwitching) {
+      return;
+    }
 
     if (isPricingUnavailable) {
       setError(labels.errors.pricingUnavailable);
@@ -324,6 +339,18 @@ export const CheckoutPageView = ({
             </Typography>
           </Box>
 
+          {regionSync.switchedRegion && !regionSync.isSwitching ? (
+            <Alert
+              severity="info"
+              sx={{ mb: 4, borderRadius: "var(--radius-field)" }}
+            >
+              {labels.regionSwitched.replace(
+                "{region}",
+                tRegions(`${regionSync.switchedRegion}.label`),
+              )}
+            </Alert>
+          ) : null}
+
           {regionBlockedCount > 0 && !isPricingUnavailable ? (
             <Alert
               severity="info"
@@ -448,7 +475,8 @@ export const CheckoutPageView = ({
                     isBlocked={
                       isPricingUnavailable ||
                       hasUnavailableItems ||
-                      isBlockedByShipping
+                      isBlockedByShipping ||
+                      regionSync.isSwitching
                     }
                     hasStoredItems={hasStoredItems}
                     paymentMethod={paymentMethod}

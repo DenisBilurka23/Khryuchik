@@ -31,10 +31,17 @@ export const getRegionForCountry = (
   return EUROPE_HUB_COUNTRIES.includes(code) ? "europe" : null;
 };
 
+export const getAddressRegion = (
+  country: CountryCode | undefined,
+  activeRegions: readonly RegionCode[],
+): RegionCode | null => {
+  const region = country ? getRegionForCountry(country) : null;
+
+  return region && activeRegions.includes(region) ? region : null;
+};
+
 const defaultPaymentMethods: PaymentMethod[] = ["stripe"];
 
-// Regions that pay by something other than a card. Empty since Belarus
-// moved to Stripe - kept as the hook a region needs when it cannot.
 const regionPaymentMethods: Partial<Record<RegionCode, PaymentMethod[]>> = {};
 
 export const getRegionPaymentMethods = (region: RegionCode): PaymentMethod[] =>

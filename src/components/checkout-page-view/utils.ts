@@ -124,6 +124,8 @@ export const checkoutErrorMessage = (
       return labels.fieldErrors.pickupPointRequired;
     case "shop_closed":
       return labels.errors.shopClosed;
+    case "region_mismatch":
+      return labels.errors.regionMismatch;
     case "payment_failed":
     case "stripe_session_missing_url":
       return labels.errors.paymentFailed;

@@ -24,6 +24,7 @@ type QuoteState = {
 
 export const useShippingQuote = ({
   locale,
+  currency,
   items,
   address,
   isEnabled,
@@ -56,7 +57,9 @@ export const useShippingQuote = ({
   );
 
   const isQuotable = isEnabled && Boolean(addressKey) && Boolean(itemsKey);
-  const requestKey = isQuotable ? `${locale}|${itemsKey}|${addressKey}` : "";
+  const requestKey = isQuotable
+    ? `${locale}|${currency}|${itemsKey}|${addressKey}`
+    : "";
 
   const latestInput = useRef({ items, address });
   const requestedKey = useRef("");

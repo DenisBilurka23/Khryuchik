@@ -109,7 +109,9 @@ const loadActiveRegions = unstable_cache(
 
 export const getActiveLocales = cache(loadActiveLocales);
 
-export const getActiveRegions = cache(loadActiveRegions);
+export const getActiveRegions = cache(async () =>
+  (await loadActiveRegions()).filter((region) => isRegionCode(region.code)),
+);
 
 export const getActiveLocaleCodes = async (): Promise<string[]> =>
   (await getActiveLocales()).map((locale) => locale.code);

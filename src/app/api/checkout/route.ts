@@ -11,6 +11,7 @@ import {
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestRegion } from "@/server/region/request-region";
+import { getActiveRegionCodes } from "@/server/localization/localization.service";
 import { createStripeCheckoutSession } from "@/server/payments/stripe";
 import { isShopClosed } from "@/server/shop/maintenance.service";
 import {
@@ -22,6 +23,7 @@ import { isStoredCartItem } from "@/types/cart-guards";
 import { BOOK_FORMAT } from "@/constants/catalog";
 import {
   asOptionalString,
+  getAddressRegion,
   getLocalizedPath,
   getRegionPaymentMethods,
 } from "@/utils";
@@ -44,6 +46,7 @@ type CheckoutErrorCode =
   | "shop_closed"
   | "too_many_requests"
   | "payment_failed"
+  | "region_mismatch"
   | "stripe_session_missing_url";
 
 const validationErrorResponse = (code: CheckoutErrorCode, status = 400) =>
@@ -82,8 +85,9 @@ export const POST = async (request: NextRequest) => {
     typeof payload.locale === "string" && isLocale(payload.locale)
       ? payload.locale
       : defaultLocale;
-  const [region, session] = await Promise.all([
+  const [region, activeRegions, session] = await Promise.all([
     getRequestRegion(),
+    getActiveRegionCodes(),
     getServerAuthSession(),
   ]);
   const userId = session?.user?.id || undefined;
@@ -106,6 +110,15 @@ export const POST = async (request: NextRequest) => {
     !isPaymentMethod(paymentMethod)
   ) {
     return validationErrorResponse("invalid_payload");
+  }
+
+  const addressRegion = getAddressRegion(
+    shippingAddress?.country,
+    activeRegions,
+  );
+
+  if (addressRegion && addressRegion !== region) {
+    return validationErrorResponse("region_mismatch", 409);
   }
 
   if (!getRegionPaymentMethods(region).includes(paymentMethod)) {

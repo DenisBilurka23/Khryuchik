@@ -5,6 +5,7 @@ import { SHIPPING_QUOTE_RATE_LIMIT } from "@/constants/rate-limit";
 import { defaultLocale, isLocale } from "@/i18n/config";
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
 import { getRequestRegion } from "@/server/region/request-region";
+import { getActiveRegionCodes } from "@/server/localization/localization.service";
 import {
   consumeRateLimit,
   getClientIpKey,
@@ -15,7 +16,7 @@ import {
 } from "@/server/orders/services/shipping.service";
 import { isStoredCartItem } from "@/types/cart-guards";
 import type { ShippingQuoteResponse } from "@/types/order";
-import { asOptionalString, isIsoCountryCode } from "@/utils";
+import { asOptionalString, getAddressRegion, isIsoCountryCode } from "@/utils";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -54,7 +55,10 @@ export const POST = async (request: NextRequest) => {
     ? payload.items.filter(isStoredCartItem)
     : [];
   const addressCountry = asOptionalString(payload?.address?.country);
-  const region = await getRequestRegion();
+  const [region, activeRegions] = await Promise.all([
+    getRequestRegion(),
+    getActiveRegionCodes(),
+  ]);
 
   const respond = (body: ShippingQuoteResponse) => {
     const response = NextResponse.json(body);
@@ -69,6 +73,12 @@ export const POST = async (request: NextRequest) => {
     !addressCountry ||
     !isIsoCountryCode(addressCountry)
   ) {
+    return respond({ status: "unavailable" });
+  }
+
+  const addressRegion = getAddressRegion(addressCountry, activeRegions);
+
+  if (addressRegion && addressRegion !== region) {
     return respond({ status: "unavailable" });
   }
 

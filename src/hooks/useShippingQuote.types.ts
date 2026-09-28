@@ -2,6 +2,7 @@ import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
 import type { ShippingQuoteRequest } from "@/types/order";
 import type { ShippingQuoteGroup } from "@/types/shipping";
+import type { CurrencyCode } from "@/utils";
 
 export type ShippingQuoteStatus =
   | "idle"
@@ -15,6 +16,7 @@ export type ShippingQuoteStatus =
 
 export type UseShippingQuoteParams = {
   locale: Locale;
+  currency: CurrencyCode;
   items: StoredCartItem[];
   address: ShippingQuoteRequest["address"] | null;
   isEnabled: boolean;

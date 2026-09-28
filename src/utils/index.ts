@@ -20,6 +20,7 @@ export {
   DEFAULT_REGION,
   REGION_CODES,
   REGION_COOKIE_NAME,
+  getAddressRegion,
   getRegionForCountry,
   getRegionPaymentMethods,
   isPaymentMethodAvailable,

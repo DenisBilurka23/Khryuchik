@@ -3,7 +3,10 @@ import { getTranslations } from "next-intl/server";
 
 import { CheckoutPageView } from "@/components/checkout-page-view";
 import type { CheckoutInitialCustomer } from "@/components/checkout-page-view/types";
-import { getRegionCurrency } from "@/server/localization/localization.service";
+import {
+  getActiveRegionCodes,
+  getRegionCurrency,
+} from "@/server/localization/localization.service";
 import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestRegion } from "@/server/region/request-region";
 import { isShopClosed } from "@/server/shop/maintenance.service";
@@ -60,8 +63,9 @@ const LocalizedCheckoutPage = async ({
     return <ShopMaintenanceView />;
   }
 
-  const [region, session] = await Promise.all([
+  const [region, availableRegions, session] = await Promise.all([
     getRequestRegion(),
+    getActiveRegionCodes(),
     getServerAuthSession(),
   ]);
   const currency = await getRegionCurrency(region);
@@ -70,6 +74,7 @@ const LocalizedCheckoutPage = async ({
     <CheckoutPageView
       locale={lang}
       region={region}
+      availableRegions={availableRegions}
       currency={currency}
       initialCustomer={initialCustomerFromSession(session)}
       initialShippingAddresses={session?.user?.shippingAddresses ?? []}

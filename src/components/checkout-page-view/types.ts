@@ -17,6 +17,7 @@ export type CheckoutInitialCustomer = {
 export type CheckoutPageViewProps = {
   locale: Locale;
   region: RegionCode;
+  availableRegions: RegionCode[];
   currency: CurrencyCode;
   initialCustomer?: CheckoutInitialCustomer;
   initialShippingAddresses?: UserShippingAddress[];
@@ -69,6 +70,7 @@ export type CheckoutLabels = {
   errors: CheckoutPageLabels["errors"];
   fieldErrors: CheckoutPageLabels["fieldErrors"];
   regionUnavailable: string;
+  regionSwitched: string;
   emptyState: CheckoutPageLabels["emptyState"];
 };
 

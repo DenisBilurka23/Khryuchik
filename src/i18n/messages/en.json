@@ -847,7 +847,8 @@
         "shippingUnsupportedParcel": "This order is too large or too heavy to ship to the selected country.",
         "shippingMissingData": "Delivery cannot be calculated for one of the items yet. Please contact us and we will sort it out.",
         "itemOutOfStock": "One of the items in your cart is out of stock. Remove it and try again.",
-        "invalidPromoCode": "The promo code is no longer valid. Remove it and try again."
+        "invalidPromoCode": "The promo code is no longer valid. Remove it and try again.",
+        "regionMismatch": "Prices for your delivery address are set in another region. Check the updated total and place the order again."
       },
       "fieldErrors": {
         "required": "Required field",
@@ -856,6 +857,7 @@
         "pickupPointRequired": "Choose a pickup point"
       },
       "regionUnavailable": "Some items are not sold in the selected region and cannot be ordered here. Switch the region back to order them.",
+      "regionSwitched": "Prices are now shown for {region} to match your delivery address.",
       "emptyState": {
         "title": "Your cart is empty",
         "text": "Add a few items before placing an order.",
