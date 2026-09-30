@@ -22,11 +22,25 @@ const createAggregateRating = (reviews: ProductDetails["reviews"]) => {
   };
 };
 
-export const createProductStructuredData = (
-  product: ProductDetails,
-  locale: Locale,
-  origin: string,
-) => {
+const toGtin13 = (isbn: string) => {
+  const digits = isbn.replace(/[^0-9]/g, "");
+
+  return digits.length === 13 ? digits : undefined;
+};
+
+type ProductStructuredDataInput = {
+  product: ProductDetails;
+  locale: Locale;
+  origin: string;
+  brand: string;
+};
+
+export const createProductStructuredData = ({
+  product,
+  locale,
+  origin,
+  brand,
+}: ProductStructuredDataInput) => {
   const base = normalizeOrigin(origin);
   const url = `${base}${getLocalizedProductPath(locale, product.slug)}`;
   const images = product.images
@@ -39,7 +53,11 @@ export const createProductStructuredData = (
     "@type": "Product",
     name: product.title,
     description: product.description,
+    brand: { "@type": "Brand", name: brand },
     sku: product.sku,
+    mpn: product.sku,
+    isbn: product.isbn,
+    gtin13: product.isbn ? toGtin13(product.isbn) : undefined,
     image: images.length ? images : undefined,
     aggregateRating: createAggregateRating(product.reviews),
     offers: {

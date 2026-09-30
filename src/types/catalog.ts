@@ -164,6 +164,7 @@ export type LocalizedProductSummary = ProductTranslation & {
 
 export type ProductDetailTranslation = {
   oldPrice?: number;
+  isbn?: string;
   storyLabel?: string;
   storyTitle?: string;
   description: string;

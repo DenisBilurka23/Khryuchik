@@ -2073,7 +2073,8 @@
         "weightGrams": "One copy, without packaging. Required: without it none of the shipping settings on this card are saved.",
         "hsCode": "Customs classification, e.g. 4903.00.00.00 for children's picture books.",
         "printedStockRule": "Enter how many printed copies of each language sit in each warehouse. A language with zero everywhere is sold as digital only.",
-        "printedStockEmpty": "Select the languages of the book first."
+        "printedStockEmpty": "Select the languages of the book first.",
+        "isbn": "13 digits, hyphens allowed. Separate number per language edition."
       },
       "buttons": {
         "addLanguage": "Add language",
@@ -2134,7 +2135,8 @@
         "heightMm": "Height, mm",
         "hsCode": "HS tariff code",
         "printedStock": "Printed stock",
-        "language": "Language"
+        "language": "Language",
+        "isbn": "ISBN"
       },
       "printifySectionTitle": "Printify",
       "printifySectionDescription": "Variants come from Printify. Pricing and copy stay under your control here.",

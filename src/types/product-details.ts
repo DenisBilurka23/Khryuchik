@@ -82,6 +82,7 @@ export type ProductDetails = {
   storyTitle?: string;
   storyProductId?: string;
   sku: string;
+  isbn?: string;
   description: string;
   images: ProductImage[];
   languages?: ProductOption[];

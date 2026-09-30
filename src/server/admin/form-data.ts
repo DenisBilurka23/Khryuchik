@@ -112,6 +112,7 @@ const parseLocaleTranslation = (formData: FormData, locale: Locale) => ({
 
 const parseDetailLocaleTranslation = (formData: FormData, locale: Locale) => ({
   oldPrice: parseOptionalNumber(formData, `${locale}.detailOldPrice`),
+  isbn: parseOptionalString(formData, `${locale}.isbn`),
   storyLabel: parseOptionalString(formData, `${locale}.storyLabel`),
   description: parseString(formData, `${locale}.description`).trim(),
   images: parseJsonField<ProductImage[]>(formData, `${locale}.imagesJson`, []),

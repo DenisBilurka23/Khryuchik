@@ -178,11 +178,16 @@ export const ProductPageView = async ({
     locale,
     namespace: "storefront.productPage",
   });
-  const structuredData = createProductStructuredData(
+  const tBrand = await getTranslations({
+    locale,
+    namespace: "storefront.brand",
+  });
+  const structuredData = createProductStructuredData({
     product,
     locale,
-    getAppOrigin(),
-  );
+    origin: getAppOrigin(),
+    brand: tBrand("title"),
+  });
 
   return (
     <PageShell>

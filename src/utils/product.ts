@@ -218,6 +218,7 @@ export const toProductDetails = (
     oldPrice: summary.oldPrice,
     availability: summary.availability,
     series: summary.series,
+    isbn: translation.isbn,
     storyLabel: translation.storyLabel,
     storyTitle: translation.storyTitle,
     storyProductId: detailsDocument.storyProductId,

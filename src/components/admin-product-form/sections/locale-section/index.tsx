@@ -130,6 +130,14 @@ export const AdminProductLocaleSection = ({
               name={`${locale}.storyLabel`}
               defaultValue={details.storyLabel ?? ""}
             />
+            {selectedType === "book" ? (
+              <TextField
+                label={tForm("fields.isbn")}
+                name={`${locale}.isbn`}
+                defaultValue={details.isbn ?? ""}
+                helperText={tForm("helpers.isbn")}
+              />
+            ) : null}
           </Box>
 
           <Box
