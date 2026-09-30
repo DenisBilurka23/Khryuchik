@@ -10,9 +10,12 @@ const countInHubs = (
 export const isPrintedStockTracked = (stock?: ProductPrintedStock) =>
   Boolean(stock && Object.keys(stock).length > 0);
 
-export const toPrintedLanguages = (stock?: ProductPrintedStock): string[] =>
+export const toPrintedLanguages = (
+  stock?: ProductPrintedStock,
+  hubs: readonly ShippingHubCode[] = SHIPPING_HUB_CODES,
+): string[] =>
   Object.entries(stock ?? {})
-    .filter(([, hubStock]) => countInHubs(hubStock, SHIPPING_HUB_CODES) > 0)
+    .filter(([, hubStock]) => countInHubs(hubStock, hubs) > 0)
     .map(([language]) => language);
 
 export const getStockedHubs = (

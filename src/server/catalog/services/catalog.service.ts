@@ -11,6 +11,7 @@ import {
   localizeProductOptionGroups,
   localizeProductSummary,
   resolveOptionPrice,
+  toPrintedLanguages,
   toProductDetails,
 } from "@/utils";
 import type { StoryTimelineBook } from "@/types/story";
@@ -270,7 +271,7 @@ export const getProductDetails = cache(
       product.printify?.variants,
       locale,
       regionPricing,
-      product.shipping?.stockByLanguage,
+      toPrintedLanguages(product.shipping?.stockByLanguage, [region]),
     );
 
     if (!details) {
