@@ -14,25 +14,25 @@ if (!dbName) {
 }
 
 declare global {
-  var __khryuchikMongoClientPromise: Promise<MongoClient> | undefined;
+  var __khryuchikMongoClient: MongoClient | undefined;
 }
 
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
-
-const clientPromise = global.__khryuchikMongoClientPromise ?? client.connect();
+const client =
+  global.__khryuchikMongoClient ??
+  new MongoClient(uri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    },
+  });
 
 if (process.env.NODE_ENV !== "production") {
-  global.__khryuchikMongoClientPromise = clientPromise;
+  global.__khryuchikMongoClient = client;
 }
 
 export const getMongoDb = async () => {
-  const connectedClient = await clientPromise;
+  await client.connect();
 
-  return connectedClient.db(dbName);
+  return client.db(dbName);
 };
