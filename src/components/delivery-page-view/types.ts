@@ -5,3 +5,5 @@ export type DeliveryPageViewProps = {
   locale: Locale;
   region: RegionCode;
 };
+
+export type DeliveryPageSkeletonProps = DeliveryPageViewProps;

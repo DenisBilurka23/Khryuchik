@@ -101,4 +101,5 @@ export const StoryPageView = async ({
   );
 };
 
-export type { StoryPageViewProps } from "./types";
+export { StoryPageSkeleton } from "./page-skeleton";
+export type { StoryPageSkeletonProps, StoryPageViewProps } from "./types";

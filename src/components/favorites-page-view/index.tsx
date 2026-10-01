@@ -126,4 +126,8 @@ export const FavoritesPageView = ({
   );
 };
 
-export type { FavoritesPageViewProps } from "./types";
+export { FavoritesPageSkeleton } from "./skeleton";
+export type {
+  FavoritesPageSkeletonProps,
+  FavoritesPageViewProps,
+} from "./types";

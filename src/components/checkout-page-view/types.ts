@@ -14,6 +14,10 @@ export type CheckoutInitialCustomer = {
   phone?: string;
 };
 
+export type CheckoutPageSkeletonProps = {
+  locale: Locale;
+};
+
 export type CheckoutPageViewProps = {
   locale: Locale;
   region: RegionCode;

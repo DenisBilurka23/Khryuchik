@@ -7,6 +7,8 @@ export const ADMIN_SKELETON_ROW_COUNT = 5;
 export const ADMIN_SKELETON_STAT_COUNT = 4;
 export const FAVORITES_SKELETON_CARD_COUNT = 3;
 export const CART_SKELETON_ITEM_COUNT = 2;
+export const PRODUCT_SKELETON_THUMB_COUNT = 4;
+export const LINK_PENDING_REVEAL_DELAY_MS = 150;
 
 export const HOME_SKELETON_CONFIG = {
   books: {

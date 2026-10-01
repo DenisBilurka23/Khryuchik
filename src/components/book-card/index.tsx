@@ -5,6 +5,11 @@ import Link from "next/link";
 import { cardFrameSx } from "@/theme/sx";
 
 import { ArrowLink } from "@/components/arrow-link";
+import {
+  LinkPendingOverlay,
+  LinkPendingProvider,
+  LinkPendingSignal,
+} from "@/components/link-pending";
 
 import type { BookCardProps } from "./types";
 
@@ -44,55 +49,61 @@ export const BookCard = ({
   const thumbnail = book.thumbnail;
 
   return (
-    <Box sx={cardSx}>
-      <CardContent sx={contentSx}>
-        <Link href={detailsHref}>
-          <Box
-            sx={{
-              ...coverSx,
-              background: thumbnail?.bgColor ?? "var(--color-accent-pale)",
-            }}
-          >
-            {thumbnail?.src ? (
-              <Image
-                src={thumbnail.src}
-                alt={thumbnail.alt ?? book.title}
-                fill
-                sizes={coverSizes}
-                style={{ objectFit: "cover" }}
-              />
-            ) : (
-              (thumbnail?.emoji ?? book.emoji)
-            )}
+    <LinkPendingProvider>
+      <Box sx={cardSx}>
+        <CardContent sx={contentSx}>
+          <Link href={detailsHref}>
+            <LinkPendingSignal />
+            <Box
+              sx={{
+                ...coverSx,
+                background: thumbnail?.bgColor ?? "var(--color-accent-pale)",
+              }}
+            >
+              {thumbnail?.src ? (
+                <Image
+                  src={thumbnail.src}
+                  alt={thumbnail.alt ?? book.title}
+                  fill
+                  sizes={coverSizes}
+                  style={{ objectFit: "cover" }}
+                />
+              ) : (
+                (thumbnail?.emoji ?? book.emoji)
+              )}
+
+              <LinkPendingOverlay />
+            </Box>
+          </Link>
+
+          {book.lang ? (
+            <Typography
+              component="p"
+              sx={{
+                fontSize: 12,
+                letterSpacing: "0.06em",
+                color: "var(--color-text-muted)",
+              }}
+            >
+              {book.lang}
+            </Typography>
+          ) : null}
+
+          <Link href={detailsHref}>
+            <LinkPendingSignal />
+            <Typography
+              component="p"
+              sx={{ mt: 0.5, fontSize: 17, fontWeight: 600, lineHeight: 1.3 }}
+            >
+              {book.title}
+            </Typography>
+          </Link>
+
+          <Box sx={{ mt: "auto", pt: 1.5 }}>
+            <ArrowLink href={detailsHref} label={detailsButton} />
           </Box>
-        </Link>
-
-        {book.lang ? (
-          <Typography
-            component="p"
-            sx={{
-              fontSize: 12,
-              letterSpacing: "0.06em",
-              color: "var(--color-text-muted)",
-            }}
-          >
-            {book.lang}
-          </Typography>
-        ) : null}
-
-        <Link href={detailsHref}>
-          <Typography
-            component="p"
-            sx={{ mt: 0.5, fontSize: 17, fontWeight: 600, lineHeight: 1.3 }}
-          >
-            {book.title}
-          </Typography>
-        </Link>
-
-        <Box sx={{ mt: "auto", pt: 1.5 }}>
-          <ArrowLink href={detailsHref} label={detailsButton} />
-        </Box>
-      </CardContent>
-    </Box>
+        </CardContent>
+      </Box>
+    </LinkPendingProvider>
   );
 };

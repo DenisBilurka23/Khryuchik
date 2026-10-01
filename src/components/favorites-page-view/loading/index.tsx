@@ -16,6 +16,11 @@ const gridSx = {
   gap: { xs: 2, md: 3 },
 } as const;
 
+const listTitleSx = {
+  fontSize: { xs: 22, md: 26 },
+  lineHeight: 1.2,
+} as const;
+
 const cardSx = {
   ...cardFrameSx,
   p: 2.25,
@@ -32,12 +37,13 @@ export const FavoritesLoading = ({
     <Panel tone="cream">
       <Box aria-hidden="true">
         <Box sx={{ mb: 3.5 }}>
-          <Typography
-            variant="h2"
-            sx={{ fontSize: { xs: 22, md: 26 }, lineHeight: 1.2 }}
-          >
-            {title}
-          </Typography>
+          {title ? (
+            <Typography variant="h2" sx={listTitleSx}>
+              {title}
+            </Typography>
+          ) : (
+            <Skeleton variant="text" width={220} sx={listTitleSx} />
+          )}
           {lead ? (
             <Typography sx={{ mt: 1.25, color: "var(--color-text-secondary)" }}>
               {lead}

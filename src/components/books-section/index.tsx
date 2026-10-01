@@ -2,6 +2,7 @@ import { Box, Container, Grid } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
 import { BookCard } from "@/components/book-card";
+import { SectionFooterAction } from "@/components/section-footer-action";
 import { SectionHeading } from "@/components/section-heading";
 import { getLocalizedPath, getLocalizedProductPath } from "@/utils";
 import type { BooksSectionProps } from "./types";
@@ -11,6 +12,7 @@ export const BookSection = async ({ locale, books }: BooksSectionProps) => {
     locale,
     namespace: "storefront.booksSection",
   });
+  const actionHref = getLocalizedPath(locale, "/shop?category=books");
 
   return (
     <Box component="section" id="books" sx={{ py: { xs: 1.5, md: 2 } }}>
@@ -26,7 +28,7 @@ export const BookSection = async ({ locale, books }: BooksSectionProps) => {
             eyebrow={t("eyebrow")}
             title={t("title")}
             actionLabel={t("actionLabel")}
-            actionHref={getLocalizedPath(locale, "/shop?category=books")}
+            actionHref={actionHref}
           />
 
           <Grid container spacing={3}>
@@ -40,6 +42,8 @@ export const BookSection = async ({ locale, books }: BooksSectionProps) => {
               </Grid>
             ))}
           </Grid>
+
+          <SectionFooterAction label={t("actionLabel")} href={actionHref} />
         </Box>
       </Container>
     </Box>

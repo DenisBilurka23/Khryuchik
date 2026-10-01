@@ -1,6 +1,12 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
 import Link from "next/link";
 
+import {
+  LinkPendingOverlay,
+  LinkPendingProvider,
+  LinkPendingSignal,
+} from "@/components/link-pending";
+
 import type { RelatedProductsProps } from "../types";
 
 export const RelatedProducts = ({
@@ -21,47 +27,53 @@ export const RelatedProducts = ({
         {relatedProducts.map((product) => {
           return (
             <Grid key={product.id} size={{ xs: 12, sm: 6, md: 4 }}>
-              <Link
-                href={product.href}
-                style={{
-                  display: "block",
-                  textDecoration: "none",
-                  color: "inherit",
-                }}
-              >
-                <Card sx={{ height: "100%" }}>
-                  <CardContent sx={{ p: 2.5 }}>
-                    <Box
-                      sx={{
-                        minHeight: 180,
-                        borderRadius: "var(--radius-panel)",
-                        bgcolor:
-                          product.thumbnailBackgroundColor ??
-                          "var(--color-cream)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 72,
-                      }}
-                    >
-                      {product.emoji}
-                    </Box>
+              <LinkPendingProvider>
+                <Link
+                  href={product.href}
+                  style={{
+                    display: "block",
+                    textDecoration: "none",
+                    color: "inherit",
+                  }}
+                >
+                  <LinkPendingSignal />
+                  <Card sx={{ height: "100%" }}>
+                    <CardContent sx={{ p: 2.5 }}>
+                      <Box
+                        sx={{
+                          position: "relative",
+                          overflow: "hidden",
+                          minHeight: 180,
+                          borderRadius: "var(--radius-panel)",
+                          bgcolor:
+                            product.thumbnailBackgroundColor ??
+                            "var(--color-cream)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 72,
+                        }}
+                      >
+                        {product.emoji}
+                        <LinkPendingOverlay />
+                      </Box>
 
-                    <Typography
-                      variant="h6"
-                      sx={{ mt: 3, fontSize: 18, fontWeight: 700 }}
-                    >
-                      {product.title}
-                    </Typography>
+                      <Typography
+                        variant="h6"
+                        sx={{ mt: 3, fontSize: 18, fontWeight: 700 }}
+                      >
+                        {product.title}
+                      </Typography>
 
-                    <Typography
-                      sx={{ mt: 1, color: "primary.main", fontWeight: 700 }}
-                    >
-                      {product.formattedPrice}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Link>
+                      <Typography
+                        sx={{ mt: 1, color: "primary.main", fontWeight: 700 }}
+                      >
+                        {product.formattedPrice}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </LinkPendingProvider>
             </Grid>
           );
         })}

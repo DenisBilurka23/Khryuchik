@@ -1,5 +1,5 @@
 export type FavoritesLoadingProps = {
-  title: string;
+  title?: string;
   lead?: string;
   status: string;
 };

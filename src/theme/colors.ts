@@ -50,6 +50,7 @@ export const colors = {
 
   selection: "rgba(169, 99, 117, 0.2)",
   headerVeil: "rgba(255, 252, 248, 0.94)",
+  cardVeil: "rgba(255, 253, 252, 0.55)",
   washRose: "rgba(247, 201, 209, 0.45)",
   washButter: "rgba(255, 224, 167, 0.45)",
 } as const;

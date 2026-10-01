@@ -11,26 +11,12 @@ import { NewsletterSection } from "@/components/newsletter-section";
 import { PageShell } from "@/components/page-shell";
 
 import { EntertainmentMediaBlock } from "./media-block";
+import { itemCopySx, itemMetaSx, itemTitleSx } from "./styles";
 import type {
   AdminViewBadgeProps,
   EntertainmentItemPageViewProps,
 } from "./types";
 import { createVideoStructuredData } from "./utils";
-
-const titleSx = {
-  mt: 3.5,
-  fontSize: { xs: 30, md: 40 },
-  lineHeight: 1.1,
-} as const;
-
-const copySx = {
-  maxWidth: 760,
-} as const;
-
-const metaSx = {
-  fontSize: 14,
-  color: "var(--color-text-muted)",
-} as const;
 
 const AdminViewBadge = async ({
   isAdmin,
@@ -99,8 +85,8 @@ export const EntertainmentItemPageView = async ({
             }}
           />
 
-          <Box sx={copySx}>
-            <Typography variant="h1" sx={titleSx}>
+          <Box sx={itemCopySx}>
+            <Typography variant="h1" sx={itemTitleSx}>
               {item.title}
             </Typography>
 
@@ -112,7 +98,7 @@ export const EntertainmentItemPageView = async ({
               sx={{ mt: durationSeconds ? 1 : 0 }}
             >
               {durationSeconds ? (
-                <Typography component="p" sx={metaSx}>
+                <Typography component="p" sx={itemMetaSx}>
                   {formatVideoDuration(durationSeconds)}
                 </Typography>
               ) : null}
@@ -142,7 +128,9 @@ export const EntertainmentItemPageView = async ({
   );
 };
 
+export { EntertainmentItemPageSkeleton } from "./skeleton";
 export type {
+  EntertainmentItemPageSkeletonProps,
   EntertainmentItemPageViewProps,
   EntertainmentMediaLabels,
 } from "./types";

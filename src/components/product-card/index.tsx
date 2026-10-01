@@ -6,6 +6,11 @@ import { cardFrameSx, displayFont } from "@/theme/sx";
 import { formatCurrency, isPurchasableAvailability } from "@/utils";
 
 import { ArrowLink } from "@/components/arrow-link";
+import {
+  LinkPendingOverlay,
+  LinkPendingProvider,
+  LinkPendingSignal,
+} from "@/components/link-pending";
 import { WishlistButton } from "./wishlist-button";
 import type { ProductCardProps } from "./types";
 
@@ -90,65 +95,75 @@ export const ProductCard = ({
   const isSoldOut = !isPurchasableAvailability(product.availability);
 
   return (
-    <Box sx={cardSx}>
-      <Link href={detailsHref}>
-        <Box sx={{ position: "relative", display: "block" }}>
-          {isSoldOut ? (
-            <Typography component="span" sx={soldOutSx}>
-              {outOfStock}
-            </Typography>
-          ) : null}
+    <LinkPendingProvider>
+      <Box sx={cardSx}>
+        <Link href={detailsHref}>
+          <LinkPendingSignal />
+          <Box sx={{ position: "relative", display: "block" }}>
+            {isSoldOut ? (
+              <Typography component="span" sx={soldOutSx}>
+                {outOfStock}
+              </Typography>
+            ) : null}
 
-          <Box
-            sx={{
-              ...thumbnailSx,
-              background:
-                thumbnail?.bgColor ??
-                product.thumbnailBackgroundColor ??
-                "var(--color-cream)",
-            }}
-          >
-            {thumbnail?.src ? (
-              <Image
-                src={thumbnail.src}
-                alt={thumbnail.alt ?? product.title}
-                fill
-                sizes={thumbnailSizes}
-                loading={eager ? "eager" : "lazy"}
-                style={{ objectFit: "contain" }}
-              />
-            ) : (
-              (thumbnail?.emoji ?? product.emoji)
-            )}
+            <Box
+              sx={{
+                ...thumbnailSx,
+                background:
+                  thumbnail?.bgColor ??
+                  product.thumbnailBackgroundColor ??
+                  "var(--color-cream)",
+              }}
+            >
+              {thumbnail?.src ? (
+                <Image
+                  src={thumbnail.src}
+                  alt={thumbnail.alt ?? product.title}
+                  fill
+                  sizes={thumbnailSizes}
+                  loading={eager ? "eager" : "lazy"}
+                  style={{ objectFit: "contain" }}
+                />
+              ) : (
+                (thumbnail?.emoji ?? product.emoji)
+              )}
+
+              <LinkPendingOverlay />
+            </Box>
           </Box>
-        </Box>
-      </Link>
+        </Link>
 
-      <Link href={detailsHref}>
-        <Typography component="p" sx={titleSx}>
-          {product.title}
-        </Typography>
-      </Link>
-
-      <Box sx={footerSx}>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
-          <Typography
-            component="p"
-            sx={{ fontSize: 16, fontWeight: 600, color: "var(--color-accent)" }}
-          >
-            {formatCurrency(product.price, locale, product.currency)}
+        <Link href={detailsHref}>
+          <LinkPendingSignal />
+          <Typography component="p" sx={titleSx}>
+            {product.title}
           </Typography>
+        </Link>
 
-          <ArrowLink href={detailsHref} label={viewProduct} size="sm" />
+        <Box sx={footerSx}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 0.75 }}>
+            <Typography
+              component="p"
+              sx={{
+                fontSize: 16,
+                fontWeight: 600,
+                color: "var(--color-accent)",
+              }}
+            >
+              {formatCurrency(product.price, locale, product.currency)}
+            </Typography>
+
+            <ArrowLink href={detailsHref} label={viewProduct} size="sm" />
+          </Box>
+
+          <WishlistButton
+            productId={product.id}
+            label={`${wishlistAriaLabel}: ${product.title}`}
+            sx={wishlistSx}
+          />
         </Box>
-
-        <WishlistButton
-          productId={product.id}
-          label={`${wishlistAriaLabel}: ${product.title}`}
-          sx={wishlistSx}
-        />
       </Box>
-    </Box>
+    </LinkPendingProvider>
   );
 };
 

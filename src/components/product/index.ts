@@ -1,6 +1,7 @@
 export { ProductGallery } from "./product-gallery";
 export { ProductInfo } from "./product-info";
 export { ProductInfoSkeleton } from "./product-info-skeleton";
+export { ProductPageSkeleton } from "./product-page-skeleton";
 export { ProductPageView } from "./product-page-view";
 export { ProductPricingUnavailable } from "./product-pricing-unavailable";
 export { ProductTabs } from "./product-tabs";
@@ -11,6 +12,7 @@ export type {
   ProductGalleryProps,
   ProductInfoProps,
   ProductInfoSkeletonProps,
+  ProductPageSkeletonProps,
   ProductPageViewProps,
   ProductPricingUnavailableProps,
   ProductTabsProps,

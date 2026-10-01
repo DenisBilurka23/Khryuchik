@@ -54,4 +54,5 @@ export const DeliveryPageView = async ({
   );
 };
 
-export type { DeliveryPageViewProps } from "./types";
+export { DeliveryPageSkeleton } from "./skeleton";
+export type { DeliveryPageSkeletonProps, DeliveryPageViewProps } from "./types";

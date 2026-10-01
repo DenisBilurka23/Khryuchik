@@ -54,6 +54,10 @@ export type ProductInfoProps = {
   isAvailableInRegion?: boolean;
 };
 
+export type ProductPageSkeletonProps = {
+  locale: Locale;
+};
+
 export type ProductInfoSkeletonProps = {
   locale: Locale;
   product: ProductDetails;

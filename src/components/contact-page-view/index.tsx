@@ -15,21 +15,9 @@ import {
   ContactForm,
   type ContactChannelItem,
 } from "./sections";
+import { contactPanelSx } from "./styles";
 import type { ContactPageViewProps } from "./types";
 
-const panelSx = {
-  display: "grid",
-  gridTemplateColumns: {
-    xs: "minmax(0, 1fr)",
-    lg: "minmax(0, 0.86fr) minmax(0, 1.14fr)",
-  },
-  alignItems: "stretch",
-  gap: { xs: 2, md: 3 },
-  mt: { xs: 3, md: 4 },
-  p: { xs: 2, md: 3 },
-  borderRadius: "var(--radius-panel)",
-  background: "var(--color-accent-pale)",
-} as const;
 import { getInstagramHandle } from "./utils";
 
 export const ContactPageView = async ({
@@ -90,7 +78,7 @@ export const ContactPageView = async ({
             lede={hero.lede}
           />
 
-          <Box sx={panelSx}>
+          <Box sx={contactPanelSx}>
             <Plate pad="lg">
               <ContactChannelsSection
                 title={channels.title}
@@ -116,4 +104,5 @@ export const ContactPageView = async ({
   );
 };
 
-export type { ContactPageViewProps } from "./types";
+export { ContactPageSkeleton } from "./skeleton";
+export type { ContactPageSkeletonProps, ContactPageViewProps } from "./types";

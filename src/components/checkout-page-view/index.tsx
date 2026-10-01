@@ -1,6 +1,6 @@
 "use client";
 
-import { Alert, Box, Container, Grid, Stack, Typography } from "@mui/material";
+import { Alert, Box, Container, Grid, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
@@ -37,6 +37,7 @@ import {
   CheckoutShippingAddressSection,
   CheckoutShippingMethodSection,
 } from "./sections";
+import { CheckoutHero } from "./hero";
 import type { CheckoutPageViewProps } from "./types";
 import {
   buildCheckoutRequest,
@@ -299,45 +300,11 @@ export const CheckoutPageView = ({
             ]}
           />
 
-          <Box
-            sx={{
-              borderRadius: "32px",
-              p: { xs: 3, md: 5 },
-              background:
-                "radial-gradient(circle at top left, var(--color-wash-rose), transparent 30%), radial-gradient(circle at right, var(--color-wash-butter), transparent 28%), var(--color-cream)",
-              border: "1px solid var(--color-border)",
-              mb: 5,
-            }}
-          >
-            <Typography
-              sx={{
-                textTransform: "uppercase",
-                letterSpacing: "0.2em",
-                fontSize: 13,
-                fontWeight: 700,
-                color: "primary.main",
-              }}
-            >
-              {labels.eyebrow}
-            </Typography>
-            <Typography
-              variant="h1"
-              sx={{ mt: 2, fontSize: { xs: 36, md: 56 } }}
-            >
-              {labels.title}
-            </Typography>
-            <Typography
-              color="text.secondary"
-              sx={{
-                mt: 2,
-                maxWidth: 760,
-                lineHeight: 1.8,
-                fontSize: { xs: 16, md: 18 },
-              }}
-            >
-              {labels.lead}
-            </Typography>
-          </Box>
+          <CheckoutHero
+            eyebrow={labels.eyebrow}
+            title={labels.title}
+            lead={labels.lead}
+          />
 
           {regionSync.switchedRegion && !regionSync.isSwitching ? (
             <Alert
@@ -492,4 +459,5 @@ export const CheckoutPageView = ({
   );
 };
 
-export type { CheckoutPageViewProps } from "./types";
+export { CheckoutPageSkeleton } from "./skeleton";
+export type { CheckoutPageSkeletonProps, CheckoutPageViewProps } from "./types";

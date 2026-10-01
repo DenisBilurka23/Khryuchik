@@ -222,4 +222,5 @@ export const CartPageView = ({
   );
 };
 
-export type { CartPageViewProps } from "./types";
+export { CartPageSkeleton } from "./skeleton";
+export type { CartPageSkeletonProps, CartPageViewProps } from "./types";

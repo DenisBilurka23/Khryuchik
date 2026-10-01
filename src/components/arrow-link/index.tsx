@@ -1,6 +1,8 @@
 import { Box } from "@mui/material";
 import Link from "next/link";
 
+import { LinkPendingSignal } from "@/components/link-pending";
+
 import type { ArrowLinkProps } from "./types";
 
 export const ArrowLink = ({
@@ -18,6 +20,7 @@ export const ArrowLink = ({
       sx={[{ display: "inline-flex" }, ...(Array.isArray(sx) ? sx : [sx])]}
     >
       <Link href={href} onClick={onClick}>
+        <LinkPendingSignal />
         <Box
           component="span"
           sx={{

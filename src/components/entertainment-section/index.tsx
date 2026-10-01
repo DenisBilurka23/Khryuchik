@@ -10,6 +10,7 @@ import {
   EntertainmentVideoCard,
 } from "@/components/entertainment-card";
 import { Panel } from "@/components/primitives";
+import { SectionFooterAction } from "@/components/section-footer-action";
 import { SectionHeading } from "@/components/section-heading";
 
 import type { EntertainmentSectionProps } from "./types";
@@ -26,6 +27,7 @@ export const EntertainmentSection = async ({
       namespace: "storefront.entertainmentCategories",
     }),
   ]);
+  const actionHref = getLocalizedPath(locale, "/entertainment");
 
   return (
     <Box component="section" id="entertainment" sx={{ py: { xs: 1.5, md: 2 } }}>
@@ -35,7 +37,7 @@ export const EntertainmentSection = async ({
             eyebrow={tSection("eyebrow")}
             title={tSection("title")}
             actionLabel={tSection("actionLabel")}
-            actionHref={getLocalizedPath(locale, "/entertainment")}
+            actionHref={actionHref}
           />
 
           {availableCategories.length > 1 ? (
@@ -70,6 +72,11 @@ export const EntertainmentSection = async ({
               </Grid>
             ))}
           </Grid>
+
+          <SectionFooterAction
+            label={tSection("actionLabel")}
+            href={actionHref}
+          />
         </Panel>
       </Container>
     </Box>

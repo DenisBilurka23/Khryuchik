@@ -7,6 +7,7 @@ import { createCategoryTabOptions } from "@/utils/category-tabs";
 
 import { CategoryTabs } from "@/components/category-tabs";
 import { ProductCard } from "@/components/product-card";
+import { SectionFooterAction } from "@/components/section-footer-action";
 import { SectionHeading } from "@/components/section-heading";
 import type { ShopSectionProps } from "./types";
 
@@ -25,6 +26,7 @@ export const ShopSection = async ({
     categories,
     includeAll: false,
   });
+  const actionHref = getLocalizedPath(locale, "/shop");
 
   return (
     <Box component="section" id="shop" sx={{ py: { xs: 1.5, md: 2 } }}>
@@ -40,7 +42,7 @@ export const ShopSection = async ({
             eyebrow={t("eyebrow")}
             title={t("title")}
             actionLabel={t("actionLabel")}
-            actionHref={getLocalizedPath(locale, "/shop")}
+            actionHref={actionHref}
           />
 
           <CategoryTabs
@@ -65,6 +67,8 @@ export const ShopSection = async ({
               </Grid>
             ))}
           </Grid>
+
+          <SectionFooterAction label={t("actionLabel")} href={actionHref} />
         </Box>
       </Container>
     </Box>

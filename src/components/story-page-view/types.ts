@@ -9,4 +9,8 @@ export type StoryPageViewProps = {
   seriesCounts: Promise<Record<BookSeries, number>>;
 };
 
+export type StoryPageSkeletonProps = {
+  locale: Locale;
+};
+
 export type StoryPageDictionary = StorefrontDictionary["storyPage"];
