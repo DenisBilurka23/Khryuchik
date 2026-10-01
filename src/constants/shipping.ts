@@ -35,6 +35,7 @@ export const EUROPE_HUB_COUNTRIES: readonly CountryCode[] = [
   "IS",
   "IT",
   "JE",
+  "KZ",
   "LI",
   "LT",
   "LU",
@@ -57,6 +58,7 @@ export const EUROPE_HUB_COUNTRIES: readonly CountryCode[] = [
   "SM",
   "TR",
   "UA",
+  "UZ",
   "VA",
 ];
 
