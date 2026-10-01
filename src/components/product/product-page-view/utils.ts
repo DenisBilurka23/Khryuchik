@@ -33,6 +33,7 @@ type ProductStructuredDataInput = {
   locale: Locale;
   origin: string;
   brand: string;
+  isAvailableInRegion: boolean;
 };
 
 export const createProductStructuredData = ({
@@ -40,6 +41,7 @@ export const createProductStructuredData = ({
   locale,
   origin,
   brand,
+  isAvailableInRegion,
 }: ProductStructuredDataInput) => {
   const base = normalizeOrigin(origin);
   const url = `${base}${getLocalizedProductPath(locale, product.slug)}`;
@@ -60,13 +62,15 @@ export const createProductStructuredData = ({
     gtin13: product.isbn ? toGtin13(product.isbn) : undefined,
     image: images.length ? images : undefined,
     aggregateRating: createAggregateRating(product.reviews),
-    offers: {
-      "@type": "Offer",
-      url,
-      price: product.price,
-      priceCurrency: product.currency,
-      availability: SCHEMA_AVAILABILITY[product.availability],
-      itemCondition: "https://schema.org/NewCondition",
-    },
+    offers: isAvailableInRegion
+      ? {
+          "@type": "Offer",
+          url,
+          price: product.price,
+          priceCurrency: product.currency,
+          availability: SCHEMA_AVAILABILITY[product.availability],
+          itemCondition: "https://schema.org/NewCondition",
+        }
+      : undefined,
   };
 };

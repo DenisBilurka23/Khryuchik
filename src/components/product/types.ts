@@ -51,11 +51,13 @@ export type ProductInfoProps = {
   locale: Locale;
   product: ProductDetails;
   ownedLanguages?: string[];
+  isAvailableInRegion?: boolean;
 };
 
 export type ProductInfoSkeletonProps = {
   locale: Locale;
   product: ProductDetails;
+  isAvailableInRegion?: boolean;
 };
 
 export type ReviewFormViewModel = {
@@ -97,6 +99,7 @@ export type ProductPageViewProps = {
   purchaseContext: Promise<ProductPurchaseContext>;
   isAuthenticated: Promise<boolean>;
   userReview: Promise<UserReviewSummary | null>;
+  isAvailableInRegion?: boolean;
 };
 
 export type TabItem = {

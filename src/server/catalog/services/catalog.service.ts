@@ -213,6 +213,7 @@ export const getProductPreviewsByIds = async (
 export type ProductDetailsResult =
   | { status: "ok"; product: ProductDetails }
   | { status: "not-found" }
+  | { status: "out-of-region"; product: ProductDetails }
   | { status: "pricing-unavailable"; title: string };
 
 export const getSitemapProductSlugs = cache(
@@ -233,11 +234,13 @@ export const getProductDetails = cache(
     }
 
     const regionPricing = await getRegionPricing(region);
+    const isOutOfRegion = !product.availableRegions?.includes(region);
     const summary = localizeProductSummary(
       product,
       locale,
       region,
-      regionPricing,
+      isOutOfRegion ? undefined : regionPricing,
+      isOutOfRegion ? { ignoreRegion: true } : undefined,
     );
 
     if (!summary) {
@@ -270,7 +273,7 @@ export const getProductDetails = cache(
       detailsDocument,
       product.printify?.variants,
       locale,
-      regionPricing,
+      isOutOfRegion ? undefined : regionPricing,
       toPrintedLanguages(product.shipping?.stockByLanguage, [region]),
     );
 
@@ -284,7 +287,7 @@ export const getProductDetails = cache(
     );
 
     return {
-      status: "ok",
+      status: isOutOfRegion ? "out-of-region" : "ok",
       product: {
         ...details,
         reviews: [...details.reviews, ...approvedReviews],

@@ -43,7 +43,11 @@ const ProductInfoContent = async ({
   locale,
   product,
   purchaseContext,
-}: Pick<ProductPageViewProps, "locale" | "product" | "purchaseContext">) => {
+  isAvailableInRegion,
+}: Pick<
+  ProductPageViewProps,
+  "locale" | "product" | "purchaseContext" | "isAvailableInRegion"
+>) => {
   const { ownedLanguages } = await purchaseContext;
 
   return (
@@ -51,6 +55,7 @@ const ProductInfoContent = async ({
       locale={locale}
       product={product}
       ownedLanguages={ownedLanguages}
+      isAvailableInRegion={isAvailableInRegion}
     />
   );
 };
@@ -173,6 +178,7 @@ export const ProductPageView = async ({
   purchaseContext,
   isAuthenticated,
   userReview,
+  isAvailableInRegion = true,
 }: ProductPageViewProps) => {
   const tProductPage = await getTranslations({
     locale,
@@ -187,6 +193,7 @@ export const ProductPageView = async ({
     locale,
     origin: getAppOrigin(),
     brand: tBrand("title"),
+    isAvailableInRegion,
   });
 
   return (
@@ -240,13 +247,18 @@ export const ProductPageView = async ({
             <Grid size={{ xs: 12, md: 6 }}>
               <Suspense
                 fallback={
-                  <ProductInfoSkeleton locale={locale} product={product} />
+                  <ProductInfoSkeleton
+                    locale={locale}
+                    product={product}
+                    isAvailableInRegion={isAvailableInRegion}
+                  />
                 }
               >
                 <ProductInfoContent
                   locale={locale}
                   product={product}
                   purchaseContext={purchaseContext}
+                  isAvailableInRegion={isAvailableInRegion}
                 />
               </Suspense>
             </Grid>

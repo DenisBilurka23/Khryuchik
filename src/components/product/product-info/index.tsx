@@ -51,6 +51,7 @@ export const ProductInfo = ({
   locale,
   product,
   ownedLanguages = [],
+  isAvailableInRegion = true,
 }: ProductInfoProps) => {
   const tProductPage = useTranslations("storefront.productPage");
   const tShopSection = useTranslations("storefront.shopSection");
@@ -153,27 +154,29 @@ export const ProductInfo = ({
         {product.subtitle}
       </Typography>
 
-      <Stack
-        direction="row"
-        spacing={2}
-        alignItems="center"
-        sx={productPriceRowSx}
-      >
-        <Typography sx={productPriceSx}>
-          {formatCurrency(price, locale, product.currency)}
-        </Typography>
-        {oldPrice ? (
-          <Typography
-            sx={{
-              fontSize: 18,
-              color: "text.secondary",
-              textDecoration: "line-through",
-            }}
-          >
-            {formatCurrency(oldPrice, locale, product.currency)}
+      {isAvailableInRegion ? (
+        <Stack
+          direction="row"
+          spacing={2}
+          alignItems="center"
+          sx={productPriceRowSx}
+        >
+          <Typography sx={productPriceSx}>
+            {formatCurrency(price, locale, product.currency)}
           </Typography>
-        ) : null}
-      </Stack>
+          {oldPrice ? (
+            <Typography
+              sx={{
+                fontSize: 18,
+                color: "text.secondary",
+                textDecoration: "line-through",
+              }}
+            >
+              {formatCurrency(oldPrice, locale, product.currency)}
+            </Typography>
+          ) : null}
+        </Stack>
+      ) : null}
 
       <Stack spacing={2.5} sx={{ mt: 4 }}>
         {product.languages?.length ? (
@@ -351,7 +354,22 @@ export const ProductInfo = ({
         ) : null}
       </Stack>
 
-      {alreadyOwned ? (
+      {!isAvailableInRegion ? (
+        <Stack spacing={2} sx={{ mt: 4 }}>
+          <Alert severity="info">
+            {tProductPage("actions.unavailableInRegion")}
+          </Alert>
+          <Button
+            component={Link}
+            href={getLocalizedPath(locale, "/shop")}
+            variant="contained"
+            size="large"
+            fullWidth
+          >
+            {tProductPage("actions.browseShop")}
+          </Button>
+        </Stack>
+      ) : alreadyOwned ? (
         <Stack spacing={2} sx={{ mt: 4 }}>
           <Alert icon={<CheckCircleOutlinedIcon />} severity="success">
             {tProductPage("actions.alreadyOwned")}

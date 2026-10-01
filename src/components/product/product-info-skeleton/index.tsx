@@ -23,6 +23,7 @@ const controlsSx = {
 export const ProductInfoSkeleton = ({
   locale,
   product,
+  isAvailableInRegion = true,
 }: ProductInfoSkeletonProps) => (
   <Box>
     {product.series || product.storyLabel ? (
@@ -45,16 +46,18 @@ export const ProductInfoSkeleton = ({
       {product.subtitle}
     </Typography>
 
-    <Stack
-      direction="row"
-      spacing={2}
-      alignItems="center"
-      sx={productPriceRowSx}
-    >
-      <Typography sx={productPriceSx}>
-        {formatCurrency(product.price, locale, product.currency)}
-      </Typography>
-    </Stack>
+    {isAvailableInRegion ? (
+      <Stack
+        direction="row"
+        spacing={2}
+        alignItems="center"
+        sx={productPriceRowSx}
+      >
+        <Typography sx={productPriceSx}>
+          {formatCurrency(product.price, locale, product.currency)}
+        </Typography>
+      </Stack>
+    ) : null}
 
     <Skeleton variant="rounded" height={240} sx={controlsSx} />
   </Box>

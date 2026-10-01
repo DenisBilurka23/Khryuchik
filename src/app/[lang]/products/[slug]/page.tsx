@@ -41,9 +41,11 @@ export const generateMetadata = async ({
     namespace: "storefront.brand",
   });
 
-  const title = result.status === "ok" ? result.product.title : result.title;
-  const description =
-    result.status === "ok" ? result.product.description : undefined;
+  const isPricingUnavailable = result.status === "pricing-unavailable";
+  const title = isPricingUnavailable ? result.title : result.product.title;
+  const description = isPricingUnavailable
+    ? undefined
+    : result.product.description;
 
   return createStorefrontMetadata({
     locale: lang,
@@ -116,6 +118,7 @@ const LocalizedProductPage = async ({ params }: LocalizedProductPageProps) => {
       purchaseContext={purchaseContext}
       isAuthenticated={isAuthenticated}
       userReview={userReview}
+      isAvailableInRegion={result.status === "ok"}
     />
   );
 };

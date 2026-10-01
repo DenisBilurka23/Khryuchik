@@ -66,8 +66,9 @@ export const localizeProductSummary = (
   locale: Locale,
   region: RegionCode,
   regionPricing: RegionPricing = nativePricing,
+  options?: { ignoreRegion?: boolean },
 ): LocalizedProductSummary | null => {
-  if (!product.availableRegions?.includes(region)) {
+  if (!options?.ignoreRegion && !product.availableRegions?.includes(region)) {
     return null;
   }
   const translation =
