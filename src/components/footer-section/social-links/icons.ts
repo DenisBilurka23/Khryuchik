@@ -4,8 +4,11 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import PublicIcon from "@mui/icons-material/Public";
 
+import { TikTokIcon } from "./tiktok-icon";
+
 const iconByKey: Record<string, SvgIconComponent> = {
   instagram: InstagramIcon,
+  tiktok: TikTokIcon,
   facebook: FacebookIcon,
   email: MailOutlineIcon,
 };

@@ -4,9 +4,17 @@ import Link from "next/link";
 import { getSocialIcon } from "./icons";
 import type { FooterSocialLinksProps } from "./types";
 
+const socialLinksSx = {
+  display: "grid",
+  gridTemplateColumns: { xs: "repeat(2, max-content)", lg: "none" },
+  gridAutoFlow: { lg: "column" },
+  gridAutoColumns: "max-content",
+  gap: 1.5,
+} as const;
+
 export const FooterSocialLinks = ({ items }: FooterSocialLinksProps) => {
   return (
-    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+    <Box sx={socialLinksSx}>
       {items.map((item) => {
         const Icon = getSocialIcon(item.key);
         const isExternal = item.href.startsWith("http");

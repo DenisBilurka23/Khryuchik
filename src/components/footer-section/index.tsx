@@ -22,7 +22,10 @@ export const FooterSection = async ({
     getTranslations({ locale, namespace: "storefront.footer" }),
   ]);
   const sections = tFooter.raw("sections") as StorefrontFooterSection[];
-  const sectionColumnWidth = (12 - 4) / sections.length;
+  const linkSectionCount = sections.filter(
+    (section) => section.variant !== "social",
+  ).length;
+  const linkColumnWidth = (12 - 3 - 3) / linkSectionCount;
 
   return (
     <Box
@@ -34,7 +37,7 @@ export const FooterSection = async ({
     >
       <Container maxWidth="lg" sx={{ py: { xs: 6, md: 8 } }}>
         <Grid container spacing={5}>
-          <Grid size={{ xs: 12, lg: 4 }}>
+          <Grid size={{ xs: 12, lg: 3 }}>
             <Logo markSize={40} title={tStorefront("brand.shortLabel")} />
             <Typography
               sx={{
@@ -51,7 +54,11 @@ export const FooterSection = async ({
           {sections.map((section) => (
             <Grid
               key={section.title}
-              size={{ xs: 6, sm: 3, lg: sectionColumnWidth }}
+              size={{
+                xs: 6,
+                sm: 3,
+                lg: section.variant === "social" ? 3 : linkColumnWidth,
+              }}
             >
               <Typography
                 component="p"

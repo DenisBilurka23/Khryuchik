@@ -1,4 +1,4 @@
-export type ContactChannelKind = "ig" | "fb" | "mail";
+export type ContactChannelKind = "ig" | "tt" | "fb" | "mail";
 
 export type ContactChannelItem = {
   kind: ContactChannelKind;

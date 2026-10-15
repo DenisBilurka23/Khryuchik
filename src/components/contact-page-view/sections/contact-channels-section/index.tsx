@@ -7,6 +7,7 @@ import type { ContactChannelKind, ContactChannelsSectionProps } from "./types";
 
 const channelIconTone: Record<ContactChannelKind, IconTileTone> = {
   ig: "accent",
+  tt: "olive",
   fb: "aqua",
   mail: "olive",
 };
@@ -80,6 +81,24 @@ const ChannelIcon = ({ kind }: { kind: ContactChannelKind }) => {
         <rect x="3" y="3" width="18" height="18" rx="5" />
         <circle cx="12" cy="12" r="4" />
         <circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none" />
+      </svg>
+    );
+  }
+
+  if (kind === "tt") {
+    return (
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+      >
+        <path
+          d="M21 7.917v4.034a9.948 9.948 0 0 1-5-1.951v4.5a6.5 6.5 0 1 1-8-6.326v4.326a2.5 2.5 0 1 0 4 2V3h4.083A6.005 6.005 0 0 0 21 7.917z"
+          strokeLinejoin="round"
+        />
       </svg>
     );
   }

@@ -27,12 +27,22 @@ const labelSx = {
   color: "var(--color-text)",
 } as const;
 
+const formSx = {
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
+} as const;
+
 const fieldSx = { display: "flex", flexDirection: "column" } as const;
+
+const messageFieldSx = { ...fieldSx, flex: 1, mt: 2.5 } as const;
 
 const textareaSx = {
   ...inputFieldSx,
+  flex: 1,
   "& .MuiOutlinedInput-root": {
     ...inputFieldSx["& .MuiOutlinedInput-root"],
+    flex: 1,
     alignItems: "flex-start",
     minHeight: 190,
     padding: "16px",
@@ -201,7 +211,7 @@ export const ContactForm = ({
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit} noValidate>
+    <Box component="form" onSubmit={handleSubmit} noValidate sx={formSx}>
       <SectionEyebrow label={labels.eyebrow} />
 
       <Typography variant="h2" sx={titleSx}>
@@ -281,7 +291,7 @@ export const ContactForm = ({
         </Box>
       </Box>
 
-      <Box sx={{ ...fieldSx, mt: 2.5 }}>
+      <Box sx={messageFieldSx}>
         <Typography component="label" htmlFor="contact-message" sx={labelSx}>
           {labels.messageLabel}{" "}
           <Box component="span" sx={requiredSx}>

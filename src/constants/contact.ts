@@ -6,6 +6,10 @@ export const SOCIAL_LINKS = {
     europe: "https://www.instagram.com/khryuchik/",
     northAmerica: "https://www.instagram.com/khryuchik.kids/",
   },
+  tiktokByRegion: {
+    europe: "https://www.tiktok.com/@khryuchik",
+    northAmerica: "https://www.tiktok.com/@khryuchik.kids",
+  },
 } as const;
 
 export const CONTACT_MESSAGE_MIN_LENGTH = 10;

@@ -18,7 +18,7 @@ import {
 import { contactPanelSx } from "./styles";
 import type { ContactPageViewProps } from "./types";
 
-import { getInstagramHandle } from "./utils";
+import { getSocialHandle } from "./utils";
 
 export const ContactPageView = async ({
   locale,
@@ -40,6 +40,7 @@ export const ContactPageView = async ({
   const defaultEmail = session?.user?.email ?? "";
 
   const instagramHref = getFooterItemHref("instagram", locale, region);
+  const tiktokHref = getFooterItemHref("tiktok", locale, region);
   const facebookHref = getFooterItemHref("facebook", locale, region);
   const emailHref = getFooterItemHref("email", locale, region);
 
@@ -47,8 +48,15 @@ export const ContactPageView = async ({
     {
       kind: "ig",
       label: channels.instagramLabel,
-      value: getInstagramHandle(instagramHref),
+      value: getSocialHandle(instagramHref),
       href: instagramHref,
+      external: true,
+    },
+    {
+      kind: "tt",
+      label: channels.tiktokLabel,
+      value: getSocialHandle(tiktokHref),
+      href: tiktokHref,
       external: true,
     },
     {

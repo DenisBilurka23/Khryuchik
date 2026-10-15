@@ -41,6 +41,7 @@ export const ContactPageSkeleton = async ({
                 <Skeleton variant="rounded" height={64} sx={rowSx} />
                 <Skeleton variant="rounded" height={64} sx={rowSx} />
                 <Skeleton variant="rounded" height={64} sx={rowSx} />
+                <Skeleton variant="rounded" height={64} sx={rowSx} />
               </Stack>
             </Plate>
 

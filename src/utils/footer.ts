@@ -22,6 +22,10 @@ export const getFooterItemHref = (
     return SOCIAL_LINKS.instagramByRegion[region];
   }
 
+  if (key === "tiktok") {
+    return SOCIAL_LINKS.tiktokByRegion[region];
+  }
+
   if (key === "facebook") {
     return SOCIAL_LINKS.facebook;
   }
