@@ -133,6 +133,7 @@ export type OrderDeliveredBy = "carrier" | "admin" | "customer";
 
 export type OrderFulfillmentProgress = {
   status?: string;
+  trackings?: OrderTracking[];
   carrier?: string;
   trackingNumber?: string;
   trackingUrl?: string;

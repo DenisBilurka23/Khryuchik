@@ -1,4 +1,4 @@
-import type { PrintifyVariantLink } from "@/types/catalog";
+import type { JetprintVariantLink, PrintifyVariantLink } from "@/types/catalog";
 import type {
   ProductOption,
   ProductVariantAvailability,
@@ -58,7 +58,7 @@ export const isProductVariantAxis = (key: string): key is ProductVariantAxis =>
   key === "size" || key === "color";
 
 export const buildProductVariantMatrix = (
-  variants: PrintifyVariantLink[] | undefined,
+  variants: (PrintifyVariantLink | JetprintVariantLink)[] | undefined,
 ): ProductVariantCombination[] | undefined => {
   if (!variants?.length) {
     return undefined;
@@ -67,7 +67,7 @@ export const buildProductVariantMatrix = (
   const byKey = new Map<string, ProductVariantCombination>();
 
   for (const variant of variants) {
-    if (!variant.isEnabled) {
+    if ("isEnabled" in variant && !variant.isEnabled) {
       continue;
     }
 

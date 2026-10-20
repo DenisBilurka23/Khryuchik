@@ -118,6 +118,36 @@ describe("order formatting and guards", () => {
 });
 
 describe("order tracking", () => {
+  it("exposes every tracking in a group without duplicating the legacy first tracking", () => {
+    expect(
+      getOrderTrackings({
+        fulfillments: [
+          {
+            source: "jetprint",
+            trackingNumber: "ONE",
+            trackings: [
+              { number: "ONE", url: "https://track.test/1" },
+              { number: "TWO", carrier: "Carrier" },
+            ],
+          },
+        ],
+      }),
+    ).toEqual([
+      { number: "ONE", url: "https://track.test/1", source: "jetprint" },
+      { number: "TWO", carrier: "Carrier", source: "jetprint" },
+    ]);
+  });
+
+  it("does not revive an old tracking when the live tracking list is empty", () => {
+    expect(
+      getOrderTrackings({
+        fulfillments: [
+          { source: "jetprint", trackingNumber: "DELETED", trackings: [] },
+        ],
+      }),
+    ).toEqual([]);
+  });
+
   it("keeps only fulfillment entries with a tracking number", () => {
     expect(
       getOrderTrackings({

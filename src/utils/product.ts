@@ -4,6 +4,7 @@ import type {
   LocalizedProductSummary,
   ProductAvailability,
   PrintifyVariantLink,
+  JetprintVariantLink,
   ProductCurrencyPricing,
   ProductDetailDocument,
   ProductDocument,
@@ -79,6 +80,13 @@ export const localizeProductSummary = (
     return null;
   }
 
+  const jetprint = product.jetprint;
+  const hasJetprintStock =
+    !jetprint ||
+    (jetprint.printFiles.length > 0 &&
+      jetprint.previewFiles.length > 0 &&
+      jetprint.variants.some((variant) => variant.isAvailable));
+
   const searchIndex = Object.values(product.translations)
     .flatMap((localizedTranslation) => [
       localizedTranslation.title,
@@ -99,7 +107,9 @@ export const localizeProductSummary = (
     series: product.series,
     isActive: product.status.isActive,
     sortOrder: product.merchandising.sortOrder,
-    availability: product.inventory.availability,
+    availability: hasJetprintStock
+      ? product.inventory.availability
+      : "out_of_stock",
     quantity: product.inventory.quantity,
     hasOptions: product.hasOptions ?? false,
     ...translation,
@@ -190,7 +200,7 @@ export const isLocalizedProductSummary = (
 export const toProductDetails = (
   summary: LocalizedProductSummary,
   detailsDocument: ProductDetailDocument,
-  printifyVariants: PrintifyVariantLink[] | undefined,
+  variants: (PrintifyVariantLink | JetprintVariantLink)[] | undefined,
   locale: Locale,
   regionPricing: RegionPricing = nativePricing,
   printedLanguages?: string[],
@@ -204,7 +214,7 @@ export const toProductDetails = (
   }
 
   const options = localizeProductOptionGroups(translation, regionPricing);
-  const variantMatrix = buildProductVariantMatrix(printifyVariants);
+  const variantMatrix = buildProductVariantMatrix(variants);
   const offered = filterOfferedVariantOptions(variantMatrix, options);
 
   return {

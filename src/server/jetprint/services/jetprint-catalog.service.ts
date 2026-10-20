@@ -13,8 +13,13 @@ import { notifyAdminJetprintVariantUnavailable } from "@/server/payments/telegra
 
 import { jetprintRequest } from "../client";
 import type { JetprintVariantStatusResponse } from "../types";
+import {
+  decodeJetprintVariantCursor,
+  encodeJetprintVariantCursor,
+} from "../variant-sync-cursor";
 
 const VARIANT_STATUS_TIMEOUT_MS = 10_000;
+const VARIANT_SYNC_MIN_REMAINING_MS = VARIANT_STATUS_TIMEOUT_MS + 5_000;
 
 export const fetchJetprintVariantStatus = async (
   sku: string,
@@ -38,23 +43,40 @@ export type JetprintVariantSyncSummary = {
 export const syncJetprintVariantAvailability = async (
   cursor?: string,
 ): Promise<JetprintVariantSyncSummary> => {
-  const products = await findJetprintLinkedProducts(cursor);
   const deadline = Date.now() + JETPRINT_SYNC_BUDGET_MS;
+  const resume = decodeJetprintVariantCursor(cursor);
+  const products = await findJetprintLinkedProducts(
+    resume?.productId ?? cursor,
+    Boolean(resume),
+  );
   const failed: JetprintVariantSyncSummary["failed"] = [];
-  let processed = 0;
   let checked = 0;
   let unavailable = 0;
-  let nextCursor: string | null = null;
 
   for (const product of products) {
-    if (processed > 0 && Date.now() >= deadline) {
-      nextCursor = products[processed - 1].productId;
-      break;
-    }
-
     const title = product.translations?.[defaultLocale]?.title ?? product.slug;
+    const variants = product.jetprint?.variants ?? [];
+    const startIndex =
+      product.productId === resume?.productId
+        ? Math.max(
+            0,
+            variants.findIndex((variant) => variant.sku === resume.sku),
+          )
+        : 0;
 
-    for (const variant of product.jetprint?.variants ?? []) {
+    for (const variant of variants.slice(startIndex)) {
+      if (deadline - Date.now() <= VARIANT_SYNC_MIN_REMAINING_MS) {
+        return {
+          checked,
+          unavailable,
+          failed,
+          nextCursor: encodeJetprintVariantCursor({
+            productId: product.productId,
+            sku: variant.sku,
+          }),
+        };
+      }
+
       try {
         const status = await fetchJetprintVariantStatus(variant.sku);
         const isAvailable = status === JETPRINT_VARIANT_STATUS.active;
@@ -90,9 +112,7 @@ export const syncJetprintVariantAvailability = async (
         });
       }
     }
-
-    processed += 1;
   }
 
-  return { checked, unavailable, failed, nextCursor };
+  return { checked, unavailable, failed, nextCursor: null };
 };

@@ -31,7 +31,9 @@ import {
 } from "@/server/payments/telegram";
 import type { OrderDocument, OrderFulfillment } from "@/types/order";
 import {
+  canSubmitOrderToJetprint,
   getJetprintOrderStatusKey,
+  getOrderTrackings,
   hasLiveJetprintOrder,
   nextJetprintCustomerOrderNo,
   resolveNextJetprintOrderStatus,
@@ -54,10 +56,15 @@ const resolveCustomerOrderNo = (order: OrderDocument) => {
 
 export const submitOrderToJetprint = async (
   order: OrderDocument,
+  { allowResubmission = false }: { allowResubmission?: boolean } = {},
 ): Promise<boolean> => {
+  const wasCancelled =
+    Boolean(order.jetprintOrder?.cancelledAt) ||
+    order.jetprintOrder?.status === JETPRINT_ORDER_STATUS.cancelled;
+
   if (
-    !order.items.some((item) => item.jetprint) ||
-    hasLiveJetprintOrder(order)
+    !canSubmitOrderToJetprint(order) ||
+    (wasCancelled && !allowResubmission)
   ) {
     return false;
   }
@@ -131,8 +138,8 @@ export const cancelOrderInJetprint = async (
   }
 };
 
-const pickWaybill = (jetprintOrder: JetprintOrder) =>
-  jetprintOrder.waybills?.find(
+const activeWaybills = (jetprintOrder: JetprintOrder) =>
+  (jetprintOrder.waybills ?? []).filter(
     (waybill) =>
       waybill.trackingNumber &&
       waybill.waybillStatus !== JETPRINT_DELETED_WAYBILL_STATUS,
@@ -141,15 +148,30 @@ const pickWaybill = (jetprintOrder: JetprintOrder) =>
 const isJetprintOrderShipped = (jetprintOrder: JetprintOrder) =>
   jetprintOrder.orderStatus === JETPRINT_ORDER_STATUS.partiallyShipped ||
   jetprintOrder.orderStatus === JETPRINT_ORDER_STATUS.shipped ||
-  pickWaybill(jetprintOrder)?.waybillStatus === JETPRINT_SHIPPED_WAYBILL_STATUS;
+  activeWaybills(jetprintOrder).some(
+    (waybill) => waybill.waybillStatus === JETPRINT_SHIPPED_WAYBILL_STATUS,
+  );
 
 const buildParcelPatch = (
   parcel: OrderFulfillment,
   jetprintOrder: JetprintOrder,
   now: string,
 ): OrderFulfillmentPatch => {
-  const waybill = pickWaybill(jetprintOrder);
+  const waybills = activeWaybills(jetprintOrder);
+  const waybill = waybills[0];
+  const trackings = waybills.map((entry) => ({
+    number: entry.trackingNumber!,
+    ...(entry.carrier ? { carrier: entry.carrier } : {}),
+    ...(entry.trackingUrl ? { url: entry.trackingUrl } : {}),
+  }));
   const patch: OrderFulfillmentPatch = {};
+
+  if (
+    jetprintOrder.waybills &&
+    JSON.stringify(parcel.trackings) !== JSON.stringify(trackings)
+  ) {
+    patch.trackings = trackings;
+  }
 
   const put = <Key extends keyof OrderFulfillmentPatch>(
     key: Key,
@@ -161,9 +183,15 @@ const buildParcelPatch = (
   };
 
   put("status", getJetprintOrderStatusKey(jetprintOrder.orderStatus));
-  put("carrier", waybill?.carrier);
-  put("trackingNumber", waybill?.trackingNumber);
-  put("trackingUrl", waybill?.trackingUrl);
+  for (const [key, value] of [
+    ["carrier", waybill?.carrier],
+    ["trackingNumber", waybill?.trackingNumber],
+    ["trackingUrl", waybill?.trackingUrl],
+  ] as const) {
+    if (jetprintOrder.waybills && parcel[key] !== value) {
+      patch[key] = value ?? null;
+    }
+  }
 
   if (isJetprintOrderShipped(jetprintOrder) && !parcel.shippedAt) {
     patch.shippedAt = now;
@@ -229,16 +257,27 @@ export const syncOrderFromJetprint = async (
     isJetprintOrderShipped(jetprintOrder),
   );
 
-  if (!nextStatus) {
+  const knownTrackingNumbers = new Set(
+    getOrderTrackings(order)
+      .filter((tracking) => tracking.source === "jetprint")
+      .map((tracking) => tracking.number),
+  );
+  const hasNewTracking = parcelPatch.trackings?.some(
+    (tracking) => !knownTrackingNumbers.has(tracking.number),
+  );
+
+  if (!nextStatus && !(order.status === "shipped" && hasNewTracking)) {
     return;
   }
 
-  await updateOrderStatus(order.id, nextStatus);
+  if (nextStatus) {
+    await updateOrderStatus(order.id, nextStatus);
+  }
 
   const updated = await findOrderById(order.id);
 
   if (updated) {
-    await sendOrderStatusEmail(updated, order.status);
+    await sendOrderStatusEmail(updated, nextStatus ? order.status : undefined);
   }
 };
 

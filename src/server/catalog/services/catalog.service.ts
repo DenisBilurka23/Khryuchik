@@ -11,6 +11,7 @@ import {
   localizeProductOptionGroups,
   localizeProductSummary,
   resolveOptionPrice,
+  resolveSellableJetprintVariant,
   toPrintedLanguages,
   toProductDetails,
 } from "@/utils";
@@ -271,7 +272,7 @@ export const getProductDetails = cache(
     const details = toProductDetails(
       summary,
       detailsDocument,
-      product.printify?.variants,
+      product.printify?.variants ?? product.jetprint?.variants,
       locale,
       isOutOfRegion ? undefined : regionPricing,
       toPrintedLanguages(product.shipping?.stockByLanguage, [region]),
@@ -355,6 +356,9 @@ export const resolveCartItems = async (
   const catalogProductIds = new Set(
     products.map((product) => product.productId),
   );
+  const productById = new Map(
+    products.map((product) => [product.productId, product]),
+  );
   const summaryById = new Map(
     localizeProductSummaries(products, locale, region, regionPricing).map(
       (summary) => [summary.id, summary],
@@ -392,6 +396,10 @@ export const resolveCartItems = async (
     const availableQuantity = stockAvailability.get(item.id);
     const isOverStock =
       availableQuantity !== undefined && item.quantity > availableQuantity;
+    const jetprint = productById.get(item.productId)?.jetprint;
+    const isJetprintUnavailable =
+      Boolean(jetprint) &&
+      !resolveSellableJetprintVariant(jetprint, item.selections ?? {});
 
     return [
       {
@@ -414,9 +422,10 @@ export const resolveCartItems = async (
         quantity: item.quantity,
         variant: buildVariantLabel(item, translation),
         isDigital: item.selections?.format === BOOK_FORMAT.digital,
-        availability: isOverStock
-          ? ("out_of_stock" as const)
-          : summary.availability,
+        availability:
+          isOverStock || isJetprintUnavailable
+            ? ("out_of_stock" as const)
+            : summary.availability,
         availableQuantity,
       },
     ];

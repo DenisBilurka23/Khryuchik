@@ -24,6 +24,7 @@ import type {
   CategoryTranslation,
   ProductDetailDocument,
   ProductDetailTranslation,
+  ProductJetprintLink,
   ProductTranslation,
 } from "@/types/catalog";
 
@@ -76,6 +77,7 @@ import {
 } from "../catalog/repositories/products.repository";
 import {
   countOrders,
+  findOrderJetprintFileUrls,
   findOrders,
 } from "../orders/repositories/orders.repository";
 import {
@@ -492,6 +494,30 @@ const getDetailObjectKeys = (
   };
 };
 
+const unreferencedGalleryObjectKeys = async (
+  details: ProductDetailDocument | null | undefined,
+  objectKeys: string[],
+  jetprint?: ProductJetprintLink,
+) => {
+  const candidates = new Set(objectKeys);
+  const images = Object.values(details?.translations ?? {})
+    .flatMap((translation) => translation.images)
+    .filter((image) => image.objectKey && candidates.has(image.objectKey));
+  const urls = images.flatMap((image) => (image.src ? [image.src] : []));
+  const protectedUrls = new Set([
+    ...(await findOrderJetprintFileUrls(urls)),
+    ...(jetprint?.previewFiles ?? []).map((file) => file.url),
+    ...(jetprint?.printFiles ?? []).map((file) => file.url),
+  ]);
+  const protectedKeys = new Set(
+    images
+      .filter((image) => image.src && protectedUrls.has(image.src))
+      .map((image) => image.objectKey),
+  );
+
+  return objectKeys.filter((key) => !protectedKeys.has(key));
+};
+
 export const deleteAdminProduct = async (productId: string) => {
   const normalizedProductId = productId.trim();
 
@@ -509,6 +535,11 @@ export const deleteAdminProduct = async (productId: string) => {
   }
 
   const removedObjectKeys = getDetailObjectKeys(details);
+  const removableGalleryKeys = await unreferencedGalleryObjectKeys(
+    details,
+    removedObjectKeys.galleryObjectKeys,
+    product.jetprint,
+  );
 
   await Promise.all([
     deleteProductById(normalizedProductId),
@@ -517,7 +548,7 @@ export const deleteAdminProduct = async (productId: string) => {
   ]);
 
   await Promise.allSettled([
-    deleteProductGalleryObjects(removedObjectKeys.galleryObjectKeys),
+    deleteProductGalleryObjects(removableGalleryKeys),
     deleteBookAssetObjects(removedObjectKeys.assetObjectKeys),
   ]);
 
@@ -754,6 +785,11 @@ export const saveAdminProduct = async (payload: AdminProductPayload) => {
     previousPayload: previousDetails,
     nextPayload: sanitizedPayload,
   });
+  const removableGalleryKeys = await unreferencedGalleryObjectKeys(
+    previousDetails,
+    removedObjectKeys.galleryObjectKeys,
+    previousProduct?.jetprint,
+  );
 
   const hasOptions = Object.values(sanitizedPayload.details.translations).some(
     (t) =>
@@ -769,7 +805,7 @@ export const saveAdminProduct = async (payload: AdminProductPayload) => {
   ]);
 
   await Promise.allSettled([
-    deleteProductGalleryObjects(removedObjectKeys.galleryObjectKeys),
+    deleteProductGalleryObjects(removableGalleryKeys),
     deleteBookAssetObjects(removedObjectKeys.assetObjectKeys),
   ]);
 

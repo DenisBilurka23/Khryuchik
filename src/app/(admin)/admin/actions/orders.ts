@@ -202,7 +202,9 @@ export const submitAdminOrderToJetprintAction = async (
     return { ok: false, error: "not_allowed" };
   }
 
-  const submitted = await submitOrderToJetprint(order);
+  const submitted = await submitOrderToJetprint(order, {
+    allowResubmission: true,
+  });
 
   revalidateOrderDependentPaths();
   return submitted ? { ok: true } : { ok: false, error: "failed" };

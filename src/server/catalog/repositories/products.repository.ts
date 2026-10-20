@@ -223,14 +223,23 @@ export const findPrintifyLinkedProductIds = async (afterProductId?: string) => {
   return products.map((product) => product.productId);
 };
 
-export const findJetprintLinkedProducts = async (afterProductId?: string) => {
+export const findJetprintLinkedProducts = async (
+  afterProductId?: string,
+  includeAfterProduct = false,
+) => {
   const collection = await getProductsCollection();
 
   return collection
     .find(
       {
         jetprint: { $type: "object" },
-        ...(afterProductId ? { productId: { $gt: afterProductId } } : {}),
+        ...(afterProductId
+          ? {
+              productId: includeAfterProduct
+                ? { $gte: afterProductId }
+                : { $gt: afterProductId },
+            }
+          : {}),
       },
       {
         projection: {

@@ -83,20 +83,25 @@ export const canCancelJetprintOrder = (
 export const getOrderTrackings = (order: {
   fulfillments?: Pick<
     OrderFulfillment,
-    "source" | "carrier" | "trackingNumber" | "trackingUrl"
+    "source" | "carrier" | "trackingNumber" | "trackingUrl" | "trackings"
   >[];
 }): OrderTracking[] =>
   (order.fulfillments ?? []).flatMap((fulfillment) =>
-    fulfillment.trackingNumber
-      ? [
-          {
-            carrier: fulfillment.carrier,
-            number: fulfillment.trackingNumber,
-            url: fulfillment.trackingUrl,
-            source: fulfillment.source,
-          },
-        ]
-      : [],
+    fulfillment.trackings !== undefined
+      ? fulfillment.trackings.map((tracking) => ({
+          ...tracking,
+          source: fulfillment.source,
+        }))
+      : fulfillment.trackingNumber
+        ? [
+            {
+              carrier: fulfillment.carrier,
+              number: fulfillment.trackingNumber,
+              url: fulfillment.trackingUrl,
+              source: fulfillment.source,
+            },
+          ]
+        : [],
   );
 
 export const formatOrderTracking = (tracking: OrderTracking) =>

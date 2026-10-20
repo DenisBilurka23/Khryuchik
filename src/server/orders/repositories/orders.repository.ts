@@ -2,7 +2,6 @@ import "server-only";
 
 import type { Filter } from "mongodb";
 
-import { JETPRINT_ORDER_STATUS } from "@/constants/jetprint";
 import { getMongoDb } from "@/server/db/mongodb";
 import type {
   OrderDocument,
@@ -44,6 +43,14 @@ const getOrdersCollection = async () => {
         { sparse: true },
       ),
       collection.createIndex({ "jetprintOrder.orderNo": 1 }, { sparse: true }),
+      collection.createIndex(
+        { "items.jetprint.previewFiles.url": 1 },
+        { sparse: true },
+      ),
+      collection.createIndex(
+        { "items.jetprint.printFiles.url": 1 },
+        { sparse: true },
+      ),
     ]).catch((error) => {
       ordersIndexesPromise = null;
       throw error;
@@ -181,6 +188,42 @@ export const countOrders = async (
   return collection.countDocuments(filter);
 };
 
+export const findOrderJetprintFileUrls = async (
+  urls?: string[],
+): Promise<string[]> => {
+  if (urls?.length === 0) return [];
+
+  const collection = await getOrdersCollection();
+  const urlFilter = urls ? { $in: urls } : { $exists: true };
+  const orders = await collection
+    .find(
+      {
+        $or: [
+          { "items.jetprint.previewFiles.url": urlFilter },
+          { "items.jetprint.printFiles.url": urlFilter },
+        ],
+      },
+      { projection: { _id: 0, "items.jetprint": 1 } },
+    )
+    .toArray();
+  const candidates = urls ? new Set(urls) : undefined;
+
+  return Array.from(
+    new Set(
+      orders.flatMap((order) =>
+        order.items.flatMap((item) =>
+          [
+            ...(item.jetprint?.previewFiles ?? []),
+            ...(item.jetprint?.printFiles ?? []),
+          ]
+            .map((file) => file.url)
+            .filter((url) => !candidates || candidates.has(url)),
+        ),
+      ),
+    ),
+  );
+};
+
 export const findOrdersWithOpenParcels = async (): Promise<OrderDocument[]> => {
   const collection = await getOrdersCollection();
 
@@ -213,26 +256,6 @@ export const findOrdersAwaitingJetprint = async (
         "jetprintOrder.orderNo": { $exists: true },
         "jetprintOrder.cancelledAt": { $exists: false },
         "jetprintOrder.submittedAt": { $gte: submittedAfter },
-        $or: [
-          {
-            "jetprintOrder.status": {
-              $nin: [
-                JETPRINT_ORDER_STATUS.shipped,
-                JETPRINT_ORDER_STATUS.cancelled,
-              ],
-            },
-          },
-          {
-            fulfillments: {
-              $not: {
-                $elemMatch: {
-                  source: "jetprint",
-                  trackingNumber: { $exists: true, $ne: null },
-                },
-              },
-            },
-          },
-        ],
         ...(afterOrderId ? { id: { $gt: afterOrderId } } : {}),
       },
       { projection: { _id: 0 } },

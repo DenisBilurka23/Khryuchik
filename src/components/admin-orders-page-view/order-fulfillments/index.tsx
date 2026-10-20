@@ -7,6 +7,7 @@ import {
   formatDate,
   formatOrderTracking,
   formatPickupPointAddress,
+  getOrderTrackings,
 } from "@/utils";
 import { AdminOrderBuyLabelButton } from "./buy-label-button";
 import { AdminOrderCustomsButton } from "./customs-button";
@@ -37,12 +38,7 @@ export const AdminOrderFulfillments = ({
   return (
     <Stack spacing={0.25}>
       {fulfillments.map((fulfillment) => {
-        const tracking = fulfillment.trackingNumber
-          ? formatOrderTracking({
-              carrier: fulfillment.carrier,
-              number: fulfillment.trackingNumber,
-            })
-          : null;
+        const trackings = getOrderTrackings({ fulfillments: [fulfillment] });
 
         return (
           <Stack key={fulfillment.id} spacing={0.25}>
@@ -50,18 +46,23 @@ export const AdminOrderFulfillments = ({
               <Typography variant="caption" color="text.secondary">
                 {tParcels(fulfillment.source)}:
               </Typography>
-              {tracking ? (
-                fulfillment.trackingUrl ? (
-                  <Link
-                    href={fulfillment.trackingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant="caption"
-                  >
-                    {tracking}
-                  </Link>
-                ) : (
-                  <Typography variant="caption">{tracking}</Typography>
+              {trackings.length > 0 ? (
+                trackings.map((tracking) =>
+                  tracking.url ? (
+                    <Link
+                      key={tracking.number}
+                      href={tracking.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      variant="caption"
+                    >
+                      {formatOrderTracking(tracking)}
+                    </Link>
+                  ) : (
+                    <Typography key={tracking.number} variant="caption">
+                      {formatOrderTracking(tracking)}
+                    </Typography>
+                  ),
                 )
               ) : (
                 <Typography variant="caption" color="text.secondary">

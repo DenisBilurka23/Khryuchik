@@ -8,9 +8,11 @@ import {
 import { findAllProductDetails } from "@/server/catalog/repositories/product-details.repository";
 import { findAllProducts } from "@/server/catalog/repositories/products.repository";
 import { findAllEntertainmentItems } from "@/server/entertainment/repositories/entertainment.repository";
+import { findOrderJetprintFileUrls } from "@/server/orders/repositories/orders.repository";
 import { getEntertainmentHlsPrefix } from "@/utils";
 
 import {
+  buildPublicObjectUrl,
   deletePrivateObject,
   deletePublicObject,
   isR2Configured,
@@ -45,16 +47,33 @@ type ReferencedKeys = {
 const LADDER_PATTERN = /^entertainment\/.+\/hls\//;
 
 const collectReferencedKeys = async (): Promise<ReferencedKeys> => {
-  const [items, products, details] = await Promise.all([
+  const [items, products, details, orderFileUrls] = await Promise.all([
     findAllEntertainmentItems(),
     findAllProducts(),
     findAllProductDetails(),
+    findOrderJetprintFileUrls(),
   ]);
 
   const publicKeys = new Set<string>();
   const privateKeys = new Set<string>();
   const liveLadderPrefixes = new Set<string>();
   const failedLadderPrefixes = new Set<string>();
+  const publicBaseUrl = buildPublicObjectUrl("");
+
+  if (orderFileUrls.length > 0 && !publicBaseUrl) {
+    throw new Error(
+      "The public R2 URL is required to protect JetPrint order files",
+    );
+  }
+
+  const retainPublicFile = (file: { objectKey?: string; url?: string }) => {
+    if (file.objectKey) publicKeys.add(file.objectKey);
+    if (publicBaseUrl && file.url?.startsWith(publicBaseUrl)) {
+      publicKeys.add(file.url.slice(publicBaseUrl.length));
+    }
+  };
+
+  orderFileUrls.forEach((url) => retainPublicFile({ url }));
 
   for (const item of items) {
     for (const translation of Object.values(item.translations)) {
@@ -97,6 +116,19 @@ const collectReferencedKeys = async (): Promise<ReferencedKeys> => {
   }
 
   for (const product of products) {
+    const jetprint = product.jetprint;
+
+    [
+      ...(jetprint?.printFiles ?? []),
+      ...(jetprint?.previewFiles ?? []),
+    ].forEach(retainPublicFile);
+
+    if (jetprint?.printDesign) {
+      retainPublicFile({ url: jetprint.printDesign.template.guidesUrl });
+      retainPublicFile({ url: jetprint.printDesign.template.cutMaskUrl });
+      retainPublicFile({ url: jetprint.printDesign.art.url });
+    }
+
     for (const translation of Object.values(product.translations)) {
       if (translation?.thumbnail?.objectKey) {
         publicKeys.add(translation.thumbnail.objectKey);
