@@ -21,5 +21,6 @@ export type EntertainmentVideoCardProps = {
 
 export type EntertainmentDownloadCardProps = {
   item: LocalizedEntertainmentItem;
+  href: string;
   downloadLabel: string;
 };

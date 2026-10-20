@@ -37,7 +37,7 @@ export const generateMetadata = async ({
     title,
     description: item.description,
     openGraph: {
-      type: "video.other",
+      type: item.media.type === "video" ? "video.other" : "website",
       images: item.poster?.src ? [{ url: item.poster.src }] : undefined,
     },
   });

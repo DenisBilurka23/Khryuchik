@@ -7,5 +7,6 @@ export type ArrowLinkProps = {
   label: string;
   size?: ArrowLinkSize;
   onClick?: () => void;
+  download?: boolean;
   sx?: SxProps<Theme>;
 };

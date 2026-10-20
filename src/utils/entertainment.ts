@@ -1,10 +1,32 @@
-import { ENTERTAINMENT_CATEGORIES } from "@/constants/entertainment";
+import {
+  DEFAULT_ENTERTAINMENT_FILTER,
+  ENTERTAINMENT_CATEGORIES,
+} from "@/constants/entertainment";
 import { defaultLocale, type Locale } from "@/i18n/config";
 import type {
   EntertainmentCategoryKey,
+  EntertainmentDownloadMedia,
+  EntertainmentFilterKey,
   EntertainmentItemDocument,
   LocalizedEntertainmentItem,
 } from "@/types/entertainment";
+
+import { formatFileSize } from "./format-file-size";
+
+export const getEntertainmentDownloadPath = (slug: string) =>
+  `/api/entertainment/${encodeURIComponent(slug)}/download`;
+
+export const getEntertainmentDownloadMeta = (
+  media: EntertainmentDownloadMedia,
+) =>
+  [
+    media.fileName.includes(".")
+      ? media.fileName.split(".").pop()?.toUpperCase()
+      : undefined,
+    formatFileSize(media.sizeBytes),
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
 export const getEntertainmentFallbackTranslation = (
   translations: EntertainmentItemDocument["translations"],
@@ -75,6 +97,11 @@ export const isEntertainmentCategory = (
   value: string | undefined,
 ): value is EntertainmentCategoryKey =>
   ENTERTAINMENT_CATEGORIES.some((category) => category === value);
+
+export const isEntertainmentFilter = (
+  value: string | undefined,
+): value is EntertainmentFilterKey =>
+  value === DEFAULT_ENTERTAINMENT_FILTER || isEntertainmentCategory(value);
 
 export const getEntertainmentHlsPrefix = (playlistUrl: string) => {
   let pathname: string;

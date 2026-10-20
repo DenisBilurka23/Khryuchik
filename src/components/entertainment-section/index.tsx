@@ -1,7 +1,10 @@
 import { Box, Container, Grid } from "@mui/material";
 import { getTranslations } from "next-intl/server";
 
-import { ENTERTAINMENT_QUERY_PARAM } from "@/constants/entertainment";
+import {
+  DEFAULT_ENTERTAINMENT_FILTER,
+  ENTERTAINMENT_QUERY_PARAM,
+} from "@/constants/entertainment";
 import { getLocalizedEntertainmentPath, getLocalizedPath } from "@/utils";
 
 import { CategoryTabs } from "@/components/category-tabs";
@@ -40,15 +43,21 @@ export const EntertainmentSection = async ({
             actionHref={actionHref}
           />
 
-          {availableCategories.length > 1 ? (
+          {availableCategories.length > 0 ? (
             <CategoryTabs
-              selectedValue={selectedCategory ?? availableCategories[0]}
-              options={availableCategories.map((category) => ({
-                value: category,
-                label: tCategories(category),
-              }))}
+              selectedValue={selectedCategory}
+              options={[
+                {
+                  value: DEFAULT_ENTERTAINMENT_FILTER,
+                  label: tSection("allCategory"),
+                },
+                ...availableCategories.map((category) => ({
+                  value: category,
+                  label: tCategories(category),
+                })),
+              ]}
               queryParamName={ENTERTAINMENT_QUERY_PARAM}
-              defaultValueWithoutQuery={availableCategories[0]}
+              defaultValueWithoutQuery={DEFAULT_ENTERTAINMENT_FILTER}
               preserveQueryParams={["category"]}
               sx={{ mb: 4 }}
             />
@@ -60,6 +69,7 @@ export const EntertainmentSection = async ({
                 {item.media.type === "download" ? (
                   <EntertainmentDownloadCard
                     item={item}
+                    href={getLocalizedEntertainmentPath(locale, item.slug)}
                     downloadLabel={tSection("downloadAction")}
                   />
                 ) : (

@@ -6,7 +6,10 @@ import {
   EntertainmentDownloadCard,
   EntertainmentVideoCard,
 } from "@/components/entertainment-card";
-import { ENTERTAINMENT_QUERY_PARAM } from "@/constants/entertainment";
+import {
+  DEFAULT_ENTERTAINMENT_FILTER,
+  ENTERTAINMENT_QUERY_PARAM,
+} from "@/constants/entertainment";
 import { displayFont, leadSx } from "@/theme/sx";
 import { getLocalizedEntertainmentPath } from "@/utils";
 
@@ -49,15 +52,21 @@ export const EntertainmentCatalog = async ({
 
   return (
     <>
-      {availableCategories.length > 1 ? (
+      {availableCategories.length > 0 ? (
         <CategoryTabs
-          selectedValue={selectedCategory ?? availableCategories[0]}
-          options={availableCategories.map((category) => ({
-            value: category,
-            label: tCategories(category),
-          }))}
+          selectedValue={selectedCategory}
+          options={[
+            {
+              value: DEFAULT_ENTERTAINMENT_FILTER,
+              label: tSection("allCategory"),
+            },
+            ...availableCategories.map((category) => ({
+              value: category,
+              label: tCategories(category),
+            })),
+          ]}
           queryParamName={ENTERTAINMENT_QUERY_PARAM}
-          defaultValueWithoutQuery={availableCategories[0]}
+          defaultValueWithoutQuery={DEFAULT_ENTERTAINMENT_FILTER}
         />
       ) : null}
 
@@ -68,6 +77,7 @@ export const EntertainmentCatalog = async ({
               <EntertainmentDownloadCard
                 key={item.slug}
                 item={item}
+                href={getLocalizedEntertainmentPath(locale, item.slug)}
                 downloadLabel={tSection("downloadAction")}
               />
             ) : (

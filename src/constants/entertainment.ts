@@ -1,5 +1,6 @@
 import type {
   EntertainmentCategoryKey,
+  EntertainmentFilterKey,
   EntertainmentTranscodeVariant,
 } from "@/types/entertainment";
 
@@ -13,7 +14,8 @@ export const ENTERTAINMENT_CATEGORIES: EntertainmentCategoryKey[] = [
 export const DEFAULT_ENTERTAINMENT_CATEGORY: EntertainmentCategoryKey =
   "cartoons";
 
-export const HOME_ENTERTAINMENT_LIMIT = 4;
+export const DEFAULT_ENTERTAINMENT_FILTER =
+  "all" satisfies EntertainmentFilterKey;
 
 export const ENTERTAINMENT_PLACEHOLDER_EMOJI: Record<
   EntertainmentCategoryKey,

@@ -40,9 +40,12 @@ export { delay } from "./delay";
 export { getDownloadMeta } from "./download";
 export {
   getEntertainmentAspectRatio,
+  getEntertainmentDownloadMeta,
+  getEntertainmentDownloadPath,
   getEntertainmentFallbackTranslation,
   getEntertainmentHlsPrefix,
   isEntertainmentCategory,
+  isEntertainmentFilter,
   isLocalizedEntertainmentItem,
   localizeEntertainmentItem,
   pickPreferredAudioTrack,

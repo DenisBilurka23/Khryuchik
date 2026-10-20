@@ -93,6 +93,7 @@
       "eyebrow": "Entertainment",
       "title": "Never a dull moment with Khryuchik",
       "actionLabel": "All entertainment",
+      "allCategory": "All",
       "watchAction": "Watch",
       "downloadAction": "Download"
     },
@@ -310,6 +311,10 @@
       "breadcrumbs": {
         "home": "Home",
         "entertainment": "Entertainment"
+      },
+      "download": {
+        "coloringAction": "Download Coloring Pages",
+        "openPdfAction": "Open PDF"
       },
       "emptyTitle": "Nothing here yet",
       "emptyText": "New materials are on the way — check back soon.",

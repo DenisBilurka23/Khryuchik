@@ -3,13 +3,13 @@ import "server-only";
 import { cache } from "react";
 
 import {
+  DEFAULT_ENTERTAINMENT_FILTER,
   ENTERTAINMENT_CATEGORIES,
-  HOME_ENTERTAINMENT_LIMIT,
 } from "@/constants/entertainment";
 import type { Locale } from "@/i18n/config";
 import type {
-  EntertainmentCategoryKey,
   EntertainmentCategoryView,
+  EntertainmentFilterKey,
   EntertainmentItemDocument,
   LocalizedEntertainmentItem,
 } from "@/types/entertainment";
@@ -36,37 +36,38 @@ const localizeEntertainmentItems = (
 
 const buildEntertainmentCategoryView = (
   items: LocalizedEntertainmentItem[],
-  requestedCategory: EntertainmentCategoryKey,
-  limit?: number,
+  requestedCategory: EntertainmentFilterKey,
 ): EntertainmentCategoryView => {
   const availableCategories = ENTERTAINMENT_CATEGORIES.filter((category) =>
     items.some((item) => item.category === category),
   );
-  const selectedCategory = availableCategories.includes(requestedCategory)
-    ? requestedCategory
-    : (availableCategories[0] ?? null);
-  const selectedItems = selectedCategory
-    ? items.filter((item) => item.category === selectedCategory)
-    : [];
+  const selectedCategory =
+    requestedCategory === DEFAULT_ENTERTAINMENT_FILTER ||
+    availableCategories.includes(requestedCategory)
+      ? requestedCategory
+      : DEFAULT_ENTERTAINMENT_FILTER;
+  const selectedItems =
+    selectedCategory === DEFAULT_ENTERTAINMENT_FILTER
+      ? items
+      : items.filter((item) => item.category === selectedCategory);
 
   return {
     availableCategories,
     selectedCategory,
-    items: limit ? selectedItems.slice(0, limit) : selectedItems,
+    items: selectedItems,
   };
 };
 
 export const getHomeEntertainmentView = cache(
-  async (locale: Locale, requestedCategory: EntertainmentCategoryKey) =>
+  async (locale: Locale, requestedCategory: EntertainmentFilterKey) =>
     buildEntertainmentCategoryView(
       localizeEntertainmentItems(await findHomeEntertainmentItems(), locale),
       requestedCategory,
-      HOME_ENTERTAINMENT_LIMIT,
     ),
 );
 
 export const getEntertainmentView = cache(
-  async (locale: Locale, requestedCategory: EntertainmentCategoryKey) =>
+  async (locale: Locale, requestedCategory: EntertainmentFilterKey) =>
     buildEntertainmentCategoryView(
       localizeEntertainmentItems(
         await findPublishedEntertainmentItems(),
@@ -83,6 +84,12 @@ export const getEntertainmentItem = cache(
     return item ? localizeEntertainmentItem(item, locale) : null;
   },
 );
+
+export const getEntertainmentDownload = async (slug: string) => {
+  const item = await findEntertainmentItemBySlug(slug);
+
+  return item?.media.type === "download" ? item.media : null;
+};
 
 export const getSitemapEntertainmentEntries = cache(
   async (): Promise<{ slug: string; updatedAt: string }[]> =>

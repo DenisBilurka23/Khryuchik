@@ -12,8 +12,8 @@ import {
 import { getHomeTabCategories } from "@/server/catalog/services/categories.service";
 import { getHomeEntertainmentView } from "@/server/entertainment/services/entertainment.service";
 import { getRequestRegion } from "@/server/region/request-region";
-import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
-import { isEntertainmentCategory } from "@/utils";
+import { DEFAULT_ENTERTAINMENT_FILTER } from "@/constants/entertainment";
+import { isEntertainmentFilter } from "@/utils";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import type { Locale } from "@/i18n/config";
@@ -71,9 +71,9 @@ const HomeEntertainment = async ({
   locale,
   entertainment,
 }: HomeEntertainmentProps) => {
-  const selectedCategory = isEntertainmentCategory(entertainment)
+  const selectedCategory = isEntertainmentFilter(entertainment)
     ? entertainment
-    : DEFAULT_ENTERTAINMENT_CATEGORY;
+    : DEFAULT_ENTERTAINMENT_FILTER;
   const view = await getHomeEntertainmentView(locale, selectedCategory);
 
   return view.availableCategories.length > 0 ? (

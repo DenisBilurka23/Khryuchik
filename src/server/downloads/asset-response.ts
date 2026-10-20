@@ -1,14 +1,23 @@
 import "server-only";
 
 import { NextResponse } from "next/server";
-import { getPrivateObject } from "@/server/storage/r2";
+import {
+  getPrivateObject,
+  getPublicObject,
+  type R2BucketKind,
+} from "@/server/storage/r2";
 import type { PurchasedAsset } from "./downloads.service";
 
-export const buildAssetDownloadResponse = async (asset: PurchasedAsset) => {
+export const buildAssetDownloadResponse = async (
+  asset: PurchasedAsset,
+  bucket: R2BucketKind = "private",
+) => {
   let r2Response;
 
   try {
-    r2Response = await getPrivateObject(asset.objectKey);
+    r2Response = await (
+      bucket === "public" ? getPublicObject : getPrivateObject
+    )(asset.objectKey);
   } catch {
     return NextResponse.json({ error: "storage_error" }, { status: 502 });
   }
@@ -20,11 +29,15 @@ export const buildAssetDownloadResponse = async (asset: PurchasedAsset) => {
   const stream = r2Response.Body.transformToWebStream();
   const contentType =
     asset.contentType ?? r2Response.ContentType ?? "application/octet-stream";
-  const encodedName = encodeURIComponent(asset.fileName);
+  const fallbackName = asset.fileName.replace(/[^\x20-\x7E]|["\\]/g, "_");
+  const encodedName = encodeURIComponent(asset.fileName).replace(
+    /['()*]/g,
+    (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
+  );
 
   const headers: Record<string, string> = {
     "Content-Type": contentType,
-    "Content-Disposition": `attachment; filename="${asset.fileName}"; filename*=UTF-8''${encodedName}`,
+    "Content-Disposition": `attachment; filename="${fallbackName}"; filename*=UTF-8''${encodedName}`,
     "Cache-Control": "private, no-store",
   };
 

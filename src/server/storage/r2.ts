@@ -291,3 +291,14 @@ export const getPrivateObject = async (objectKey: string) => {
     }),
   );
 };
+
+export const getPublicObject = async (objectKey: string) => {
+  const client = getR2Client();
+
+  return client.send(
+    new GetObjectCommand({
+      Bucket: R2_BUCKET_PUBLIC,
+      Key: objectKey,
+    }),
+  );
+};

@@ -93,6 +93,7 @@
       "eyebrow": "Развлечения",
       "title": "С Хрючиком не бывает скучно",
       "actionLabel": "Все развлечения",
+      "allCategory": "Все",
       "watchAction": "Смотреть",
       "downloadAction": "Скачать"
     },
@@ -310,6 +311,10 @@
       "breadcrumbs": {
         "home": "Домой",
         "entertainment": "Развлечения"
+      },
+      "download": {
+        "coloringAction": "Скачать раскраски",
+        "openPdfAction": "Открыть PDF"
       },
       "emptyTitle": "Пока пусто",
       "emptyText": "Здесь скоро появятся новые материалы — заглядывайте позже.",

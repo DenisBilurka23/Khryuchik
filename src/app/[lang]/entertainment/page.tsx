@@ -6,13 +6,13 @@ import {
   EntertainmentCatalogSkeleton,
   EntertainmentPageView,
 } from "@/components/entertainment-page-view";
-import { DEFAULT_ENTERTAINMENT_CATEGORY } from "@/constants/entertainment";
+import { DEFAULT_ENTERTAINMENT_FILTER } from "@/constants/entertainment";
 import { getEntertainmentView } from "@/server/entertainment/services/entertainment.service";
 import { createStorefrontMetadata } from "@/server/i18n/metadata";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
-import { isEntertainmentCategory } from "@/utils";
+import { isEntertainmentFilter } from "@/utils";
 import type { Locale } from "@/i18n/config";
-import type { EntertainmentCategoryKey } from "@/types/entertainment";
+import type { EntertainmentFilterKey } from "@/types/entertainment";
 
 type LocalizedEntertainmentPageProps = {
   params: Promise<{ lang: string }>;
@@ -21,7 +21,7 @@ type LocalizedEntertainmentPageProps = {
 
 type EntertainmentCatalogDataProps = {
   locale: Locale;
-  category: EntertainmentCategoryKey;
+  category: EntertainmentFilterKey;
 };
 
 const EntertainmentCatalogData = async ({
@@ -65,9 +65,9 @@ const LocalizedEntertainmentPage = async ({
 
   const locale = await requireActiveLocale(lang);
 
-  const selectedCategory = isEntertainmentCategory(entertainment)
+  const selectedCategory = isEntertainmentFilter(entertainment)
     ? entertainment
-    : DEFAULT_ENTERTAINMENT_CATEGORY;
+    : DEFAULT_ENTERTAINMENT_FILTER;
   return (
     <EntertainmentPageView locale={locale}>
       <Suspense fallback={<EntertainmentCatalogSkeleton />}>

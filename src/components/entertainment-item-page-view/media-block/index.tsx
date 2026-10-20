@@ -1,10 +1,9 @@
 import { Box, Typography } from "@mui/material";
 
 import { displayFont, leadSx } from "@/theme/sx";
-import { formatFileSize, getEntertainmentAspectRatio } from "@/utils";
+import { getEntertainmentAspectRatio } from "@/utils";
 
 import { EntertainmentPlayer } from "@/components/entertainment-player";
-import { EntertainmentDownloadLink } from "../download-link";
 import type { EntertainmentMediaBlockProps } from "../types";
 import { toPlayerSubtitleTracks } from "../utils";
 
@@ -40,22 +39,7 @@ export const EntertainmentMediaBlock = ({
       : undefined;
 
   if (media.type === "download") {
-    return (
-      <Box sx={frameSx}>
-        <Box>
-          <Typography component="p" sx={leadSx}>
-            {formatFileSize(media.sizeBytes)}
-          </Typography>
-
-          <EntertainmentDownloadLink
-            slug={item.slug}
-            href={media.url}
-            label={labels.download}
-            sx={{ mt: 1.5 }}
-          />
-        </Box>
-      </Box>
-    );
+    return null;
   }
 
   if (media.status === "ready" && media.source) {

@@ -8,6 +8,8 @@ export type EntertainmentCategoryKey =
   | "games"
   | "materials";
 
+export type EntertainmentFilterKey = EntertainmentCategoryKey | "all";
+
 export type EntertainmentVideoStatus =
   | "uploading"
   | "processing"
@@ -101,7 +103,7 @@ export type EntertainmentItemDocument = {
 
 export type EntertainmentCategoryView = {
   availableCategories: EntertainmentCategoryKey[];
-  selectedCategory: EntertainmentCategoryKey | null;
+  selectedCategory: EntertainmentFilterKey;
   items: LocalizedEntertainmentItem[];
 };
 
