@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import {
   Box,
   Button,
-  IconButton,
   Stack,
   Table,
   TableBody,
@@ -14,20 +12,13 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import { useTranslations } from "next-intl";
 
-import jetprintBlanks from "@/data/jetprint-blanks.json";
-import { AdminStatusChip } from "@/components/admin-page-shared";
-import type { JetprintBlankCatalog } from "@/types/catalog";
-import { findJetprintBlankBySku } from "@/utils";
-
 import {
   buildJetprintOptionRows,
   createJetprintVariantRow,
-  getJetprintVariantStatus,
   serializeJetprintVariantRows,
   toJetprintVariantRows,
 } from "../utils";
@@ -35,8 +26,8 @@ import type {
   AdminJetprintVariantRow,
   AdminJetprintVariantsFieldProps,
 } from "./types";
-
-const blankCatalog: JetprintBlankCatalog = jetprintBlanks;
+import { AdminJetprintVariantTableRow } from "./variant-row";
+import { AdminJetprintVariantStatus } from "./variant-status";
 
 export const AdminJetprintVariantsField = ({
   name,
@@ -74,20 +65,6 @@ export const AdminJetprintVariantsField = ({
       ),
     );
 
-  const renderStatus = (row: AdminJetprintVariantRow) => {
-    const status = getJetprintVariantStatus(
-      row,
-      Boolean(findJetprintBlankBySku(blankCatalog, row.sku.trim())),
-    );
-
-    return (
-      <AdminStatusChip
-        label={tJetprint(`variantStatus.${status.key}`)}
-        tone={status.tone}
-      />
-    );
-  };
-
   const hiddenInput = (
     <input
       type="hidden"
@@ -110,7 +87,7 @@ export const AdminJetprintVariantsField = ({
             onChange={(event) => updateRow(row.id, { sku: event.target.value })}
             sx={{ minWidth: 260 }}
           />
-          {renderStatus(row)}
+          <AdminJetprintVariantStatus row={row} />
         </Stack>
         <Typography variant="body2" color="text.secondary">
           {tJetprint("singleSkuHelper")}
@@ -145,65 +122,16 @@ export const AdminJetprintVariantsField = ({
           </TableHead>
           <TableBody>
             {rows.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell sx={{ minWidth: 180 }}>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    value={row.sku}
-                    onChange={(event) =>
-                      updateRow(row.id, { sku: event.target.value })
-                    }
-                    slotProps={{
-                      htmlInput: { "aria-label": tJetprint("columns.sku") },
-                    }}
-                  />
-                </TableCell>
-                <TableCell sx={{ minWidth: 120 }}>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    value={row.size}
-                    onChange={(event) =>
-                      updateRow(row.id, { size: event.target.value })
-                    }
-                    slotProps={{
-                      htmlInput: { "aria-label": tJetprint("columns.size") },
-                    }}
-                  />
-                </TableCell>
-                <TableCell sx={{ minWidth: 120 }}>
-                  <TextField
-                    size="small"
-                    fullWidth
-                    value={row.color}
-                    onChange={(event) =>
-                      updateRow(row.id, { color: event.target.value })
-                    }
-                    slotProps={{
-                      htmlInput: { "aria-label": tJetprint("columns.color") },
-                    }}
-                  />
-                </TableCell>
-                <TableCell>{renderStatus(row)}</TableCell>
-                <TableCell align="right">
-                  <Tooltip title={tJetprint("removeVariant")}>
-                    <IconButton
-                      size="small"
-                      aria-label={tJetprint("removeVariant")}
-                      onClick={() =>
-                        setRows((current) =>
-                          current.filter(
-                            (candidate) => candidate.id !== row.id,
-                          ),
-                        )
-                      }
-                    >
-                      <DeleteOutlineOutlinedIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
-              </TableRow>
+              <AdminJetprintVariantTableRow
+                key={row.id}
+                row={row}
+                onChangeAction={(patch) => updateRow(row.id, patch)}
+                onRemoveAction={() =>
+                  setRows((current) =>
+                    current.filter((candidate) => candidate.id !== row.id),
+                  )
+                }
+              />
             ))}
           </TableBody>
         </Table>
