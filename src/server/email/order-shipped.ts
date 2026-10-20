@@ -45,8 +45,16 @@ const parcelLabels: Record<
   EmailLang,
   Record<OrderFulfillmentSource, string>
 > = {
-  ru: { printify: "Мерч под заказ", manual: "Книги" },
-  en: { printify: "Made-to-order merch", manual: "Books" },
+  ru: {
+    printify: "Мерч под заказ",
+    jetprint: "Мерч под заказ · из-за рубежа",
+    manual: "Книги",
+  },
+  en: {
+    printify: "Made-to-order merch",
+    jetprint: "Made-to-order merch · from overseas",
+    manual: "Books",
+  },
 };
 
 const buildTrackingLines = (

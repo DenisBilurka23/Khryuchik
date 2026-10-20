@@ -58,6 +58,20 @@ export { formatFileSize } from "./format-file-size";
 export { isDocumentFullscreen } from "./fullscreen";
 export { formatOrderNumber } from "./format-order-number";
 export {
+  addDayRanges,
+  findJetprintBlankBySku,
+  findJetprintVariant,
+  getJetprintOrderStatusKey,
+  isJetprintDuplicateOrderMessage,
+  mergeJetprintLink,
+  nextJetprintCustomerOrderNo,
+  pickSlowestTransitDays,
+  quoteJetprintShipping,
+  resolveNextJetprintOrderStatus,
+  resolveSellableJetprintVariant,
+  roundShippingCents,
+} from "./jetprint";
+export {
   isTypingTarget,
   readStoredCaptionScale,
   requestFullscreenToggle,
@@ -75,11 +89,15 @@ export {
 } from "./localized-path";
 export {
   calculateOrderTotal,
+  canCancelJetprintOrder,
   canConfirmOrderDelivery,
+  canSubmitOrderToJetprint,
   formatCustomerName,
   formatOrderTracking,
   getCustomerOrderStatus,
+  getOrderDeleteBlocker,
   getOrderTrackings,
+  hasLiveJetprintOrder,
   hasLivePrintifyOrder,
   isDigitalOrderItem,
   isOrderStatus,
@@ -105,6 +123,18 @@ export {
   convertShippingAmount,
   roundToCents,
 } from "./price-conversion";
+export {
+  artCoversBox,
+  centerArtOnBox,
+  clampPrintScale,
+  findOpaqueBounds,
+  findOutsideOfOutline,
+  fitArtToBox,
+  getEffectiveDpi,
+  getPrintDpiQuality,
+  scaleArtAround,
+  setPngDpi,
+} from "./print-design";
 export { uploadDirectToR2 } from "./r2-direct-upload";
 export type { R2DirectUploadOptions } from "./r2-direct-upload";
 export { groupRegionsByCurrency, toCurrencyCodes } from "./region-currency";

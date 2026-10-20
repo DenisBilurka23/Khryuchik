@@ -223,6 +223,49 @@ export const findPrintifyLinkedProductIds = async (afterProductId?: string) => {
   return products.map((product) => product.productId);
 };
 
+export const findJetprintLinkedProducts = async (afterProductId?: string) => {
+  const collection = await getProductsCollection();
+
+  return collection
+    .find(
+      {
+        jetprint: { $type: "object" },
+        ...(afterProductId ? { productId: { $gt: afterProductId } } : {}),
+      },
+      {
+        projection: {
+          _id: 0,
+          productId: 1,
+          slug: 1,
+          translations: 1,
+          jetprint: 1,
+        },
+      },
+    )
+    .sort({ productId: 1 })
+    .toArray();
+};
+
+export const updateProductJetprintVariantStatus = async (
+  productId: string,
+  sku: string,
+  isAvailable: boolean,
+  checkedAt: string,
+) => {
+  const collection = await getProductsCollection();
+
+  await collection.updateOne(
+    { productId, "jetprint.variants.sku": sku },
+    {
+      $set: {
+        "jetprint.variants.$[variant].isAvailable": isAvailable,
+        "jetprint.variants.$[variant].checkedAt": checkedAt,
+      },
+    },
+    { arrayFilters: [{ "variant.sku": sku }] },
+  );
+};
+
 export const findAllProducts = async () => {
   const collection = await getProductsCollection();
 

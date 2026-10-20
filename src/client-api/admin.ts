@@ -1,4 +1,5 @@
 import type { Locale } from "@/i18n/config";
+import type { JetprintFile } from "@/types/catalog";
 import type { ProductImage } from "@/types/product-details";
 
 import { GET, POST } from "@/client-api";
@@ -58,7 +59,16 @@ export type AdminProductAssetUploadPlan = {
   format: string;
 };
 
-type AdminProductUploadKind = "gallery" | "asset";
+export type AdminProductJetprintUploadPlan = {
+  id: string;
+  objectKey: string;
+  uploadUrl: string;
+  contentType: string;
+  expiresInSeconds: number;
+  file: JetprintFile;
+};
+
+type AdminProductUploadKind = "gallery" | "asset" | "jetprint";
 
 type AdminProductUploadResponse<TPlan> = {
   items?: TPlan[];
@@ -89,6 +99,21 @@ export const requestAdminProductAssetUploadUrls = (params: {
     "/api/admin/products/uploads",
     {
       kind: "asset" satisfies AdminProductUploadKind,
+      locale: params.locale,
+      productId: params.productId,
+      files: params.files,
+    },
+  );
+
+export const requestAdminProductJetprintUploadUrls = (params: {
+  locale: Locale;
+  productId?: string;
+  files: AdminProductUploadFileInput[];
+}) =>
+  POST<AdminProductUploadResponse<AdminProductJetprintUploadPlan>>(
+    "/api/admin/products/uploads",
+    {
+      kind: "jetprint" satisfies AdminProductUploadKind,
       locale: params.locale,
       productId: params.productId,
       files: params.files,

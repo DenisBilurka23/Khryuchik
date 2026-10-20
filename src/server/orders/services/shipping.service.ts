@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getUsdRate } from "@/server/localization/exchange-rates.service";
+import { getJetprintShippingQuote } from "@/server/jetprint/services/jetprint-shipping.service";
 import { getRegionCurrency } from "@/server/localization/localization.service";
 import {
   getPrintifyShippingQuote,
@@ -22,7 +23,7 @@ import type {
 import type { CurrencyCode, RegionCode } from "@/utils";
 import { convertShippingAmount } from "@/utils";
 
-const PRINTIFY_QUOTE_CURRENCY: CurrencyCode = "USD";
+const USD_QUOTE_CURRENCY: CurrencyCode = "USD";
 
 export type OrderShippingItem = ShipmentGroupItem & {
   selections?: CartSelections;
@@ -66,14 +67,12 @@ export type OrderShippingResult =
   | { status: "missing-shipping-data" }
   | { status: "unavailable" };
 
-const toPrintifyOption = async (
-  amountCents: number,
+const convertUsdQuote = async (
+  amountUsd: number,
   currency: CurrencyCode,
-): Promise<ShippingOption | null> => {
-  const amountUsd = amountCents / 100;
-
-  if (currency === PRINTIFY_QUOTE_CURRENCY) {
-    return buildPrintifyOption(amountUsd, currency);
+): Promise<number | null> => {
+  if (currency === USD_QUOTE_CURRENCY) {
+    return amountUsd;
   }
 
   const toUsdRate = await getUsdRate(currency);
@@ -82,16 +81,43 @@ const toPrintifyOption = async (
     return null;
   }
 
-  return buildPrintifyOption(
-    convertShippingAmount({
-      amount: amountUsd,
-      fromCurrency: PRINTIFY_QUOTE_CURRENCY,
-      toCurrency: currency,
-      fromUsdRate: 1,
-      toUsdRate,
-    }),
-    currency,
-  );
+  return convertShippingAmount({
+    amount: amountUsd,
+    fromCurrency: USD_QUOTE_CURRENCY,
+    toCurrency: currency,
+    fromUsdRate: 1,
+    toUsdRate,
+  });
+};
+
+const toPrintifyOption = async (
+  amountCents: number,
+  currency: CurrencyCode,
+): Promise<ShippingOption | null> => {
+  const amount = await convertUsdQuote(amountCents / 100, currency);
+
+  return amount === null ? null : buildPrintifyOption(amount, currency);
+};
+
+const toJetprintOption = async (
+  amountUsd: number,
+  currency: CurrencyCode,
+  transitDays: string | undefined,
+): Promise<ShippingOption | null> => {
+  const amount = await convertUsdQuote(amountUsd, currency);
+
+  return amount === null
+    ? null
+    : {
+        id: "jetprint:standard",
+        provider: "jetprint",
+        service: "standard",
+        amount,
+        currency,
+        hasTracking: true,
+        deliveryType: "address",
+        ...(transitDays ? { transitDays } : {}),
+      };
 };
 
 const buildPrintifyOption = (
@@ -198,6 +224,30 @@ export const calculateOrderShipping = async ({
         printifyQuote.status === "quoted"
           ? await toPrintifyOption(printifyQuote.amountCents, currency)
           : null;
+
+      quote = option
+        ? { status: "quoted", options: [option] }
+        : { status: "unavailable" };
+    } else if (group.source === "jetprint") {
+      const jetprintQuote = await getJetprintShippingQuote(
+        group.itemIds.flatMap((itemId) => {
+          const item = itemById.get(itemId);
+
+          return item ? [item] : [];
+        }),
+        destinationCountry,
+      );
+
+      if (jetprintQuote.status !== "quoted") {
+        pushUnshippable(jetprintQuote.status);
+        continue;
+      }
+
+      const option = await toJetprintOption(
+        jetprintQuote.amountUsd,
+        currency,
+        jetprintQuote.transitDays,
+      );
 
       quote = option
         ? { status: "quoted", options: [option] }

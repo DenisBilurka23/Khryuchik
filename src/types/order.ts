@@ -1,5 +1,6 @@
 import type { Locale } from "@/i18n/config";
 import type { StoredCartItem } from "@/types/cart";
+import type { JetprintFile } from "@/types/catalog";
 import type {
   ShippingHubCode,
   ShippingParcel,
@@ -15,6 +16,12 @@ export type OrderItemPrintifyLink = {
   variantId: number;
 };
 
+export type OrderItemJetprintLink = {
+  sku: string;
+  printFiles: JetprintFile[];
+  previewFiles: JetprintFile[];
+};
+
 export type OrderItem = {
   productId: string;
   slug: string;
@@ -28,6 +35,7 @@ export type OrderItem = {
   quantity: number;
   lineTotal: number;
   printify?: OrderItemPrintifyLink;
+  jetprint?: OrderItemJetprintLink;
 };
 
 export type OrderPromoCode = {
@@ -99,7 +107,27 @@ export type OrderPrintifyInfo = {
   cancelError?: string;
 };
 
-export type OrderFulfillmentSource = "printify" | "manual";
+export type JetprintOrderStatusKey =
+  | "pending"
+  | "inProduction"
+  | "partiallyShipped"
+  | "shipped"
+  | "cancelled"
+  | "unknown";
+
+export type OrderDeleteBlocker = "blockedByPrintify" | "blockedByJetprint";
+
+export type OrderJetprintInfo = {
+  orderNo?: string;
+  customerOrderNo?: string;
+  submittedAt?: string;
+  status?: number;
+  cancelledAt?: string;
+  lastError?: string;
+  cancelError?: string;
+};
+
+export type OrderFulfillmentSource = "printify" | "jetprint" | "manual";
 
 export type OrderDeliveredBy = "carrier" | "admin" | "customer";
 
@@ -155,6 +183,7 @@ export type OrderDocument = {
   status: OrderStatus;
   fulfillmentType?: OrderFulfillmentType;
   printifyOrder?: OrderPrintifyInfo;
+  jetprintOrder?: OrderJetprintInfo;
   fulfillments?: OrderFulfillment[];
   printedStockAppliedAt?: string;
   printedStockMovements?: OrderPrintedStockMovement[];

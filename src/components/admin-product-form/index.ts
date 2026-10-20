@@ -2,6 +2,7 @@ export { AdminProductForm } from "./admin-product-form";
 export { AdminProductFormHero } from "./form-hero";
 export {
   AdminProductBaseSection,
+  AdminProductJetprintSection,
   AdminProductLocaleSection,
   AdminProductPricingSection,
   AdminProductPrintifySection,
@@ -17,6 +18,7 @@ export { AdminSpecsField } from "./specs-field";
 export type { AdminProductFormProps } from "./types";
 export type { AdminProductFormHeroProps } from "./form-hero";
 export type { AdminProductBaseSectionProps } from "./sections/base-section";
+export type { AdminProductJetprintSectionProps } from "./sections/jetprint-section";
 export type { AdminProductLocaleSectionProps } from "./sections/locale-section";
 export type { AdminProductPricingSectionProps } from "./sections/pricing-section";
 export type {

@@ -19,7 +19,11 @@ import { deleteAdminOrderAction } from "@/app/(admin)/admin/actions";
 import {
   AdminOrderDeleteButton,
   AdminOrderFulfillments,
+  AdminOrderJetprintCancelButton,
+  AdminOrderJetprintStatus,
+  AdminOrderJetprintSubmitButton,
   AdminOrderPaymentConfirmButton,
+  AdminOrderPaymentSummary,
   AdminOrderPrintifyCancelButton,
   AdminOrderPrintifyStatus,
   AdminOrderProductionButton,
@@ -44,7 +48,9 @@ import {
   formatDate,
   formatOrderNumber,
   formatTime,
-  hasLivePrintifyOrder,
+  canCancelJetprintOrder,
+  canSubmitOrderToJetprint,
+  getOrderDeleteBlocker,
   isRefundableOrder,
 } from "@/utils";
 
@@ -72,14 +78,6 @@ const AdminOrdersContent = async () => {
   const orders = await findOrders();
 
   const columns = tOrders.raw("columns") as OrderColumns;
-  const paymentMethodLabels = tOrders.raw("paymentMethodLabels") as Record<
-    string,
-    string
-  >;
-  const paymentStatusLabels = tOrders.raw("paymentStatusLabels") as Record<
-    string,
-    string
-  >;
 
   return (
     <Stack gap={3}>
@@ -151,27 +149,11 @@ const AdminOrdersContent = async () => {
                       {formatCurrency(order.total, locale, order.currency)}
                     </TableCell>
                     <TableCell>
-                      <Stack>
-                        <Typography variant="body2">
-                          {paymentMethodLabels[order.payment.method] ??
-                            order.payment.method}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {paymentStatusLabels[order.payment.status] ??
-                            order.payment.status}
-                        </Typography>
-                        {order.payment.refundedAmount !== undefined && (
-                          <Typography variant="caption" color="text.secondary">
-                            {tOrders("refundedAmountLabel", {
-                              amount: formatCurrency(
-                                order.payment.refundedAmount,
-                                locale,
-                                order.currency,
-                              ),
-                            })}
-                          </Typography>
-                        )}
-                      </Stack>
+                      <AdminOrderPaymentSummary
+                        payment={order.payment}
+                        locale={locale}
+                        currency={order.currency}
+                      />
                     </TableCell>
                     <TableCell>
                       <Stack spacing={0.5}>
@@ -181,6 +163,9 @@ const AdminOrdersContent = async () => {
                         />
                         <AdminOrderPrintifyStatus
                           printifyOrder={order.printifyOrder}
+                        />
+                        <AdminOrderJetprintStatus
+                          jetprintOrder={order.jetprintOrder}
                         />
                         <AdminOrderFulfillments
                           orderId={order.id}
@@ -224,6 +209,12 @@ const AdminOrdersContent = async () => {
                               lastError={order.printifyOrder.lastError}
                             />
                           )}
+                        {canSubmitOrderToJetprint(order) && (
+                          <AdminOrderJetprintSubmitButton
+                            orderId={order.id}
+                            lastError={order.jetprintOrder?.lastError}
+                          />
+                        )}
                         {isRefundableOrder(order) && (
                           <AdminOrderRefundButton
                             orderId={order.id}
@@ -242,14 +233,16 @@ const AdminOrdersContent = async () => {
                               cancelError={order.printifyOrder.cancelError}
                             />
                           )}
+                        {canCancelJetprintOrder(order) && (
+                          <AdminOrderJetprintCancelButton
+                            orderId={order.id}
+                            cancelError={order.jetprintOrder?.cancelError}
+                          />
+                        )}
                         <AdminOrderDeleteButton
                           orderId={order.id}
                           action={deleteAdminOrderAction}
-                          disabledReason={
-                            hasLivePrintifyOrder(order)
-                              ? tOrders("delete.blockedByPrintify")
-                              : undefined
-                          }
+                          blocker={getOrderDeleteBlocker(order)}
                           icon={
                             <DeleteOutlineOutlinedIcon key="delete-order-icon" />
                           }

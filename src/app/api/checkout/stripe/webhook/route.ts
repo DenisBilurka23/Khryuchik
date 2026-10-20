@@ -14,6 +14,7 @@ import { applyStripeRefund } from "@/server/orders/services/orders.service";
 import { sendOrderConfirmationEmail } from "@/server/email/order-confirmation";
 import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { submitOrderToPrintify } from "@/server/orders/services/fulfillment.service";
+import { submitOrderToJetprint } from "@/server/orders/services/jetprint-fulfillment.service";
 import { verifyStripeWebhook } from "@/server/payments/stripe";
 import {
   notifyAdminOrderPaid,
@@ -40,6 +41,7 @@ const handleCheckoutCompleted = async (session: Stripe.Checkout.Session) => {
 
   if (existing.payment.status === "paid") {
     await submitOrderToPrintify(existing);
+    await submitOrderToJetprint(existing);
     return;
   }
 
@@ -65,6 +67,7 @@ const handleCheckoutCompleted = async (session: Stripe.Checkout.Session) => {
     await notifyAdminOrderPaid(updated);
     await sendOrderConfirmationEmail(updated);
     await submitOrderToPrintify(updated);
+    await submitOrderToJetprint(updated);
   }
 };
 

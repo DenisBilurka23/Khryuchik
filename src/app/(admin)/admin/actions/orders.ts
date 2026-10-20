@@ -19,6 +19,10 @@ import { sendOrderStatusEmail } from "@/server/email/order-status-email";
 import { requireAdminApiAccess } from "@/server/admin/auth";
 import { restoreOrderPrintedStock } from "@/server/catalog/services/printed-stock.service";
 import { markParcelDelivered } from "@/server/orders/services/delivery.service";
+import {
+  cancelOrderInJetprint,
+  submitOrderToJetprint,
+} from "@/server/orders/services/jetprint-fulfillment.service";
 import { applyStripeRefund } from "@/server/orders/services/orders.service";
 import { buyOrderLabel } from "@/server/orders/services/shipping-label.service";
 import { refundStripePayment } from "@/server/payments/stripe";
@@ -26,6 +30,9 @@ import type { OrderStatus } from "@/types/order";
 import type { ShippingPickupPoint } from "@/types/shipping";
 import {
   asOptionalString,
+  canCancelJetprintOrder,
+  canSubmitOrderToJetprint,
+  hasLiveJetprintOrder,
   hasLivePrintifyOrder,
   isOrderStatus,
   isRefundableOrder,
@@ -179,6 +186,46 @@ export const cancelAdminOrderPrintifyAction = async (
 
   revalidateOrderDependentPaths();
   return { ok: true };
+};
+
+export const submitAdminOrderToJetprintAction = async (
+  orderId: string,
+): Promise<AdminActionResult<"not_allowed">> => {
+  const session = await requireAdminApiAccess();
+  if (!session) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const order = await findOrderById(orderId);
+
+  if (!order || !canSubmitOrderToJetprint(order)) {
+    return { ok: false, error: "not_allowed" };
+  }
+
+  const submitted = await submitOrderToJetprint(order);
+
+  revalidateOrderDependentPaths();
+  return submitted ? { ok: true } : { ok: false, error: "failed" };
+};
+
+export const cancelAdminOrderJetprintAction = async (
+  orderId: string,
+): Promise<AdminActionResult<"not_allowed">> => {
+  const session = await requireAdminApiAccess();
+  if (!session) {
+    return { ok: false, error: "unauthorized" };
+  }
+
+  const order = await findOrderById(orderId);
+
+  if (!order || !canCancelJetprintOrder(order)) {
+    return { ok: false, error: "not_allowed" };
+  }
+
+  const cancelled = await cancelOrderInJetprint(order);
+
+  revalidateOrderDependentPaths();
+  return cancelled ? { ok: true } : { ok: false, error: "failed" };
 };
 
 export type AdminOrderTrackingInput = {
@@ -377,6 +424,13 @@ export const deleteAdminOrderAction = async (formData: FormData) => {
     if (order && hasLivePrintifyOrder(order)) {
       console.warn(
         `Refused to delete order ${orderId}: its Printify order is still live`,
+      );
+      return;
+    }
+
+    if (order && hasLiveJetprintOrder(order)) {
+      console.warn(
+        `Refused to delete order ${orderId}: its JetPrint order is still live`,
       );
       return;
     }

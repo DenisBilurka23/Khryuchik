@@ -815,6 +815,7 @@
         },
         "parcels": {
           "printify": "Made-to-order merch",
+          "jetprint": "Made-to-order merch · from overseas",
           "manual": "Books"
         },
         "transitDays": "{days} working days"
@@ -1289,6 +1290,7 @@
     "orderTrackingLabel": "Tracking number",
     "orderParcels": {
       "printify": "Made-to-order merch",
+      "jetprint": "Made-to-order merch · from overseas",
       "manual": "Books"
     },
     "confirmDelivery": {
@@ -1850,8 +1852,34 @@
       "printifyCancelFailed": "Printify cancellation failed: {reason}. If the order was just created, wait a few seconds and try again.",
       "refundedAmountLabel": "Refunded: {amount}",
       "printifyStatusLabel": "Printify: {status}",
+      "jetprintStatusLabel": "JetPrint: {status} · {orderNo}",
+      "jetprintStatuses": {
+        "pending": "awaiting invoice payment",
+        "inProduction": "in production",
+        "partiallyShipped": "partially shipped",
+        "shipped": "shipped",
+        "cancelled": "cancelled",
+        "unknown": "unknown status"
+      },
+      "jetprintFailed": "JetPrint submission failed: {reason}",
+      "jetprintCancelFailed": "JetPrint cancellation failed: {reason}",
+      "submitJetprint": {
+        "button": "Send to JetPrint",
+        "dialogTitle": "Send this order to JetPrint?",
+        "dialogDescription": "JetPrint adds it to the invoice for the day and starts printing once that invoice is paid. Cancelling is free until 24 business hours after payment.",
+        "confirmLabel": "Send to JetPrint",
+        "cancelLabel": "Close"
+      },
+      "cancelJetprint": {
+        "button": "Cancel in JetPrint",
+        "dialogTitle": "Cancel this order in JetPrint?",
+        "dialogDescription": "Free until 24 business hours after the invoice is paid; after that JetPrint still charges the product cost. The customer is not refunded — use the refund action for that.",
+        "confirmLabel": "Cancel in JetPrint",
+        "cancelLabel": "Close"
+      },
       "parcels": {
         "printify": "Made-to-order merch",
+        "jetprint": "JetPrint merch",
         "manual": "Books"
       },
       "customs": {
@@ -1934,7 +1962,8 @@
         "dialogDescription": "The order will be removed from the database permanently. This action cannot be undone.",
         "confirmLabel": "Delete",
         "cancelLabel": "Cancel",
-        "blockedByPrintify": "Cancel printing first — otherwise the Printify order stays on hold with nothing linking back to it."
+        "blockedByPrintify": "Cancel printing first — otherwise the Printify order stays on hold with nothing linking back to it.",
+        "blockedByJetprint": "Cancel the JetPrint order first — otherwise it stays in production with nothing linking back to it."
       }
     },
     "promocodes": {
@@ -2165,6 +2194,74 @@
       },
       "printifyVariantDisabled": "Disabled in Printify",
       "printifyManagedStock": "Managed by Printify — updated on sync",
+      "jetprint": {
+        "sectionTitle": "JetPrint",
+        "sectionDescription": "Made to order at JetPrint. Orders go out automatically after payment, and shipping is priced at checkout from JetPrint's rates for the blank.",
+        "enabled": "Fulfilled by JetPrint",
+        "enabledHelper": "Ask JetPrint support for the factory SKU of each variant — SKUs shown in the JetPrint dashboard do not work with the API.",
+        "variantsTitle": "Variants",
+        "variantsHelper": "Leave size and colour empty for a product without options. Otherwise enter the option values exactly as in the size and colour lists.",
+        "columns": {
+          "sku": "Factory SKU",
+          "size": "Size",
+          "color": "Colour",
+          "status": "Status"
+        },
+        "addVariant": "Add variant",
+        "removeVariant": "Remove variant",
+        "variantStatus": {
+          "available": "Active",
+          "unavailable": "Unavailable at JetPrint",
+          "unchecked": "Not checked yet",
+          "noShipping": "No shipping data"
+        },
+        "printFilesTitle": "Print files",
+        "printFilesHelper": "PNG or JPEG made to the product's Design Template. Every order links to them, so replaced files stay in storage for orders already sent.",
+        "uploadButton": "Upload a ready file",
+        "removeFile": "Remove file",
+        "fileStatus": {
+          "pending": "Waiting to upload",
+          "uploading": "Uploading",
+          "uploaded": "Uploaded",
+          "error": "Upload failed"
+        },
+        "editor": {
+          "open": "Assemble from template",
+          "edit": "Open the template editor",
+          "title": "Print file from the JetPrint template",
+          "templateTitle": "JetPrint template (PSD)",
+          "templateUpload": "Upload PSD",
+          "templateReplace": "Replace template",
+          "artTitle": "Artwork",
+          "artUpload": "Upload artwork",
+          "artReplace": "Replace artwork",
+          "size": "{width} × {height} px",
+          "scaleLabel": "Scale: {percent}%",
+          "scaleAria": "Artwork scale",
+          "fit": "Cover the yellow area",
+          "center": "Centre",
+          "showGuides": "Template lines",
+          "showCut": "Show what gets cut off",
+          "fadeArt": "See-through artwork",
+          "hint": "Drag the artwork with the mouse; the wheel zooms, the arrow keys nudge it (hold Shift for bigger steps). Keep anything important inside the green line.",
+          "empty": "Upload the JetPrint PSD template and your artwork",
+          "stageLabel": "Print layout",
+          "notCovered": "The artwork does not cover the yellow area — after cutting there will be blank strips along the edge.",
+          "cancel": "Cancel",
+          "apply": "Save print file",
+          "errors": {
+            "missingLayers": "The PSD has no Bleeding Area, Hem Lines and Safe Lines layers — is it a JetPrint template?",
+            "unreadable": "Could not read the PSD file.",
+            "art": "Could not open the artwork. Use a PNG or JPEG.",
+            "render": "Could not build the print file. If the artwork was uploaded earlier, upload it again."
+          },
+          "dpiGood": "Artwork resolution: about {dpi} DPI, good for print.",
+          "dpiNormal": "Artwork resolution: about {dpi} DPI. JetPrint accepts it, but 150 DPI or more prints sharper. A larger artwork file would help.",
+          "dpiBad": "Artwork resolution: about {dpi} DPI, below JetPrint's minimum of 100. The print will come out blurry; use a larger artwork file or make it smaller."
+        },
+        "previewNote": "JetPrint also needs a preview of the finished product: the first image of the product gallery is sent automatically.",
+        "singleSkuHelper": "The factory SKU JetPrint support gave you for this product. Shipping is priced automatically from the blank's JetPrint rates."
+      },
       "shippingSectionTitle": "Shipping",
       "shippingSectionDescription": "Parcel size, customs data, and where each printed edition is stocked.",
       "hubs": {

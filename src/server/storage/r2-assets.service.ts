@@ -3,6 +3,7 @@ import "server-only";
 import { randomUUID } from "crypto";
 
 import type { Locale } from "@/i18n/config";
+import type { JetprintFile } from "@/types/catalog";
 import type { ProductFileAsset, ProductImage } from "@/types/product-details";
 
 import {
@@ -251,6 +252,52 @@ export const createBookFileUploadUrls = async ({
         expiresInSeconds,
         fileName,
         format: getFileExtension(fileName),
+      };
+    }),
+  );
+};
+
+export type ProductJetprintUploadPlan = {
+  id: string;
+  objectKey: string;
+  uploadUrl: string;
+  contentType: string;
+  expiresInSeconds: number;
+  file: JetprintFile;
+};
+
+export const createProductJetprintUploadUrls = async ({
+  productId,
+  files,
+}: {
+  productId?: string;
+  files: ProductUploadFileInput[];
+}): Promise<ProductJetprintUploadPlan[]> => {
+  const scope = resolveProductScope(productId);
+
+  return Promise.all(
+    files.map(async (file) => {
+      const fileName = file.fileName?.trim() || "jetprint-file";
+      const objectKey = `products/${scope}/jetprint/${randomUUID()}-${sanitizeFileName(fileName)}`;
+      const url = buildPublicObjectUrl(objectKey);
+
+      if (!url) {
+        throw new Error("The public R2 URL is not configured");
+      }
+
+      const { uploadUrl, expiresInSeconds } = await createPresignedPutUrl({
+        bucket: "public",
+        objectKey,
+        contentType: file.contentType,
+      });
+
+      return {
+        id: randomUUID(),
+        objectKey,
+        uploadUrl,
+        contentType: file.contentType,
+        expiresInSeconds,
+        file: { name: fileName, url, objectKey },
       };
     }),
   );

@@ -815,6 +815,7 @@
         },
         "parcels": {
           "printify": "Мерч под заказ",
+          "jetprint": "Мерч под заказ · из-за рубежа",
           "manual": "Книги"
         },
         "transitDays": "{days} раб. дн."
@@ -1289,6 +1290,7 @@
     "orderTrackingLabel": "Трек-номер",
     "orderParcels": {
       "printify": "Мерч под заказ",
+      "jetprint": "Мерч под заказ · из-за рубежа",
       "manual": "Книги"
     },
     "confirmDelivery": {
@@ -1870,8 +1872,34 @@
       "printifyCancelFailed": "Не удалось отменить в Printify: {reason}. Если заказ только что создан, подождите несколько секунд и повторите.",
       "refundedAmountLabel": "Возврат: {amount}",
       "printifyStatusLabel": "Printify: {status}",
+      "jetprintStatusLabel": "JetPrint: {status} · {orderNo}",
+      "jetprintStatuses": {
+        "pending": "ждёт оплаты инвойса",
+        "inProduction": "в производстве",
+        "partiallyShipped": "частично отправлен",
+        "shipped": "отправлен",
+        "cancelled": "отменён",
+        "unknown": "непонятный статус"
+      },
+      "jetprintFailed": "Не удалось отправить в JetPrint: {reason}",
+      "jetprintCancelFailed": "Не удалось отменить в JetPrint: {reason}",
+      "submitJetprint": {
+        "button": "Отправить в JetPrint",
+        "dialogTitle": "Отправить заказ в JetPrint?",
+        "dialogDescription": "JetPrint добавит его в инвойс за этот день и начнёт печать после оплаты инвойса. Бесплатно отменить можно до 24 рабочих часов после оплаты.",
+        "confirmLabel": "Отправить в JetPrint",
+        "cancelLabel": "Закрыть"
+      },
+      "cancelJetprint": {
+        "button": "Отменить в JetPrint",
+        "dialogTitle": "Отменить заказ в JetPrint?",
+        "dialogDescription": "Бесплатно — до 24 рабочих часов после оплаты инвойса, позже JetPrint всё равно возьмёт себестоимость товара. Деньги покупателю не возвращаются — для этого есть возврат.",
+        "confirmLabel": "Отменить в JetPrint",
+        "cancelLabel": "Закрыть"
+      },
       "parcels": {
         "printify": "Мерч под заказ",
+        "jetprint": "Мерч JetPrint",
         "manual": "Книги"
       },
       "customs": {
@@ -1954,7 +1982,8 @@
         "dialogDescription": "Заказ будет окончательно удалён из базы. Это действие нельзя отменить.",
         "confirmLabel": "Удалить",
         "cancelLabel": "Отмена",
-        "blockedByPrintify": "Сначала отмените печать — иначе заказ останется висеть в Printify, и связи с ним уже не будет."
+        "blockedByPrintify": "Сначала отмените печать — иначе заказ останется висеть в Printify, и связи с ним уже не будет.",
+        "blockedByJetprint": "Сначала отмените заказ в JetPrint — иначе он останется там в работе, и связи с ним уже не будет."
       }
     },
     "promocodes": {
@@ -2045,6 +2074,74 @@
       },
       "printifyVariantDisabled": "Выключен в Printify",
       "printifyManagedStock": "Управляется Printify — обновляется при синхронизации",
+      "jetprint": {
+        "sectionTitle": "JetPrint",
+        "sectionDescription": "Печать под заказ в JetPrint. Заказы уходят туда автоматически после оплаты, а доставка на чекауте считается по тарифам JetPrint для этой заготовки.",
+        "enabled": "Печатается в JetPrint",
+        "enabledHelper": "Заводской SKU каждого варианта запросите у поддержки JetPrint — SKU из их дашборда с API не работают.",
+        "variantsTitle": "Варианты",
+        "variantsHelper": "Для товара без опций оставьте размер и цвет пустыми. Иначе впишите значения опций точно как в списках размеров и цветов.",
+        "columns": {
+          "sku": "Заводской SKU",
+          "size": "Размер",
+          "color": "Цвет",
+          "status": "Статус"
+        },
+        "addVariant": "Добавить вариант",
+        "removeVariant": "Удалить вариант",
+        "variantStatus": {
+          "available": "Активен",
+          "unavailable": "Недоступен в JetPrint",
+          "unchecked": "Ещё не проверен",
+          "noShipping": "Нет данных о доставке"
+        },
+        "printFilesTitle": "Файлы для печати",
+        "printFilesHelper": "PNG или JPEG по шаблону товара (Design Template). Каждый заказ ссылается на них, поэтому заменённые файлы остаются в хранилище для уже отправленных заказов.",
+        "uploadButton": "Загрузить готовый файл",
+        "removeFile": "Удалить файл",
+        "fileStatus": {
+          "pending": "Ждёт загрузки",
+          "uploading": "Загружается",
+          "uploaded": "Загружен",
+          "error": "Ошибка загрузки"
+        },
+        "editor": {
+          "open": "Собрать по шаблону",
+          "edit": "Открыть редактор шаблона",
+          "title": "Print-файл по шаблону JetPrint",
+          "templateTitle": "Шаблон JetPrint (PSD)",
+          "templateUpload": "Загрузить PSD",
+          "templateReplace": "Заменить шаблон",
+          "artTitle": "Рисунок",
+          "artUpload": "Загрузить рисунок",
+          "artReplace": "Заменить рисунок",
+          "size": "{width} × {height} px",
+          "scaleLabel": "Масштаб: {percent}%",
+          "scaleAria": "Масштаб рисунка",
+          "fit": "Закрыть жёлтую зону",
+          "center": "По центру",
+          "showGuides": "Линии шаблона",
+          "showCut": "Показать, что срежется",
+          "fadeArt": "Полупрозрачный рисунок",
+          "hint": "Перетаскивайте рисунок мышью, колёсико меняет масштаб, стрелки сдвигают (с Shift — быстрее). Важное держите внутри зелёной линии.",
+          "empty": "Загрузите PSD-шаблон JetPrint и рисунок",
+          "stageLabel": "Макет печати",
+          "notCovered": "Рисунок не закрывает жёлтую зону — после обрезки по краю останутся пустые полосы.",
+          "cancel": "Отмена",
+          "apply": "Сохранить print-файл",
+          "errors": {
+            "missingLayers": "В PSD нет слоёв Bleeding Area, Hem Lines и Safe Lines — это точно шаблон JetPrint?",
+            "unreadable": "Не удалось прочитать PSD-файл.",
+            "art": "Не удалось открыть рисунок. Нужен PNG или JPEG.",
+            "render": "Не удалось собрать файл. Если рисунок загружали раньше, загрузите его заново."
+          },
+          "dpiGood": "Разрешение рисунка: около {dpi} DPI, для печати хорошо.",
+          "dpiNormal": "Разрешение рисунка: около {dpi} DPI. JetPrint это примет, но от 150 DPI печать чётче. Лучше взять файл крупнее.",
+          "dpiBad": "Разрешение рисунка: около {dpi} DPI, ниже минимума JetPrint (100). Печать выйдет мутной — возьмите файл крупнее или уменьшите рисунок."
+        },
+        "previewNote": "JetPrint также нужно превью готового товара: автоматически отправляется первая картинка галереи товара.",
+        "singleSkuHelper": "Заводской SKU, который дала поддержка JetPrint для этого товара. Доставка считается автоматически по тарифам JetPrint для этой заготовки."
+      },
       "newTitle": "Новый товар",
       "newDescription": "Создание товара на отдельной странице со всеми реальными полями каталога.",
       "editTitlePrefix": "Редактирование",

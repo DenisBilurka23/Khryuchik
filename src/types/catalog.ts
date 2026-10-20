@@ -114,6 +114,109 @@ export type ProductPrintifyLink = {
   syncedAt: string;
 };
 
+export type JetprintVariantSelections = PrintifyVariantSelections;
+
+export type JetprintVariantLink = {
+  sku: string;
+  selections: JetprintVariantSelections;
+  isAvailable: boolean;
+  checkedAt?: string;
+};
+
+export type JetprintFile = {
+  name: string;
+  url: string;
+  objectKey?: string;
+};
+
+export type PrintDesignSize = {
+  width: number;
+  height: number;
+};
+
+export type PrintDesignPoint = {
+  x: number;
+  y: number;
+};
+
+export type PrintDesignDpiQuality = "good" | "normal" | "bad";
+
+export type PrintDesignBox = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+export type PrintDesignTemplate = {
+  width: number;
+  height: number;
+  dpi: number;
+  bleedBox: PrintDesignBox;
+  safeBox: PrintDesignBox;
+  guidesUrl: string;
+  cutMaskUrl: string;
+};
+
+export type PrintDesignArt = {
+  url: string;
+  width: number;
+  height: number;
+};
+
+export type PrintDesignLayout = {
+  x: number;
+  y: number;
+  scale: number;
+};
+
+export type PrintDesign = {
+  template: PrintDesignTemplate;
+  art: PrintDesignArt;
+  layout: PrintDesignLayout;
+};
+
+export type ProductJetprintLink = {
+  variants: JetprintVariantLink[];
+  printFiles: JetprintFile[];
+  previewFiles: JetprintFile[];
+  printDesign?: PrintDesign;
+};
+
+export type JetprintShippingBand = {
+  minKg: number;
+  maxKg: number;
+  perKg: number;
+  fee: number;
+};
+
+export type JetprintShippingGroup = {
+  name: string;
+  countries: string[];
+  deliveryDays: string;
+  bands: JetprintShippingBand[];
+};
+
+export type JetprintBlank = {
+  name: string;
+  productionDays: string;
+  skus: Record<string, { weightGrams: number }>;
+  standardShipping: JetprintShippingGroup[];
+  importedAt: string;
+};
+
+export type JetprintBlankCatalog = Record<string, JetprintBlank>;
+
+export type JetprintShippingQuoteLine = {
+  sku: string;
+  quantity: number;
+};
+
+export type JetprintShippingQuote =
+  | { status: "quoted"; amountUsd: number; transitDays?: string }
+  | { status: "unsupported-destination" }
+  | { status: "unsupported-variant" };
+
 export type ProductHubStock = Partial<Record<ShippingHubCode, number>>;
 
 export type ProductPrintedStock = Partial<Record<string, ProductHubStock>>;
@@ -142,6 +245,7 @@ export type ProductDocument = {
   availableRegions: RegionCode[];
   hasOptions?: boolean;
   printify?: ProductPrintifyLink;
+  jetprint?: ProductJetprintLink;
   shipping?: ProductShipping;
   translations: Record<Locale, ProductTranslation>;
 };

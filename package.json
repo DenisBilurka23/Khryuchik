@@ -23,6 +23,7 @@
     "email:logo": "node --import tsx ./scripts/build-email-logo.ts",
     "printify:publish": "node --env-file=.env.local --import tsx ./scripts/printify-publish.ts",
     "printify:webhooks": "node --env-file=.env.local --import tsx ./scripts/printify-webhooks.ts",
+    "jetprint:blank": "node --import tsx ./scripts/jetprint-blank-import.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -40,6 +41,7 @@
     "@mui/material-nextjs": "^7.3.9",
     "@sentry/nextjs": "^11.0.0",
     "@types/nodemailer": "^8.0.1",
+    "ag-psd": "^31.0.3",
     "bcryptjs": "^3.0.3",
     "hls-video-element": "^1.5.11",
     "media-chrome": "^4.19.2",

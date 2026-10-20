@@ -2,7 +2,11 @@ import type { CountryCode, CurrencyCode } from "@/utils";
 
 export type ShippingHubCode = "europe" | "northAmerica";
 
-export type ShippingProviderCode = "bpost" | "chitchats" | "printify";
+export type ShippingProviderCode =
+  | "bpost"
+  | "chitchats"
+  | "printify"
+  | "jetprint";
 
 export type ShippingDeliveryType = "address" | "pickup-point";
 
@@ -77,7 +81,7 @@ export type ShippingGroupIssue =
 
 export type ShippingQuoteGroup = {
   id: string;
-  source: "digital" | "printify" | "manual";
+  source: "digital" | "printify" | "jetprint" | "manual";
   options: ShippingOption[];
   selectedOptionId: string | null;
   amount: number;

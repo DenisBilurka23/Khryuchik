@@ -24,7 +24,7 @@ export type ShipmentGroupItem = {
 
 export type ResolvedShipmentGroup = {
   id: string;
-  source: "digital" | "printify" | "manual";
+  source: "digital" | "printify" | "jetprint" | "manual";
   hubs: ShippingHubCode[];
   itemIds: string[];
   parcel?: ShippingParcel;
@@ -49,6 +49,7 @@ export const buildShipmentGroups = async (
 
   const digitalItemIds: string[] = [];
   const printifyItemIds: string[] = [];
+  const jetprintItemIds: string[] = [];
   const manualByHub = new Map<
     string,
     {
@@ -72,6 +73,11 @@ export const buildShipmentGroups = async (
 
     if (product?.printify) {
       printifyItemIds.push(item.id);
+      continue;
+    }
+
+    if (product?.jetprint) {
+      jetprintItemIds.push(item.id);
       continue;
     }
 
@@ -135,6 +141,15 @@ export const buildShipmentGroups = async (
       source: "printify",
       hubs: [],
       itemIds: printifyItemIds,
+    });
+  }
+
+  if (jetprintItemIds.length > 0) {
+    groups.push({
+      id: "jetprint",
+      source: "jetprint",
+      hubs: [],
+      itemIds: jetprintItemIds,
     });
   }
 

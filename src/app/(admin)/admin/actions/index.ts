@@ -19,6 +19,7 @@ export {
 } from "./localization";
 export {
   buyAdminOrderLabelAction,
+  cancelAdminOrderJetprintAction,
   cancelAdminOrderPrintifyAction,
   confirmAdminOrderPaymentAction,
   deleteAdminOrderAction,
@@ -27,6 +28,7 @@ export {
   saveAdminOrderPickupPointAction,
   saveAdminOrderTrackingAction,
   sendAdminOrderToProductionAction,
+  submitAdminOrderToJetprintAction,
   updateAdminOrderStatusAction,
 } from "./orders";
 export {

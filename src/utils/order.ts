@@ -1,10 +1,12 @@
 import { BOOK_FORMAT } from "@/constants/catalog";
+import { JETPRINT_ORDER_STATUS } from "@/constants/jetprint";
 import type { Locale } from "@/i18n/config";
 import {
   type AccountOrder,
   type AccountOrderItem,
   type CustomerOrderStatus,
   ORDER_STATUSES,
+  type OrderDeleteBlocker,
   type OrderCustomer,
   type OrderDocument,
   type OrderFulfillment,
@@ -43,6 +45,40 @@ export const hasLivePrintifyOrder = (order: {
 }) =>
   Boolean(order.printifyOrder?.printifyOrderId) &&
   !order.printifyOrder?.cancelledAt;
+
+export const hasLiveJetprintOrder = (order: {
+  jetprintOrder?: { orderNo?: string; cancelledAt?: string };
+}) =>
+  Boolean(order.jetprintOrder?.orderNo) && !order.jetprintOrder?.cancelledAt;
+
+export const canSubmitOrderToJetprint = (
+  order: Pick<OrderDocument, "items" | "payment" | "status" | "jetprintOrder">,
+) =>
+  order.items.some((item) => Boolean(item.jetprint)) &&
+  order.payment.status === "paid" &&
+  order.status !== "cancelled" &&
+  !hasLiveJetprintOrder(order);
+
+export const getOrderDeleteBlocker = (
+  order: Pick<OrderDocument, "printifyOrder" | "jetprintOrder">,
+): OrderDeleteBlocker | undefined => {
+  if (hasLivePrintifyOrder(order)) {
+    return "blockedByPrintify";
+  }
+
+  if (hasLiveJetprintOrder(order)) {
+    return "blockedByJetprint";
+  }
+
+  return undefined;
+};
+
+export const canCancelJetprintOrder = (
+  order: Pick<OrderDocument, "jetprintOrder">,
+) =>
+  hasLiveJetprintOrder(order) &&
+  order.jetprintOrder?.status !== JETPRINT_ORDER_STATUS.partiallyShipped &&
+  order.jetprintOrder?.status !== JETPRINT_ORDER_STATUS.shipped;
 
 export const getOrderTrackings = (order: {
   fulfillments?: Pick<

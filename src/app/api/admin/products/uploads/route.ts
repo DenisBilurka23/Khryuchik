@@ -1,11 +1,13 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
+import { JETPRINT_UPLOAD_CONTENT_TYPES } from "@/constants/jetprint";
 import { isLocale } from "@/i18n/config";
 import { requireAdminApiAccess } from "@/server/admin/auth";
 import {
   createBookFileUploadUrls,
   createProductGalleryUploadUrls,
+  createProductJetprintUploadUrls,
   type ProductUploadFileInput,
 } from "@/server/storage/r2-assets.service";
 import { isR2Configured } from "@/server/storage/r2";
@@ -22,7 +24,18 @@ const ALLOWED_IMAGE_CONTENT_TYPES = new Set([
 
 const ALLOWED_ASSET_CONTENT_TYPES = new Set(["application/pdf"]);
 
-type UploadKind = "gallery" | "asset";
+const ALLOWED_JETPRINT_CONTENT_TYPES = new Set(JETPRINT_UPLOAD_CONTENT_TYPES);
+
+const ALLOWED_CONTENT_TYPES_BY_KIND: Record<UploadKind, Set<string>> = {
+  gallery: ALLOWED_IMAGE_CONTENT_TYPES,
+  asset: ALLOWED_ASSET_CONTENT_TYPES,
+  jetprint: ALLOWED_JETPRINT_CONTENT_TYPES,
+};
+
+type UploadKind = "gallery" | "asset" | "jetprint";
+
+const isUploadKind = (value: unknown): value is UploadKind =>
+  value === "gallery" || value === "asset" || value === "jetprint";
 
 type RequestBody = {
   kind?: UploadKind;
@@ -76,8 +89,7 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json({ error: "invalid_body" }, { status: 400 });
   }
 
-  const kind =
-    body.kind === "gallery" || body.kind === "asset" ? body.kind : null;
+  const kind = isUploadKind(body.kind) ? body.kind : null;
   const locale =
     typeof body.locale === "string" && isLocale(body.locale)
       ? body.locale
@@ -91,11 +103,7 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
 
-  const allowedContentTypes =
-    kind === "gallery"
-      ? ALLOWED_IMAGE_CONTENT_TYPES
-      : ALLOWED_ASSET_CONTENT_TYPES;
-  const files = parseFiles(body.files, allowedContentTypes);
+  const files = parseFiles(body.files, ALLOWED_CONTENT_TYPES_BY_KIND[kind]);
 
   if (!files) {
     return NextResponse.json({ error: "invalid_files" }, { status: 400 });
@@ -111,6 +119,15 @@ export const POST = async (request: NextRequest) => {
       const items = await createProductGalleryUploadUrls({
         productId,
         locale,
+        files,
+      });
+
+      return NextResponse.json({ items });
+    }
+
+    if (kind === "jetprint") {
+      const items = await createProductJetprintUploadUrls({
+        productId,
         files,
       });
 

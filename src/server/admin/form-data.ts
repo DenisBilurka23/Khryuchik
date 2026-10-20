@@ -30,6 +30,17 @@ import {
   DEFAULT_ENTERTAINMENT_SORT_ORDER,
 } from "@/constants/entertainment";
 import { SHIPPING_HUB_CODES } from "@/constants/shipping";
+import {
+  parseBoolean,
+  parseCsvList,
+  parseJsonField,
+  parseMultilineList,
+  parseNumber,
+  parseOptionalNumber,
+  parseOptionalString,
+  parseString,
+} from "@/server/admin/form-fields";
+import { parseProductJetprint } from "@/server/admin/jetprint-form-data";
 import type { EntertainmentTranslation } from "@/types/entertainment";
 import type { ShippingManufacturer } from "@/types/shipping";
 import {
@@ -37,65 +48,6 @@ import {
   isRegionCode,
   type CurrencyCode,
 } from "@/utils";
-
-const parseString = (formData: FormData, key: string) => {
-  const value = formData.get(key);
-
-  return typeof value === "string" ? value : "";
-};
-
-const parseOptionalString = (formData: FormData, key: string) => {
-  const value = parseString(formData, key).trim();
-
-  return value || undefined;
-};
-
-const parseNumber = (formData: FormData, key: string, fallback = 0) => {
-  const value = Number(parseString(formData, key));
-
-  return Number.isFinite(value) ? value : fallback;
-};
-
-const parseOptionalNumber = (formData: FormData, key: string) => {
-  const rawValue = parseString(formData, key).trim();
-
-  if (!rawValue) {
-    return undefined;
-  }
-
-  const value = Number(rawValue);
-
-  return Number.isFinite(value) ? value : undefined;
-};
-
-const parseBoolean = (formData: FormData, key: string) =>
-  formData.get(key) === "on";
-
-const parseCsvList = (formData: FormData, key: string) =>
-  parseString(formData, key)
-    .split(",")
-    .map((value) => value.trim())
-    .filter(Boolean);
-
-const parseMultilineList = (formData: FormData, key: string) =>
-  parseString(formData, key)
-    .split(/\r?\n/)
-    .map((value) => value.trim())
-    .filter(Boolean);
-
-const parseJsonField = <T>(formData: FormData, key: string, fallback: T): T => {
-  const rawValue = parseString(formData, key).trim();
-
-  if (!rawValue) {
-    return fallback;
-  }
-
-  try {
-    return JSON.parse(rawValue) as T;
-  } catch {
-    throw new Error(`Invalid JSON in field: ${key}`);
-  }
-};
 
 const parseLocaleTranslation = (formData: FormData, locale: Locale) => ({
   title: parseString(formData, `${locale}.title`).trim(),
@@ -393,6 +345,7 @@ export const parseAdminProductFormData = (
       ) as AdminProductPayload["product"]["pricing"],
       availableRegions,
       shipping: parseProductShipping(formData, localeCodes),
+      jetprint: parseProductJetprint(formData),
       translations: Object.fromEntries(
         activeLocaleCodes.map((locale) => {
           const t = parseLocaleTranslation(formData, locale);

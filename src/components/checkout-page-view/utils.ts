@@ -158,8 +158,8 @@ export const shippingGroupLabel = (
   group: ShippingQuoteGroup,
   labels: CheckoutLabels,
 ) =>
-  group.source === "printify"
-    ? labels.shippingMethod.parcels.printify
+  group.source === "printify" || group.source === "jetprint"
+    ? labels.shippingMethod.parcels[group.source]
     : labels.shippingMethod.parcels.manual;
 
 export const resolveSelectedOptionId = (

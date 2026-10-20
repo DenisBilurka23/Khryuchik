@@ -2,10 +2,12 @@ import "server-only";
 
 import type { Filter } from "mongodb";
 
+import { JETPRINT_ORDER_STATUS } from "@/constants/jetprint";
 import { getMongoDb } from "@/server/db/mongodb";
 import type {
   OrderDocument,
   OrderFulfillmentProgress,
+  OrderJetprintInfo,
   OrderPaymentInfo,
   OrderPrintedStockMovement,
   OrderPrintifyInfo,
@@ -41,6 +43,7 @@ const getOrdersCollection = async () => {
         { "printifyOrder.printifyOrderId": 1 },
         { sparse: true },
       ),
+      collection.createIndex({ "jetprintOrder.orderNo": 1 }, { sparse: true }),
     ]).catch((error) => {
       ordersIndexesPromise = null;
       throw error;
@@ -198,6 +201,46 @@ export const findOrdersWithOpenParcels = async (): Promise<OrderDocument[]> => {
     .toArray();
 };
 
+export const findOrdersAwaitingJetprint = async (
+  submittedAfter: string,
+  afterOrderId?: string,
+): Promise<OrderDocument[]> => {
+  const collection = await getOrdersCollection();
+
+  return collection
+    .find(
+      {
+        "jetprintOrder.orderNo": { $exists: true },
+        "jetprintOrder.cancelledAt": { $exists: false },
+        "jetprintOrder.submittedAt": { $gte: submittedAfter },
+        $or: [
+          {
+            "jetprintOrder.status": {
+              $nin: [
+                JETPRINT_ORDER_STATUS.shipped,
+                JETPRINT_ORDER_STATUS.cancelled,
+              ],
+            },
+          },
+          {
+            fulfillments: {
+              $not: {
+                $elemMatch: {
+                  source: "jetprint",
+                  trackingNumber: { $exists: true, $ne: null },
+                },
+              },
+            },
+          },
+        ],
+        ...(afterOrderId ? { id: { $gt: afterOrderId } } : {}),
+      },
+      { projection: { _id: 0 } },
+    )
+    .sort({ id: 1 })
+    .toArray();
+};
+
 export const updateOrderPayment = async (
   id: string,
   patch: Partial<OrderPaymentInfo>,
@@ -222,9 +265,10 @@ export type OrderPrintifyInfoPatch = {
   [Key in keyof OrderPrintifyInfo]?: OrderPrintifyInfo[Key] | null;
 };
 
-export const updateOrderPrintifyOrder = async (
+const patchNestedOrderFields = async (
   id: string,
-  patch: OrderPrintifyInfoPatch,
+  field: "printifyOrder" | "jetprintOrder",
+  patch: Record<string, unknown>,
 ): Promise<void> => {
   const collection = await getOrdersCollection();
   const $set: Record<string, unknown> = {};
@@ -236,9 +280,9 @@ export const updateOrderPrintifyOrder = async (
     }
 
     if (value === null) {
-      $unset[`printifyOrder.${key}`] = "";
+      $unset[`${field}.${key}`] = "";
     } else {
-      $set[`printifyOrder.${key}`] = value;
+      $set[`${field}.${key}`] = value;
     }
   }
 
@@ -254,6 +298,20 @@ export const updateOrderPrintifyOrder = async (
     },
   );
 };
+
+export const updateOrderPrintifyOrder = (
+  id: string,
+  patch: OrderPrintifyInfoPatch,
+): Promise<void> => patchNestedOrderFields(id, "printifyOrder", patch);
+
+export type OrderJetprintInfoPatch = {
+  [Key in keyof OrderJetprintInfo]?: OrderJetprintInfo[Key] | null;
+};
+
+export const updateOrderJetprintOrder = (
+  id: string,
+  patch: OrderJetprintInfoPatch,
+): Promise<void> => patchNestedOrderFields(id, "jetprintOrder", patch);
 
 export type OrderFulfillmentPatch = {
   [Key in keyof OrderFulfillmentProgress]?:

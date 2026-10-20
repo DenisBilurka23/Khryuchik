@@ -17,6 +17,7 @@ import {
   updateOrderPayment,
   updateOrderStatus,
 } from "@/server/orders/repositories/orders.repository";
+import { resolveJetprintLineItems } from "@/server/jetprint/line-items";
 import { retrieveStripeCheckoutSession } from "@/server/payments/stripe";
 import { resolvePrintifyLineItems } from "@/server/printify/line-items";
 import {
@@ -209,6 +210,15 @@ export const createOrder = async (
     );
   }
 
+  const jetprintLinkByItemId = await resolveJetprintLineItems(lineItems);
+
+  if (jetprintLinkByItemId === null) {
+    throw new OrderValidationError(
+      "No JetPrint variant matches the selected options",
+      "unsupported_variant",
+    );
+  }
+
   const orderItems: OrderItem[] = resolved.map((item) => ({
     productId: item.productId,
     slug: item.slug,
@@ -222,6 +232,7 @@ export const createOrder = async (
     quantity: item.quantity,
     lineTotal: roundToCents(item.price * item.quantity),
     printify: printifyResolution.linkByItemId.get(item.id),
+    jetprint: jetprintLinkByItemId.get(item.id),
   }));
 
   const fulfillmentType: OrderFulfillmentType = orderItems.every(

@@ -25,6 +25,7 @@ import { AdminReviewsField } from "../reviews-field";
 import { AdminProductFormHero } from "../form-hero";
 import {
   AdminProductBaseSection,
+  AdminProductJetprintSection,
   AdminProductLocaleSection,
   AdminProductPricingSection,
   AdminProductPrintifySection,
@@ -273,6 +274,16 @@ const AdminProductFormInner = ({
             onToggleRegionAction={toggleRegion}
             onToggleAllRegionsAction={toggleAllRegions}
           />
+
+          {selectedType === "merch" && !payload.product.printify ? (
+            <AdminProductJetprintSection
+              locale={locale}
+              productId={isNew ? undefined : payload.product.productId}
+              link={payload.product.jetprint}
+              sizes={payload.details.translations[defaultLocale]?.sizes ?? []}
+              colors={payload.details.translations[defaultLocale]?.colors ?? []}
+            />
+          ) : null}
 
           {payload.product.printify ? (
             <AdminProductPrintifySection

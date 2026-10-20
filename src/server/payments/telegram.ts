@@ -6,6 +6,7 @@ import type { ReviewDocument } from "@/types/reviews";
 import {
   formatCustomerName,
   getCountryDisplayName,
+  hasLiveJetprintOrder,
   hasLivePrintifyOrder,
   type RegionCode,
 } from "@/utils";
@@ -136,10 +137,89 @@ const buildRefundedOrderMessage = (order: OrderDocument): string => {
     hasLivePrintifyOrder(order)
       ? "\n🖐 Печать в Printify не отменена — заказ там всё ещё в работе"
       : "",
+    hasLiveJetprintOrder(order)
+      ? "\n🖐 Заказ в JetPrint не отменён — отмените его в админке, пока он не ушёл в производство"
+      : "",
   ]
     .filter((line) => line !== "")
     .join("\n");
 };
+
+const formatJetprintItems = (order: OrderDocument): string =>
+  order.items
+    .filter((item) => item.jetprint)
+    .map((item) => `• ${item.title} ×${item.quantity} — ${item.jetprint?.sku}`)
+    .join("\n");
+
+const buildJetprintSubmittedMessage = (
+  order: OrderDocument,
+  jetprintOrderNo: string,
+): string =>
+  [
+    `🏭 Заказ ${orderHeader(order.id)} ушёл в JetPrint`,
+    "",
+    `👤 ${formatCustomerName(order.customer)}`,
+    formatJetprintItems(order),
+    `Номер в JetPrint: ${jetprintOrderNo}`,
+    "",
+    "🖐 JetPrint пришлёт инвойс за заказы этого дня — печать начнётся после его оплаты",
+  ].join("\n");
+
+const buildJetprintFailureMessage = (
+  order: OrderDocument,
+  reason: string,
+): string =>
+  [
+    `⚠️ Заказ ${orderHeader(order.id)} не ушёл в JetPrint`,
+    "",
+    `👤 ${formatCustomerName(order.customer)}`,
+    `📍 ${formatAddress(order)}`,
+    "",
+    `Причина: ${reason}`,
+    "",
+    "🖐 Повторите отправку в админке: Заказы → «Отправить в JetPrint»",
+  ].join("\n");
+
+const buildJetprintCancelledMessage = (order: OrderDocument): string =>
+  [
+    `🚫 JetPrint отменил заказ ${orderHeader(order.id)}`,
+    "",
+    `👤 ${formatCustomerName(order.customer)}`,
+    `Номер в JetPrint: ${order.jetprintOrder?.orderNo ?? "—"}`,
+    `Сумма: ${order.total.toFixed(2)} ${order.currency}`,
+    "",
+    "🖐 Статус заказа на сайте не изменён — решение об отправке заново или возврате за вами",
+  ].join("\n");
+
+const buildJetprintUnknownStatusMessage = (
+  order: OrderDocument,
+  status: number,
+): string =>
+  [
+    `⚠️ JetPrint сообщает непонятный статус по заказу ${orderHeader(order.id)}`,
+    "",
+    `👤 ${formatCustomerName(order.customer)}`,
+    `Номер в JetPrint: ${order.jetprintOrder?.orderNo ?? "—"}`,
+    `Статус в JetPrint: ${status}`,
+    "",
+    "🖐 Статус заказа на сайте не изменён и письмо покупателю не ушло — уточните у поддержки JetPrint",
+  ].join("\n");
+
+const buildJetprintVariantUnavailableMessage = (
+  productTitle: string,
+  sku: string,
+  isRemoved: boolean,
+): string =>
+  [
+    `⚠️ Вариант товара «${productTitle}» недоступен в JetPrint`,
+    "",
+    `SKU: ${sku}`,
+    isRemoved
+      ? "JetPrint снял его с производства."
+      : "JetPrint не находит такой SKU — проверьте, не опечатка ли.",
+    "",
+    "🖐 Заказать этот вариант на сайте теперь нельзя — замените SKU или скройте товар",
+  ].join("\n");
 
 const buildPrintifyFailureMessage = (
   order: OrderDocument,
@@ -277,6 +357,42 @@ export const notifyAdminPrintifyOrderCancelled = (
   sendMessage(buildPrintifyCancelledMessage(order, status)).then(
     () => undefined,
   );
+
+export const notifyAdminJetprintOrderSubmitted = (
+  order: OrderDocument,
+  jetprintOrderNo: string,
+): Promise<void> =>
+  sendMessage(buildJetprintSubmittedMessage(order, jetprintOrderNo)).then(
+    () => undefined,
+  );
+
+export const notifyAdminJetprintOrderFailed = (
+  order: OrderDocument,
+  reason: string,
+): Promise<void> =>
+  sendMessage(buildJetprintFailureMessage(order, reason)).then(() => undefined);
+
+export const notifyAdminJetprintOrderCancelled = (
+  order: OrderDocument,
+): Promise<void> =>
+  sendMessage(buildJetprintCancelledMessage(order)).then(() => undefined);
+
+export const notifyAdminJetprintUnknownStatus = (
+  order: OrderDocument,
+  status: number,
+): Promise<void> =>
+  sendMessage(buildJetprintUnknownStatusMessage(order, status)).then(
+    () => undefined,
+  );
+
+export const notifyAdminJetprintVariantUnavailable = (
+  productTitle: string,
+  sku: string,
+  isRemoved: boolean,
+): Promise<void> =>
+  sendMessage(
+    buildJetprintVariantUnavailableMessage(productTitle, sku, isRemoved),
+  ).then(() => undefined);
 
 export const notifyAdminPrintifyShopDisconnected = (
   shopId: string,

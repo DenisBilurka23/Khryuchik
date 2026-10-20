@@ -27,7 +27,12 @@ import type {
   ProductTranslation,
 } from "@/types/catalog";
 
-import { formatCurrency, formatCustomerName, formatOrderNumber } from "@/utils";
+import {
+  formatCurrency,
+  formatCustomerName,
+  formatOrderNumber,
+  mergeJetprintLink,
+} from "@/utils";
 import {
   buildUniqueValue,
   createEmptyAdminProductPayload,
@@ -724,6 +729,25 @@ export const saveAdminProduct = async (payload: AdminProductPayload) => {
 
   if (sanitizedPayload.product.printify && previousProduct) {
     sanitizedPayload.product.inventory = previousProduct.inventory;
+  }
+
+  const jetprint = mergeJetprintLink(
+    sanitizedPayload.product.jetprint,
+    previousProduct?.jetprint,
+  );
+
+  if (jetprint) {
+    const mainImage =
+      sanitizedPayload.details.translations[defaultLocale]?.images[0];
+
+    sanitizedPayload.product.jetprint = {
+      ...jetprint,
+      previewFiles: mainImage?.src
+        ? [{ name: "preview", url: mainImage.src }]
+        : [],
+    };
+  } else {
+    delete sanitizedPayload.product.jetprint;
   }
 
   const removedObjectKeys = getRemovedObjectKeys({

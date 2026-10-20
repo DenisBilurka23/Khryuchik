@@ -10,7 +10,7 @@ import type { AdminOrderDeleteButtonProps } from "./types";
 export const AdminOrderDeleteButton = ({
   orderId,
   action,
-  disabledReason,
+  blocker,
   icon,
   iconOnly = true,
   size = "small",
@@ -18,6 +18,7 @@ export const AdminOrderDeleteButton = ({
   const tDelete = useTranslations("adminPage.orders.delete");
   const formRef = useRef<HTMLFormElement>(null);
   const label = tDelete("button");
+  const disabledReason = blocker ? tDelete(blocker) : undefined;
 
   const handleConfirm = () => {
     formRef.current?.requestSubmit();

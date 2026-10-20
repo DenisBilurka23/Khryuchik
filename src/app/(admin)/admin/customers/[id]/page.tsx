@@ -19,6 +19,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { deleteAdminOrderAction } from "@/app/(admin)/admin/actions";
 import {
   AdminOrderDeleteButton,
+  AdminOrderPaymentSummary,
   AdminOrderRefundButton,
   AdminOrderStatusSelect,
 } from "@/components/admin-orders-page-view";
@@ -39,7 +40,7 @@ import {
   formatDate,
   formatOrderNumber,
   formatPersonName,
-  hasLivePrintifyOrder,
+  getOrderDeleteBlocker,
   isRefundableOrder,
 } from "@/utils";
 import type { AdminPageDictionary } from "@/i18n/types";
@@ -89,14 +90,6 @@ const ViewAdminCustomerPage = async ({
   ]);
 
   const columns = tOrders.raw("columns") as OrderColumns;
-  const paymentMethodLabels = tOrders.raw("paymentMethodLabels") as Record<
-    string,
-    string
-  >;
-  const paymentStatusLabels = tOrders.raw("paymentStatusLabels") as Record<
-    string,
-    string
-  >;
 
   return (
     <Stack gap={3}>
@@ -195,27 +188,11 @@ const ViewAdminCustomerPage = async ({
                       {formatCurrency(order.total, locale, order.currency)}
                     </TableCell>
                     <TableCell>
-                      <Stack>
-                        <Typography variant="body2">
-                          {paymentMethodLabels[order.payment.method] ??
-                            order.payment.method}
-                        </Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {paymentStatusLabels[order.payment.status] ??
-                            order.payment.status}
-                        </Typography>
-                        {order.payment.refundedAmount !== undefined && (
-                          <Typography variant="caption" color="text.secondary">
-                            {tOrders("refundedAmountLabel", {
-                              amount: formatCurrency(
-                                order.payment.refundedAmount,
-                                locale,
-                                order.currency,
-                              ),
-                            })}
-                          </Typography>
-                        )}
-                      </Stack>
+                      <AdminOrderPaymentSummary
+                        payment={order.payment}
+                        locale={locale}
+                        currency={order.currency}
+                      />
                     </TableCell>
                     <TableCell>
                       <AdminOrderStatusSelect
@@ -237,11 +214,7 @@ const ViewAdminCustomerPage = async ({
                       <AdminOrderDeleteButton
                         orderId={order.id}
                         action={deleteAdminOrderAction}
-                        disabledReason={
-                          hasLivePrintifyOrder(order)
-                            ? tOrders("delete.blockedByPrintify")
-                            : undefined
-                        }
+                        blocker={getOrderDeleteBlocker(order)}
                         icon={
                           <DeleteOutlineOutlinedIcon key="delete-order-icon" />
                         }

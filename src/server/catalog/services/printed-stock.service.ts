@@ -59,6 +59,7 @@ const isShelfLine = (line: PrintedStockLine, product?: ProductDocument) =>
   !line.isDigital &&
   Boolean(line.language) &&
   !product?.printify &&
+  !product?.jetprint &&
   Boolean(product?.shipping);
 
 type ShelfGroup = {
@@ -198,7 +199,9 @@ const toOrderLines = (order: OrderDocument): PrintedStockLine[] =>
     productId: item.productId,
     quantity: item.quantity,
     isDigital:
-      Boolean(item.printify) || item.formatSelection === BOOK_FORMAT.digital,
+      Boolean(item.printify) ||
+      Boolean(item.jetprint) ||
+      item.formatSelection === BOOK_FORMAT.digital,
     language: item.languageSelection,
   }));
 
