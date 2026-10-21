@@ -154,8 +154,13 @@ const AdminProductFormInner = ({
       : payload.product.classification.category,
   );
 
+  const [isJetprintEnabled, setIsJetprintEnabled] = useState(
+    Boolean(payload.product.jetprint),
+  );
+
   const effectiveCategory =
     selectedType === "book" ? BOOKS_CATEGORY_KEY : selectedCategory;
+  const canUseJetprint = selectedType === "merch" && !payload.product.printify;
 
   const handleTypeChange = (nextType: ProductType) => {
     setSelectedType(nextType);
@@ -275,13 +280,13 @@ const AdminProductFormInner = ({
             onToggleAllRegionsAction={toggleAllRegions}
           />
 
-          {selectedType === "merch" && !payload.product.printify ? (
+          {canUseJetprint ? (
             <AdminProductJetprintSection
               locale={locale}
               productId={isNew ? undefined : payload.product.productId}
               link={payload.product.jetprint}
-              sizes={payload.details.translations[defaultLocale]?.sizes ?? []}
-              colors={payload.details.translations[defaultLocale]?.colors ?? []}
+              isEnabled={isJetprintEnabled}
+              onEnabledChangeAction={setIsJetprintEnabled}
             />
           ) : null}
 
@@ -308,6 +313,7 @@ const AdminProductFormInner = ({
               productId={isNew ? undefined : payload.product.productId}
               selectedType={selectedType}
               currencies={currencyCodes}
+              areOptionsLocked={canUseJetprint && isJetprintEnabled}
             />
           ))}
 

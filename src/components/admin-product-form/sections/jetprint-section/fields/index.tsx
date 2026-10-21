@@ -4,10 +4,15 @@ import { useState } from "react";
 import { Button, Typography } from "@mui/material";
 import { useTranslations } from "next-intl";
 
+import { jetprintBlankCatalog } from "@/data/jetprint-blank-catalog";
+import { resolveJetprintBlankId } from "@/utils";
+
+import { AdminJetprintBlankField } from "../blank-field";
 import { AdminJetprintFilesField } from "../files-field";
 import { useJetprintFileUploads } from "../hooks/useJetprintFileUploads";
 import { useJetprintPrintDesign } from "../hooks/useJetprintPrintDesign";
 import { AdminJetprintPrintEditor } from "../print-editor";
+import { toJetprintBlankOptions } from "../utils";
 import { AdminJetprintVariantsField } from "../variants-field";
 import type { AdminJetprintSectionFieldsProps } from "./types";
 
@@ -15,11 +20,13 @@ export const AdminJetprintSectionFields = ({
   locale,
   productId,
   link,
-  sizes,
-  colors,
 }: AdminJetprintSectionFieldsProps) => {
   const tJetprint = useTranslations("adminPage.productForm.jetprint");
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [blankId, setBlankId] = useState(
+    () => resolveJetprintBlankId(jetprintBlankCatalog, link) ?? "",
+  );
+  const blank = blankId ? jetprintBlankCatalog[blankId] : undefined;
   const { hiddenInputRef: printInputRef, ...printUploads } =
     useJetprintFileUploads({
       locale,
@@ -40,12 +47,21 @@ export const AdminJetprintSectionFields = ({
 
   return (
     <>
-      <AdminJetprintVariantsField
-        name="jetprint.variantsJson"
-        initialVariants={link?.variants ?? []}
-        sizes={sizes}
-        colors={colors}
+      <AdminJetprintBlankField
+        name="jetprint.blankId"
+        blanks={toJetprintBlankOptions(jetprintBlankCatalog)}
+        value={blankId}
+        onChangeAction={setBlankId}
       />
+
+      {blank ? (
+        <AdminJetprintVariantsField
+          key={blankId}
+          name="jetprint.skusJson"
+          blank={blank}
+          initialVariants={link?.variants ?? []}
+        />
+      ) : null}
 
       <input
         ref={designInputRef}

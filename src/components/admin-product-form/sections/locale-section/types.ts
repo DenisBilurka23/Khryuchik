@@ -17,4 +17,5 @@ export type AdminProductLocaleSectionProps = {
   productId?: string;
   selectedType: ProductType;
   currencies: CurrencyCode[];
+  areOptionsLocked: boolean;
 };

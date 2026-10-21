@@ -1,5 +1,5 @@
 import type { AdminJetprintVariantRow } from "../types";
 
 export type AdminJetprintVariantStatusProps = {
-  row: AdminJetprintVariantRow;
+  row: Pick<AdminJetprintVariantRow, "isAvailable" | "checkedAt">;
 };

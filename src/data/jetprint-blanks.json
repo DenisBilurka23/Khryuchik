@@ -3,6 +3,7 @@
     "name": "201. Kid's School Backpack",
     "productionDays": "5-7",
     "skus": { "D42-Default": { "weightGrams": 550 } },
+    "variants": [{ "sku": "D42-Default" }],
     "standardShipping": [
       {
         "name": "Other European Union Counties",
@@ -438,6 +439,6 @@
         "bands": [{ "minKg": 0.01, "maxKg": 10, "perKg": 13.49, "fee": 3.65 }]
       }
     ],
-    "importedAt": "2026-10-20"
+    "importedAt": "2026-10-21"
   }
 }

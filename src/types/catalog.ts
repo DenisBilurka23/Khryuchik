@@ -177,6 +177,7 @@ export type PrintDesign = {
 };
 
 export type ProductJetprintLink = {
+  blankId?: string;
   variants: JetprintVariantLink[];
   printFiles: JetprintFile[];
   previewFiles: JetprintFile[];
@@ -197,10 +198,18 @@ export type JetprintShippingGroup = {
   bands: JetprintShippingBand[];
 };
 
+export type JetprintBlankVariant = {
+  sku: string;
+  size?: string;
+  color?: string;
+  colorHex?: string;
+};
+
 export type JetprintBlank = {
   name: string;
   productionDays: string;
   skus: Record<string, { weightGrams: number }>;
+  variants: JetprintBlankVariant[];
   standardShipping: JetprintShippingGroup[];
   importedAt: string;
 };

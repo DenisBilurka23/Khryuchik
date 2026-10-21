@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Box,
   Checkbox,
@@ -19,11 +18,10 @@ export const AdminProductJetprintSection = ({
   locale,
   productId,
   link,
-  sizes,
-  colors,
+  isEnabled,
+  onEnabledChangeAction,
 }: AdminProductJetprintSectionProps) => {
   const tJetprint = useTranslations("adminPage.productForm.jetprint");
-  const [isEnabled, setIsEnabled] = useState(Boolean(link));
 
   return (
     <AdminSectionCard
@@ -37,7 +35,9 @@ export const AdminProductJetprintSection = ({
               <Checkbox
                 name="jetprint.enabled"
                 checked={isEnabled}
-                onChange={(event) => setIsEnabled(event.target.checked)}
+                onChange={(event) =>
+                  onEnabledChangeAction(event.target.checked)
+                }
               />
             }
             label={tJetprint("enabled")}
@@ -52,8 +52,6 @@ export const AdminProductJetprintSection = ({
             locale={locale}
             productId={productId}
             link={link}
-            sizes={sizes}
-            colors={colors}
           />
         ) : null}
       </Stack>

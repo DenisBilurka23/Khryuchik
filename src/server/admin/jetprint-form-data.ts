@@ -1,14 +1,19 @@
 import "server-only";
 
 import { PRINT_DESIGN_DEFAULT_DPI } from "@/constants/print-design";
-import { parseBoolean, parseJsonField } from "@/server/admin/form-fields";
+import { jetprintBlankCatalog } from "@/data/jetprint-blank-catalog";
+import {
+  parseBoolean,
+  parseJsonField,
+  parseOptionalString,
+} from "@/server/admin/form-fields";
 import type {
   JetprintFile,
-  JetprintVariantLink,
   PrintDesign,
   PrintDesignBox,
   ProductJetprintLink,
 } from "@/types/catalog";
+import { buildJetprintVariantLinks } from "@/utils";
 
 const readTrimmed = (value: unknown) =>
   typeof value === "string" ? value.trim() : "";
@@ -34,43 +39,20 @@ const parseJetprintFiles = (formData: FormData, key: string): JetprintFile[] =>
       : [];
   });
 
-const parseJetprintVariants = (formData: FormData): JetprintVariantLink[] => {
-  const seenSkus = new Set<string>();
+const parseJetprintBlankId = (formData: FormData) => {
+  const blankId = parseOptionalString(formData, "jetprint.blankId");
 
-  return parseJsonField<unknown[]>(
-    formData,
-    "jetprint.variantsJson",
-    [],
-  ).flatMap((entry) => {
-    if (!entry || typeof entry !== "object") {
-      return [];
-    }
-
-    const { sku, selections } = entry as Record<string, unknown>;
-    const trimmedSku = readTrimmed(sku);
-
-    if (!trimmedSku || seenSkus.has(trimmedSku)) {
-      return [];
-    }
-
-    seenSkus.add(trimmedSku);
-
-    const { size, color } = (selections ?? {}) as Record<string, unknown>;
-    const trimmedSize = readTrimmed(size);
-    const trimmedColor = readTrimmed(color);
-
-    return [
-      {
-        sku: trimmedSku,
-        selections: {
-          ...(trimmedSize ? { size: trimmedSize } : {}),
-          ...(trimmedColor ? { color: trimmedColor } : {}),
-        },
-        isAvailable: true,
-      },
-    ];
-  });
+  return blankId && jetprintBlankCatalog[blankId] ? blankId : undefined;
 };
+
+const parseJetprintSkus = (formData: FormData) =>
+  parseJsonField<unknown[]>(formData, "jetprint.skusJson", []).flatMap(
+    (sku) => {
+      const trimmed = readTrimmed(sku);
+
+      return trimmed ? [trimmed] : [];
+    },
+  );
 
 const readFiniteNumber = (value: unknown) =>
   typeof value === "number" && Number.isFinite(value) ? value : undefined;
@@ -179,9 +161,16 @@ export const parseProductJetprint = (
   }
 
   const printDesign = parseJetprintPrintDesign(formData);
+  const blankId = parseJetprintBlankId(formData);
 
   return {
-    variants: parseJetprintVariants(formData),
+    ...(blankId ? { blankId } : {}),
+    variants: blankId
+      ? buildJetprintVariantLinks(
+          jetprintBlankCatalog[blankId],
+          parseJetprintSkus(formData),
+        )
+      : [],
     printFiles: parseJetprintFiles(formData, "jetprint.printFilesJson"),
     previewFiles: [],
     ...(printDesign ? { printDesign } : {}),

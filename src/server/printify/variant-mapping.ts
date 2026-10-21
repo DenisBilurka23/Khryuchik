@@ -192,17 +192,6 @@ export const buildPrintifyProductOptions = (product: PrintifyProduct) => {
   return optionsByKey;
 };
 
-export const mergePrintifyProductOptions = (
-  next: ProductOption[],
-  current: ProductOption[] | undefined,
-): ProductOption[] => {
-  const currentByValue = new Map(
-    (current ?? []).map((option) => [option.value, option]),
-  );
-
-  return next.map((option) => currentByValue.get(option.value) ?? option);
-};
-
 export const findPrintifyVariant = (
   variants: PrintifyVariantLink[],
   selections: PrintifyVariantSelections,

@@ -28,11 +28,14 @@ import type {
   ProductTranslation,
 } from "@/types/catalog";
 
+import { jetprintBlankCatalog } from "@/data/jetprint-blank-catalog";
 import {
+  buildJetprintProductOptions,
   formatCurrency,
   formatCustomerName,
   formatOrderNumber,
   mergeJetprintLink,
+  mergeProductOptions,
 } from "@/utils";
 import {
   buildUniqueValue,
@@ -777,6 +780,32 @@ export const saveAdminProduct = async (payload: AdminProductPayload) => {
         ? [{ name: "preview", url: mainImage.src }]
         : [],
     };
+
+    const blank = jetprint.blankId
+      ? jetprintBlankCatalog[jetprint.blankId]
+      : undefined;
+
+    if (blank) {
+      const options = buildJetprintProductOptions(
+        blank,
+        jetprint.variants.map((variant) => variant.sku),
+      );
+
+      for (const translation of Object.values(
+        sanitizedPayload.details.translations,
+      )) {
+        if (translation) {
+          translation.sizes = mergeProductOptions(
+            options.sizes,
+            translation.sizes,
+          );
+          translation.colors = mergeProductOptions(
+            options.colors,
+            translation.colors,
+          );
+        }
+      }
+    }
   } else {
     delete sanitizedPayload.product.jetprint;
   }

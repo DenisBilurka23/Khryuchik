@@ -63,6 +63,8 @@ export { isDocumentFullscreen } from "./fullscreen";
 export { formatOrderNumber } from "./format-order-number";
 export {
   addDayRanges,
+  buildJetprintProductOptions,
+  buildJetprintVariantLinks,
   findJetprintBlankBySku,
   findJetprintVariant,
   getJetprintOrderStatusKey,
@@ -71,6 +73,7 @@ export {
   nextJetprintCustomerOrderNo,
   pickSlowestTransitDays,
   quoteJetprintShipping,
+  resolveJetprintBlankId,
   resolveNextJetprintOrderStatus,
   resolveSellableJetprintVariant,
   roundShippingCents,
@@ -159,6 +162,7 @@ export {
   resolveOptionPrice,
   toProductDetails,
 } from "./product";
+export { mergeProductOptions, toProductOptionValue } from "./product-options";
 export {
   createRobotsDisallowList,
   createSitemapEntry,

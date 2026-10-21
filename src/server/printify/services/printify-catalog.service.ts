@@ -20,6 +20,7 @@ import { uploadProductGalleryFiles } from "@/server/storage/r2-assets.service";
 import type { AdminPrintifyImportItem } from "@/types/admin";
 import type { ProductDocument, ProductPrintifyLink } from "@/types/catalog";
 import type { ProductImage } from "@/types/product-details";
+import { mergeProductOptions } from "@/utils";
 import { createEmptyAdminProductPayload } from "@/utils/admin";
 
 import { getPrintifyConfig } from "../client";
@@ -33,7 +34,6 @@ import {
   buildPrintifyProductOptions,
   buildPrintifyVariantLinks,
   getPrintifyBaseRetailCents,
-  mergePrintifyProductOptions,
 } from "../variant-mapping";
 
 const MAX_IMPORTED_IMAGES = 6;
@@ -385,11 +385,8 @@ export const syncPrintifyProduct = async (productId: string) => {
           locale,
           {
             ...translation,
-            sizes: mergePrintifyProductOptions(options.size, translation.sizes),
-            colors: mergePrintifyProductOptions(
-              options.color,
-              translation.colors,
-            ),
+            sizes: mergeProductOptions(options.size, translation.sizes),
+            colors: mergeProductOptions(options.color, translation.colors),
           },
         ]),
       ) as typeof details.translations,

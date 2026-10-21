@@ -1,24 +1,21 @@
-import type { JetprintVariantLink } from "@/types/catalog";
-import type { ProductOption } from "@/types/product-details";
+import type {
+  JetprintBlank,
+  JetprintBlankVariant,
+  JetprintVariantLink,
+} from "@/types/catalog";
 
-export type AdminJetprintVariantRow = {
-  id: string;
-  sku: string;
-  size: string;
-  color: string;
+export type AdminJetprintVariantRow = JetprintBlankVariant & {
   isAvailable?: boolean;
   checkedAt?: string;
 };
 
 export type AdminJetprintVariantsFieldProps = {
   name: string;
+  blank: JetprintBlank;
   initialVariants: JetprintVariantLink[];
-  sizes: ProductOption[];
-  colors: ProductOption[];
 };
 
 export type AdminJetprintVariantStatusKey =
   | "available"
   | "unavailable"
-  | "unchecked"
-  | "noShipping";
+  | "unchecked";

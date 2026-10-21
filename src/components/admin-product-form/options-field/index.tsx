@@ -3,16 +3,9 @@
 import { useState } from "react";
 import { Box, Chip, Stack, Typography } from "@mui/material";
 import type { ProductOptionPriceDelta } from "@/types/product-details";
+import { toProductOptionValue } from "@/utils";
 import { AdminOptionPriceDeltaField } from "../option-price-delta-field";
 import type { AdminOptionsFieldProps } from "./types";
-
-const toOptionValue = (label: string) =>
-  label
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9а-яё]+/gi, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
 
 export const AdminOptionsField = ({
   name,
@@ -22,6 +15,7 @@ export const AdminOptionsField = ({
   initialOptions,
   itemLabel,
   currencies,
+  isLocked = false,
 }: AdminOptionsFieldProps) => {
   const [options, setOptions] = useState(initialOptions);
   const [draftValue, setDraftValue] = useState("");
@@ -44,7 +38,7 @@ export const AdminOptionsField = ({
       return;
     }
 
-    const value = toOptionValue(label);
+    const value = toProductOptionValue(label);
 
     setOptions((currentOptions) => {
       if (
@@ -73,7 +67,7 @@ export const AdminOptionsField = ({
             .map((option) => ({
               ...option,
               label: option.label.trim(),
-              value: option.value.trim() || toOptionValue(option.label),
+              value: option.value.trim() || toProductOptionValue(option.label),
             }))
             .filter((option) => option.label && option.value),
         )}
@@ -108,11 +102,17 @@ export const AdminOptionsField = ({
             <Chip
               key={`${name}-${option.value}`}
               label={option.label}
-              onDelete={() => {
-                setOptions((currentOptions) =>
-                  currentOptions.filter((item) => item.value !== option.value),
-                );
-              }}
+              onDelete={
+                isLocked
+                  ? undefined
+                  : () => {
+                      setOptions((currentOptions) =>
+                        currentOptions.filter(
+                          (item) => item.value !== option.value,
+                        ),
+                      );
+                    }
+              }
               sx={{
                 borderRadius: "999px",
                 fontWeight: 600,
@@ -122,6 +122,7 @@ export const AdminOptionsField = ({
           ))}
           <Box
             component="input"
+            hidden={isLocked}
             value={draftValue}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setDraftValue(event.target.value);

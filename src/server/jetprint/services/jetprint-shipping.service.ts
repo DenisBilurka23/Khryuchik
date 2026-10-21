@@ -1,10 +1,9 @@
 import "server-only";
 
-import jetprintBlanks from "@/data/jetprint-blanks.json";
+import { jetprintBlankCatalog } from "@/data/jetprint-blank-catalog";
 import { findProductsByIds } from "@/server/catalog/repositories/products.repository";
 import type { CartSelections } from "@/types/cart";
 import type {
-  JetprintBlankCatalog,
   JetprintShippingQuote,
   JetprintShippingQuoteLine,
 } from "@/types/catalog";
@@ -15,8 +14,6 @@ export type JetprintShippingQuoteItem = {
   quantity: number;
   selections?: CartSelections;
 };
-
-const blankCatalog: JetprintBlankCatalog = jetprintBlanks;
 
 export const getJetprintShippingQuote = async (
   items: JetprintShippingQuoteItem[],
@@ -43,5 +40,5 @@ export const getJetprintShippingQuote = async (
     lines.push({ sku: variant.sku, quantity: item.quantity });
   }
 
-  return quoteJetprintShipping(lines, country, blankCatalog);
+  return quoteJetprintShipping(lines, country, jetprintBlankCatalog);
 };

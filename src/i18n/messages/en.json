@@ -2105,6 +2105,7 @@
         "storyProductId": "Pick the book or product that should supply the title and thumbnail for the story block.",
         "mediaRule": "The first image is used as the thumbnail. The rest become the gallery.",
         "optionsRule": "Type a value and press Enter.",
+        "jetprintOptionsRule": "Filled from the JetPrint variants when the product is saved. Only price adjustments can be set here.",
         "optionPriceDeltaRule": "Added to the base price in that currency when the value is selected. Leave empty when the value costs the same.",
         "languagesSelectRule": "Select the languages the book is written in.",
         "formatsRule": "Select the formats the book is available in.",
@@ -2203,22 +2204,24 @@
         "sectionTitle": "JetPrint",
         "sectionDescription": "Made to order at JetPrint. Orders go out automatically after payment, and shipping is priced at checkout from JetPrint's rates for the blank.",
         "enabled": "Fulfilled by JetPrint",
-        "enabledHelper": "Ask JetPrint support for the factory SKU of each variant — SKUs shown in the JetPrint dashboard do not work with the API.",
+        "enabledHelper": "The blank and its variants come from the import (npm run jetprint:blank). Before selling, ask JetPrint support to enable the blank for the API.",
+        "blankLabel": "Blank",
+        "blankPlaceholder": "Choose a blank",
+        "blankHelper": "Only imported blanks are listed. A developer adds new ones with the import script.",
         "variantsTitle": "Variants",
-        "variantsHelper": "Leave size and colour empty for a product without options. Otherwise enter the option values exactly as in the size and colour lists.",
+        "variantsHelper": "Variants, SKUs, sizes and colors come from the blank data. Untick what you don't sell.",
         "columns": {
+          "sell": "Sell",
           "sku": "Factory SKU",
           "size": "Size",
           "color": "Colour",
           "status": "Status"
         },
-        "addVariant": "Add variant",
-        "removeVariant": "Remove variant",
+        "emptyValue": "—",
         "variantStatus": {
           "available": "Active",
           "unavailable": "Unavailable at JetPrint",
-          "unchecked": "Not checked yet",
-          "noShipping": "No shipping data"
+          "unchecked": "Not checked yet"
         },
         "printFilesTitle": "Print files",
         "printFilesHelper": "PNG or JPEG made to the product's Design Template. Every order links to them, so replaced files stay in storage for orders already sent.",
@@ -2264,8 +2267,7 @@
           "dpiNormal": "Artwork resolution: about {dpi} DPI. JetPrint accepts it, but 150 DPI or more prints sharper. A larger artwork file would help.",
           "dpiBad": "Artwork resolution: about {dpi} DPI, below JetPrint's minimum of 100. The print will come out blurry; use a larger artwork file or make it smaller."
         },
-        "previewNote": "JetPrint also needs a preview of the finished product: the first image of the product gallery is sent automatically.",
-        "singleSkuHelper": "The factory SKU JetPrint support gave you for this product. Shipping is priced automatically from the blank's JetPrint rates."
+        "previewNote": "JetPrint also needs a preview of the finished product: the first image of the product gallery is sent automatically."
       },
       "shippingSectionTitle": "Shipping",
       "shippingSectionDescription": "Parcel size, customs data, and where each printed edition is stocked.",

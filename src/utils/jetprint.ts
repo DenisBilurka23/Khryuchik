@@ -15,6 +15,69 @@ import type {
   JetprintVariantSelections,
   ProductJetprintLink,
 } from "@/types/catalog";
+import type { ProductOption } from "@/types/product-details";
+
+import { toProductOptionValue } from "./product-options";
+
+const pickBlankVariants = (blank: JetprintBlank, skus: string[]) => {
+  const selected = new Set(skus);
+
+  return blank.variants.filter((variant) => selected.has(variant.sku));
+};
+
+const collectProductOptions = (labels: (string | undefined)[]) => {
+  const seen = new Set<string>();
+
+  return labels.flatMap<ProductOption>((label) => {
+    const value = label ? toProductOptionValue(label) : "";
+
+    if (!label || !value || seen.has(value)) {
+      return [];
+    }
+
+    seen.add(value);
+
+    return [{ label, value }];
+  });
+};
+
+export const buildJetprintVariantLinks = (
+  blank: JetprintBlank,
+  skus: string[],
+): JetprintVariantLink[] =>
+  pickBlankVariants(blank, skus).map((variant) => ({
+    sku: variant.sku,
+    selections: {
+      ...(variant.size ? { size: toProductOptionValue(variant.size) } : {}),
+      ...(variant.color ? { color: toProductOptionValue(variant.color) } : {}),
+    },
+    isAvailable: true,
+  }));
+
+export const buildJetprintProductOptions = (
+  blank: JetprintBlank,
+  skus: string[],
+) => {
+  const variants = pickBlankVariants(blank, skus);
+
+  return {
+    sizes: collectProductOptions(variants.map((variant) => variant.size)),
+    colors: collectProductOptions(variants.map((variant) => variant.color)),
+  };
+};
+
+export const resolveJetprintBlankId = (
+  catalog: JetprintBlankCatalog,
+  link: ProductJetprintLink | undefined,
+) => {
+  if (link?.blankId && catalog[link.blankId]) {
+    return link.blankId;
+  }
+
+  const sku = link?.variants[0]?.sku;
+
+  return sku ? findJetprintBlankBySku(catalog, sku)?.blankId : undefined;
+};
 
 export const findJetprintVariant = (
   variants: JetprintVariantLink[],
@@ -209,6 +272,7 @@ export const mergeJetprintLink = (
   });
 
   return {
+    ...(next.blankId ? { blankId: next.blankId } : {}),
     variants,
     printFiles: next.printFiles,
     previewFiles: next.previewFiles,

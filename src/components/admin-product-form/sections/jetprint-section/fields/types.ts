@@ -1,3 +1,6 @@
 import type { AdminProductJetprintSectionProps } from "../types";
 
-export type AdminJetprintSectionFieldsProps = AdminProductJetprintSectionProps;
+export type AdminJetprintSectionFieldsProps = Pick<
+  AdminProductJetprintSectionProps,
+  "locale" | "productId" | "link"
+>;

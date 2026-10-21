@@ -9,4 +9,5 @@ export type AdminOptionsFieldProps = {
   initialOptions: ProductOption[];
   itemLabel: string;
   currencies: CurrencyCode[];
+  isLocked?: boolean;
 };

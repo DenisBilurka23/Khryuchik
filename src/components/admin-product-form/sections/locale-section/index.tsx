@@ -34,8 +34,12 @@ export const AdminProductLocaleSection = ({
   productId,
   selectedType,
   currencies,
+  areOptionsLocked,
 }: AdminProductLocaleSectionProps) => {
   const tForm = useTranslations("adminPage.productForm");
+  const optionsHelperText = tForm(
+    areOptionsLocked ? "helpers.jetprintOptionsRule" : "helpers.optionsRule",
+  );
   const uploadStatusLabels = {
     pending: tForm("uploadStatus.pending"),
     uploading: tForm("uploadStatus.uploading"),
@@ -218,20 +222,22 @@ export const AdminProductLocaleSection = ({
               <AdminOptionsField
                 name={`${locale}.sizesJson`}
                 title={tForm("fields.sizes")}
-                helperText={tForm("helpers.optionsRule")}
+                helperText={optionsHelperText}
                 priceDeltaHelperText={tForm("helpers.optionPriceDeltaRule")}
                 initialOptions={details.sizes ?? []}
                 itemLabel={tForm("fields.sizes")}
                 currencies={currencies}
+                isLocked={areOptionsLocked}
               />
               <AdminOptionsField
                 name={`${locale}.colorsJson`}
                 title={tForm("fields.colors")}
-                helperText={tForm("helpers.optionsRule")}
+                helperText={optionsHelperText}
                 priceDeltaHelperText={tForm("helpers.optionPriceDeltaRule")}
                 initialOptions={details.colors ?? []}
                 itemLabel={tForm("fields.colors")}
                 currencies={currencies}
+                isLocked={areOptionsLocked}
               />
             </Box>
           )}

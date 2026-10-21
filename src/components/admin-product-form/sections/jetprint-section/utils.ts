@@ -1,7 +1,12 @@
 import type { AdminStatusChipTone } from "@/components/admin-page-shared";
-import type { JetprintVariantLink, PrintDesign } from "@/types/catalog";
-import type { ProductOption } from "@/types/product-details";
+import type {
+  JetprintBlank,
+  JetprintBlankCatalog,
+  JetprintVariantLink,
+  PrintDesign,
+} from "@/types/catalog";
 
+import type { AdminJetprintBlankOption } from "./blank-field/types";
 import type { JetprintFileUploadStatus } from "./hooks/useJetprintFileUploads.types";
 import type { EditablePrintDesign } from "./print-editor/types";
 import type {
@@ -68,60 +73,48 @@ export const getJetprintFileStatusColor = (status: JetprintFileUploadStatus) =>
       ? "success.main"
       : "text.secondary";
 
+export const toJetprintBlankOptions = (
+  catalog: JetprintBlankCatalog,
+): AdminJetprintBlankOption[] =>
+  Object.entries(catalog).map(([id, blank]) => ({ id, name: blank.name }));
+
 export const toJetprintVariantRows = (
-  variants: JetprintVariantLink[],
-): AdminJetprintVariantRow[] =>
-  variants.map((variant) => ({
-    id: variant.sku,
-    sku: variant.sku,
-    size: variant.selections.size ?? "",
-    color: variant.selections.color ?? "",
-    isAvailable: variant.isAvailable,
-    checkedAt: variant.checkedAt,
-  }));
-
-export const createJetprintVariantRow = (
-  size = "",
-  color = "",
-): AdminJetprintVariantRow => ({
-  id: crypto.randomUUID(),
-  sku: "",
-  size,
-  color,
-});
-
-export const buildJetprintOptionRows = (
-  sizes: ProductOption[],
-  colors: ProductOption[],
+  blank: JetprintBlank,
+  savedVariants: JetprintVariantLink[],
 ): AdminJetprintVariantRow[] => {
-  const sizeValues = sizes.length > 0 ? sizes.map(({ value }) => value) : [""];
-  const colorValues =
-    colors.length > 0 ? colors.map(({ value }) => value) : [""];
-
-  return sizeValues.flatMap((size) =>
-    colorValues.map((color) => createJetprintVariantRow(size, color)),
+  const savedBySku = new Map(
+    savedVariants.map((variant) => [variant.sku, variant]),
   );
+
+  return blank.variants.map((variant) => {
+    const saved = savedBySku.get(variant.sku);
+
+    return {
+      ...variant,
+      ...(saved ? { isAvailable: saved.isAvailable } : {}),
+      ...(saved?.checkedAt ? { checkedAt: saved.checkedAt } : {}),
+    };
+  });
 };
 
-export const serializeJetprintVariantRows = (rows: AdminJetprintVariantRow[]) =>
-  JSON.stringify(
-    rows.map(({ sku, size, color }) => ({
-      sku,
-      selections: { size, color },
-    })),
-  );
+export const getInitialJetprintSkus = (
+  blank: JetprintBlank,
+  savedVariants: JetprintVariantLink[],
+) => {
+  const saved = new Set(savedVariants.map((variant) => variant.sku));
+  const kept = blank.variants
+    .map((variant) => variant.sku)
+    .filter((sku) => saved.has(sku));
+
+  return kept.length > 0 ? kept : blank.variants.map((variant) => variant.sku);
+};
 
 export const getJetprintVariantStatus = (
-  row: AdminJetprintVariantRow,
-  hasShippingData: boolean,
+  row: Pick<AdminJetprintVariantRow, "isAvailable" | "checkedAt">,
 ): {
   key: AdminJetprintVariantStatusKey;
   tone: AdminStatusChipTone;
 } => {
-  if (row.sku.trim() && !hasShippingData) {
-    return { key: "noShipping", tone: "warning" };
-  }
-
   if (row.isAvailable === false) {
     return { key: "unavailable", tone: "warning" };
   }
