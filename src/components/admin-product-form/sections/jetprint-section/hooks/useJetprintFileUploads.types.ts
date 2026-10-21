@@ -27,7 +27,7 @@ export type UseJetprintFileUploadsResult = {
   stored: JetprintFile[];
   pending: JetprintFileUploadItem[];
   hiddenInputRef: RefObject<HTMLInputElement | null>;
-  initialValue: string;
+  value: string;
   addFiles: (files: File[]) => void;
   replaceFiles: (files: File[]) => void;
   removeStored: (url: string) => void;

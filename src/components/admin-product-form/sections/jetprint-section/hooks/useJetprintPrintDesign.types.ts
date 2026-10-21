@@ -15,5 +15,5 @@ export type UseJetprintPrintDesignResult = {
   design: EditablePrintDesign | null;
   setDesign: (design: EditablePrintDesign) => void;
   hiddenInputRef: RefObject<HTMLInputElement | null>;
-  initialValue: string;
+  value: string;
 };

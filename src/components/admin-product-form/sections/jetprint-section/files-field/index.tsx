@@ -34,14 +34,8 @@ export const AdminJetprintFilesField = ({
   actions,
 }: AdminJetprintFilesFieldProps) => {
   const tJetprint = useTranslations("adminPage.productForm.jetprint");
-  const {
-    stored,
-    pending,
-    initialValue,
-    addFiles,
-    removeStored,
-    removePending,
-  } = uploads;
+  const { stored, pending, value, addFiles, removeStored, removePending } =
+    uploads;
 
   const describeStatus = (item: JetprintFileUploadItem) =>
     item.status === "uploading"
@@ -67,12 +61,7 @@ export const AdminJetprintFilesField = ({
 
   return (
     <Stack gap={1.5}>
-      <input
-        ref={inputRef}
-        type="hidden"
-        name={name}
-        defaultValue={initialValue}
-      />
+      <input ref={inputRef} type="hidden" name={name} defaultValue={value} />
 
       <Box>
         <Typography variant="subtitle1" sx={{ fontWeight: 800 }}>

@@ -104,6 +104,6 @@ export const useJetprintPrintDesign = ({
     design,
     setDesign: commit,
     hiddenInputRef,
-    initialValue: serializePrintDesign(toEditablePrintDesign(initialDesign)),
+    value: serializePrintDesign(design),
   };
 };

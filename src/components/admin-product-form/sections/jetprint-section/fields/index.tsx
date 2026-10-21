@@ -30,7 +30,7 @@ export const AdminJetprintSectionFields = ({
     design,
     setDesign,
     hiddenInputRef: designInputRef,
-    initialValue: designInitialValue,
+    value: designValue,
   } = useJetprintPrintDesign({
     locale,
     productId,
@@ -51,7 +51,7 @@ export const AdminJetprintSectionFields = ({
         ref={designInputRef}
         type="hidden"
         name="jetprint.printDesignJson"
-        defaultValue={designInitialValue}
+        defaultValue={designValue}
       />
 
       <AdminJetprintFilesField

@@ -117,7 +117,7 @@ export const useJetprintFileUploads = ({
     stored,
     pending,
     hiddenInputRef,
-    initialValue: serializeFiles(existingFiles, []),
+    value: serializeFiles(stored, pending),
     addFiles: (files) =>
       commit(storedRef.current, [
         ...pendingRef.current,
