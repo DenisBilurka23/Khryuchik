@@ -1,5 +1,7 @@
 export const ORPHAN_MIN_AGE_MS = 24 * 60 * 60 * 1000;
 
+export const SIGNED_FILE_LINK_TTL_SECONDS = 10 * 60;
+
 export const ORPHAN_REPORT_SAMPLE_SIZE = 50;
 
 export const ORPHAN_SWEEP_PREFIXES = {

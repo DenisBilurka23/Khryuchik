@@ -1,0 +1,13 @@
+{
+  "name": "khryuchik-files",
+  "main": "index.ts",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "files.khryuchik.com", "custom_domain": true }],
+  "r2_buckets": [
+    { "binding": "PUBLIC_FILES", "bucket_name": "khryuchik-public" },
+    { "binding": "PRIVATE_FILES", "bucket_name": "khryuchik-private" }
+  ],
+  "observability": { "enabled": true }
+}

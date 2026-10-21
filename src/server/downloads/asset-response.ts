@@ -6,12 +6,28 @@ import {
   getPublicObject,
   type R2BucketKind,
 } from "@/server/storage/r2";
+import { buildAttachmentDisposition } from "@/utils";
 import type { PurchasedAsset } from "./downloads.service";
+import { createFilesWorkerUrl, getFilesWorkerConfig } from "./files-worker";
+
+const NO_STORE = "private, no-store";
 
 export const buildAssetDownloadResponse = async (
   asset: PurchasedAsset,
   bucket: R2BucketKind = "private",
 ) => {
+  const filesWorker = getFilesWorkerConfig();
+
+  if (filesWorker) {
+    return new NextResponse(null, {
+      status: 302,
+      headers: {
+        Location: await createFilesWorkerUrl(filesWorker, asset, bucket),
+        "Cache-Control": NO_STORE,
+      },
+    });
+  }
+
   let r2Response;
 
   try {
@@ -29,16 +45,11 @@ export const buildAssetDownloadResponse = async (
   const stream = r2Response.Body.transformToWebStream();
   const contentType =
     asset.contentType ?? r2Response.ContentType ?? "application/octet-stream";
-  const fallbackName = asset.fileName.replace(/[^\x20-\x7E]|["\\]/g, "_");
-  const encodedName = encodeURIComponent(asset.fileName).replace(
-    /['()*]/g,
-    (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
-  );
 
   const headers: Record<string, string> = {
     "Content-Type": contentType,
-    "Content-Disposition": `attachment; filename="${fallbackName}"; filename*=UTF-8''${encodedName}`,
-    "Cache-Control": "private, no-store",
+    "Content-Disposition": buildAttachmentDisposition(asset.fileName),
+    "Cache-Control": NO_STORE,
   };
 
   if (r2Response.ContentLength) {

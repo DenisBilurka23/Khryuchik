@@ -38,3 +38,17 @@ export type ProductPurchaseContext = {
   ownedLanguages: string[];
   hasDeliveredPurchase: boolean;
 };
+
+export type SignedFileBucket = "public" | "private";
+
+export type SignedFile = {
+  bucket: SignedFileBucket;
+  objectKey: string;
+  fileName: string;
+  contentType?: string;
+  expiresAtSeconds: number;
+};
+
+export type SignedFileCheck =
+  | { ok: true; file: SignedFile }
+  | { ok: false; reason: "invalid" | "expired" };

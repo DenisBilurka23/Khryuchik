@@ -36,6 +36,7 @@ export {
   isSupportedTimeZone,
 } from "./format-date";
 export { getCountLabel } from "./count-label";
+export { buildAttachmentDisposition } from "./content-disposition";
 export { delay } from "./delay";
 export { getDownloadMeta } from "./download";
 export {
@@ -164,6 +165,7 @@ export {
   normalizeOrigin,
 } from "./seo";
 export { isQuotableShippingAddress } from "./shipping-address";
+export { createSignedFileUrl, readSignedFileUrl } from "./signed-file-url";
 export {
   buildProductVariantMatrix,
   filterOfferedVariantOptions,

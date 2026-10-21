@@ -1,6 +1,6 @@
 import { ObjectId, type WithId } from "mongodb";
 import { NextRequest } from "next/server";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/server/entertainment/repositories/entertainment.repository", () => ({
@@ -16,6 +16,10 @@ import { buildAssetDownloadResponse } from "@/server/downloads/asset-response";
 import { findEntertainmentItemBySlug } from "@/server/entertainment/repositories/entertainment.repository";
 import { getPrivateObject, getPublicObject } from "@/server/storage/r2";
 import type { EntertainmentItemDocument } from "@/types/entertainment";
+import { readSignedFileUrl } from "@/utils";
+
+const filesBaseUrl = "https://files.example.com";
+const filesSecret = "test-files-secret";
 
 const pdf = "%PDF-1.7\ncoloring pages";
 const item: WithId<EntertainmentItemDocument> = {
@@ -57,10 +61,32 @@ const download = () =>
 
 beforeEach(() => {
   vi.resetAllMocks();
+  vi.stubEnv("FILES_BASE_URL", "");
+  vi.stubEnv("FILES_SIGNING_SECRET", "");
   vi.mocked(findEntertainmentItemBySlug).mockResolvedValue(item);
   vi.mocked(getPublicObject).mockResolvedValue(storedPdf());
   vi.mocked(getPrivateObject).mockResolvedValue(storedPdf());
 });
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
+
+const useFilesWorker = () => {
+  vi.stubEnv("FILES_BASE_URL", filesBaseUrl);
+  vi.stubEnv("FILES_SIGNING_SECRET", filesSecret);
+};
+
+const readRedirect = async (response: Response) => {
+  const location = response.headers.get("location");
+
+  if (!location) throw new Error("Expected a redirect location");
+
+  return {
+    location,
+    link: await readSignedFileUrl(new URL(location), filesSecret),
+  };
+};
 
 describe("entertainment downloads", () => {
   it("streams the public PDF as an attachment with its original name and bytes", async () => {
@@ -145,5 +171,53 @@ describe("entertainment downloads", () => {
     expect(response.status).toBe(200);
     expect(getPrivateObject).toHaveBeenCalledWith(item.media.objectKey);
     expect(getPublicObject).not.toHaveBeenCalled();
+  });
+});
+
+describe("downloads through the files worker", () => {
+  it("redirects to a signed public link instead of streaming the file", async () => {
+    useFilesWorker();
+    const before = Math.floor(Date.now() / 1000);
+
+    const response = await download();
+    const { location, link } = await readRedirect(response);
+
+    expect(response.status).toBe(302);
+    expect(response.headers.get("cache-control")).toContain("no-store");
+    expect(location.startsWith(`${filesBaseUrl}/public/entertainment/`)).toBe(
+      true,
+    );
+    expect(link.ok).toBe(true);
+    if (!link.ok) return;
+    expect(link.file).toMatchObject({
+      bucket: "public",
+      objectKey: "entertainment/coloring/files/coloring.pdf",
+      fileName: "coloring.pdf",
+      contentType: "application/pdf",
+    });
+    expect(link.file.expiresAtSeconds - before).toBeGreaterThanOrEqual(600);
+    expect(link.file.expiresAtSeconds - before).toBeLessThanOrEqual(601);
+    expect(getPublicObject).not.toHaveBeenCalled();
+  });
+
+  it("signs purchased downloads for the private bucket", async () => {
+    useFilesWorker();
+    if (item.media.type !== "download") throw new Error("Expected a download");
+
+    const response = await buildAssetDownloadResponse(item.media);
+    const { link } = await readRedirect(response);
+
+    expect(response.status).toBe(302);
+    expect(link.ok && link.file.bucket).toBe("private");
+    expect(getPrivateObject).not.toHaveBeenCalled();
+  });
+
+  it("keeps streaming when only part of the worker settings is present", async () => {
+    vi.stubEnv("FILES_BASE_URL", filesBaseUrl);
+
+    const response = await download();
+
+    expect(response.status).toBe(200);
+    expect(getPublicObject).toHaveBeenCalled();
   });
 });
