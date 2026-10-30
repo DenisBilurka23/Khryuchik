@@ -51,9 +51,8 @@ const getOrdersCollection = async () => {
         { "items.jetprint.printFiles.url": 1 },
         { sparse: true },
       ),
-    ]).catch((error) => {
+    ]).catch(() => {
       ordersIndexesPromise = null;
-      throw error;
     });
   }
 

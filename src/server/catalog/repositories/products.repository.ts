@@ -31,9 +31,8 @@ const getProductsCollection = async () => {
         availableRegions: 1,
         "merchandising.sortOrder": 1,
       }),
-    ]).catch((error) => {
+    ]).catch(() => {
       productsIndexesPromise = null;
-      throw error;
     });
   }
 

@@ -16,9 +16,8 @@ const getReviewsCollection = async () => {
       collection.createIndex({ productId: 1, status: 1 }),
       collection.createIndex({ userId: 1, productId: 1 }),
       collection.createIndex({ createdAt: -1 }),
-    ]).catch((error) => {
+    ]).catch(() => {
       reviewsIndexesPromise = null;
-      throw error;
     });
   }
 

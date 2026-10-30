@@ -2,6 +2,8 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 
+import * as Sentry from "@sentry/nextjs";
+
 import { resolveCartItems } from "@/server/catalog/services/catalog.service";
 import {
   applyOrderPrintedStock,
@@ -421,7 +423,11 @@ export const confirmOrderFromStripeSession = async (
     await applyOrderPrintedStock(updatedOrder);
 
     void notifyAdminOrderPaid(updatedOrder);
-    void sendOrderConfirmationEmail(updatedOrder);
+    void sendOrderConfirmationEmail(updatedOrder).catch((error) => {
+      Sentry.captureException(error, {
+        tags: { operation: "order_confirmation_email" },
+      });
+    });
 
     return updatedOrder;
   }

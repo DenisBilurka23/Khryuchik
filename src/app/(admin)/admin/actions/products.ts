@@ -1,5 +1,6 @@
 "use server";
 
+import * as Sentry from "@sentry/nextjs";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -78,7 +79,11 @@ export const saveAdminProductAction = async (formData: FormData) => {
     const saved = await saveAdminProduct(payload);
     const { status } = saved.product;
     if (status.isActive && status.visibleInShop && status.notifySubscribers) {
-      void announceNewProduct(saved.product);
+      void announceNewProduct(saved.product).catch((error) => {
+        Sentry.captureException(error, {
+          tags: { operation: "announce_new_product" },
+        });
+      });
     }
 
     revalidateProductDependentPaths(payload.product.slug);

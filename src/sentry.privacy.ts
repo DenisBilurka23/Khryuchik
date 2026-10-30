@@ -6,7 +6,7 @@ export const sentryDataCollection: NonNullable<
 > = {
   userInfo: false,
   cookies: false,
-  httpHeaders: false,
+  httpHeaders: { request: { allow: ["user-agent"] }, response: false },
   httpBodies: [],
   urlQueryParams: false,
   databaseQueryData: false,
@@ -24,13 +24,27 @@ const redactErrorText = (value: string) =>
     .replace(emailPattern, "[redacted email]")
     .replace(secretPattern, "[redacted token]");
 
+const pickUserAgentHeader = (headers: Record<string, string> | undefined) => {
+  const userAgent = Object.entries(headers ?? {}).find(
+    ([key]) => key.toLowerCase() === "user-agent",
+  )?.[1];
+
+  return userAgent ? { "User-Agent": userAgent } : undefined;
+};
+
 export const scrubSentryError = (event: ErrorEvent): ErrorEvent => {
+  const userAgentHeader = pickUserAgentHeader(event.request?.headers);
+
   delete event.request;
   delete event.user;
   delete event.extra;
   delete event.breadcrumbs;
   delete event.contexts;
   delete event.server_name;
+
+  if (userAgentHeader) {
+    event.request = { headers: userAgentHeader };
+  }
 
   if (event.message) {
     event.message = redactErrorText(event.message);
