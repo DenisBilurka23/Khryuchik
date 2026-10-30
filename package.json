@@ -24,6 +24,7 @@
     "printify:publish": "node --env-file=.env.local --import tsx ./scripts/printify-publish.ts",
     "printify:webhooks": "node --env-file=.env.local --import tsx ./scripts/printify-webhooks.ts",
     "jetprint:blank": "node --import tsx ./scripts/jetprint-blank-import.ts",
+    "jetprint:product": "node --env-file=.env.local --import tsx ./scripts/jetprint-product-import.ts",
     "files:login": "npx --yes wrangler@4.148.0 login",
     "files:deploy": "npx --yes wrangler@4.148.0 deploy --config workers/files/wrangler.json",
     "files:secret": "npx --yes wrangler@4.148.0 secret put FILES_SIGNING_SECRET --config workers/files/wrangler.json",
@@ -66,6 +67,7 @@
     "eslint-config-next": "16.2.1",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.1",
+    "sharp": "^0.34.5",
     "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^5.0.2"

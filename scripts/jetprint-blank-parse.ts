@@ -37,7 +37,12 @@ type RawSkuMap = {
 
 export type RawJetprintBlank = {
   id: number;
-  blankProductInfo: { model: string; productionTime: string };
+  blankProductInfo: {
+    model: string;
+    productionTime: string;
+    designTemplateUrl?: string;
+    printAreaSize?: string;
+  };
   skuInfos: { id: number; skuName: string; weight: number }[];
   skuTrees?: RawSkuTreeNode[];
   skuMaps?: RawSkuMap[];
