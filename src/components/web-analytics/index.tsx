@@ -1,17 +1,50 @@
-import Script from "next/script";
+import {
+  getClarityProjectId,
+  getCloudflareAnalyticsToken,
+  getGoogleAnalyticsId,
+  requiresRequestAnalyticsConsent,
+} from "@/server/analytics/analytics-config";
+import { getLocalizedPath } from "@/utils";
 
-export const WebAnalytics = () => {
-  const token = process.env.CLOUDFLARE_ANALYTICS_TOKEN;
+import { CloudflareBeacon } from "./cloudflare-beacon";
+import { AnalyticsConsentBanner } from "./consent-banner";
+import { GoogleAnalytics } from "./google-analytics";
+import { MicrosoftClarity } from "./microsoft-clarity";
+import type { WebAnalyticsProps } from "./types";
 
-  if (!token || process.env.NODE_ENV !== "production") {
-    return null;
-  }
+export const WebAnalytics = async ({ locale }: WebAnalyticsProps) => {
+  const cloudflareToken = getCloudflareAnalyticsToken();
+  const measurementId = getGoogleAnalyticsId();
+  const clarityProjectId = getClarityProjectId();
+  const needsConsentChoice =
+    measurementId !== null || clarityProjectId !== null;
+  const requiresConsent = needsConsentChoice
+    ? await requiresRequestAnalyticsConsent()
+    : false;
 
   return (
-    <Script
-      src="https://static.cloudflareinsights.com/beacon.min.js"
-      strategy="afterInteractive"
-      data-cf-beacon={JSON.stringify({ token })}
-    />
+    <>
+      {cloudflareToken ? <CloudflareBeacon token={cloudflareToken} /> : null}
+      {measurementId ? (
+        <GoogleAnalytics
+          measurementId={measurementId}
+          requiresConsent={requiresConsent}
+        />
+      ) : null}
+      {clarityProjectId ? (
+        <MicrosoftClarity
+          projectId={clarityProjectId}
+          requiresConsent={requiresConsent}
+        />
+      ) : null}
+      {needsConsentChoice ? (
+        <AnalyticsConsentBanner
+          requiresConsent={requiresConsent}
+          privacyHref={getLocalizedPath(locale, "/privacy")}
+        />
+      ) : null}
+    </>
   );
 };
+
+export type { WebAnalyticsProps } from "./types";

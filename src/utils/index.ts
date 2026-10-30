@@ -1,3 +1,16 @@
+export {
+  buildClaritySnippet,
+  buildGoogleTagSnippet,
+  clearGoogleAnalyticsCookies,
+  getClarityTagSrc,
+  getGoogleTagSrc,
+  isAnalyticsAllowed,
+  isAnalyticsConsentCountry,
+  isAnalyticsConsentStatus,
+  toCartAnalytics,
+  toProductAnalytics,
+  toPurchaseAnalytics,
+} from "./analytics";
 export { clampCartItemQuantity, isCartItemQuantity } from "./cart";
 export { isLocalizedCategory, localizeCategory } from "./category";
 export {

@@ -32,6 +32,7 @@ import { AccountAvatarUploadField, SidebarItem } from "../shared";
 import { useProfileEditor } from "@/hooks/useProfileEditor";
 import { useShippingAddressSelection } from "@/hooks/useShippingAddressSelection";
 import { accountSectionKeys, accountSidebarConfig } from "@/constants/account";
+import { CLARITY_MASK_PROPS } from "@/constants/analytics";
 import { ACCOUNT_RECENT_ORDERS_LIMIT } from "@/constants/order";
 import { secondaryButtonSx } from "@/theme/sx";
 import { FALLBACK_TIME_ZONE } from "@/utils";
@@ -290,7 +291,7 @@ export const AccountPageView = ({
   };
 
   return (
-    <Box sx={{ py: { xs: 4, md: 6 } }}>
+    <Box {...CLARITY_MASK_PROPS} sx={{ py: { xs: 4, md: 6 } }}>
       <Grid container spacing={3.5}>
         <Grid
           size={{ xs: 12, md: 4, lg: 3.5 }}

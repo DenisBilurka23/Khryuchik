@@ -26,6 +26,13 @@
       "addedToCart": "Added to cart",
       "maxQuantityReached": "Maximum {count} per item in the cart"
     },
+    "analyticsConsent": {
+      "title": "Cookies for analytics",
+      "text": "With your permission, we use Google Analytics and Microsoft Clarity to see which pages people visit, how they move around them, including recordings of taps and scrolling, and where the site could be easier to use. No ads, and you can change your choice any time in the footer.",
+      "privacyLink": "Privacy Policy",
+      "accept": "Accept",
+      "decline": "Decline"
+    },
     "userMenu": {
       "account": "Account",
       "signIn": "Sign in"
@@ -638,7 +645,7 @@
       "eyebrow": "Legal",
       "title": "Privacy Policy",
       "updatedLabel": "Last updated:",
-      "updatedDate": "July 7, 2026",
+      "updatedDate": "October 30, 2026",
       "intro": "This Privacy Policy explains what personal data Khryuchik collects when you use this website, why we collect it, and the choices and rights you have.",
       "sections": [
         {
@@ -653,7 +660,9 @@
             "Account data: name, email address, and password (stored securely hashed) if you register, or your name and email from Google if you sign in with Google.",
             "Order data: shipping address, contact details, order contents, and order status, needed to fulfill and support your purchase.",
             "Payment data: handled directly by Stripe. We never see or store your full card number; we only receive confirmation that a payment succeeded or failed.",
-            "Technical data: your selected country and language preference, stored in cookies, and basic request information needed to keep the site secure and functioning."
+            "Technical data: your selected country and language preference, stored in cookies, and basic request information needed to keep the site secure and functioning.",
+            "Usage data: when analytics is on, Google Analytics records which pages you visit and in what order, the products you view and add to your cart, and completed purchases, together with your approximate location, device, and browser. We do not send your name, email, or address to Google Analytics.",
+            "Interaction data: when analytics is on, Microsoft Clarity records how you use pages, such as taps, clicks, scrolling, and mouse movement, as session recordings and heatmaps. Anything you type into forms is masked, and the checkout and account pages are masked in full, so your name, address, and other personal details are not recorded."
           ]
         },
         {
@@ -666,6 +675,8 @@
           "heading": "Who we share data with",
           "paragraphs": [
             "Stripe, to process payments. Google, if you choose to sign in with your Google account. Our email provider, to send transactional emails such as order confirmations and password resets.",
+            "Google, as the provider of Google Analytics, to measure how the website is used. Advertising features and Google signals are turned off, so this data is not used for ads.",
+            "Microsoft, as the provider of Microsoft Clarity, to understand how pages are used. Advertising storage is turned off, so this data is not used for ads.",
             "We also receive an internal notification in a private Telegram chat when a new order is placed, so we can fulfill it promptly — this is for our own order handling only and is not used for marketing.",
             "We do not sell your personal data, and we do not share it with advertisers."
           ]
@@ -673,19 +684,22 @@
         {
           "heading": "Cookies",
           "paragraphs": [
-            "We use essential cookies only: to keep you signed in, to remember your selected country and language, and to keep your shopping cart working. We do not use third-party advertising or tracking cookies at this time."
+            "We use essential cookies and browser storage to keep you signed in, to remember your selected country and language, to keep your shopping cart working, and to remember your analytics choice. These do not require consent.",
+            "We also use Google Analytics cookies (_ga and _ga_*) and Microsoft Clarity cookies (_clck and _clsk) to understand how visitors use the site. In the EU, the EEA, the UK, and Canada we set them only after you accept them in the cookie banner; elsewhere they are on by default. Wherever you are, you can accept or decline them at any time through \"Cookie settings\" in the footer, and declining removes them. We do not use advertising cookies."
           ]
         },
         {
           "heading": "Data retention",
           "paragraphs": [
-            "We keep order and account data for as long as needed to fulfill orders, handle returns, and meet any applicable tax or accounting record-keeping requirements, after which it is deleted or anonymized."
+            "We keep order and account data for as long as needed to fulfill orders, handle returns, and meet any applicable tax or accounting record-keeping requirements, after which it is deleted or anonymized.",
+            "Google Analytics data is kept for 14 months and then deleted automatically.",
+            "Microsoft Clarity keeps session recordings for 30 days, or up to 13 months for recordings we save for review, and aggregated reports for up to 13 months."
           ]
         },
         {
           "heading": "International data transfers",
           "paragraphs": [
-            "Some of our service providers (such as Stripe, Google, and our database and hosting infrastructure) may process data outside your country of residence. Where required, we rely on the safeguards these providers offer for cross-border transfers."
+            "Some of our service providers (such as Stripe, Google, Microsoft, and our database and hosting infrastructure) may process data outside your country of residence. Where required, we rely on the safeguards these providers offer for cross-border transfers."
           ]
         },
         {
@@ -1034,6 +1048,10 @@
             {
               "key": "privacy",
               "label": "Privacy Policy"
+            },
+            {
+              "key": "analyticsSettings",
+              "label": "Cookie settings"
             }
           ]
         },

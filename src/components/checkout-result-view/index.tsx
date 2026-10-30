@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 
+import { trackAnalyticsEvent } from "@/stores/analytics";
 import { clearStoredPromo } from "@/stores/promo";
 import { clearCart } from "@/stores/cart";
 import { NoticePage } from "@/components/notice-page";
@@ -20,6 +21,7 @@ export const CheckoutResultView = ({
   paymentMethod,
   isDigitalOnly,
   downloadsHref,
+  purchase,
 }: CheckoutResultViewProps) => {
   const t = useTranslations("storefront.checkoutResult");
   const success = t.raw("success") as CheckoutResultLabels["success"];
@@ -34,6 +36,12 @@ export const CheckoutResultView = ({
       clearStoredPromo();
     }
   }, [kind]);
+
+  useEffect(() => {
+    if (purchase) {
+      trackAnalyticsEvent({ name: "purchase", params: purchase });
+    }
+  }, [purchase]);
 
   const shopHref = getLocalizedPath(locale, "/shop");
   const cartHref = getLocalizedPath(locale, "/cart");

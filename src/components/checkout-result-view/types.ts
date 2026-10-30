@@ -1,4 +1,5 @@
 import type { Locale } from "@/i18n/config";
+import type { AnalyticsPurchase } from "@/types/analytics";
 import type { PaymentMethod } from "@/utils";
 
 export type CheckoutResultKind = "success" | "cancel" | "confirmation";
@@ -9,6 +10,6 @@ export type CheckoutResultViewProps = {
   orderId?: string;
   paymentMethod?: PaymentMethod;
   isDigitalOnly?: boolean;
-  /** Set only for a paid order that has digital files to hand over. */
   downloadsHref?: string;
+  purchase?: AnalyticsPurchase;
 };

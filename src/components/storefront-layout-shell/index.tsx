@@ -7,6 +7,7 @@ import {
 } from "@/components/providers";
 import { StorefrontHeader } from "@/components/storefront-header";
 import { createStorefrontHeaderViewModel } from "@/components/storefront-header/navigation";
+import { WebAnalytics } from "@/components/web-analytics";
 import { defaultLocale } from "@/i18n/config";
 import {
   getRequestRegion,
@@ -52,6 +53,7 @@ export const StorefrontLayoutShell = async ({
         />
         {children}
         <FooterSection locale={locale} region={region} />
+        <WebAnalytics locale={locale} />
       </StorefrontThemeProvider>
     </IntlClientProvider>
   );

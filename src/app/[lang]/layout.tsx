@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 
 import { CartToast } from "@/components/cart";
 import { StorefrontLayoutShell } from "@/components/storefront-layout-shell";
-import { WebAnalytics } from "@/components/web-analytics";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 
 const LocaleLayout = async ({
@@ -20,7 +19,6 @@ const LocaleLayout = async ({
     <StorefrontLayoutShell locale={lang}>
       {children}
       <CartToast />
-      <WebAnalytics />
     </StorefrontLayoutShell>
   );
 };

@@ -2,11 +2,13 @@
 
 import { Alert, Box, Container, Grid, Stack } from "@mui/material";
 import { useTranslations } from "next-intl";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { submitCheckoutClient } from "@/client-api/checkout";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { EmptyCartState } from "@/components/cart";
+import { CLARITY_MASK_PROPS } from "@/constants/analytics";
+import { trackAnalyticsEvent } from "@/stores/analytics";
 import { clearBuyNowItem } from "@/stores/buy-now";
 import { useCart } from "@/stores/cart";
 import { PageShell } from "@/components/page-shell";
@@ -26,6 +28,7 @@ import {
   isIsoCountryCode,
   isPurchasableAvailability,
   isQuotableShippingAddress,
+  toCartAnalytics,
   type PaymentMethod,
 } from "@/utils";
 
@@ -76,6 +79,19 @@ export const CheckoutPageView = ({
   const hasUnavailableItems = items.some(
     (item) => !isPurchasableAvailability(item.availability),
   );
+  const checkoutTrackedRef = useRef(false);
+
+  useEffect(() => {
+    if (checkoutTrackedRef.current || isLoading || items.length === 0) {
+      return;
+    }
+
+    checkoutTrackedRef.current = true;
+    trackAnalyticsEvent({
+      name: "begin_checkout",
+      params: toCartAnalytics(items, currency, subtotal),
+    });
+  }, [currency, isLoading, items, subtotal]);
 
   const availableMethods = useMemo(
     () => getRegionPaymentMethods(region),
@@ -290,7 +306,7 @@ export const CheckoutPageView = ({
 
   return (
     <PageShell>
-      <Box>
+      <Box {...CLARITY_MASK_PROPS}>
         <Container maxWidth="lg">
           <Breadcrumbs
             items={[

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
@@ -26,6 +26,7 @@ import {
   formatCurrency,
   getLocalizedPath,
   isPurchasableAvailability,
+  toProductAnalytics,
 } from "@/utils";
 
 import { useProductPrice } from "@/hooks/useProductPrice";
@@ -35,6 +36,7 @@ import {
   MIN_CART_ITEM_QUANTITY,
 } from "@/constants/cart";
 import { BOOK_FORMAT } from "@/constants/catalog";
+import { trackAnalyticsEvent } from "@/stores/analytics";
 import { showCartToast } from "@/stores/cart-toast";
 import { useCart } from "@/stores/cart";
 import { setBuyNowItem } from "@/stores/buy-now";
@@ -81,6 +83,13 @@ export const ProductInfo = ({
   const alreadyOwned =
     isDigital && ownedLanguages.includes(selections.language);
 
+  useEffect(() => {
+    trackAnalyticsEvent({
+      name: "view_item",
+      params: toProductAnalytics(product, product.price, 1),
+    });
+  }, [product]);
+
   const handleAddToCart = () => {
     const { isCapped } = addItem({
       productId: product.productId,
@@ -88,6 +97,10 @@ export const ProductInfo = ({
       selections: cartSelections,
     });
 
+    trackAnalyticsEvent({
+      name: "add_to_cart",
+      params: toProductAnalytics(product, price, quantity),
+    });
     showCartToast({ isCapped });
   };
 

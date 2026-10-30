@@ -4,6 +4,7 @@ import { buildOrderDownloadsHref } from "@/server/downloads/order-downloads.serv
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import { confirmOrderFromStripeSession } from "@/server/orders/services/orders.service";
 import { NOINDEX_ROBOTS } from "@/constants/seo";
+import { toPurchaseAnalytics } from "@/utils";
 
 export const metadata: Metadata = { robots: NOINDEX_ROBOTS };
 
@@ -33,6 +34,11 @@ const LocalizedCheckoutSuccessPage = async ({
       orderId={order?.id}
       isDigitalOnly={order?.fulfillmentType === "digital"}
       downloadsHref={downloadsHref ?? undefined}
+      purchase={
+        order?.payment.status === "paid"
+          ? toPurchaseAnalytics(order)
+          : undefined
+      }
     />
   );
 };

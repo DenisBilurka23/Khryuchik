@@ -3,6 +3,7 @@ import { CheckoutResultView } from "@/components/checkout-result-view";
 import { requireActiveLocale } from "@/server/i18n/require-active-locale";
 import { findOrderById } from "@/server/orders/repositories/orders.repository";
 import { NOINDEX_ROBOTS } from "@/constants/seo";
+import { toPurchaseAnalytics } from "@/utils";
 
 export const metadata: Metadata = { robots: NOINDEX_ROBOTS };
 
@@ -28,6 +29,7 @@ const LocalizedCheckoutConfirmationPage = async ({
       kind="confirmation"
       orderId={order?.id}
       paymentMethod={order?.payment.method}
+      purchase={order ? toPurchaseAnalytics(order) : undefined}
     />
   );
 };

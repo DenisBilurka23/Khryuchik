@@ -3,12 +3,25 @@ import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
 import { Logo } from "@/components/logo";
+import { ANALYTICS_SETTINGS_FOOTER_KEY } from "@/constants/analytics";
 import type { Locale } from "@/i18n/config";
 import type { StorefrontFooterSection } from "@/i18n/types";
+import { hasConsentBasedAnalytics } from "@/server/analytics/analytics-config";
 import type { RegionCode } from "@/utils";
 import { getFooterItemHref } from "@/utils/footer";
 
+import { AnalyticsSettingsButton } from "./analytics-settings-button";
 import { FooterSocialLinks } from "./social-links";
+
+const footerLinkSx = {
+  display: "block",
+  width: "fit-content",
+  color: "inherit",
+  "&:hover": {
+    color: "var(--color-action)",
+    textDecoration: "underline",
+  },
+} as const;
 
 export const FooterSection = async ({
   locale,
@@ -26,6 +39,7 @@ export const FooterSection = async ({
     (section) => section.variant !== "social",
   ).length;
   const linkColumnWidth = (12 - 3 - 3) / linkSectionCount;
+  const hasAnalyticsSettings = hasConsentBasedAnalytics();
 
   return (
     <Box
@@ -93,6 +107,16 @@ export const FooterSection = async ({
                   }}
                 >
                   {section.items.map((item) => {
+                    if (item.key === ANALYTICS_SETTINGS_FOOTER_KEY) {
+                      return hasAnalyticsSettings ? (
+                        <AnalyticsSettingsButton
+                          key={item.key}
+                          label={item.label}
+                          sx={footerLinkSx}
+                        />
+                      ) : null;
+                    }
+
                     const href = getFooterItemHref(item.key, locale, region);
 
                     return (
@@ -103,18 +127,7 @@ export const FooterSection = async ({
                           ? { target: "_blank", rel: "noopener noreferrer" }
                           : {})}
                       >
-                        <Box
-                          component="span"
-                          sx={{
-                            display: "block",
-                            width: "fit-content",
-                            color: "inherit",
-                            "&:hover": {
-                              color: "var(--color-action)",
-                              textDecoration: "underline",
-                            },
-                          }}
-                        >
+                        <Box component="span" sx={footerLinkSx}>
                           {item.label}
                         </Box>
                       </Link>
