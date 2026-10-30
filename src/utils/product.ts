@@ -18,6 +18,7 @@ import type {
 } from "@/types/product-details";
 
 import type { CurrencyCode } from "./country";
+import { getLocaleDisplayName } from "./locale";
 import type { RegionCode } from "./region";
 import { convertFromUsd } from "./price-conversion";
 import {
@@ -157,6 +158,22 @@ export const localizeProductOptionGroups = (
   formats: localizeOptionPrices(options.formats, regionPricing),
   sizes: localizeOptionPrices(options.sizes, regionPricing),
   colors: localizeOptionPrices(options.colors, regionPricing),
+});
+
+export const localizeBookOptionLabels = <T extends ProductOptionGroups>(
+  options: T,
+  locale: Locale,
+  formatLabels: Partial<Record<string, string>>,
+): T => ({
+  ...options,
+  languages: options.languages?.map((option) => ({
+    ...option,
+    label: getLocaleDisplayName(option.value, locale),
+  })),
+  formats: options.formats?.map((option) => ({
+    ...option,
+    label: formatLabels[option.value] ?? option.label,
+  })),
 });
 
 const getOptionPriceDelta = (

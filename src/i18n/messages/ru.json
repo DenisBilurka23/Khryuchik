@@ -218,6 +218,10 @@
         "soldOut": "Распродано",
         "unavailable": "Недоступно"
       },
+      "formats": {
+        "printed": "Печатная версия",
+        "digital": "Электронная версия"
+      },
       "actions": {
         "addToCart": "В корзину",
         "buyNow": "Купить сейчас",

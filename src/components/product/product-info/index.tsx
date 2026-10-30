@@ -186,7 +186,6 @@ export const ProductInfo = ({
             value={selections.language}
             onChange={(event) => selectOption("language", event.target.value)}
             fullWidth
-            slotProps={{ select: { sx: { textTransform: "capitalize" } } }}
           >
             {product.languages.map((option) => {
               const { availability, isSelectable } = getOptionState(
@@ -199,7 +198,6 @@ export const ProductInfo = ({
                   key={option.value}
                   value={option.value}
                   disabled={!isSelectable}
-                  sx={{ textTransform: "capitalize" }}
                 >
                   {option.label}
                   {availability === "available" ? null : (

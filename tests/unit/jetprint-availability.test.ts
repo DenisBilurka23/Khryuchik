@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
-vi.mock("next-intl/server", () => ({ getTranslations: vi.fn() }));
+vi.mock("next-intl/server", () => ({
+  getTranslations: vi.fn(async () => (key: string) => key),
+}));
 vi.mock("@/server/catalog/repositories/products.repository", () => ({
   findActiveProductsByIds: vi.fn(),
   findActiveProductBySlug: vi.fn(),

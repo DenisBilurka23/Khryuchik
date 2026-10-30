@@ -218,6 +218,10 @@
         "soldOut": "Sold out",
         "unavailable": "Unavailable"
       },
+      "formats": {
+        "printed": "Print edition",
+        "digital": "Digital edition"
+      },
       "actions": {
         "addToCart": "Add to cart",
         "buyNow": "Buy now",

@@ -157,6 +157,7 @@ export {
 export {
   isLocalizedProductSummary,
   isPurchasableAvailability,
+  localizeBookOptionLabels,
   localizeProductOptionGroups,
   localizeProductSummary,
   resolveOptionPrice,

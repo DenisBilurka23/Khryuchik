@@ -8,6 +8,7 @@ import {
   type RegionCode,
   getLocalizedProductPath,
   isLocalizedProductSummary,
+  localizeBookOptionLabels,
   localizeProductOptionGroups,
   localizeProductSummary,
   resolveOptionPrice,
@@ -222,6 +223,17 @@ export const getSitemapProductSlugs = cache(
     findSitemapProductSlugs(region),
 );
 
+const getBookFormatLabels = async (locale: Locale) => {
+  const tFormats = await getTranslations({
+    locale,
+    namespace: "storefront.productPage.formats",
+  });
+
+  return Object.fromEntries(
+    Object.values(BOOK_FORMAT).map((format) => [format, tFormats(format)]),
+  );
+};
+
 export const getProductDetails = cache(
   async (
     locale: Locale,
@@ -282,15 +294,15 @@ export const getProductDetails = cache(
       return { status: "not-found" };
     }
 
-    const approvedReviews = await getApprovedReviewsForProduct(
-      summary.id,
-      locale,
-    );
+    const [approvedReviews, formatLabels] = await Promise.all([
+      getApprovedReviewsForProduct(summary.id, locale),
+      getBookFormatLabels(locale),
+    ]);
 
     return {
       status: isOutOfRegion ? "out-of-region" : "ok",
       product: {
-        ...details,
+        ...localizeBookOptionLabels(details, locale, formatLabels),
         reviews: [...details.reviews, ...approvedReviews],
       },
     };
@@ -319,16 +331,19 @@ const getDetailTranslation = (
 const buildVariantLabel = (
   item: StoredCartItem,
   translation: ProductDetailTranslation | null,
+  locale: Locale,
+  formatLabels: Partial<Record<string, string>>,
 ) => {
   if (!translation || !item.selections) {
     return undefined;
   }
 
+  const options = localizeBookOptionLabels(translation, locale, formatLabels);
   const variant = [
-    getSelectionLabel(translation.languages, item.selections.language),
-    getSelectionLabel(translation.formats, item.selections.format),
-    getSelectionLabel(translation.sizes, item.selections.size),
-    getSelectionLabel(translation.colors, item.selections.color),
+    getSelectionLabel(options.languages, item.selections.language),
+    getSelectionLabel(options.formats, item.selections.format),
+    getSelectionLabel(options.sizes, item.selections.size),
+    getSelectionLabel(options.colors, item.selections.color),
   ]
     .filter(Boolean)
     .join(" / ");
@@ -349,9 +364,10 @@ export const resolveCartItems = async (
   items: StoredCartItem[],
 ): Promise<ResolvedCart> => {
   const productIds = Array.from(new Set(items.map((item) => item.productId)));
-  const [products, regionPricing] = await Promise.all([
+  const [products, regionPricing, formatLabels] = await Promise.all([
     findActiveProductsByIds(productIds),
     getRegionPricing(region),
+    getBookFormatLabels(locale),
   ]);
   const catalogProductIds = new Set(
     products.map((product) => product.productId),
@@ -420,7 +436,7 @@ export const resolveCartItems = async (
         thumbnail: summary.thumbnail,
         thumbnailBackgroundColor: summary.thumbnailBackgroundColor,
         quantity: item.quantity,
-        variant: buildVariantLabel(item, translation),
+        variant: buildVariantLabel(item, translation, locale, formatLabels),
         isDigital: item.selections?.format === BOOK_FORMAT.digital,
         availability:
           isOverStock || isJetprintUnavailable
