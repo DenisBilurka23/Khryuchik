@@ -28,7 +28,7 @@
     },
     "analyticsConsent": {
       "title": "Cookies for analytics",
-      "text": "With your permission, we use Google Analytics and Microsoft Clarity to see which pages people visit, how they move around them, including recordings of taps and scrolling, and where the site could be easier to use. No ads, and you can change your choice any time in the footer.",
+      "text": "We use Google Analytics and Microsoft Clarity cookies for site analytics and to make the site better. No ads. You can change your choice any time in the footer.",
       "privacyLink": "Privacy Policy",
       "accept": "Accept",
       "decline": "Decline"
