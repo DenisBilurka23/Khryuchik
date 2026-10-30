@@ -2137,7 +2137,7 @@
           "cancel": "Отмена",
           "apply": "Сохранить print-файл",
           "errors": {
-            "missingLayers": "В PSD нет слоёв Bleeding Area, Hem Lines и Safe Lines — это точно шаблон JetPrint?",
+            "missingLayers": "В PSD нет слоёв с зоной вылета и линиями безопасности — это точно шаблон JetPrint?",
             "unreadable": "Не удалось прочитать PSD-файл.",
             "art": "Не удалось открыть рисунок. Нужен PNG или JPEG.",
             "render": "Не удалось собрать файл. Если рисунок загружали раньше, загрузите его заново."

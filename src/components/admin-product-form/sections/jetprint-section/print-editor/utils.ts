@@ -103,7 +103,7 @@ export const importPrintTemplate = async (
   const hem = findLayer(PRINT_DESIGN_LAYER_MATCHERS.hem);
   const safe = findLayer(PRINT_DESIGN_LAYER_MATCHERS.safe);
 
-  if (!bleed || !hem || !safe) {
+  if (!bleed || !safe) {
     throw new PrintTemplateImportError("missing-layers");
   }
 
@@ -146,7 +146,9 @@ export const importPrintTemplate = async (
   const guidesContext = getContext(guidesCanvas);
 
   drawLayer(guidesContext, bleed);
-  drawLayer(guidesContext, hem);
+  if (hem) {
+    drawLayer(guidesContext, hem);
+  }
   drawLayer(guidesContext, safe);
 
   const [guidesFile, cutMaskFile] = await Promise.all([

@@ -2258,7 +2258,7 @@
           "cancel": "Cancel",
           "apply": "Save print file",
           "errors": {
-            "missingLayers": "The PSD has no Bleeding Area, Hem Lines and Safe Lines layers — is it a JetPrint template?",
+            "missingLayers": "The PSD has no bleed area and safe lines layers — is it a JetPrint template?",
             "unreadable": "Could not read the PSD file.",
             "art": "Could not open the artwork. Use a PNG or JPEG.",
             "render": "Could not build the print file. If the artwork was uploaded earlier, upload it again."
