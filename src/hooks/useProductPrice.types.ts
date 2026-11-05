@@ -1,13 +1,18 @@
 import type { CartSelections } from "@/types/cart";
 import type {
   ProductDetails,
-  ProductVariantAvailability,
   ProductVariantValueState,
 } from "@/types/product-details";
 
 export type ProductSelectionKey = keyof CartSelections;
 
 export type ProductSelectionState = Record<ProductSelectionKey, string>;
+
+export type ProductSelectionIssue =
+  | "soldOutProduct"
+  | "soldOutSelection"
+  | "unavailableSelection"
+  | "printedUnavailableInRegion";
 
 export type UseProductPriceParams = {
   product: ProductDetails;
@@ -21,7 +26,7 @@ export type UseProductPriceResult = {
     key: ProductSelectionKey,
     value: string,
   ) => ProductVariantValueState;
-  selectionAvailability: ProductVariantAvailability;
+  selectionIssue: ProductSelectionIssue | null;
   price: number;
   oldPrice: number | undefined;
 };

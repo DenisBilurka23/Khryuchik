@@ -238,6 +238,7 @@
         "unavailableSelection": "This size and color are not offered together. Pick another combination to continue.",
         "soldOutSelection": "This size and color combination is sold out. Pick another combination to continue.",
         "soldOutProduct": "This product is sold out. It will come back to the shop as soon as it is restocked.",
+        "printedUnavailableInRegion": "The print edition is not available in your region right now.",
         "unavailableInRegion": "This product is not sold in your region yet.",
         "browseShop": "Browse the shop"
       },

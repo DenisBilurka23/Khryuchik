@@ -1,7 +1,7 @@
 "use client";
 
 import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
-import { useEffect, useState, useTransition } from "react";
+import { useOptimistic, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
@@ -21,53 +21,43 @@ export const RegionSwitcher = ({
 }: RegionSwitcherProps) => {
   const t = useTranslations("storefront");
   const router = useRouter();
-  const [selectedRegion, setSelectedRegion] = useState(region);
+  const [displayedRegion, setDisplayedRegion] = useOptimistic(region);
   const [isPending, startTransition] = useTransition();
 
-  useEffect(() => {
-    setSelectedRegion(region);
-  }, [region]);
-
-  const updateRegion = async (nextRegion: RegionSwitcherProps["region"]) => {
-    if (nextRegion === selectedRegion || isPending) {
+  const updateRegion = (nextRegion: RegionSwitcherProps["region"]) => {
+    if (nextRegion === region || isPending) {
       return;
     }
 
-    const previousRegion = selectedRegion;
+    startTransition(async () => {
+      setDisplayedRegion(nextRegion);
 
-    setSelectedRegion(nextRegion);
+      try {
+        const response = await updateRegionPreferenceClient(nextRegion);
 
-    try {
-      const response = await updateRegionPreferenceClient(nextRegion);
+        if (!response.ok || !response.data) {
+          console.error(`Failed to update region: ${response.status}`);
+          return;
+        }
 
-      if (!response.ok) {
-        console.error(`Failed to update region: ${response.status}`);
-        setClientRegion(previousRegion);
-        setSelectedRegion(previousRegion);
-        return;
+        setClientRegion(response.data.region);
+
+        startTransition(() => {
+          router.refresh();
+        });
+      } catch (error) {
+        console.error(error);
       }
-
-      setClientRegion(nextRegion);
-
-      startTransition(() => {
-        router.refresh();
-      });
-    } catch (error) {
-      console.error(error);
-      setClientRegion(previousRegion);
-      setSelectedRegion(previousRegion);
-    }
+    });
   };
 
-  // A single active region leaves nothing to switch between, so hide the
-  // control entirely rather than render a one-option dropdown.
   if (availableRegions.length <= 1) {
     return null;
   }
 
   return (
     <HeaderSelect
-      value={selectedRegion}
+      value={displayedRegion}
       label={label ?? t("regionSwitcherLabel")}
       icon={
         <PublicOutlinedIcon sx={{ fontSize: 18, color: "text.secondary" }} />
@@ -80,7 +70,7 @@ export const RegionSwitcher = ({
       }))}
       onChangeAction={(value) => {
         if (isRegionCode(value) && availableRegions.includes(value)) {
-          void updateRegion(value);
+          updateRegion(value);
         }
       }}
       sx={sx}

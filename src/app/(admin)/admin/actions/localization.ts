@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { locales } from "@/i18n/config";
@@ -22,7 +22,7 @@ import { LOCALIZATION_CACHE_TAG } from "@/constants/localization";
 import { requireAdmin } from "./shared";
 
 const revalidateLocalizationDependentPaths = () => {
-  revalidateTag(LOCALIZATION_CACHE_TAG, "max");
+  updateTag(LOCALIZATION_CACHE_TAG);
   revalidatePath("/admin");
   revalidatePath("/admin/localization");
   revalidatePath("/admin/products", "layout");

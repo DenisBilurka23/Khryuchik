@@ -13,10 +13,12 @@ export const isPrintedStockTracked = (stock?: ProductPrintedStock) =>
 export const toPrintedLanguages = (
   stock?: ProductPrintedStock,
   hubs: readonly ShippingHubCode[] = SHIPPING_HUB_CODES,
-): string[] =>
-  Object.entries(stock ?? {})
-    .filter(([, hubStock]) => countInHubs(hubStock, hubs) > 0)
-    .map(([language]) => language);
+): string[] | undefined =>
+  isPrintedStockTracked(stock)
+    ? Object.entries(stock ?? {})
+        .filter(([, hubStock]) => countInHubs(hubStock, hubs) > 0)
+        .map(([language]) => language)
+    : undefined;
 
 export const getStockedHubs = (
   stock: ProductPrintedStock | undefined,
@@ -53,10 +55,4 @@ export const hasPrintedStock = (
 export const isPrintedOffered = (
   printedLanguages: string[] | undefined,
   language: string | undefined,
-) => {
-  if (!printedLanguages || printedLanguages.length === 0) {
-    return true;
-  }
-
-  return !language || printedLanguages.includes(language);
-};
+) => !printedLanguages || !language || printedLanguages.includes(language);

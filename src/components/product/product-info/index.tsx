@@ -25,7 +25,6 @@ import {
   clampCartItemQuantity,
   formatCurrency,
   getLocalizedPath,
-  isPurchasableAvailability,
   toProductAnalytics,
 } from "@/utils";
 
@@ -67,17 +66,11 @@ export const ProductInfo = ({
     cartSelections,
     selectOption,
     getOptionState,
-    selectionAvailability,
+    selectionIssue,
     price,
     oldPrice,
   } = useProductPrice({ product });
   const isWishlisted = isInWishlist(product.productId);
-  const isSoldOut = !isPurchasableAvailability(product.availability);
-  const unavailableMessage = isSoldOut
-    ? "actions.soldOutProduct"
-    : selectionAvailability === "sold-out"
-      ? "actions.soldOutSelection"
-      : "actions.unavailableSelection";
   const hasMetaChips = Boolean(product.series || product.storyLabel);
   const isDigital = selections.format === BOOK_FORMAT.digital;
   const alreadyOwned =
@@ -398,16 +391,18 @@ export const ProductInfo = ({
         </Stack>
       ) : (
         <Stack spacing={2} sx={{ mt: 4 }}>
-          {selectionAvailability === "available" ? null : (
-            <Alert severity="warning">{tProductPage(unavailableMessage)}</Alert>
-          )}
+          {selectionIssue ? (
+            <Alert severity="warning">
+              {tProductPage(`actions.${selectionIssue}`)}
+            </Alert>
+          ) : null}
           <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
             <Button
               variant="contained"
               size="large"
               startIcon={<ShoppingBagOutlinedIcon />}
               sx={{ flex: 1 }}
-              disabled={selectionAvailability !== "available"}
+              disabled={selectionIssue !== null}
               onClick={handleAddToCart}
             >
               {tProductPage("actions.addToCart")}
@@ -421,7 +416,7 @@ export const ProductInfo = ({
                 borderColor: "var(--color-border-rose)",
                 bgcolor: "var(--color-white)",
               }}
-              disabled={selectionAvailability !== "available"}
+              disabled={selectionIssue !== null}
               onClick={handleBuyNow}
             >
               {tProductPage("actions.buyNow")}

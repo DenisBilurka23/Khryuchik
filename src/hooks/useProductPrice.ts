@@ -16,6 +16,7 @@ import {
 import type { ProductVariantValueState } from "@/types/product-details";
 
 import type {
+  ProductSelectionIssue,
   ProductSelectionKey,
   ProductSelectionState,
   UseProductPriceParams,
@@ -95,9 +96,9 @@ export const useProductPrice = ({
     [getPrintedState, product, selections],
   );
 
-  const selectionAvailability = useMemo(() => {
+  const selectionIssue = useMemo((): ProductSelectionIssue | null => {
     if (!isPurchasableAvailability(product.availability)) {
-      return "sold-out";
+      return "soldOutProduct";
     }
 
     const variant = getVariantSelectionAvailability(
@@ -105,9 +106,18 @@ export const useProductPrice = ({
       selections,
     );
 
-    return variant === "available"
-      ? getPrintedState("format", selections.format).availability
-      : variant;
+    if (variant === "sold-out") {
+      return "soldOutSelection";
+    }
+
+    if (variant === "unavailable") {
+      return "unavailableSelection";
+    }
+
+    return getPrintedState("format", selections.format).availability ===
+      "available"
+      ? null
+      : "printedUnavailableInRegion";
   }, [getPrintedState, product, selections]);
 
   const cartSelections = useMemo(
@@ -149,7 +159,7 @@ export const useProductPrice = ({
     cartSelections,
     selectOption,
     getOptionState,
-    selectionAvailability,
+    selectionIssue,
     price,
     oldPrice,
   };
