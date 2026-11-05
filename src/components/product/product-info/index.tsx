@@ -38,6 +38,7 @@ import { BOOK_FORMAT } from "@/constants/catalog";
 import { trackAnalyticsEvent } from "@/stores/analytics";
 import { showCartToast } from "@/stores/cart-toast";
 import { useCart } from "@/stores/cart";
+import { useIsRegionSwitching } from "@/stores/region-switch";
 import { setBuyNowItem } from "@/stores/buy-now";
 import type { ProductInfoProps } from "../types";
 import {
@@ -70,6 +71,7 @@ export const ProductInfo = ({
     price,
     oldPrice,
   } = useProductPrice({ product });
+  const isRegionSwitching = useIsRegionSwitching();
   const isWishlisted = isInWishlist(product.productId);
   const hasMetaChips = Boolean(product.series || product.storyLabel);
   const isDigital = selections.format === BOOK_FORMAT.digital;
@@ -165,6 +167,7 @@ export const ProductInfo = ({
           direction="row"
           spacing={2}
           alignItems="center"
+          aria-busy={isRegionSwitching}
           sx={productPriceRowSx}
         >
           <Typography sx={productPriceSx}>
@@ -402,7 +405,7 @@ export const ProductInfo = ({
               size="large"
               startIcon={<ShoppingBagOutlinedIcon />}
               sx={{ flex: 1 }}
-              disabled={selectionIssue !== null}
+              disabled={selectionIssue !== null || isRegionSwitching}
               onClick={handleAddToCart}
             >
               {tProductPage("actions.addToCart")}
@@ -416,7 +419,7 @@ export const ProductInfo = ({
                 borderColor: "var(--color-border-rose)",
                 bgcolor: "var(--color-white)",
               }}
-              disabled={selectionIssue !== null}
+              disabled={selectionIssue !== null || isRegionSwitching}
               onClick={handleBuyNow}
             >
               {tProductPage("actions.buyNow")}

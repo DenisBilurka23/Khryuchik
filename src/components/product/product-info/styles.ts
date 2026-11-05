@@ -12,7 +12,11 @@ export const productSubtitleSx = {
   lineHeight: 1.7,
 } as const;
 
-export const productPriceRowSx = { mt: 3 } as const;
+export const productPriceRowSx = {
+  mt: 3,
+  transition: "opacity 150ms ease",
+  '&[aria-busy="true"]': { opacity: 0.4 },
+} as const;
 
 export const productPriceSx = {
   fontSize: 32,

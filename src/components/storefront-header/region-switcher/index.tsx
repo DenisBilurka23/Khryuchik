@@ -1,11 +1,12 @@
 "use client";
 
 import PublicOutlinedIcon from "@mui/icons-material/PublicOutlined";
-import { useOptimistic, useTransition } from "react";
+import { useEffect, useOptimistic, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 import { updateRegionPreferenceClient } from "@/client-api/region";
+import { setRegionSwitching } from "@/stores/region-switch";
 import { isRegionCode } from "@/utils";
 import { setClientRegion } from "@/utils/region/client";
 
@@ -23,6 +24,18 @@ export const RegionSwitcher = ({
   const router = useRouter();
   const [displayedRegion, setDisplayedRegion] = useOptimistic(region);
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    if (!isPending) {
+      return;
+    }
+
+    setRegionSwitching(true);
+
+    return () => {
+      setRegionSwitching(false);
+    };
+  }, [isPending]);
 
   const updateRegion = (nextRegion: RegionSwitcherProps["region"]) => {
     if (nextRegion === region || isPending) {
