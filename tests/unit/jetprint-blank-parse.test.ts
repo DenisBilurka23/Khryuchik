@@ -176,6 +176,17 @@ describe("JetPrint blank import", () => {
     expect(blank.importedAt).toBe("2026-10-20");
   });
 
+  it("trims whitespace JetPrint leaves around a factory SKU", () => {
+    const mug: RawJetprintBlank = {
+      ...backpack,
+      skuInfos: [{ id: 757, skuName: "HT25磨砂杯-Default ", weight: 380 }],
+    };
+    const blank = toJetprintBlank(mug, "2026-11-10");
+
+    expect(Object.keys(blank.skus)).toEqual(["HT25磨砂杯-Default"]);
+    expect(blank.variants).toEqual([{ sku: "HT25磨砂杯-Default" }]);
+  });
+
   it("refuses a signed-out response without shipping data", () => {
     expect(() =>
       toJetprintBlank({ ...tShirt, logisticsMethodInfos: [] }, "2026-10-20"),

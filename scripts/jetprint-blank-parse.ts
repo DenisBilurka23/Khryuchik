@@ -67,6 +67,8 @@ const AXIS_PATTERNS: Record<VariantAxis, RegExp> = {
 
 const toDayRange = (value: string) => value.replace(/days?/i, "").trim();
 
+export const toFactorySku = (skuName: string) => skuName.trim();
+
 const toShippingGroup = (group: RawShippingGroup): JetprintShippingGroup => ({
   name: group.countryGroupName.trim(),
   countries: group.countryItems.map((country) =>
@@ -145,10 +147,12 @@ export const toJetprintBlankVariants = (
   const leaves = collectLeaves(raw.skuTrees ?? []);
 
   if (leaves.length === 0) {
-    return raw.skuInfos.map((sku) => ({ sku: sku.skuName }));
+    return raw.skuInfos.map((sku) => ({ sku: toFactorySku(sku.skuName) }));
   }
 
-  const skuById = new Map(raw.skuInfos.map((sku) => [sku.id, sku.skuName]));
+  const skuById = new Map(
+    raw.skuInfos.map((sku) => [sku.id, toFactorySku(sku.skuName)]),
+  );
   const distinctValues: Record<VariantAxis, Set<string>> = {
     size: new Set(),
     color: new Set(),
@@ -183,7 +187,9 @@ export const toJetprintBlankVariants = (
     });
   }
 
-  const missing = raw.skuInfos.filter((sku) => !variants.has(sku.skuName));
+  const missing = raw.skuInfos.filter(
+    (sku) => !variants.has(toFactorySku(sku.skuName)),
+  );
 
   if (missing.length > 0) {
     throw new JetprintBlankParseError(
@@ -212,7 +218,10 @@ export const toJetprintBlank = (
     name: raw.blankProductInfo.model,
     productionDays: toDayRange(raw.blankProductInfo.productionTime),
     skus: Object.fromEntries(
-      raw.skuInfos.map((sku) => [sku.skuName, { weightGrams: sku.weight }]),
+      raw.skuInfos.map((sku) => [
+        toFactorySku(sku.skuName),
+        { weightGrams: sku.weight },
+      ]),
     ),
     variants: toJetprintBlankVariants(raw),
     standardShipping: standard.items.map(toShippingGroup),

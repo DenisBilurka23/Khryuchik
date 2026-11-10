@@ -46,8 +46,12 @@ const parseJetprintBlankId = (formData: FormData) => {
 };
 
 const parseJetprintSkus = (formData: FormData) =>
-  parseJsonField<unknown[]>(formData, "jetprint.skusJson", []).flatMap((sku) =>
-    typeof sku === "string" && sku.trim() ? [sku] : [],
+  parseJsonField<unknown[]>(formData, "jetprint.skusJson", []).flatMap(
+    (sku) => {
+      const trimmed = readTrimmed(sku);
+
+      return trimmed ? [trimmed] : [];
+    },
   );
 
 const readFiniteNumber = (value: unknown) =>

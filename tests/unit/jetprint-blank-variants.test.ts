@@ -53,7 +53,7 @@ vi.mock("@/data/jetprint-blank-catalog", () => ({
       name: "1252. 11oz Frosted Glass Coffee Mug",
       productionDays: "5-7",
       skus: {},
-      variants: [{ sku: "HT25磨砂杯-Default " }],
+      variants: [{ sku: "HT25磨砂杯-Default" }],
       standardShipping: [],
       importedAt: "2026-10-28",
     },
@@ -188,7 +188,7 @@ describe("JetPrint section of the product form", () => {
     ]);
   });
 
-  it("keeps a factory SKU exactly as JetPrint spells it", () => {
+  it("trims whitespace around a factory SKU but keeps its characters", () => {
     const link = parseProductJetprint(
       jetprintForm({
         "jetprint.blankId": "1252",
@@ -197,7 +197,7 @@ describe("JetPrint section of the product form", () => {
     );
 
     expect(link?.variants.map((variant) => variant.sku)).toEqual([
-      "HT25磨砂杯-Default ",
+      "HT25磨砂杯-Default",
     ]);
   });
 

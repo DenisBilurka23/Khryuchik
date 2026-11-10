@@ -34,7 +34,7 @@ import {
   readJetprintBlankResponse,
   saveJetprintBlank,
 } from "./jetprint-blank-catalog-file";
-import type { RawJetprintBlank } from "./jetprint-blank-parse";
+import { type RawJetprintBlank, toFactorySku } from "./jetprint-blank-parse";
 import {
   fitTemplateToPrintArea,
   getArtEffectiveDpi,
@@ -150,7 +150,9 @@ const getMockupPaths = (folder: string, product: JetprintMyProduct) =>
   );
 
 const pickBlankSkus = (raw: RawJetprintBlank, product: JetprintMyProduct) => {
-  const skuById = new Map(raw.skuInfos.map((sku) => [sku.id, sku.skuName]));
+  const skuById = new Map(
+    raw.skuInfos.map((sku) => [sku.id, toFactorySku(sku.skuName)]),
+  );
 
   const priceBySku = new Map<string, number>();
   const skus = product.variants.map(({ blankSkuId, price }) => {
