@@ -139,6 +139,24 @@ describe("JetPrint variants from blank data", () => {
     ]);
   });
 
+  it("keeps the saved option order when the blank lists sizes out of order", () => {
+    expect(
+      mergeProductOptions(
+        [
+          { label: "45cm", value: "45cm" },
+          { label: "30cm", value: "30cm" },
+          { label: "60cm", value: "60cm" },
+          { label: "40cm", value: "40cm" },
+        ],
+        [
+          { label: "30cm", value: "30cm" },
+          { label: "40cm", value: "40cm" },
+          { label: "45cm", value: "45cm" },
+        ],
+      ).map((option) => option.value),
+    ).toEqual(["30cm", "40cm", "45cm", "60cm"]);
+  });
+
   it("finds the blank of a product saved before blanks were stored", () => {
     const legacy = {
       variants: [{ sku: "D42-Default", selections: {}, isAvailable: true }],

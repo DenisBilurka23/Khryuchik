@@ -12,9 +12,9 @@ export const mergeProductOptions = (
   next: ProductOption[],
   current: ProductOption[] | undefined,
 ): ProductOption[] => {
-  const currentByValue = new Map(
-    (current ?? []).map((option) => [option.value, option]),
-  );
+  const nextValues = new Set(next.map((option) => option.value));
+  const kept = (current ?? []).filter((option) => nextValues.has(option.value));
+  const keptValues = new Set(kept.map((option) => option.value));
 
-  return next.map((option) => currentByValue.get(option.value) ?? option);
+  return [...kept, ...next.filter((option) => !keptValues.has(option.value))];
 };
