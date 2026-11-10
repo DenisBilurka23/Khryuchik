@@ -27,6 +27,7 @@ const r2PublicBaseUrl = resolveR2PublicBaseUrl();
 const nextConfig: NextConfig = {
   experimental: {
     globalNotFound: true,
+    turbopackFileSystemCacheForBuild: false,
     serverActions: {
       bodySizeLimit: "100mb",
     },
