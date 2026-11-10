@@ -43,6 +43,7 @@ yarn-error.log*
 next-env.d.ts
 
 .claude/settings.local.json
+.agents/skills/source-command-*/
 
 # local specs
 /docs/
