@@ -100,3 +100,15 @@ export const parseSelectedShippingOptionIds = (
 };
 
 export const isValidEmail = (value: string) => emailPattern.test(value);
+
+export const isLiveSiteHost = (host: string, siteUrl: string | undefined) => {
+  if (!siteUrl) {
+    return false;
+  }
+
+  try {
+    return new URL(siteUrl).host === host;
+  } catch {
+    return false;
+  }
+};

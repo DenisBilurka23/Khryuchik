@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  isLiveSiteHost,
   isPaymentMethod,
   isValidEmail,
   parseCustomer,
@@ -175,5 +176,25 @@ describe("address rules", () => {
 
   it("does not require a region for Belgium", () => {
     expect(isRegionRequired("BE")).toBe(false);
+  });
+});
+
+describe("isLiveSiteHost", () => {
+  it("matches a request to the site's main address", () => {
+    expect(isLiveSiteHost("khryuchik.com", "https://khryuchik.com")).toBe(true);
+  });
+
+  it("ignores deploy previews of the same site", () => {
+    expect(
+      isLiveSiteHost(
+        "deploy-preview-12--khryuchik.netlify.app",
+        "https://khryuchik.com",
+      ),
+    ).toBe(false);
+  });
+
+  it("stays quiet when the site address is unset or malformed", () => {
+    expect(isLiveSiteHost("localhost:3000", undefined)).toBe(false);
+    expect(isLiveSiteHost("localhost:3000", "not a url")).toBe(false);
   });
 });

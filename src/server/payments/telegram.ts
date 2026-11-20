@@ -125,6 +125,14 @@ const buildPaidOrderMessage = (order: OrderDocument): string =>
     `Сумма: ${order.total.toFixed(2)} ${order.currency}`,
   ].join("\n");
 
+const buildStripeTestModeMessage = (order: OrderDocument): string =>
+  [
+    `🚨 Stripe в тестовом режиме — заказ ${orderHeader(order.id)}`,
+    "",
+    "Покупателя отправили на тестовую страницу оплаты: настоящую карту там отклонят.",
+    "Поставьте live-ключ в STRIPE_SECRET_KEY (Netlify → Production) и передеплойте.",
+  ].join("\n");
+
 const buildRefundedOrderMessage = (order: OrderDocument): string => {
   const isFullyRefunded = order.payment.status === "refunded";
   const refunded = order.payment.refundedAmount ?? 0;
@@ -340,6 +348,11 @@ export const notifyAdminNewOrder = (order: OrderDocument): Promise<void> =>
 
 export const notifyAdminOrderPaid = (order: OrderDocument): Promise<void> =>
   sendMessage(buildPaidOrderMessage(order)).then(() => undefined);
+
+export const notifyAdminStripeTestMode = (
+  order: OrderDocument,
+): Promise<void> =>
+  sendMessage(buildStripeTestModeMessage(order)).then(() => undefined);
 
 export const notifyAdminOrderRefunded = (order: OrderDocument): Promise<void> =>
   sendMessage(buildRefundedOrderMessage(order)).then(() => undefined);

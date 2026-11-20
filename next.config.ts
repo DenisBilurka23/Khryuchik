@@ -24,6 +24,20 @@ const resolveR2PublicBaseUrl = () => {
 
 const r2PublicBaseUrl = resolveR2PublicBaseUrl();
 
+const assertLiveStripeKeyInProduction = () => {
+  if (process.env.CONTEXT !== "production") {
+    return;
+  }
+
+  if (!/^[sr]k_live_/.test(process.env.STRIPE_SECRET_KEY ?? "")) {
+    throw new Error(
+      "STRIPE_SECRET_KEY must be a live key (sk_live_ or rk_live_) in the Netlify production context",
+    );
+  }
+};
+
+assertLiveStripeKeyInProduction();
+
 const nextConfig: NextConfig = {
   experimental: {
     globalNotFound: true,

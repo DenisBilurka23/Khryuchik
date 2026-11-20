@@ -13,6 +13,7 @@ import { getServerAuthSession } from "@/server/auth/config";
 import { getRequestRegion } from "@/server/region/request-region";
 import { getActiveRegionCodes } from "@/server/localization/localization.service";
 import { createStripeCheckoutSession } from "@/server/payments/stripe";
+import { notifyAdminStripeTestMode } from "@/server/payments/telegram";
 import { isShopClosed } from "@/server/shop/maintenance.service";
 import {
   createOrder,
@@ -29,6 +30,7 @@ import {
 } from "@/utils";
 
 import {
+  isLiveSiteHost,
   isPaymentMethod,
   isValidEmail,
   parseCustomer,
@@ -170,6 +172,20 @@ export const POST = async (request: NextRequest) => {
       }
 
       await updateOrderPayment(order.id, { stripeSessionId: session.id });
+
+      if (
+        !session.livemode &&
+        isLiveSiteHost(request.nextUrl.host, process.env.URL)
+      ) {
+        Sentry.captureMessage(
+          "Stripe checkout session created in test mode on the live site",
+          {
+            level: "fatal",
+            tags: { operation: "create_stripe_checkout_session" },
+          },
+        );
+        await notifyAdminStripeTestMode(order);
+      }
 
       if (!session.url) {
         Sentry.captureException(
